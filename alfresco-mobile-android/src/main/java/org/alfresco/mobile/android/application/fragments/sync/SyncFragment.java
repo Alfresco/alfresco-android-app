@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.fragments.sync;
 
 import java.io.File;
@@ -62,18 +62,18 @@ import org.alfresco.mobile.android.ui.RefreshFragment;
 import org.alfresco.mobile.android.ui.fragments.BaseCursorGridFragment;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
-import android.app.Activity;
-import android.app.Fragment;
 import android.content.ContentResolver;
 import android.content.ContentValues;
-import android.content.CursorLoader;
 import android.content.Intent;
-import android.content.Loader;
 import android.content.SyncStatusObserver;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -653,7 +653,8 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
     {
         if (info != null && info.hasWarning())
         {
-            ErrorSyncDialogFragment.newInstance().show(getActivity().getFragmentManager(), ErrorSyncDialogFragment.TAG);
+            ErrorSyncDialogFragment.newInstance().show(getActivity().getSupportFragmentManager(),
+                    ErrorSyncDialogFragment.TAG);
         }
     }
 
@@ -677,7 +678,7 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
 
             if (info.hasWarning())
             {
-                ErrorSyncDialogFragment.newInstance().show(getActivity().getFragmentManager(),
+                ErrorSyncDialogFragment.newInstance().show(getActivity().getSupportFragmentManager(),
                         ErrorSyncDialogFragment.TAG);
             }
         }
@@ -729,13 +730,13 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
 
     protected Fragment getFragment(String tag)
     {
-        return getActivity().getFragmentManager().findFragmentByTag(tag);
+        return getActivity().getSupportFragmentManager().findFragmentByTag(tag);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
     // BUILDER
     // ///////////////////////////////////////////////////////////////////////////
-    public static Builder with(Activity activity)
+    public static Builder with(FragmentActivity activity)
     {
         return new Builder(activity);
     }
@@ -749,13 +750,13 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
         // ///////////////////////////////////////////////////////////////////////////
         // CONSTRUCTORS
         // ///////////////////////////////////////////////////////////////////////////
-        public Builder(Activity activity)
+        public Builder(FragmentActivity activity)
         {
             super(activity);
             this.extraConfiguration = new Bundle();
         }
 
-        public Builder(Activity appActivity, Map<String, Object> configuration)
+        public Builder(FragmentActivity appActivity, Map<String, Object> configuration)
         {
             super(appActivity, configuration);
 

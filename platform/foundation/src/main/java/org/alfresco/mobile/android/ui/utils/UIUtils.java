@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.ui.utils;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -29,12 +29,12 @@ import org.alfresco.mobile.android.platform.utils.SessionUtils;
 
 import android.annotation.TargetApi;
 import android.app.ActionBar;
-import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -77,7 +77,7 @@ public class UIUtils
      * @return
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-    public static int[] getScreenDimension(Activity activity)
+    public static int[] getScreenDimension(FragmentActivity activity)
     {
         int width = 0;
         int height = 0;
@@ -108,23 +108,23 @@ public class UIUtils
         return matcher.matches();
     }
 
-    public static void displayTitle(Activity activity, int titleId)
+    public static void displayTitle(FragmentActivity activity, int titleId)
     {
         displayTitle(activity, activity.getString(titleId));
     }
 
-    public static void displayTitle(Activity activity, int titleId, boolean isUpEnable)
+    public static void displayTitle(FragmentActivity activity, int titleId, boolean isUpEnable)
     {
         displayTitle(activity, activity.getString(titleId), isUpEnable);
     }
 
-    public static void displayTitle(Activity activity, String title)
+    public static void displayTitle(FragmentActivity activity, String title)
     {
         displayTitle(activity, title, true);
     }
 
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-    public static void displayTitle(Activity activity, String title, boolean isUpEnable)
+    public static void displayTitle(FragmentActivity activity, String title, boolean isUpEnable)
     {
         if (activity.getActionBar() != null)
         {
@@ -142,7 +142,7 @@ public class UIUtils
             }
 
             // If MenuFragment is visible => up is disable.
-            Fragment fr = activity.getFragmentManager().findFragmentByTag(
+            Fragment fr = activity.getSupportFragmentManager().findFragmentByTag(
                     "org.alfresco.mobile.android.application.fragments.menu.MainMenuFragment");
             if (fr != null && fr.isVisible())
             {
@@ -160,7 +160,8 @@ public class UIUtils
             View v = bar.getCustomView();
             if (v == null)
             {
-                LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+                LayoutInflater inflater = (LayoutInflater) activity
+                        .getSystemService(FragmentActivity.LAYOUT_INFLATER_SERVICE);
                 v = inflater.inflate(R.layout.app_header_row, null);
             }
 
@@ -204,7 +205,7 @@ public class UIUtils
 
     /**
      * Init the validation button form.
-     * 
+     *
      * @param vRoot
      * @param actionId
      * @return
@@ -257,20 +258,20 @@ public class UIUtils
         }
     }
 
-    public static void hideKeyboard(Activity activity)
+    public static void hideKeyboard(FragmentActivity activity)
     {
         if (activity.getWindow().getCurrentFocus() == null) { return; }
         InputMethodManager mgr = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
         mgr.hideSoftInputFromWindow(activity.getWindow().getCurrentFocus().getWindowToken(), 0);
     }
 
-    public static void showKeyboard(Activity activity, View v)
+    public static void showKeyboard(FragmentActivity activity, View v)
     {
         InputMethodManager mgr = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
         mgr.showSoftInput(v, 0);
     }
 
-    public static void hideKeyboard(Activity activity, View v)
+    public static void hideKeyboard(FragmentActivity activity, View v)
     {
         InputMethodManager mgr = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
         mgr.hideSoftInputFromWindow(v.getWindowToken(), 0);

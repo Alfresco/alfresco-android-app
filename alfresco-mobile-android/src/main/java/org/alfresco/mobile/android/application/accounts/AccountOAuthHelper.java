@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.accounts;
 
 import java.util.Date;
@@ -30,11 +30,11 @@ import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 
 public class AccountOAuthHelper
@@ -66,7 +66,7 @@ public class AccountOAuthHelper
     // //////////////////////////////////////////////////////////////////////
     // UTILS
     // //////////////////////////////////////////////////////////////////////
-    public static void onNewOauthData(Activity activity, RetrieveOAuthDataEvent event)
+    public static void onNewOauthData(FragmentActivity activity, RetrieveOAuthDataEvent event)
     {
         AlfrescoAccount acc = SessionUtils.getAccount(activity);
         AccountOAuthHelper.saveLastCloudLoadingTime(activity);
@@ -90,7 +90,7 @@ public class AccountOAuthHelper
         }
     }
 
-    private static void saveNewOauthData(Activity activity, AlfrescoAccount acc, OAuthData data)
+    private static void saveNewOauthData(FragmentActivity activity, AlfrescoAccount acc, OAuthData data)
     {
         switch (acc.getTypeId())
         {
@@ -154,7 +154,7 @@ public class AccountOAuthHelper
      * @param alfrescoSession
      * @param activity
      */
-    public static void requestRefreshToken(AlfrescoSession alfrescoSession, Activity activity)
+    public static void requestRefreshToken(AlfrescoSession alfrescoSession, FragmentActivity activity)
     {
         if (alfrescoSession instanceof CloudSession && doesRequireRefreshToken(activity))
         {

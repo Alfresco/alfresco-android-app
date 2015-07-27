@@ -24,10 +24,10 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
@@ -88,9 +88,10 @@ public class PathField extends FolderPathField
             @Override
             public void onClick(View v)
             {
-                if (v.getContext() instanceof Activity)
+                if (v.getContext() instanceof FragmentActivity)
                 {
-                    DocumentFolderBrowserFragment.with((Activity) v.getContext()).path(pathValue).shortcut(true)
+                    DocumentFolderBrowserFragment.with((FragmentActivity) v.getContext()).path(pathValue)
+                            .shortcut(true)
                             .display();
                 }
             }

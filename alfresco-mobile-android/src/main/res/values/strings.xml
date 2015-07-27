@@ -147,7 +147,8 @@
     <string name="menu_browse_sites">Sites</string>
     <string name="menu_browse_userhome">My Files</string>
     <string name="menu_browse_shared">Shared Files</string>
-    <string name="menu_browse_all_sites">Site Finder</string>
+    <string name="menu_browse_site_finder">Site Finder</string>
+    <string name="menu_browse_all_sites">All Sites</string>
     <string name="menu_browse_my_sites">My Sites</string>
     <string name="menu_browse_favorite_sites">Favorite Sites</string>
     <string name="menu_browse_activities">Activities</string>
@@ -366,11 +367,13 @@
     <string name="settings_links_website_url">http://www.alfresco.com/products/mobile</string>
     <string name="settings_rating">Write a review</string>
     <string name="settings_rating_summary">Rate Alfresco Mobile on Google Play</string>
+    <string name="settings_rating_packagename">org.alfresco.mobile.android.application</string>
     <string name="settings_rating_url">market://details?id=org.alfresco.mobile.android.application</string>
     <string name="settings_links_facebook">Like Alfresco on Facebook</string>
     <string name="settings_links_facebook_summary">Like on Facebook</string>
     <string name="settings_links_facebook_url">http://www.facebook.com/alfrescosoftware</string>
     <string name="settings_favorite">Favorites</string>
+    <string name="settings_synced_content">Synced Content</string>
     <string name="settings_favorite_sync">Enable Sync</string>
     <string name="settings_favorite_sync_summary">Enable Sync for \"%s\"</string>
     <string name="settings_favorite_sync_data">Data Usage</string>

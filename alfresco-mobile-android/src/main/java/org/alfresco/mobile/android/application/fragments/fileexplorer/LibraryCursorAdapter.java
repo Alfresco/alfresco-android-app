@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.fragments.fileexplorer;
 
 import java.io.File;
@@ -25,6 +25,7 @@ import java.util.List;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.activity.MainActivity;
+import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.managers.ActionUtils;
 import org.alfresco.mobile.android.application.managers.RenditionManagerImpl;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
@@ -36,13 +37,13 @@ import org.alfresco.mobile.android.ui.holder.TwoLinesViewHolder;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
-import android.app.Fragment;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -175,6 +176,8 @@ public class LibraryCursorAdapter extends BaseCursorLoader<TwoLinesViewHolder> i
         {
             vh.choose.setImageResource(R.drawable.ic_more_options);
             vh.choose.setBackgroundResource(R.drawable.alfrescohololight_list_selector_holo_light);
+            int d_16 = DisplayUtils.getPixels(context, R.dimen.d_16);
+            vh.choose.setPadding(d_16, d_16, d_16, d_16);
             vh.choose.setVisibility(View.VISIBLE);
             vh.choose.setTag(R.id.node_action, f);
             vh.choose.setOnClickListener(new OnClickListener()
@@ -246,11 +249,11 @@ public class LibraryCursorAdapter extends BaseCursorLoader<TwoLinesViewHolder> i
         {
             case R.id.menu_upload:
                 onMenuItemClick = true;
-                ActionUtils.actionSendDocumentToAlfresco((Activity) context, selectedOptionItems.get(0));
+                ActionUtils.actionSendDocumentToAlfresco((FragmentActivity) context, selectedOptionItems.get(0));
                 break;
             case R.id.menu_action_share:
                 onMenuItemClick = true;
-                ActionUtils.actionShareContent((Activity) context, selectedOptionItems.get(0));
+                ActionUtils.actionShareContent((FragmentActivity) context, selectedOptionItems.get(0));
                 break;
             case R.id.menu_action_delete:
                 onMenuItemClick = true;

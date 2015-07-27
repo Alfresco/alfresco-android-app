@@ -74,6 +74,13 @@ public class HolderUtils
         return vh;
     }
 
+    public static TwoLinesCheckboxViewHolder configure(View v, String topText, String bottomText, boolean checked)
+    {
+        TwoLinesCheckboxViewHolder vh = new TwoLinesCheckboxViewHolder(v);
+        org.alfresco.mobile.android.ui.holder.HolderUtils.configure(vh, topText, bottomText, -1, checked);
+        return vh;
+    }
+
     public static SingleLineViewHolder configure(View v, String topText, int imageId)
     {
         SingleLineViewHolder vh = new SingleLineViewHolder(v);
@@ -81,9 +88,30 @@ public class HolderUtils
         return vh;
     }
 
+    public static SingleLineSwitchViewHolder configure(View v, String topText, int imageId, boolean checked)
+    {
+        SingleLineSwitchViewHolder vh = new SingleLineSwitchViewHolder(v);
+        org.alfresco.mobile.android.ui.holder.HolderUtils.configure(vh, topText, imageId, checked);
+        return vh;
+    }
+
     // ///////////////////////////////////////////////////////////////////////////
     // VIEW HOLDER
     // ///////////////////////////////////////////////////////////////////////////
+    public static void configure(SingleLineSwitchViewHolder vh, String topText, int imageId, boolean checked)
+    {
+        vh.topText.setText(topText);
+        if (imageId == -1)
+        {
+            vh.icon.setVisibility(View.GONE);
+        }
+        else
+        {
+            vh.icon.setImageResource(imageId);
+        }
+        vh.switcher.setChecked(checked);
+    }
+
     public static void configure(SingleLineViewHolder vh, String topText, int imageId)
     {
         vh.topText.setText(topText);
@@ -95,6 +123,21 @@ public class HolderUtils
         {
             vh.icon.setImageResource(imageId);
         }
+    }
+
+    public static void configure(TwoLinesCheckboxViewHolder vh, String topText, String bottomText, int imageId,
+            boolean checked)
+    {
+        configure(vh, topText, imageId);
+        if (bottomText != null)
+        {
+            vh.bottomText.setText(bottomText);
+        }
+        else
+        {
+            vh.bottomText.setVisibility(View.GONE);
+        }
+        vh.choose.setChecked(checked);
     }
 
     public static void configure(TwoLinesViewHolder vh, String topText, String bottomText, int imageId)

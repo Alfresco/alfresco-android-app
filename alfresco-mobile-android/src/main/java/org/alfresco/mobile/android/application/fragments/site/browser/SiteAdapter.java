@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.fragments.site.browser;
 
 import java.lang.ref.WeakReference;
@@ -25,6 +25,7 @@ import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.api.model.SiteVisibility;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.MainActivity;
+import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.user.UsersFragment;
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.site.SiteFavoriteRequest;
@@ -37,9 +38,9 @@ import org.alfresco.mobile.android.ui.site.SitesFoundationAdapter;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
-import android.app.Fragment;
 import android.os.Build;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -58,7 +59,7 @@ public class SiteAdapter extends SitesFoundationAdapter implements OnMenuItemCli
 
     private int mode;
 
-    public SiteAdapter(Activity context, int textViewResourceId, List<Site> listItems)
+    public SiteAdapter(FragmentActivity context, int textViewResourceId, List<Site> listItems)
     {
         super(context, textViewResourceId, listItems);
     }
@@ -83,7 +84,8 @@ public class SiteAdapter extends SitesFoundationAdapter implements OnMenuItemCli
 
         vh.choose.setImageResource(R.drawable.ic_more_options);
         vh.choose.setBackgroundResource(R.drawable.alfrescohololight_list_selector_holo_light);
-
+        int d_16 = DisplayUtils.getPixels(getContext(), R.dimen.d_16);
+        vh.choose.setPadding(d_16, d_16, d_16, d_16);
         vh.choose.setVisibility(View.VISIBLE);
         AccessibilityUtils.addContentDescription(vh.choose,
                 String.format(getContext().getString(R.string.more_options_site), item.getTitle()));

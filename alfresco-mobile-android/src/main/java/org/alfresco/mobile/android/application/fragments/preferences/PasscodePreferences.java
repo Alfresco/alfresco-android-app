@@ -1,60 +1,59 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.fragments.preferences;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.activity.WelcomeActivity;
-import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
+import org.alfresco.mobile.android.application.fragments.builder.LeafFragmentBuilder;
 import org.alfresco.mobile.android.application.security.PassCodeActivity;
 import org.alfresco.mobile.android.application.security.PassCodeDialogFragment;
-import org.alfresco.mobile.android.platform.utils.AndroidVersion;
+import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
+import org.alfresco.mobile.android.ui.holder.HolderUtils;
+import org.alfresco.mobile.android.ui.holder.SingleLineSwitchViewHolder;
+import org.alfresco.mobile.android.ui.holder.SingleLineViewHolder;
+import org.alfresco.mobile.android.ui.holder.TwoLinesCheckboxViewHolder;
+import org.alfresco.mobile.android.ui.holder.TwoLinesViewHolder;
 
-import android.annotation.TargetApi;
-import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
-import android.preference.CheckBoxPreference;
-import android.preference.Preference;
-import android.preference.Preference.OnPreferenceChangeListener;
-import android.preference.Preference.OnPreferenceClickListener;
-import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.preference.SwitchPreference;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+
 /**
- * Manage application preferences associated to Passcode feature.
- * 
+ * Manage global application preferences.
+ *
  * @author Jean Marie Pascal
  */
-public class PasscodePreferences extends PreferenceFragment
+public class PasscodePreferences extends AlfrescoFragment
 {
     public static final String TAG = PasscodePreferences.class.getName();
 
@@ -82,7 +81,21 @@ public class PasscodePreferences extends PreferenceFragment
 
     private boolean editionEnable;
 
+    private boolean maxAttemptActivated;
+
     private SharedPreferences sharedPref;
+
+    private TwoLinesViewHolder passcodeTimeoutVH;
+
+    private TwoLinesCheckboxViewHolder passcodeDataVH;
+
+    private SingleLineViewHolder passcodeChangeVH;
+
+    private SingleLineSwitchViewHolder passcodeEnableVH;
+
+    private ArrayList<String> timeOutValues;
+
+    private int index;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
@@ -99,162 +112,171 @@ public class PasscodePreferences extends PreferenceFragment
     }
 
     // ///////////////////////////////////////////////////////////////////////////
-    // LIFECYCLE
+    // LIFE CYCLE
     // ///////////////////////////////////////////////////////////////////////////
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View v = super.onCreateView(inflater, container, savedInstanceState);
+        setRootView(inflater.inflate(R.layout.fr_settings_passcode, container, false));
 
-        v.setBackgroundColor(Color.WHITE);
+        // TITLE
+        getActivity().setTitle(R.string.settings);
 
-        return v;
+        timeOutValues = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.passcode_timeout_values)));
+
+        recreate();
+
+        return getRootView();
     }
 
     public void onCreate(Bundle savedInstanceState)
     {
+        setRetainInstance(true);
         super.onCreate(savedInstanceState);
-
-        // Load the preferences from an XML resource
-        addPreferencesFromResource(R.xml.passcode_preferences);
     }
 
-    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-    @Override
-    public void onResume()
+    // ///////////////////////////////////////////////////////////////////////////
+    // INTERNAL
+    // ///////////////////////////////////////////////////////////////////////////
+    private void recreate()
     {
-        super.onResume();
+        // Preferences
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
         passcodeEnable = sharedPref.getBoolean(KEY_PASSCODE_ENABLE, false);
-        boolean maxAttemptActivated = (sharedPref.getInt(KEY_PASSCODE_MAX_ATTEMPT, 0) != 0);
+        maxAttemptActivated = (sharedPref.getInt(KEY_PASSCODE_MAX_ATTEMPT, 0) != 0);
         long timeout = Long.parseLong(sharedPref.getString(KEY_PASSCODE_TIMEOUT, "300000"));
+        index = timeOutValues.indexOf(sharedPref.getString(KEY_PASSCODE_TIMEOUT, "300000"));
 
-        // ENABLE PASSCODE
-        Preference pref = findPreference(getString(R.string.passcode_enable_key));
-        if (pref instanceof CheckBoxPreference)
+        // PASSCODE CHANGE
+        passcodeChangeVH = HolderUtils.configure(viewById(R.id.passcode_change), getString(R.string.passcode_change),
+                -1);
+        if (passcodeEnable)
         {
-            ((CheckBoxPreference) pref).setChecked(passcodeEnable);
-        }
-        else if (pref instanceof SwitchPreference)
-        {
-            pref.setSelectable(AndroidVersion.isLollipopOrAbove());
-            ((SwitchPreference) pref).setChecked(passcodeEnable);
-        }
-
-        if (AndroidVersion.isLollipopOrAbove())
-        {
-            pref.setOnPreferenceChangeListener(new OnPreferenceChangeListener()
+            viewById(R.id.passcode_change_container).setOnClickListener(new View.OnClickListener()
             {
                 @Override
-                public boolean onPreferenceChange(Preference preference, Object newValue)
+                public void onClick(View v)
                 {
-                    return false;
+                    editionEnable = true;
+                    PassCodeDialogFragment f = PassCodeDialogFragment.modify();
+                    f.show(getActivity().getSupportFragmentManager(), PassCodeDialogFragment.TAG);
                 }
             });
-            pref.setOnPreferenceClickListener(new OnPreferenceClickListener()
+        }
+
+        // PASSCODE TIMEOUT
+        passcodeTimeoutVH = HolderUtils.configure(viewById(R.id.passcode_timeout),
+                getString(R.string.passcode_timeout_title), getString(R.string.passcode_timeout_title), -1);
+        int minutes = Math.round(timeout / ONE_MINUTE);
+        passcodeTimeoutVH.bottomText.setText(String.format(
+                MessageFormat.format(getString(R.string.passcode_timeout_summary), minutes), minutes));
+        passcodeTimeoutVH.bottomText.setSingleLine(false);
+        passcodeTimeoutVH.bottomText.setMaxLines(3);
+
+        if (passcodeEnable)
+        {
+            viewById(R.id.passcode_timeout_container).setOnClickListener(new View.OnClickListener()
             {
                 @Override
-                public boolean onPreferenceClick(Preference preference)
+                public void onClick(View v)
                 {
-                    if (valueHasChanged)
+                    MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity()).cancelable(false)
+                            .title(R.string.passcode_timeout_title).items(R.array.passcode_timeout_entries)
+                            .itemsCallbackSingleChoice(index, new MaterialDialog.ListCallbackSingleChoice()
+                            {
+                                @Override
+                                public boolean onSelection(MaterialDialog dialog, View view, int which,
+                                        CharSequence text)
+                                {
+                                    String newValue = getResources().getStringArray(R.array.passcode_timeout_values)[which];
+                                    index = which;
+                                    sharedPref.edit().putString(KEY_PASSCODE_TIMEOUT, (String) newValue).commit();
+                                    int minutes = Math.round(Long.parseLong((String) newValue) / ONE_MINUTE);
+                                    passcodeTimeoutVH.bottomText.setText(String.format(
+                                            MessageFormat.format(getString(R.string.passcode_timeout_summary), minutes),
+                                            minutes));
+                                    return true;
+                                }
+                            }).negativeText(R.string.cancel);
+                    builder.show();
+                }
+            });
+        }
+
+        // PASSCODE DATA
+        passcodeDataVH = HolderUtils.configure(viewById(R.id.passcode_erase_data),
+                getString(R.string.passcode_erase_data), getString(R.string.passcode_erase_data_summary),
+                maxAttemptActivated);
+        passcodeDataVH.bottomText.setSingleLine(false);
+        passcodeDataVH.bottomText.setMaxLines(3);
+        if (passcodeEnable)
+        {
+            viewById(R.id.passcode_erase_data_container).setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    maxAttemptActivated = !maxAttemptActivated;
+                    passcodeDataVH.choose.setChecked(maxAttemptActivated);
+                    if (maxAttemptActivated)
                     {
-                        valueHasChanged = false;
-                        return true;
-                    }
-                    PassCodeDialogFragment f = null;
-                    if (passcodeEnable)
-                    {
-                        f = PassCodeDialogFragment.disable();
+                        sharedPref.edit().putInt(KEY_PASSCODE_MAX_ATTEMPT, 10).commit();
                     }
                     else
                     {
-                        f = PassCodeDialogFragment.enable();
+                        sharedPref.edit().remove(KEY_PASSCODE_MAX_ATTEMPT).commit();
                     }
-                    f.show(getActivity().getFragmentManager(), PassCodeDialogFragment.TAG);
-                    return false;
                 }
             });
-        }
-        else
-        {
-            pref.setOnPreferenceChangeListener(new OnPreferenceChangeListener()
+
+            passcodeDataVH.choose.setOnClickListener(new View.OnClickListener()
             {
                 @Override
-                public boolean onPreferenceChange(Preference preference, Object newValue)
+                public void onClick(View v)
                 {
-                    if (valueHasChanged)
+                    maxAttemptActivated = !maxAttemptActivated;
+                    passcodeDataVH.choose.setChecked(maxAttemptActivated);
+                    if (maxAttemptActivated)
                     {
-                        valueHasChanged = false;
-                        return true;
-                    }
-                    PassCodeDialogFragment f = null;
-                    if (passcodeEnable)
-                    {
-                        f = PassCodeDialogFragment.disable();
+                        sharedPref.edit().putInt(KEY_PASSCODE_MAX_ATTEMPT, 10).commit();
                     }
                     else
                     {
-                        f = PassCodeDialogFragment.enable();
+                        sharedPref.edit().remove(KEY_PASSCODE_MAX_ATTEMPT).commit();
                     }
-                    f.show(getActivity().getFragmentManager(), PassCodeDialogFragment.TAG);
-                    return false;
                 }
             });
         }
 
-        // CHANGE PASSCODE
-        pref = findPreference(getString(R.string.passcode_change));
-        pref.setOnPreferenceClickListener(new OnPreferenceClickListener()
+        // PASSCODE ENABLE
+        passcodeEnableVH = HolderUtils.configure(viewById(R.id.passcode_enable_key),
+                getString(R.string.passcode_enable_title), -1, passcodeEnable);
+        passcodeEnableVH.switcher.setOnClickListener(new View.OnClickListener()
         {
             @Override
-            public boolean onPreferenceClick(Preference preference)
+            public void onClick(View v)
             {
-                editionEnable = true;
-                PassCodeDialogFragment f = PassCodeDialogFragment.modify();
-                f.show(getActivity().getFragmentManager(), PassCodeDialogFragment.TAG);
-                return false;
-            }
-        });
-
-        // ERASE DATA
-        pref = findPreference(getString(R.string.passcode_erase_data));
-        ((CheckBoxPreference) pref).setChecked(maxAttemptActivated);
-        pref.setOnPreferenceChangeListener(new OnPreferenceChangeListener()
-        {
-
-            @Override
-            public boolean onPreferenceChange(Preference preference, Object newValue)
-            {
-                if ((Boolean) newValue)
+                // Disable / Enable
+                if (valueHasChanged)
                 {
-                    sharedPref.edit().putInt(KEY_PASSCODE_MAX_ATTEMPT, 10).commit();
+                    valueHasChanged = false;
+                }
+                PassCodeDialogFragment f = null;
+                if (passcodeEnable)
+                {
+                    f = PassCodeDialogFragment.disable();
                 }
                 else
                 {
-                    sharedPref.edit().remove(KEY_PASSCODE_MAX_ATTEMPT).commit();
+                    f = PassCodeDialogFragment.enable();
                 }
-                return true;
+                f.show(getActivity().getSupportFragmentManager(), PassCodeDialogFragment.TAG);
             }
         });
 
-        // TIMEOUT
-        pref = findPreference(getString(R.string.passcode_timeout));
-        int minutes = Math.round(timeout / ONE_MINUTE);
-        pref.setSummary(String.format(getString(R.string.passcode_timeout_summary), minutes + ""));
-        pref.setSummary(String.format(MessageFormat.format(getString(R.string.passcode_timeout_summary), minutes),
-                minutes));
-        pref.setOnPreferenceChangeListener(new OnPreferenceChangeListener()
-        {
-            @Override
-            public boolean onPreferenceChange(Preference preference, Object newValue)
-            {
-                sharedPref.edit().putString(KEY_PASSCODE_TIMEOUT, (String) newValue).commit();
-                int minutes = Math.round(Long.parseLong((String) newValue) / ONE_MINUTE);
-                preference.setSummary(String.format(
-                        MessageFormat.format(getString(R.string.passcode_timeout_summary), minutes), minutes));
-                return true;
-            }
-        });
+        disableEnableControls(passcodeEnable, (ViewGroup) viewById(R.id.passcode_erase_data_container));
+        disableEnableControls(passcodeEnable, (ViewGroup) viewById(R.id.passcode_timeout_container));
+        disableEnableControls(passcodeEnable, (ViewGroup) viewById(R.id.passcode_change_container));
     }
 
     /**
@@ -272,24 +294,14 @@ public class PasscodePreferences extends PreferenceFragment
         }
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
         passcodeEnable = sharedPref.getBoolean(KEY_PASSCODE_ENABLE, false);
-
-        Preference pref = findPreference(getString(R.string.passcode_enable_key));
-        // Depending on Android version we use different component.
-        // Checkbox for A < 14 and Switch for A > 14
-        if (pref instanceof CheckBoxPreference)
-        {
-            ((CheckBoxPreference) pref).setChecked(passcodeEnable);
-        }
-        else if (pref instanceof SwitchPreference)
-        {
-            ((SwitchPreference) pref).setChecked(passcodeEnable);
-        }
+        passcodeEnableVH.switcher.setChecked(passcodeEnable);
+        recreate();
     }
 
     /**
      * Utility method to flag when the application has been activated for the
      * last time. This time is used to check passcode timeout.
-     * 
+     *
      * @param context
      */
     public static void updateLastActivityDisplay(Context context)
@@ -302,14 +314,14 @@ public class PasscodePreferences extends PreferenceFragment
     public static void updateLastActivity(Context context)
     {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
-        Editor editor = sharedPref.edit();
+        SharedPreferences.Editor editor = sharedPref.edit();
         editor.putLong(KEY_PASSCODE_ACTIVATED_AT, new Date().getTime());
         editor.commit();
     }
 
     /**
      * Determines if the application has passcode feature enable
-     * 
+     *
      * @param context
      * @return true if the passcode must be prompt.
      */
@@ -334,26 +346,42 @@ public class PasscodePreferences extends PreferenceFragment
         return isTimeOut;
     }
 
+    private void disableEnableControls(boolean enable, ViewGroup vg)
+    {
+        for (int i = 0; i < vg.getChildCount(); i++)
+        {
+            View child = vg.getChildAt(i);
+            child.setEnabled(enable);
+            child.setFocusable(enable);
+            if (child instanceof ViewGroup)
+            {
+                disableEnableControls(enable, (ViewGroup) child);
+            }
+        }
+        vg.setEnabled(enable);
+        vg.setFocusable(enable);
+    }
+
     // ///////////////////////////////////////////////////////////////////////////
     // BUILDER
     // ///////////////////////////////////////////////////////////////////////////
-    public static Builder with(Activity activity)
+    public static Builder with(FragmentActivity activity)
     {
         return new Builder(activity);
     }
 
-    public static class Builder extends AlfrescoFragmentBuilder
+    public static class Builder extends LeafFragmentBuilder
     {
         // ///////////////////////////////////////////////////////////////////////////
         // CONSTRUCTORS
         // ///////////////////////////////////////////////////////////////////////////
-        public Builder(Activity activity)
+        public Builder(FragmentActivity activity)
         {
             super(activity);
             this.extraConfiguration = new Bundle();
         }
 
-        public Builder(Activity appActivity, Map<String, Object> configuration)
+        public Builder(FragmentActivity appActivity, Map<String, Object> configuration)
         {
             super(appActivity, configuration);
         }

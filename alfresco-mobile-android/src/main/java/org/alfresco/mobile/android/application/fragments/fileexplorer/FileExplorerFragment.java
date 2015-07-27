@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.fragments.fileexplorer;
 
 import java.io.File;
@@ -43,14 +43,14 @@ import org.alfresco.mobile.android.platform.utils.AndroidVersion;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.WaitingDialogFragment;
 
-import android.app.Activity;
-import android.app.DialogFragment;
-import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -238,7 +238,7 @@ public class FileExplorerFragment extends FileExplorerFoundationFragment impleme
                 {
                     Intent pickResult = new Intent();
                     pickResult.setData(Uri.fromFile(file));
-                    getActivity().setResult(Activity.RESULT_OK, pickResult);
+                    getActivity().setResult(FragmentActivity.RESULT_OK, pickResult);
                     getActivity().finish();
                 }
             }
@@ -282,7 +282,7 @@ public class FileExplorerFragment extends FileExplorerFoundationFragment impleme
                     @Override
                     public void onActivityNotFoundException(ActivityNotFoundException e)
                     {
-                        OpenAsDialogFragment.newInstance(file).show(getActivity().getFragmentManager(),
+                        OpenAsDialogFragment.newInstance(file).show(getActivity().getSupportFragmentManager(),
                                 OpenAsDialogFragment.TAG);
                     }
                 });
@@ -498,13 +498,13 @@ public class FileExplorerFragment extends FileExplorerFoundationFragment impleme
 
     private Fragment getFragment(String tag)
     {
-        return getActivity().getFragmentManager().findFragmentByTag(tag);
+        return getActivity().getSupportFragmentManager().findFragmentByTag(tag);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
     // BUILDER
     // ///////////////////////////////////////////////////////////////////////////
-    public static Builder with(Activity activity)
+    public static Builder with(FragmentActivity activity)
     {
         return new Builder(activity);
     }
@@ -518,13 +518,13 @@ public class FileExplorerFragment extends FileExplorerFoundationFragment impleme
         // ///////////////////////////////////////////////////////////////////////////
         // CONSTRUCTORS
         // ///////////////////////////////////////////////////////////////////////////
-        public Builder(Activity activity)
+        public Builder(FragmentActivity activity)
         {
             super(activity);
             this.extraConfiguration = new Bundle();
         }
 
-        public Builder(Activity appActivity, Map<String, Object> configuration)
+        public Builder(FragmentActivity appActivity, Map<String, Object> configuration)
         {
             super(appActivity, configuration);
             sessionRequired = false;

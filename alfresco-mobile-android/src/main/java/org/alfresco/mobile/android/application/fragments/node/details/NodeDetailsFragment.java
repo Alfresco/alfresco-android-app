@@ -84,7 +84,6 @@ import org.alfresco.mobile.android.platform.mimetype.MimeType;
 import org.alfresco.mobile.android.platform.mimetype.MimeTypeManager;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
-import org.alfresco.mobile.android.platform.utils.AndroidVersion;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.sync.SyncContentManager;
 import org.alfresco.mobile.android.sync.SyncContentScanEvent;
@@ -102,16 +101,16 @@ import org.alfresco.mobile.android.ui.utils.UIUtils;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.enums.Action;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.DialogFragment;
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -814,7 +813,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
             b.putInt(DownloadDialogFragment.ARGUMENT_ACTION, DownloadDialogFragment.ACTION_EMAIL);
             DialogFragment frag = new DownloadDialogFragment();
             frag.setArguments(b);
-            frag.show(getActivity().getFragmentManager(), DownloadDialogFragment.TAG);
+            frag.show(getActivity().getSupportFragmentManager(), DownloadDialogFragment.TAG);
         }
         else
         {
@@ -831,7 +830,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
                     b.putInt(DownloadDialogFragment.ARGUMENT_ACTION, DownloadDialogFragment.ACTION_EMAIL);
                     DialogFragment frag = new DownloadDialogFragment();
                     frag.setArguments(b);
-                    frag.show(getActivity().getFragmentManager(), DownloadDialogFragment.TAG);
+                    frag.show(getActivity().getSupportFragmentManager(), DownloadDialogFragment.TAG);
                 }
             });
             builder.setNegativeButton(R.string.link_to_repo, new DialogInterface.OnClickListener()
@@ -921,7 +920,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
                     @Override
                     public void onActivityNotFoundException(ActivityNotFoundException e)
                     {
-                        OpenAsDialogFragment.newInstance(syncFile).show(getActivity().getFragmentManager(),
+                        OpenAsDialogFragment.newInstance(syncFile).show(getActivity().getSupportFragmentManager(),
                                 OpenAsDialogFragment.TAG);
                     }
                 });
@@ -941,7 +940,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
             b.putInt(DownloadDialogFragment.ARGUMENT_ACTION, DownloadDialogFragment.ACTION_OPEN);
             DialogFragment frag = new DownloadDialogFragment();
             frag.setArguments(b);
-            frag.show(getActivity().getFragmentManager(), DownloadDialogFragment.TAG);
+            frag.show(getActivity().getSupportFragmentManager(), DownloadDialogFragment.TAG);
         }
     }
 
@@ -1042,7 +1041,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
     // ///////////////////////////////////////////////////////////////////////////
     // MENU
     // ///////////////////////////////////////////////////////////////////////////
-    public static void getMenu(AlfrescoSession session, Activity activity, Menu menu, Node node)
+    public static void getMenu(AlfrescoSession session, Menu menu, Node node)
     {
         MenuItem mi;
 
@@ -1102,7 +1101,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
 
     public void getMenu(Menu menu)
     {
-        getMenu(getSession(), getActivity(), menu, node);
+        getMenu(getSession(), menu, node);
     }
 
     @Override
@@ -1350,12 +1349,12 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
                 ((DocumentFolderBrowserFragment) getFragment(DocumentFolderBrowserFragment.TAG))
                         .onDocumentUpdated(event);
             }
-            getActivity().getFragmentManager().popBackStack(NodeDetailsFragment.getDetailsTag(),
+            getActivity().getSupportFragmentManager().popBackStack(NodeDetailsFragment.getDetailsTag(),
                     FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
-        else if (getActivity().getFragmentManager().findFragmentByTag(DocumentFolderBrowserFragment.TAG) != null)
+        else if (getActivity().getSupportFragmentManager().findFragmentByTag(DocumentFolderBrowserFragment.TAG) != null)
         {
-            ((DocumentFolderBrowserFragment) getActivity().getFragmentManager().findFragmentByTag(
+            ((DocumentFolderBrowserFragment) getActivity().getSupportFragmentManager().findFragmentByTag(
                     DocumentFolderBrowserFragment.TAG)).select(updatedNode);
         }
         NodeDetailsFragment.with(getActivity()).node(updatedNode).parentFolder(event.parentFolder).display();
@@ -1373,12 +1372,12 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
 
         if (!DisplayUtils.hasCentralPane(getActivity()))
         {
-            getActivity().getFragmentManager().popBackStack(NodeDetailsFragment.getDetailsTag(),
+            getActivity().getSupportFragmentManager().popBackStack(NodeDetailsFragment.getDetailsTag(),
                     FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
-        else if (getActivity().getFragmentManager().findFragmentByTag(DocumentFolderBrowserFragment.TAG) != null)
+        else if (getActivity().getSupportFragmentManager().findFragmentByTag(DocumentFolderBrowserFragment.TAG) != null)
         {
-            ((DocumentFolderBrowserFragment) getActivity().getFragmentManager().findFragmentByTag(
+            ((DocumentFolderBrowserFragment) getActivity().getSupportFragmentManager().findFragmentByTag(
                     DocumentFolderBrowserFragment.TAG)).select(updatedNode);
         }
         NodeDetailsFragment.with(getActivity()).node(updatedNode).parentFolder(event.parentFolder).display();
@@ -1431,7 +1430,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
 
     protected Fragment getFragment(String tag)
     {
-        return getActivity().getFragmentManager().findFragmentByTag(tag);
+        return getActivity().getSupportFragmentManager().findFragmentByTag(tag);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -1439,17 +1438,10 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
     // ///////////////////////////////////////////////////////////////////////////
     public static String getDetailsTag()
     {
-        if (AndroidVersion.isJBMR1OrAbove())
-        {
             return PagerNodeDetailsFragment.TAG;
-        }
-        else
-        {
-            return TabsNodeDetailsFragment.TAG;
-        }
     }
 
-    public static Builder with(Activity activity)
+    public static Builder with(FragmentActivity activity)
     {
         return new Builder(activity);
     }
@@ -1459,13 +1451,13 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         // ///////////////////////////////////////////////////////////////////////////
         // CONSTRUCTORS
         // ///////////////////////////////////////////////////////////////////////////
-        public Builder(Activity activity)
+        public Builder(FragmentActivity activity)
         {
             super(activity);
             this.extraConfiguration = new Bundle();
         }
 
-        public Builder(Activity appActivity, Map<String, Object> configuration)
+        public Builder(FragmentActivity appActivity, Map<String, Object> configuration)
         {
             super(appActivity, configuration);
             this.extraConfiguration = new Bundle();
@@ -1512,14 +1504,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         // ///////////////////////////////////////////////////////////////////////////
         protected Fragment createFragment(Bundle b)
         {
-            if (AndroidVersion.isJBMR1OrAbove())
-            {
-                return PagerNodeDetailsFragment.newInstanceByTemplate(b);
-            }
-            else
-            {
-                return TabsNodeDetailsFragment.newInstanceByTemplate(b);
-            }
+            return PagerNodeDetailsFragment.newInstanceByTemplate(b);
         }
     }
 }

@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.fragments.workflow.task;
 
 import java.util.Collection;
@@ -28,8 +28,8 @@ import org.alfresco.mobile.android.application.fragments.workflow.process.Proces
 
 import android.app.ActionBar;
 import android.app.ActionBar.OnNavigationListener;
-import android.app.Activity;
 import android.content.SharedPreferences;
+import android.support.v4.app.FragmentActivity;
 
 public final class TasksHelper
 {
@@ -44,14 +44,14 @@ public final class TasksHelper
     {
     }
 
-    public static void displayNavigationMode(final Activity activity)
+    public static void displayNavigationMode(final FragmentActivity activity)
     {
         SharedPreferences prefs = activity.getSharedPreferences(TASK_FILTER_PREFS, 0);
         int currentSelection = prefs.getInt(TASK_FILTER_DEFAULT, 0);
         displayNavigationMode(activity, true, currentSelection);
     }
 
-    public static void displayNavigationMode(final Activity activity, final boolean backStack, int menuId)
+    public static void displayNavigationMode(final FragmentActivity activity, final boolean backStack, int menuId)
     {
         activity.getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
         TasksShortCutAdapter adapter = new TasksShortCutAdapter(activity);

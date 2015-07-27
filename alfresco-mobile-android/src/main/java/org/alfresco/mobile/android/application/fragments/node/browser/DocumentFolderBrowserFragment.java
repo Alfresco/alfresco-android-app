@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.fragments.node.browser;
 
 import java.io.File;
@@ -95,11 +95,11 @@ import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 
 import android.app.ActionBar;
 import android.app.ActionBar.OnNavigationListener;
-import android.app.Activity;
-import android.app.Fragment;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -739,7 +739,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
         // Create and show the dialog.
         AddContentDialogFragment newFragment = AddContentDialogFragment.newInstance(importFolder, f,
                 (createFile != null));
-        newFragment.show(getActivity().getFragmentManager(), AddContentDialogFragment.TAG);
+        newFragment.show(getActivity().getSupportFragmentManager(), AddContentDialogFragment.TAG);
         tmpFile = null;
         createFile = null;
     }
@@ -776,7 +776,8 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
         FragmentDisplayer.with(getActivity()).remove(CreateFolderDialogFragment.TAG);
 
         // Create and show the dialog.
-        AddFolderDialogFragment.newInstance(parentFolder).show(getActivity().getFragmentManager().beginTransaction(),
+        AddFolderDialogFragment.newInstance(parentFolder).show(
+                getActivity().getSupportFragmentManager().beginTransaction(),
                 CreateFolderDialogFragment.TAG);
     }
 
@@ -1223,7 +1224,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
             }
             OperationWaitingDialogFragment.newInstance(FavoriteNodeRequest.TYPE_ID, iconId,
                     getActivity().getString(titleId), null, parentFolder, selectedItems.size(), false).show(
-                    getActivity().getFragmentManager(), OperationWaitingDialogFragment.TAG);
+                    getActivity().getSupportFragmentManager(), OperationWaitingDialogFragment.TAG);
         }
     }
 
@@ -1254,14 +1255,14 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
             }
             OperationWaitingDialogFragment.newInstance(SyncNodeRequest.TYPE_ID, iconId,
                     getActivity().getString(titleId), null, parentFolder, selectedItems.size(), operationId).show(
-                    getActivity().getFragmentManager(), OperationWaitingDialogFragment.TAG);
+                    getActivity().getSupportFragmentManager(), OperationWaitingDialogFragment.TAG);
         }
     }
 
     // ///////////////////////////////////////////////////////////////////////////
     // BUILDER
     // ///////////////////////////////////////////////////////////////////////////
-    public static Builder with(Activity appActivity)
+    public static Builder with(FragmentActivity appActivity)
     {
         return new Builder(appActivity);
     }
@@ -1283,44 +1284,44 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
         // ///////////////////////////////////////////////////////////////////////////
         // CONSTRUCTORS
         // ///////////////////////////////////////////////////////////////////////////
-        public Builder(Activity activity)
+        public Builder(FragmentActivity activity)
         {
             super(activity);
             this.extraConfiguration = new Bundle();
         }
 
         /** By Folder Object. */
-        public Builder(Activity activity, Folder folder)
+        public Builder(FragmentActivity activity, Folder folder)
         {
             this(activity, folder, null, null, null);
         }
 
         /** By Folder PATH. */
-        public Builder(Activity activity, String folderPath)
+        public Builder(FragmentActivity activity, String folderPath)
         {
             this(activity, null, folderPath, null, null);
         }
 
         /** By SITE Object. */
-        public Builder(Activity activity, Site site)
+        public Builder(FragmentActivity activity, Site site)
         {
             this(activity, null, null, site, null);
         }
 
         /** By Folder Type ID. */
-        public Builder(Activity activity, int folderId)
+        public Builder(FragmentActivity activity, int folderId)
         {
             this(activity, null, null, null, folderId);
         }
 
-        protected Builder(Activity activity, Folder parentFolder, String pathFolder, Site site, Integer folderId)
+        protected Builder(FragmentActivity activity, Folder parentFolder, String pathFolder, Site site, Integer folderId)
         {
             this(activity);
             BundleUtils.addIfNotEmpty(extraConfiguration, createBundleArgs(parentFolder, pathFolder, site));
             BundleUtils.addIfNotNull(extraConfiguration, ARGUMENT_FOLDER_TYPE_ID, folderId);
         }
 
-        public Builder(Activity appActivity, Map<String, Object> configuration)
+        public Builder(FragmentActivity appActivity, Map<String, Object> configuration)
         {
             super(appActivity, configuration);
             this.extraConfiguration = new Bundle();

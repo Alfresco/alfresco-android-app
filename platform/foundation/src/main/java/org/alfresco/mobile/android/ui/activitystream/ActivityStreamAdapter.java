@@ -36,8 +36,8 @@ import org.alfresco.mobile.android.ui.holder.TwoLinesCaptionViewHolder;
 import org.alfresco.mobile.android.ui.rendition.RenditionManager;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
-import android.app.Activity;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.text.Html;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -54,7 +54,7 @@ public class ActivityStreamAdapter extends BaseListAdapter<ActivityEntry, TwoLin
 
     protected RenditionManager renditionManager;
 
-    protected WeakReference<Activity> activityRef;
+    protected WeakReference<FragmentActivity> activityRef;
 
     protected List<ActivityEntry> selectedOptionItems = new ArrayList<>();
 

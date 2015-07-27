@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.fragments.actions;
 
 import java.io.File;
@@ -28,8 +28,8 @@ import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 
-import android.app.Activity;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.view.ActionMode;
 import android.view.Menu;
@@ -40,7 +40,7 @@ public abstract class AbstractActions<T> implements ActionMode.Callback
 
     protected ActionMode mode;
 
-    protected WeakReference<Activity> activityRef = null;
+    protected WeakReference<FragmentActivity> activityRef = null;
 
     protected WeakReference<Fragment> fragmentRef;
 
@@ -152,14 +152,14 @@ public abstract class AbstractActions<T> implements ActionMode.Callback
         getMenu(getActivity(), menu);
     }
 
-    protected void getMenu(Activity activity2, Menu menu)
+    protected void getMenu(FragmentActivity activity2, Menu menu)
     {
     }
 
     // ///////////////////////////////////////////////////////////////////////////
     // ACTIONS
     // ///////////////////////////////////////////////////////////////////////////
-    public static File getDownloadFile(final Activity activity, final Node node)
+    public static File getDownloadFile(final FragmentActivity activity, final Node node)
     {
         if (activity != null && node != null && SessionUtils.getAccount(activity) != null)
         {
@@ -171,7 +171,7 @@ public abstract class AbstractActions<T> implements ActionMode.Callback
         return null;
     }
 
-    public static File getTempFile(final Activity activity, final Node node)
+    public static File getTempFile(final FragmentActivity activity, final Node node)
     {
         if (activity != null && node != null && SessionUtils.getAccount(activity) != null)
         {
@@ -198,7 +198,7 @@ public abstract class AbstractActions<T> implements ActionMode.Callback
     // ///////////////////////////////////////////////////////////////////////////////////
     // UTILS
     // ///////////////////////////////////////////////////////////////////////////////////
-    protected Activity getActivity()
+    protected FragmentActivity getActivity()
     {
         return activityRef.get();
     }

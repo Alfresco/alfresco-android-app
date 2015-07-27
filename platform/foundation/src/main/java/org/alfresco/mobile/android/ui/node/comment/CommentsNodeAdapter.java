@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.ui.node.comment;
 
 import java.lang.ref.WeakReference;
@@ -29,8 +29,8 @@ import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 import org.alfresco.mobile.android.ui.holder.TwoLinesCaptionViewHolder;
 import org.alfresco.mobile.android.ui.rendition.RenditionManager;
 
-import android.app.Activity;
 import android.content.Context;
+import android.support.v4.app.FragmentActivity;
 import android.text.Html;
 import android.widget.TextView;
 
@@ -44,17 +44,17 @@ public class CommentsNodeAdapter extends BaseListAdapter<Comment, TwoLinesCaptio
 {
     protected RenditionManager renditionManager;
 
-    protected WeakReference<Activity> activityRef;
+    protected WeakReference<FragmentActivity> activityRef;
 
     private TagHandlerList tagHandler;
 
-    public CommentsNodeAdapter(Activity activity, AlfrescoSession session, int textViewResourceId,
+    public CommentsNodeAdapter(FragmentActivity activity, AlfrescoSession session, int textViewResourceId,
             List<Comment> listItems)
     {
         super(activity, textViewResourceId, listItems);
         this.tagHandler = new TagHandlerList();
         this.vhClassName = TwoLinesCaptionViewHolder.class.getCanonicalName();
-        this.activityRef = new WeakReference<Activity>(activity);
+        this.activityRef = new WeakReference<>(activity);
     }
 
     @Override

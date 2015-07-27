@@ -1,27 +1,28 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.fragments;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.MainActivity;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.res.Resources;
+import android.support.v4.app.FragmentActivity;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Display;
@@ -32,7 +33,7 @@ import com.mobidevelop.widget.SplitPaneLayout;
 public abstract class DisplayUtils
 {
 
-    public static int getFragmentPlace(Activity a)
+    public static int getFragmentPlace(FragmentActivity a)
     {
         int id = R.id.left_pane_body;
         if (DisplayUtils.hasCentralPane(a))
@@ -45,12 +46,12 @@ public abstract class DisplayUtils
     // ///////////////////////////////////////////
     // FLAGS
     // ///////////////////////////////////////////
-    public static boolean hasLeftPane(Activity a)
+    public static boolean hasLeftPane(FragmentActivity a)
     {
         return getLeftPane(a) != null;
     }
 
-    public static boolean hasCentralPane(Activity a)
+    public static boolean hasCentralPane(FragmentActivity a)
     {
         return getCentralPane(a) != null;
     }
@@ -58,17 +59,17 @@ public abstract class DisplayUtils
     // ///////////////////////////////////////////
     // RETRIEVE FRAGMENT IDS
     // ///////////////////////////////////////////
-    public static int getLeftFragmentId(Activity a)
+    public static int getLeftFragmentId(FragmentActivity a)
     {
         return R.id.left_pane_body;
     }
 
-    public static int getCentralFragmentId(Activity a)
+    public static int getCentralFragmentId(FragmentActivity a)
     {
         return R.id.central_pane_body;
     }
 
-    public static int getMainPaneId(Activity a)
+    public static int getMainPaneId(FragmentActivity a)
     {
         if (hasCentralPane(a)) { return getCentralFragmentId(a); }
         return getLeftFragmentId(a);
@@ -77,17 +78,17 @@ public abstract class DisplayUtils
     // ///////////////////////////////////////////
     // RETRIEVE PANE
     // ///////////////////////////////////////////
-    public static View getLeftPane(Activity a)
+    public static View getLeftPane(FragmentActivity a)
     {
         return a.findViewById(R.id.left_pane);
     }
 
-    public static View getCentralPane(Activity a)
+    public static View getCentralPane(FragmentActivity a)
     {
         return a.findViewById(R.id.central_pane);
     }
 
-    public static View getMainPane(Activity a)
+    public static View getMainPane(FragmentActivity a)
     {
         if (hasCentralPane(a)) { return getCentralPane(a); }
         return getLeftPane(a);
@@ -119,7 +120,7 @@ public abstract class DisplayUtils
     // ///////////////////////////////////////////
     // SIZE OF THE SCREEN
     // ///////////////////////////////////////////
-    public static int getWidth(Activity context)
+    public static int getWidth(FragmentActivity context)
     {
         Display display = context.getWindowManager().getDefaultDisplay();
         DisplayMetrics outMetrics = new DisplayMetrics();
@@ -164,6 +165,11 @@ public abstract class DisplayUtils
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, sizeInDp, dm);
     }
 
+    public static int getPixels(Context context, int sizeInDp)
+    {
+        return context.getResources().getDimensionPixelSize(sizeInDp);
+    }
+
     // ///////////////////////////////////////////
     // SPLITTER BAR
     // ///////////////////////////////////////////
@@ -185,7 +191,7 @@ public abstract class DisplayUtils
                 / density);
     }
 
-    public static int getScreenWidth(Activity context)
+    public static int getScreenWidth(FragmentActivity context)
     {
         Display display = context.getWindowManager().getDefaultDisplay();
         DisplayMetrics outMetrics = new DisplayMetrics();

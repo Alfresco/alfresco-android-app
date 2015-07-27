@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.fragments.workflow.process;
 
 import java.lang.ref.WeakReference;
@@ -29,7 +29,7 @@ import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 import org.alfresco.mobile.android.ui.rendition.RenditionManager;
 import org.alfresco.mobile.android.ui.utils.ViewHolder;
 
-import android.app.Activity;
+import android.support.v4.app.FragmentActivity;
 import android.text.Html;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -41,12 +41,12 @@ import android.widget.TextView;
  */
 public class ProcessTasksAdapter extends BaseListAdapter<Task, ProcessViewHolder>
 {
-    protected WeakReference<Activity> activityRef;
+    protected WeakReference<FragmentActivity> activityRef;
 
-    public ProcessTasksAdapter(Activity activity, int textViewResourceId, List<Task> listItems)
+    public ProcessTasksAdapter(FragmentActivity activity, int textViewResourceId, List<Task> listItems)
     {
         super(activity, textViewResourceId, listItems);
-        this.activityRef = new WeakReference<Activity>(activity);
+        this.activityRef = new WeakReference<>(activity);
         this.vhClassName = ProcessViewHolder.class.getCanonicalName();
     }
 

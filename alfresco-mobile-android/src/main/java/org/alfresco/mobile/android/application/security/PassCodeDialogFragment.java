@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.security;
 
 import static org.alfresco.mobile.android.application.fragments.preferences.PasscodePreferences.KEY_PASSCODE_ACTIVATED_AT;
@@ -29,13 +29,13 @@ import org.alfresco.mobile.android.application.fragments.preferences.PasscodePre
 import org.alfresco.mobile.android.ui.fragments.WaitingDialogFragment;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
-import android.app.Activity;
-import android.app.DialogFragment;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -207,6 +207,17 @@ public class PassCodeDialogFragment extends DialogFragment
         }
     }
 
+    @Override
+    public void onStop()
+    {
+        super.onStop();
+        if (getActivity().getSupportFragmentManager().findFragmentByTag(PasscodePreferences.TAG) != null)
+        {
+            ((PasscodePreferences) getActivity().getSupportFragmentManager().findFragmentByTag(PasscodePreferences.TAG))
+                    .refresh();
+        }
+    }
+
     // ///////////////////////////////////////////////////////////////////////////
     // INTERNALS
     // ///////////////////////////////////////////////////////////////////////////
@@ -289,7 +300,7 @@ public class PassCodeDialogFragment extends DialogFragment
                     editor.putLong(KEY_PASSCODE_ACTIVATED_AT, -1);
                     editor.remove(KEY_PASSCODE_ATTEMPT);
                     editor.commit();
-                    getActivity().setResult(Activity.RESULT_OK);
+                    getActivity().setResult(FragmentActivity.RESULT_OK);
                     getActivity().finish();
                 }
                 break;
@@ -332,9 +343,10 @@ public class PassCodeDialogFragment extends DialogFragment
             editor.commit();
             dismiss();
             errorMessage.setVisibility(View.INVISIBLE);
-            if (getActivity().getFragmentManager().findFragmentByTag(PasscodePreferences.TAG) != null)
+            if (getActivity().getSupportFragmentManager().findFragmentByTag(PasscodePreferences.TAG) != null)
             {
-                ((PasscodePreferences) getActivity().getFragmentManager().findFragmentByTag(PasscodePreferences.TAG))
+                ((PasscodePreferences) getActivity().getSupportFragmentManager().findFragmentByTag(
+                        PasscodePreferences.TAG))
                         .refresh();
             }
         }
@@ -360,9 +372,10 @@ public class PassCodeDialogFragment extends DialogFragment
             editor.commit();
             dismiss();
             errorMessage.setVisibility(View.INVISIBLE);
-            if (getActivity().getFragmentManager().findFragmentByTag(PasscodePreferences.TAG) != null)
+            if (getActivity().getSupportFragmentManager().findFragmentByTag(PasscodePreferences.TAG) != null)
             {
-                ((PasscodePreferences) getActivity().getFragmentManager().findFragmentByTag(PasscodePreferences.TAG))
+                ((PasscodePreferences) getActivity().getSupportFragmentManager().findFragmentByTag(
+                        PasscodePreferences.TAG))
                         .refresh();
             }
         }
@@ -418,7 +431,7 @@ public class PassCodeDialogFragment extends DialogFragment
         if (maxAttempts > 0 && attempts >= maxAttempts)
         {
             WaitingDialogFragment fr = new WaitingDialogFragment();
-            fr.show(getActivity().getFragmentManager(), WaitingDialogFragment.TAG);
+            fr.show(getActivity().getSupportFragmentManager(), WaitingDialogFragment.TAG);
 
             DataCleaner cleaner = new DataCleaner(getActivity());
             cleaner.execute();

@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.fragments;
 
 import java.lang.ref.WeakReference;
@@ -23,10 +23,10 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 
-import android.app.Activity;
-import android.app.DialogFragment;
-import android.app.Fragment;
-import android.app.FragmentTransaction;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 
 public final class FragmentDisplayer
@@ -58,7 +58,7 @@ public final class FragmentDisplayer
 
     }
 
-    public static Creator with(Activity activity)
+    public static Creator with(FragmentActivity activity)
     {
         return new Creator(activity);
     }
@@ -71,7 +71,7 @@ public final class FragmentDisplayer
     // ///////////////////////////////////////////////////////////////////////////
     // UTILITY
     // ///////////////////////////////////////////////////////////////////////////
-    public static void clearCentralPane(Activity a)
+    public static void clearCentralPane(FragmentActivity a)
     {
         if (DisplayUtils.hasCentralPane(a))
         {
@@ -83,8 +83,8 @@ public final class FragmentDisplayer
     // ///////////////////////////////////////////////////////////////////////////
     // BUILDER
     // ///////////////////////////////////////////////////////////////////////////
-    public static final int[] SLIDE = new int[] { R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left,
-            R.anim.slide_out_right };
+    public static final int[] SLIDE = new int[] { R.anim.anim_slide_in_right, R.anim.anim_slide_out_left,
+            R.anim.anim_slide_in_left, R.anim.anim_slide_out_right };
 
     public static class Creator
     {
@@ -94,7 +94,7 @@ public final class FragmentDisplayer
 
         private int targetId;
 
-        private WeakReference<Activity> activity;
+        private WeakReference<FragmentActivity> activity;
 
         private WeakReference<Fragment> fragmentRef;
 
@@ -116,16 +116,16 @@ public final class FragmentDisplayer
         public Creator(AlfrescoFragmentBuilder builder)
         {
             this();
-            this.activity = new WeakReference<Activity>(builder.getActivity());
+            this.activity = new WeakReference<>(builder.getActivity());
             this.builder = builder;
             this.action = ACTION_REPLACE;
             this.backStack = builder.hasBackStack();
         }
 
-        public Creator(Activity activity)
+        public Creator(FragmentActivity activity)
         {
             this();
-            this.activity = new WeakReference<Activity>(activity);
+            this.activity = new WeakReference<>(activity);
         }
 
         // ///////////////////////////////////////////////////////////////////////////
@@ -196,7 +196,7 @@ public final class FragmentDisplayer
             {
                 // Specific use case in Honeycomb. Sometimes the fragment has
                 // not been added and we must force the add.
-                FragmentTransaction t2 = activity.get().getFragmentManager().beginTransaction();
+                FragmentTransaction t2 = activity.get().getSupportFragmentManager().beginTransaction();
                 t2.add(fr, fr.getTag());
                 t2.remove(fr);
                 t2.commit();
@@ -206,12 +206,12 @@ public final class FragmentDisplayer
 
         public void remove(String fragmentTag)
         {
-            remove(activity.get().getFragmentManager().findFragmentByTag(fragmentTag));
+            remove(activity.get().getSupportFragmentManager().findFragmentByTag(fragmentTag));
         }
 
         public void remove(int viewId)
         {
-            remove(activity.get().getFragmentManager().findFragmentById(viewId));
+            remove(activity.get().getSupportFragmentManager().findFragmentById(viewId));
         }
 
         // ///////////////////////////////////////////////////////////////////////////
@@ -249,13 +249,13 @@ public final class FragmentDisplayer
                 {
                     if (frag instanceof DialogFragment)
                     {
-                        ((DialogFragment) frag).show(activity.get().getFragmentManager(), tag);
+                        ((DialogFragment) frag).show(activity.get().getSupportFragmentManager(), tag);
                     }
                     return;
                 }
 
                 // Create Transaction
-                FragmentTransaction transaction = activity.get().getFragmentManager().beginTransaction();
+                FragmentTransaction transaction = activity.get().getSupportFragmentManager().beginTransaction();
 
                 // Set Animation
                 if (hasAnimation)

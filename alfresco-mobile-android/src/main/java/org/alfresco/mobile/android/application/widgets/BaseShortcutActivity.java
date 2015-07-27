@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
- * 
- * This file is part of Alfresco Mobile for Android.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ******************************************************************************/
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
+ *
+ *  This file is part of Alfresco Mobile for Android.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.widgets;
 
 import org.alfresco.mobile.android.api.model.Folder;
@@ -24,15 +24,15 @@ import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.fragments.account.AccountOAuthFragment;
 import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.node.favorite.FavoritesFragment;
-import org.alfresco.mobile.android.application.fragments.site.browser.BrowserSitesFragment;
+import org.alfresco.mobile.android.application.fragments.site.browser.BrowserSitesPagerFragment;
 import org.alfresco.mobile.android.async.node.favorite.FavoriteNodesRequest;
 import org.alfresco.mobile.android.async.session.LoadSessionCallBack.LoadAccountCompletedEvent;
 import org.alfresco.mobile.android.async.session.RequestSessionEvent;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 
-import android.app.FragmentManager;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 import android.view.View;
 
@@ -127,7 +127,7 @@ public class BaseShortcutActivity extends BaseActivity
         // files.
         if (getCurrentSession() != null && rootFolderTypeId == R.string.menu_browse_sites)
         {
-            BrowserSitesFragment.with(this).display();
+            BrowserSitesPagerFragment.with(this).display();
         }
         else if (getCurrentSession() != null && rootFolderTypeId == R.string.menu_browse_root)
         {
