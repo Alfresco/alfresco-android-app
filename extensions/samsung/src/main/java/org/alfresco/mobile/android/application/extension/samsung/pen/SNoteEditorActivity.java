@@ -28,7 +28,6 @@ import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.intent.BaseActionUtils;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -42,6 +41,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.text.Html;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -82,7 +82,7 @@ import com.samsung.android.sdk.pen.settingui.SpenSettingPenLayout;
 import com.samsung.android.sdk.pen.settingui.SpenSettingSelectionLayout;
 import com.samsung.android.sdk.pen.settingui.SpenSettingTextLayout;
 
-public class SNoteEditorActivity extends Activity
+public class SNoteEditorActivity extends FragmentActivity
 {
     protected static final String TAG = SNoteEditorActivity.class.getName();
 
@@ -676,7 +676,7 @@ public class SNoteEditorActivity extends Activity
             if (dm == null)
             {
                 dm = new DisplayMetrics();
-                ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(dm);
+                ((FragmentActivity) context).getWindowManager().getDefaultDisplay().getMetrics(dm);
             }
             imageBitmap = SNoteUtils.decodeFile(new File(spenNoteDoc.getAttachedFile(attachmentKey)),
                     spenSurfaceView.getCanvasWidth(), dm.densityDpi);
@@ -896,7 +896,7 @@ public class SNoteEditorActivity extends Activity
             case SNoteMenuActionItem.MENU_EDITOR_PAGE_MOVE:
                 SNotePagesDialogFragment df = new SNotePagesDialogFragment();
                 df.setInfo(spenNoteDoc.getPageIndexById(spenPageDoc.getId()), spenNoteDoc.getPageCount());
-                df.show(getFragmentManager(), SNotePagesDialogFragment.TAG);
+                df.show(getSupportFragmentManager(), SNotePagesDialogFragment.TAG);
                 return true;
             case SNoteMenuActionItem.MENU_EDITOR_PAGE_ADD:
                 spenSurfaceView.closeControl();

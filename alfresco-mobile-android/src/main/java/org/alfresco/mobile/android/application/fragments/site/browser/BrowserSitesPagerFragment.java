@@ -1,25 +1,26 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.fragments.site.browser;
 
 import java.lang.ref.WeakReference;
 import java.util.Map;
 
+import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.builder.ListingFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.site.search.SearchSitesFragment;
@@ -27,13 +28,11 @@ import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.site.SitesTemplate;
 
-import android.annotation.TargetApi;
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v13.app.FragmentStatePagerAdapter;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -62,7 +61,6 @@ public class BrowserSitesPagerFragment extends AlfrescoFragment
     // //////////////////////////////////////////////////////////////////////
     // LIFE CYCLE
     // //////////////////////////////////////////////////////////////////////
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -71,7 +69,8 @@ public class BrowserSitesPagerFragment extends AlfrescoFragment
         View v = inflater.inflate(R.layout.app_pager_tab, container, false);
 
         ViewPager viewPager = (ViewPager) v.findViewById(R.id.view_pager);
-        SitesPagerAdapter adapter = new SitesPagerAdapter(getChildFragmentManager(), getActivity());
+        SitesPagerAdapter adapter = new SitesPagerAdapter(getChildFragmentManager(), getActivity(),
+                getSession() instanceof CloudSession);
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(SitesPagerAdapter.TAB_MY_SITES);
 
@@ -85,7 +84,7 @@ public class BrowserSitesPagerFragment extends AlfrescoFragment
     // ///////////////////////////////////////////////////////////////////////////
     // BUILDER
     // ///////////////////////////////////////////////////////////////////////////
-    public static Builder with(Activity activity)
+    public static Builder with(FragmentActivity activity)
     {
         return new Builder(activity);
     }
@@ -99,13 +98,13 @@ public class BrowserSitesPagerFragment extends AlfrescoFragment
         // ///////////////////////////////////////////////////////////////////////////
         // CONSTRUCTORS
         // ///////////////////////////////////////////////////////////////////////////
-        public Builder(Activity activity)
+        public Builder(FragmentActivity activity)
         {
             super(activity);
             this.extraConfiguration = new Bundle();
         }
 
-        public Builder(Activity appActivity, Map<String, Object> configuration)
+        public Builder(FragmentActivity appActivity, Map<String, Object> configuration)
         {
             super(appActivity, configuration);
             this.extraConfiguration = new Bundle();
@@ -136,12 +135,15 @@ class SitesPagerAdapter extends FragmentStatePagerAdapter
 
     protected static final int TAB_FAV_SITES = 0;
 
-    private WeakReference<Activity> activity;
+    private WeakReference<FragmentActivity> activity;
 
-    public SitesPagerAdapter(FragmentManager fm, Activity activity)
+    public boolean isCloud = false;
+
+    public SitesPagerAdapter(FragmentManager fm, FragmentActivity activity, boolean isCloud)
     {
         super(fm);
-        this.activity = new WeakReference<Activity>(activity);
+        this.activity = new WeakReference<>(activity);
+        this.isCloud = isCloud;
     }
 
     @Override
@@ -157,7 +159,7 @@ class SitesPagerAdapter extends FragmentStatePagerAdapter
                 builder.favorite(false);
                 break;
             default:
-                return SearchSitesFragment.with(activity.get()).createFragment();
+                return (isCloud) ? builder.createFragment() : SearchSitesFragment.with(activity.get()).createFragment();
         }
         return builder.createFragment();
     }
@@ -180,7 +182,7 @@ class SitesPagerAdapter extends FragmentStatePagerAdapter
                 titleId = R.string.menu_browse_my_sites;
                 break;
             default:
-                titleId = R.string.menu_browse_all_sites;
+                titleId = (isCloud) ? R.string.menu_browse_all_sites : R.string.menu_browse_site_finder;
                 break;
         }
         return activity.get().getString(titleId).toUpperCase();

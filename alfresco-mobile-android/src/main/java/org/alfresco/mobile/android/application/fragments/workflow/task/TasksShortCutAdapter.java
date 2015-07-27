@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.fragments.workflow.task;
 
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
-import android.app.Activity;
+import android.support.v4.app.FragmentActivity;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,7 +38,7 @@ public class TasksShortCutAdapter extends BaseListAdapter<Integer, SimpleViewHol
 {
     private AlfrescoAccount account;
 
-    public TasksShortCutAdapter(Activity context)
+    public TasksShortCutAdapter(FragmentActivity context)
     {
         super(context, R.layout.app_header_row, SHORTCUTS);
         this.vhClassName = SimpleViewHolder.class.getCanonicalName();

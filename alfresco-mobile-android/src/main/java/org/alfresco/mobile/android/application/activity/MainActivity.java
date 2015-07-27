@@ -84,7 +84,6 @@ import org.alfresco.mobile.android.ui.node.browse.NodeBrowserTemplate;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.annotation.TargetApi;
-import android.app.FragmentManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -95,6 +94,8 @@ import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.util.Log;
@@ -202,13 +203,16 @@ public class MainActivity extends BaseActivity
                     // This is needed on new AlfrescoAccount creation, as the
                     // Activity gets
                     // re-created after the AlfrescoAccount is created.
-                    DataProtectionUserDialogFragment.newInstance(true).show(getFragmentManager(),
+                    DataProtectionUserDialogFragment.newInstance(true).show(getSupportFragmentManager(),
                             DataProtectionUserDialogFragment.TAG);
                     prefs.edit().putBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, true).commit();
                 }
             }
         }
 
+        FragmentTransaction t2 = getSupportFragmentManager().beginTransaction();
+        t2.replace(R.id.sliding_menu, MainMenuFragment.with(this).createFragment(), MainMenuFragment.SLIDING_TAG);
+        t2.commit();
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawer = (ViewGroup) findViewById(R.id.left_drawer);
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
@@ -756,7 +760,7 @@ public class MainActivity extends BaseActivity
             }
             else
             {
-                DataProtectionUserDialogFragment.newInstance(true).show(getFragmentManager(),
+                DataProtectionUserDialogFragment.newInstance(true).show(getSupportFragmentManager(),
                         DataProtectionUserDialogFragment.TAG);
                 prefs.edit().putBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, true).commit();
             }
@@ -873,7 +877,8 @@ public class MainActivity extends BaseActivity
         // Remove OAuthFragment if one
         if (getFragment(AccountOAuthFragment.TAG) != null)
         {
-            getFragmentManager().popBackStack(AccountOAuthFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            getSupportFragmentManager()
+                    .popBackStack(AccountOAuthFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
 
         removeWaitingDialog();
@@ -927,7 +932,7 @@ public class MainActivity extends BaseActivity
                 }
                 else
                 {
-                    DataProtectionUserDialogFragment.newInstance(true).show(getFragmentManager(),
+                    DataProtectionUserDialogFragment.newInstance(true).show(getSupportFragmentManager(),
                             DataProtectionUserDialogFragment.TAG);
                 }
 

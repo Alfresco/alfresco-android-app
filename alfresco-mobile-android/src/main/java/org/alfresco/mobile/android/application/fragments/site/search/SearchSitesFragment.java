@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.fragments.site.search;
 
 import java.util.Map;
@@ -32,9 +32,9 @@ import org.alfresco.mobile.android.async.site.search.SiteSearchRequest;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 
-import android.app.Activity;
-import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -44,7 +44,6 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.otto.Subscribe;
@@ -173,7 +172,6 @@ public class SearchSitesFragment extends CommonBrowserSitesFragment
     @Override
     protected void prepareEmptyInitialView(View ev)
     {
-        ((ImageView) ev.findViewById(R.id.empty_picture)).setScaleType(ImageView.ScaleType.FIT_XY);
         ev.findViewById(R.id.empty_text).setVisibility(View.GONE);
         ev.findViewById(R.id.empty_text_description).setVisibility(View.GONE);
     }
@@ -255,7 +253,7 @@ public class SearchSitesFragment extends CommonBrowserSitesFragment
     // ///////////////////////////////////////////////////////////////////////////
     // BUILDER
     // ///////////////////////////////////////////////////////////////////////////
-    public static Builder with(Activity activity)
+    public static Builder with(FragmentActivity activity)
     {
         return new Builder(activity);
     }
@@ -266,13 +264,13 @@ public class SearchSitesFragment extends CommonBrowserSitesFragment
         // ///////////////////////////////////////////////////////////////////////////
         // CONSTRUCTORS & HELPERS
         // ///////////////////////////////////////////////////////////////////////////
-        public Builder(Activity activity)
+        public Builder(FragmentActivity activity)
         {
             super(activity);
             extraConfiguration = new Bundle();
         }
 
-        public Builder(Activity activity, Map<String, Object> configuration)
+        public Builder(FragmentActivity activity, Map<String, Object> configuration)
         {
             super(activity, configuration);
             menuIconId = R.drawable.ic_site_dark;

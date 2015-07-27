@@ -25,9 +25,9 @@ import java.io.InputStream;
 import org.alfresco.mobile.android.api.utils.IOUtils;
 import org.alfresco.mobile.android.application.extension.samsung.pen.SNoteSDKDialogFragment;
 
-import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 
 import com.samsung.android.sdk.SsdkUnsupportedException;
@@ -40,11 +40,12 @@ public class SNoteUtils
     {
     }
 
-    public static boolean processUnsupportedException(final Activity activity, SsdkUnsupportedException e)
+    public static boolean processUnsupportedException(final FragmentActivity activity, SsdkUnsupportedException e)
     {
         e.printStackTrace();
         int errType = e.getType();
-        SNoteSDKDialogFragment.newInstance(errType).show(activity.getFragmentManager(), SNoteSDKDialogFragment.TAG);
+        SNoteSDKDialogFragment.newInstance(errType).show(activity.getSupportFragmentManager(),
+                SNoteSDKDialogFragment.TAG);
         if (errType == SsdkUnsupportedException.LIBRARY_UPDATE_IS_RECOMMENDED) { return false; }
         return true;
     }

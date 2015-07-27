@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~  Copyright (C) 2005-2015 Alfresco Software Limited.
+  ~
+  ~  This file is part of Alfresco Mobile for Android.
+  ~
+  ~  Licensed under the Apache License, Version 2.0 (the "License");
+  ~  you may not use this file except in compliance with the License.
+  ~  You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~  limitations under the License.
+  -->
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/primary_background"
+    android:fillViewport="true"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Enterprise Settings !-->
+        <TextView
+            style="@style/AlfrescoMaterialTheme.Text.Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/d_16"
+            android:text="@string/settings_enterprise"
+            android:textColor="@color/secondary_text" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dip"
+            android:background="?android:attr/dividerVertical" />
+
+        <!-- Enterprise Settings Content !-->
+        <LinearLayout
+            android:id="@+id/settings_enterprise"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/secondary_background"
+            android:orientation="vertical">
+
+            <!-- Data Protection !-->
+            <LinearLayout
+                android:id="@+id/settings_privatefolder_container"
+                style="@style/AlfrescoMaterialTheme.Button.BorderLess"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <include
+                    android:id="@+id/settings_privatefolder"
+                    layout="@layout/row_two_lines"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dip"
+                android:layout_marginLeft="@dimen/d_8"
+                android:layout_marginRight="@dimen/d_8"
+                android:background="?android:attr/dividerVertical" />
+
+
+            <!-- Passcode !-->
+            <LinearLayout
+                style="@style/AlfrescoMaterialTheme.Button.BorderLess"
+                android:id="@+id/passcode_preference_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <include
+                    android:id="@+id/passcode_preference"
+                    layout="@layout/row_two_lines"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dip"
+            android:background="?android:attr/dividerVertical" />
+
+        <!-- Customization Settings !-->
+        <TextView
+            style="@style/AlfrescoMaterialTheme.Text.Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/d_16"
+            android:text="@string/settings_custom_menu"
+            android:textColor="@color/secondary_text" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dip"
+            android:background="?android:attr/dividerVertical" />
+
+        <LinearLayout
+            android:id="@+id/settings_custom_menu_manage_container"
+            style="@style/AlfrescoMaterialTheme.Button.BorderLess"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/secondary_background">
+
+            <include
+                android:id="@+id/settings_custom_menu_manage"
+                layout="@layout/row_two_lines"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dip"
+            android:background="?android:attr/dividerVertical" />
+
+        <!-- Sync Settings Content (added programmatically) !-->
+        <LinearLayout
+            android:id="@+id/settings_sync_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Sync Settings !-->
+            <TextView
+                style="@style/AlfrescoMaterialTheme.Text.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/d_16"
+                android:text="@string/settings_synced_content"
+                android:textColor="@color/secondary_text" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dip"
+                android:background="?android:attr/dividerVertical" />
+
+
+            <LinearLayout
+                android:id="@+id/favorite_sync_wifi_container"
+                style="@style/AlfrescoMaterialTheme.Button.BorderLess"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/secondary_background">
+
+                <include
+                    android:id="@+id/favorite_sync_wifi"
+                    layout="@layout/row_two_lines_checkbox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dip"
+            android:background="?android:attr/dividerVertical" />
+
+        <!-- Links Content !-->
+        <TextView
+            style="@style/AlfrescoMaterialTheme.Text.Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/primary_background"
+            android:padding="@dimen/d_16"
+            android:text="@string/settings_links"
+            android:textColor="@color/secondary_text" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dip"
+            android:background="?android:attr/dividerVertical" />
+
+        <LinearLayout
+            android:id="@+id/settings_links"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/secondary_background"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/settings_links_website_container"
+                style="@style/AlfrescoMaterialTheme.Button.BorderLess"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <include
+                    android:id="@+id/settings_links_website"
+                    layout="@layout/row_two_lines"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dip"
+                android:layout_marginLeft="@dimen/d_8"
+                android:layout_marginRight="@dimen/d_8"
+                android:background="?android:attr/dividerVertical" />
+
+            <LinearLayout
+                android:id="@+id/settings_rating_container"
+                style="@style/AlfrescoMaterialTheme.Button.BorderLess"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <include
+                    android:id="@+id/settings_rating"
+                    layout="@layout/row_two_lines"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dip"
+                android:layout_marginLeft="@dimen/d_8"
+                android:layout_marginRight="@dimen/d_8"
+                android:background="?android:attr/dividerVertical" />
+
+            <LinearLayout
+                android:id="@+id/settings_links_facebook_container"
+                style="@style/AlfrescoMaterialTheme.Button.BorderLess"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <include
+                    android:id="@+id/settings_links_facebook"
+                    layout="@layout/row_two_lines"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dip"
+            android:layout_marginBottom="@dimen/d_16"
+            android:background="?android:attr/dividerVertical" />
+
+    </LinearLayout>
+</ScrollView>

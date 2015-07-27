@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.fragments.sync;
 
 import java.lang.ref.WeakReference;
@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.MainActivity;
+import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsFragment;
 import org.alfresco.mobile.android.async.OperationRequest.OperationBuilder;
 import org.alfresco.mobile.android.async.OperationStatus;
@@ -44,11 +45,11 @@ import org.alfresco.mobile.android.ui.utils.Formatter;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Build;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -252,6 +253,8 @@ public class SyncCursorAdapter extends BaseCursorLoader<TwoLinesProgressViewHold
 
             vh.choose.setImageResource(R.drawable.ic_more_options);
             vh.choose.setBackgroundResource(R.drawable.alfrescohololight_list_selector_holo_light);
+            int d_16 = DisplayUtils.getPixels(context, R.dimen.d_16);
+            vh.choose.setPadding(d_16, d_16, d_16, d_16);
 
             vh.choose.setVisibility(View.VISIBLE);
             vh.choose.setTag(R.id.node_action, nodeId);
@@ -411,12 +414,13 @@ public class SyncCursorAdapter extends BaseCursorLoader<TwoLinesProgressViewHold
             case R.id.menu_sync_resolution:
                 onMenuItemClick = true;
                 ResolveConflictSyncDialogFragment.newInstance(selectedOptionItemId.get(0)).show(
-                        fragmentRef.get().getActivity().getFragmentManager(), ResolveConflictSyncDialogFragment.TAG);
+                        fragmentRef.get().getActivity().getSupportFragmentManager(),
+                        ResolveConflictSyncDialogFragment.TAG);
                 selectedOptionItemId.clear();
                 break;
             case R.id.menu_node_details:
                 onMenuItemClick = true;
-                NodeDetailsFragment.with((Activity) context).nodeId(selectedOptionItems.get(0)).display();
+                NodeDetailsFragment.with((FragmentActivity) context).nodeId(selectedOptionItems.get(0)).display();
                 selectedItems.clear();
                 selectedItems.add(selectedOptionItems.get(0));
                 notifyDataSetChanged();

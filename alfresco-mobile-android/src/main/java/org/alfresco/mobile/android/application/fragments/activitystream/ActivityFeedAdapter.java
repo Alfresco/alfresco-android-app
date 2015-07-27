@@ -28,8 +28,8 @@ import org.alfresco.mobile.android.ui.activitystream.ActivityStreamAdapter;
 import org.alfresco.mobile.android.ui.holder.TwoLinesCaptionViewHolder;
 
 import android.annotation.TargetApi;
-import android.app.Fragment;
 import android.os.Build;
+import android.support.v4.app.Fragment;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;

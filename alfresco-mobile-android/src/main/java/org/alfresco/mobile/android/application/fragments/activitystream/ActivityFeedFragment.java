@@ -32,9 +32,9 @@ import org.alfresco.mobile.android.application.fragments.node.details.NodeDetail
 import org.alfresco.mobile.android.application.fragments.user.UserProfileFragment;
 import org.alfresco.mobile.android.async.activitystream.ActivityStreamEvent;
 
-import android.app.Activity;
-import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.widget.ArrayAdapter;
@@ -152,7 +152,7 @@ public class ActivityFeedFragment extends org.alfresco.mobile.android.ui.activit
         // ///////////////////////////////////////////////////////////////////////////
         // CONSTRUCTORS
         // ///////////////////////////////////////////////////////////////////////////
-        public Builder(Activity appActivity, Map<String, Object> configuration)
+        public Builder(FragmentActivity appActivity, Map<String, Object> configuration)
         {
             super(appActivity, configuration);
             menuIconId = ICON_ID;

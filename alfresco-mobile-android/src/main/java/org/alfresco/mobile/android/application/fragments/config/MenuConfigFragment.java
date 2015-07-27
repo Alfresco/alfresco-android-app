@@ -1,3 +1,21 @@
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
+ *
+ *  This file is part of Alfresco Mobile for Android.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 package org.alfresco.mobile.android.application.fragments.config;
 
 import java.io.File;
@@ -22,7 +40,7 @@ import org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplor
 import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.node.favorite.FavoritesFragment;
 import org.alfresco.mobile.android.application.fragments.search.SearchFragment;
-import org.alfresco.mobile.android.application.fragments.site.browser.BrowserSitesFragment;
+import org.alfresco.mobile.android.application.fragments.site.browser.BrowserSitesPagerFragment;
 import org.alfresco.mobile.android.application.fragments.sync.SyncFragment;
 import org.alfresco.mobile.android.application.fragments.workflow.task.TasksFragment;
 import org.alfresco.mobile.android.application.managers.ConfigManager;
@@ -36,9 +54,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.Activity;
-import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -341,7 +359,7 @@ public class MenuConfigFragment extends AlfrescoFragment
                 ConfigurationConstant.KEY_REPOSITORY, R.drawable.ic_shared_light, sharedProperties);
 
         // Sites
-        addMenuConfigItem(VIEW_SITES, BrowserSitesFragment.Builder.LABEL_ID, ConfigurationConstant.KEY_SITES,
+        addMenuConfigItem(VIEW_SITES, BrowserSitesPagerFragment.Builder.LABEL_ID, ConfigurationConstant.KEY_SITES,
                 R.drawable.ic_site_light, null);
 
         // Userhome
@@ -375,7 +393,7 @@ public class MenuConfigFragment extends AlfrescoFragment
     // ///////////////////////////////////////////////////////////////////////////
     // BUILDER
     // ///////////////////////////////////////////////////////////////////////////
-    public static Builder with(Activity activity)
+    public static Builder with(FragmentActivity activity)
     {
         return new Builder(activity);
     }
@@ -385,13 +403,13 @@ public class MenuConfigFragment extends AlfrescoFragment
         // ///////////////////////////////////////////////////////////////////////////
         // CONSTRUCTORS
         // ///////////////////////////////////////////////////////////////////////////
-        public Builder(Activity activity)
+        public Builder(FragmentActivity activity)
         {
             super(activity);
             this.extraConfiguration = new Bundle();
         }
 
-        public Builder(Activity appActivity, Map<String, Object> configuration)
+        public Builder(FragmentActivity appActivity, Map<String, Object> configuration)
         {
             super(appActivity, configuration);
         }

@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.managers;
 
 import java.io.File;
@@ -32,8 +32,6 @@ import org.alfresco.mobile.android.platform.security.DataProtectionManager;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.WaitingDialogFragment;
 
-import android.app.Activity;
-import android.app.Fragment;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
@@ -42,6 +40,8 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.speech.RecognizerIntent;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
@@ -62,7 +62,7 @@ public class ActionUtils extends BaseActionUtils
             {
                 WaitingDialogFragment dialog = WaitingDialogFragment.newInstance(R.string.data_protection,
                         R.string.decryption_title, true);
-                dialog.show(fr.getActivity().getFragmentManager(), WaitingDialogFragment.TAG);
+                dialog.show(fr.getActivity().getSupportFragmentManager(), WaitingDialogFragment.TAG);
                 DataProtectionManager.getInstance(fr.getActivity()).decrypt(SessionUtils.getAccount(fr.getActivity()),
                         myFile, DataProtectionManager.ACTION_COPY);
             }
@@ -81,7 +81,7 @@ public class ActionUtils extends BaseActionUtils
     // ///////////////////////////////////////////////////////////////////////////
     // ACTION VIEW
     // ///////////////////////////////////////////////////////////////////////////
-    public static void actionView(Activity context, File myFile, String mimeType, ActionManagerListener listener)
+    public static void actionView(FragmentActivity context, File myFile, String mimeType, ActionManagerListener listener)
     {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         Uri data = Uri.fromFile(myFile);
@@ -130,7 +130,7 @@ public class ActionUtils extends BaseActionUtils
             {
                 WaitingDialogFragment dialog = WaitingDialogFragment.newInstance(R.string.data_protection,
                         R.string.decryption_title, true);
-                dialog.show(fr.getActivity().getFragmentManager(), WaitingDialogFragment.TAG);
+                dialog.show(fr.getActivity().getSupportFragmentManager(), WaitingDialogFragment.TAG);
                 DataProtectionManager.getInstance(fr.getActivity()).decrypt(SessionUtils.getAccount(fr.getActivity()),
                         myFile, DataProtectionManager.ACTION_VIEW);
             }
@@ -146,7 +146,7 @@ public class ActionUtils extends BaseActionUtils
         }
     }
 
-    public static Intent createViewIntent(Activity activity, File contentFile)
+    public static Intent createViewIntent(FragmentActivity activity, File contentFile)
     {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         Uri data = Uri.fromFile(contentFile);
@@ -194,7 +194,7 @@ public class ActionUtils extends BaseActionUtils
     // ///////////////////////////////////////////////////////////////////////////
     // ACTION SEND / SHARE
     // ///////////////////////////////////////////////////////////////////////////
-    public static void actionSend(Activity activity, File myFile, ActionManagerListener listener)
+    public static void actionSend(FragmentActivity activity, File myFile, ActionManagerListener listener)
     {
         try
         {
@@ -209,7 +209,7 @@ public class ActionUtils extends BaseActionUtils
             {
                 WaitingDialogFragment dialog = WaitingDialogFragment.newInstance(R.string.data_protection,
                         R.string.decryption_title, true);
-                dialog.show(activity.getFragmentManager(), WaitingDialogFragment.TAG);
+                dialog.show(activity.getSupportFragmentManager(), WaitingDialogFragment.TAG);
                 DataProtectionManager.getInstance(activity).decrypt(SessionUtils.getAccount(activity), myFile,
                         DataProtectionManager.ACTION_SEND);
             }
@@ -230,7 +230,7 @@ public class ActionUtils extends BaseActionUtils
         actionSend(fr.getActivity(), myFile, (String) null);
     }
 
-    public static void actionSend(Activity activity, File contentFile, String mimetype)
+    public static void actionSend(FragmentActivity activity, File contentFile, String mimetype)
     {
         try
         {
@@ -256,7 +256,7 @@ public class ActionUtils extends BaseActionUtils
         }
     }
 
-    public static Intent createSendIntent(Activity activity, File contentFile)
+    public static Intent createSendIntent(FragmentActivity activity, File contentFile)
     {
         Intent i = new Intent(Intent.ACTION_SEND);
         i.putExtra(Intent.EXTRA_SUBJECT, contentFile.getName());
@@ -297,7 +297,7 @@ public class ActionUtils extends BaseActionUtils
         return false;
     }
 
-    public static void actionSendDocumentToAlfresco(Activity activity, File file)
+    public static void actionSendDocumentToAlfresco(FragmentActivity activity, File file)
     {
         try
         {
@@ -318,7 +318,7 @@ public class ActionUtils extends BaseActionUtils
         }
     }
 
-    public static void actionSendFileToAlfresco(Activity activity, File contentFile)
+    public static void actionSendFileToAlfresco(FragmentActivity activity, File contentFile)
     {
         try
         {
@@ -340,7 +340,7 @@ public class ActionUtils extends BaseActionUtils
         }
     }
 
-    public static Intent createSendFileToAlfrescoIntent(Activity activity, File contentFile)
+    public static Intent createSendFileToAlfrescoIntent(FragmentActivity activity, File contentFile)
     {
         Intent i = new Intent(activity, PublicDispatcherActivity.class);
         i.setAction(Intent.ACTION_SEND);
@@ -349,7 +349,7 @@ public class ActionUtils extends BaseActionUtils
         return i;
     }
 
-    public static void actionShareContent(Activity activity, File myFile)
+    public static void actionShareContent(FragmentActivity activity, File myFile)
     {
         try
         {
@@ -378,7 +378,7 @@ public class ActionUtils extends BaseActionUtils
         actionSendDocumentsToAlfresco(fr.getActivity(), files);
     }
 
-    public static void actionSendDocumentsToAlfresco(Activity activity, List<File> files)
+    public static void actionSendDocumentsToAlfresco(FragmentActivity activity, List<File> files)
     {
         if (files.size() == 1)
         {
@@ -488,6 +488,33 @@ public class ActionUtils extends BaseActionUtils
         catch (Exception e)
         {
             return false;
+        }
+    }
+
+    public static void startPlayStore(Context context, String appPackage)
+    {
+        final String appPackageName = appPackage;
+        try
+        {
+            context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+        }
+        catch (android.content.ActivityNotFoundException anfe)
+        {
+            context.startActivity(new Intent(Intent.ACTION_VIEW, Uri
+                    .parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+        }
+    }
+
+    public static void startWebBrowser(Context context, String url)
+    {
+        final String webUrl = url;
+        try
+        {
+            context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(webUrl)));
+        }
+        catch (android.content.ActivityNotFoundException anfe)
+        {
+            // Display error ?
         }
     }
 

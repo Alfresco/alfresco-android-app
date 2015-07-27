@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.fragments.node.rendition;
 
 import java.lang.ref.WeakReference;
@@ -33,11 +33,11 @@ import org.alfresco.mobile.android.async.node.browse.NodeChildrenRequest;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.node.browse.NodeBrowserTemplate;
 
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.os.Bundle;
-import android.support.v13.app.FragmentStatePagerAdapter;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
@@ -93,7 +93,7 @@ public class CarouselPreviewFragment extends AlfrescoFragment implements Details
         }
 
         // Retrieve nodes
-        frag = (DocumentFolderBrowserFragment) ((getActivity()).getFragmentManager()
+        frag = (DocumentFolderBrowserFragment) ((getActivity()).getSupportFragmentManager()
                 .findFragmentByTag(DocumentFolderBrowserFragment.TAG));
         if (frag != null && nodes.isEmpty())
         {
@@ -145,7 +145,7 @@ public class CarouselPreviewFragment extends AlfrescoFragment implements Details
     protected void displayGallery()
     {
         ViewPager viewPager = (ViewPager) viewById(R.id.view_pager);
-        ScreenSlidePagerAdapter adapter = new ScreenSlidePagerAdapter(getActivity().getFragmentManager(), nodes,
+        ScreenSlidePagerAdapter adapter = new ScreenSlidePagerAdapter(getActivity().getSupportFragmentManager(), nodes,
                 getActivity());
         viewPager.setAdapter(adapter);
         if (node != null)
@@ -238,7 +238,7 @@ public class CarouselPreviewFragment extends AlfrescoFragment implements Details
     // ///////////////////////////////////////////////////////////////////////////
     // BUILDER
     // ///////////////////////////////////////////////////////////////////////////
-    public static Builder with(Activity activity)
+    public static Builder with(FragmentActivity activity)
     {
         return new Builder(activity);
     }
@@ -249,13 +249,13 @@ public class CarouselPreviewFragment extends AlfrescoFragment implements Details
         // ///////////////////////////////////////////////////////////////////////////
         // CONSTRUCTORS
         // ///////////////////////////////////////////////////////////////////////////
-        public Builder(Activity activity)
+        public Builder(FragmentActivity activity)
         {
             super(activity);
             this.extraConfiguration = new Bundle();
         }
 
-        public Builder(Activity appActivity, Map<String, Object> configuration)
+        public Builder(FragmentActivity appActivity, Map<String, Object> configuration)
         {
             super(appActivity, configuration);
             this.extraConfiguration = new Bundle();
@@ -336,13 +336,13 @@ class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter
 {
     private List<Node> nodes = new ArrayList<Node>();
 
-    private WeakReference<Activity> activity;
+    private WeakReference<FragmentActivity> activity;
 
-    public ScreenSlidePagerAdapter(FragmentManager fm, List<Node> nodes, Activity activity)
+    public ScreenSlidePagerAdapter(FragmentManager fm, List<Node> nodes, FragmentActivity activity)
     {
         super(fm);
         this.nodes = nodes;
-        this.activity = new WeakReference<Activity>(activity);
+        this.activity = new WeakReference<>(activity);
     }
 
     @Override

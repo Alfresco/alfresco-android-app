@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.alfresco.mobile.android.application.extension.samsung.R;
 
-import android.app.Activity;
+import android.support.v4.app.FragmentActivity;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -45,7 +45,7 @@ public class SNoteEditorActionMode implements ActionMode.Callback
 
     private SpenSurfaceView spenSurfaceView;
 
-    public SNoteEditorActionMode(Activity ac, SpenPageDoc spenPageDoc, SpenSurfaceView spenSurfaceView,
+    public SNoteEditorActionMode(FragmentActivity ac, SpenPageDoc spenPageDoc, SpenSurfaceView spenSurfaceView,
             List<SpenObjectBase> selectedSpenObjects)
     {
         this.selectedSpenObjects = new ArrayList<SpenObjectBase>(selectedSpenObjects);

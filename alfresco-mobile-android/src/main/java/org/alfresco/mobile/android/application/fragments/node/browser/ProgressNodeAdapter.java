@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.fragments.node.browser;
 
 import java.util.ArrayList;
@@ -55,14 +55,14 @@ import org.alfresco.mobile.android.ui.holder.TwoLinesProgressViewHolder;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.LoaderManager;
-import android.content.CursorLoader;
-import android.content.Loader;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -108,29 +108,30 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
         this.parentNode = parentNode;
         if (parentNode != null)
         {
-            fr.getActivity().getLoaderManager().restartLoader(LOADER_OPERATION_ID, null, this);
-            fr.getActivity().getLoaderManager().restartLoader(LOADER_SYNC_ID, null, this);
-            fr.getActivity().getLoaderManager().restartLoader(LOADER_FAVORITE_ID, null, this);
+            fr.getActivity().getSupportLoaderManager().restartLoader(LOADER_OPERATION_ID, null, this);
+            fr.getActivity().getSupportLoaderManager().restartLoader(LOADER_SYNC_ID, null, this);
+            fr.getActivity().getSupportLoaderManager().restartLoader(LOADER_FAVORITE_ID, null, this);
             hasParentFavorite();
         }
     }
 
-    public ProgressNodeAdapter(Activity context, int textViewResourceId, List<Node> listItems)
+    public ProgressNodeAdapter(FragmentActivity context, int textViewResourceId, List<Node> listItems)
     {
         super(context, textViewResourceId, listItems);
     }
 
-    public ProgressNodeAdapter(Activity context, int textViewResourceId, Node parentNode, List<Node> listItems,
+    public ProgressNodeAdapter(FragmentActivity activity, int textViewResourceId, Node parentNode,
+            List<Node> listItems,
             Map<String, Node> selectedItems)
     {
-        super(context, textViewResourceId, listItems, selectedItems);
+        super(activity, textViewResourceId, listItems, selectedItems);
         vhClassName = TwoLinesProgressViewHolder.class.getCanonicalName();
         this.parentNode = parentNode;
         if (parentNode != null)
         {
-            context.getLoaderManager().restartLoader(LOADER_OPERATION_ID, null, this);
-            context.getLoaderManager().restartLoader(LOADER_SYNC_ID, null, this);
-            getActivity().getLoaderManager().restartLoader(LOADER_FAVORITE_ID, null, this);
+            activity.getSupportLoaderManager().restartLoader(LOADER_OPERATION_ID, null, this);
+            activity.getSupportLoaderManager().restartLoader(LOADER_SYNC_ID, null, this);
+            getActivity().getSupportLoaderManager().restartLoader(LOADER_FAVORITE_ID, null, this);
             hasParentFavorite();
         }
     }
@@ -330,6 +331,8 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
 
             vh.choose.setImageResource(R.drawable.ic_more_options);
             vh.choose.setBackgroundResource(R.drawable.alfrescohololight_list_selector_holo_light);
+            int d_16 = DisplayUtils.getPixels(getContext(), R.dimen.d_16);
+            vh.choose.setPadding(d_16, d_16, d_16, d_16);
             vh.choose.setVisibility(View.VISIBLE);
             AccessibilityUtils.addContentDescription(vh.choose,
                     String.format(getActivity().getString(R.string.more_options_folder), item.getName()));
@@ -571,7 +574,8 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
                 break;
             case R.id.menu_action_delete_folder:
                 onMenuItemClick = true;
-                Fragment fr = getActivity().getFragmentManager().findFragmentByTag(DocumentFolderBrowserFragment.TAG);
+                Fragment fr = getActivity().getSupportFragmentManager().findFragmentByTag(
+                        DocumentFolderBrowserFragment.TAG);
                 NodeActions.delete(getActivity(), fr, selectedOptionItems.get(0));
                 break;
             default:
@@ -587,9 +591,9 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
     // ///////////////////////////////////////////////////////////////////////////
     public void refreshOperations()
     {
-        getActivity().getLoaderManager().restartLoader(LOADER_OPERATION_ID, null, this);
-        getActivity().getLoaderManager().restartLoader(LOADER_SYNC_ID, null, this);
-        getActivity().getLoaderManager().restartLoader(LOADER_FAVORITE_ID, null, this);
+        getActivity().getSupportLoaderManager().restartLoader(LOADER_OPERATION_ID, null, this);
+        getActivity().getSupportLoaderManager().restartLoader(LOADER_SYNC_ID, null, this);
+        getActivity().getSupportLoaderManager().restartLoader(LOADER_FAVORITE_ID, null, this);
         notifyDataSetChanged();
     }
 

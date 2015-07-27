@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.ui.form.picker;
 
 import java.util.Map;
@@ -25,7 +25,7 @@ import org.alfresco.mobile.android.application.activity.PrivateDialogActivity;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.node.favorite.FavoritesFragment;
-import org.alfresco.mobile.android.application.fragments.site.browser.BrowserSitesFragment;
+import org.alfresco.mobile.android.application.fragments.site.browser.BrowserSitesPagerFragment;
 import org.alfresco.mobile.android.async.node.favorite.FavoriteNodesRequest;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.utils.BundleUtils;
@@ -33,9 +33,9 @@ import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
-import android.app.Activity;
-import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -92,7 +92,7 @@ public class DocumentPickerFragment extends AlfrescoFragment
             @Override
             public void onClick(View v)
             {
-                BrowserSitesFragment.with(getActivity()).display();
+                BrowserSitesPagerFragment.with(getActivity()).display();
             }
         });
 
@@ -135,7 +135,7 @@ public class DocumentPickerFragment extends AlfrescoFragment
     // ///////////////////////////////////////////////////////////////////////////
     // BUILDER
     // ///////////////////////////////////////////////////////////////////////////
-    public static Builder with(Activity activity)
+    public static Builder with(FragmentActivity activity)
     {
         return new Builder(activity);
     }
@@ -145,13 +145,13 @@ public class DocumentPickerFragment extends AlfrescoFragment
         // ///////////////////////////////////////////////////////////////////////////
         // CONSTRUCTORS
         // ///////////////////////////////////////////////////////////////////////////
-        public Builder(Activity activity)
+        public Builder(FragmentActivity activity)
         {
             super(activity);
             this.extraConfiguration = new Bundle();
         }
 
-        public Builder(Activity appActivity, Map<String, Object> configuration)
+        public Builder(FragmentActivity appActivity, Map<String, Object> configuration)
         {
             super(appActivity, configuration);
         }

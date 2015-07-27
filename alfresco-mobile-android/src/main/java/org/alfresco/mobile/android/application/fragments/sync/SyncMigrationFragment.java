@@ -27,11 +27,11 @@ import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmen
 import org.alfresco.mobile.android.sync.SyncContentManager;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.os.Bundle;
-import android.support.v13.app.FragmentPagerAdapter;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
@@ -212,14 +212,14 @@ public class SyncMigrationFragment extends AlfrescoFragment
 
     private void displayMoreInformation()
     {
-        getActivity().setResult(Activity.RESULT_OK);
+        getActivity().setResult(FragmentActivity.RESULT_OK);
         getActivity().finish();
     }
 
     // ///////////////////////////////////////////////////////////////////////////
     // BUILDER
     // ///////////////////////////////////////////////////////////////////////////
-    public static Builder with(Activity activity)
+    public static Builder with(FragmentActivity activity)
     {
         return new Builder(activity);
     }
@@ -229,13 +229,13 @@ public class SyncMigrationFragment extends AlfrescoFragment
         // ///////////////////////////////////////////////////////////////////////////
         // CONSTRUCTORS
         // ///////////////////////////////////////////////////////////////////////////
-        public Builder(Activity activity)
+        public Builder(FragmentActivity activity)
         {
             super(activity);
             this.extraConfiguration = new Bundle();
         }
 
-        public Builder(Activity appActivity, Map<String, Object> configuration)
+        public Builder(FragmentActivity appActivity, Map<String, Object> configuration)
         {
             super(appActivity, configuration);
         }
@@ -243,7 +243,7 @@ public class SyncMigrationFragment extends AlfrescoFragment
         // ///////////////////////////////////////////////////////////////////////////
         // CLICK
         // ///////////////////////////////////////////////////////////////////////////
-        protected android.app.Fragment createFragment(Bundle b)
+        protected Fragment createFragment(Bundle b)
         {
             return newInstanceByTemplate(b);
         };

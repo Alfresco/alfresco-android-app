@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.fragments.user;
 
 import java.util.Map;
@@ -35,8 +35,6 @@ import org.alfresco.mobile.android.ui.person.PersonProfileTemplate;
 import org.alfresco.mobile.android.ui.rendition.RenditionManager;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
-import android.app.Activity;
-import android.app.Fragment;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
@@ -45,6 +43,8 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -564,7 +564,7 @@ public class UserProfileFragment extends AlfrescoFragment implements OnMenuItemC
     // ///////////////////////////////////////////////////////////////////////////
     // ACTIONS
     // ///////////////////////////////////////////////////////////////////////////
-    public static void actionGeolocalisation(Activity a, String location, String Title)
+    public static void actionGeolocalisation(FragmentActivity a, String location, String Title)
     {
         try
         {
@@ -578,7 +578,7 @@ public class UserProfileFragment extends AlfrescoFragment implements OnMenuItemC
         }
     }
 
-    public static void actionAddContact(Activity activity, Person member)
+    public static void actionAddContact(FragmentActivity activity, Person member)
     {
         if (member != null)
         {
@@ -640,7 +640,7 @@ public class UserProfileFragment extends AlfrescoFragment implements OnMenuItemC
             {
                 if (intent.resolveActivity(activity.getPackageManager()) == null)
                 {
-                    AlfrescoNotificationManager.getInstance(activity).showAlertCrouton((Activity) activity,
+                    AlfrescoNotificationManager.getInstance(activity).showAlertCrouton((FragmentActivity) activity,
                             activity.getString(R.string.feature_disable));
                     return;
                 }
@@ -654,7 +654,7 @@ public class UserProfileFragment extends AlfrescoFragment implements OnMenuItemC
         }
     }
 
-    public static void actionEmail(Activity activity, String email, String subject, String content)
+    public static void actionEmail(FragmentActivity activity, String email, String subject, String content)
     {
         if (subject == null) subject = "";
         if (content == null) content = "";
@@ -669,7 +669,7 @@ public class UserProfileFragment extends AlfrescoFragment implements OnMenuItemC
         {
             if (emailIntent.resolveActivity(activity.getPackageManager()) == null)
             {
-                AlfrescoNotificationManager.getInstance(activity).showAlertCrouton((Activity) activity,
+                AlfrescoNotificationManager.getInstance(activity).showAlertCrouton((FragmentActivity) activity,
                         activity.getString(R.string.feature_disable));
                 return;
             }
@@ -681,14 +681,14 @@ public class UserProfileFragment extends AlfrescoFragment implements OnMenuItemC
         }
     }
 
-    public static void actionCall(Activity activity, String number)
+    public static void actionCall(FragmentActivity activity, String number)
     {
         try
         {
             Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + number));
             if (intent.resolveActivity(activity.getPackageManager()) == null)
             {
-                AlfrescoNotificationManager.getInstance(activity).showAlertCrouton((Activity) activity,
+                AlfrescoNotificationManager.getInstance(activity).showAlertCrouton((FragmentActivity) activity,
                         activity.getString(R.string.feature_disable));
                 return;
             }
@@ -700,7 +700,7 @@ public class UserProfileFragment extends AlfrescoFragment implements OnMenuItemC
         }
     }
 
-    public static void actionStartIm(Activity activity, String personId)
+    public static void actionStartIm(FragmentActivity activity, String personId)
     {
         Uri imUri = new Uri.Builder().scheme("imto").authority("gtalk").appendPath(personId).build();
         Intent intent = new Intent(Intent.ACTION_SENDTO, imUri);
@@ -709,7 +709,7 @@ public class UserProfileFragment extends AlfrescoFragment implements OnMenuItemC
         {
             if (intent.resolveActivity(activity.getPackageManager()) == null)
             {
-                AlfrescoNotificationManager.getInstance(activity).showAlertCrouton((Activity) activity,
+                AlfrescoNotificationManager.getInstance(activity).showAlertCrouton((FragmentActivity) activity,
                         activity.getString(R.string.feature_disable));
                 return;
             }
@@ -721,7 +721,7 @@ public class UserProfileFragment extends AlfrescoFragment implements OnMenuItemC
         }
     }
 
-    public static void actionSendSMS(Activity activity, String number)
+    public static void actionSendSMS(FragmentActivity activity, String number)
     {
         Intent sendIntent = new Intent(Intent.ACTION_VIEW);
         sendIntent.putExtra("address", number);
@@ -732,7 +732,7 @@ public class UserProfileFragment extends AlfrescoFragment implements OnMenuItemC
         {
             if (sendIntent.resolveActivity(activity.getPackageManager()) == null)
             {
-                AlfrescoNotificationManager.getInstance(activity).showAlertCrouton((Activity) activity,
+                AlfrescoNotificationManager.getInstance(activity).showAlertCrouton((FragmentActivity) activity,
                         activity.getString(R.string.feature_disable));
                 return;
             }
@@ -750,7 +750,7 @@ public class UserProfileFragment extends AlfrescoFragment implements OnMenuItemC
 
     public static final int ACTION_VIDEO_CALL = 2;
 
-    public void actionSkype(Activity activity, int skypeAction, String personId)
+    public void actionSkype(FragmentActivity activity, int skypeAction, String personId)
     {
         // Make sure the Skype for Android client is installed
         if (!isSkypeClientInstalled(activity))
@@ -791,7 +791,7 @@ public class UserProfileFragment extends AlfrescoFragment implements OnMenuItemC
         // handler can go away...)
         if (myIntent.resolveActivity(activity.getPackageManager()) == null)
         {
-            AlfrescoNotificationManager.getInstance(activity).showAlertCrouton((Activity) activity,
+            AlfrescoNotificationManager.getInstance(activity).showAlertCrouton((FragmentActivity) activity,
                     activity.getString(R.string.feature_disable));
             return;
         }
@@ -828,7 +828,7 @@ public class UserProfileFragment extends AlfrescoFragment implements OnMenuItemC
             myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             if (myIntent.resolveActivity(myContext.getPackageManager()) == null)
             {
-                AlfrescoNotificationManager.getInstance(myContext).showAlertCrouton((Activity) myContext,
+                AlfrescoNotificationManager.getInstance(myContext).showAlertCrouton((FragmentActivity) myContext,
                         myContext.getString(R.string.feature_disable));
                 return;
             }
@@ -843,7 +843,7 @@ public class UserProfileFragment extends AlfrescoFragment implements OnMenuItemC
     // ///////////////////////////////////////////////////////////////////////////
     // BUILDER
     // ///////////////////////////////////////////////////////////////////////////
-    public static Builder with(Activity activity)
+    public static Builder with(FragmentActivity activity)
     {
         return new Builder(activity);
     }
@@ -853,13 +853,13 @@ public class UserProfileFragment extends AlfrescoFragment implements OnMenuItemC
         // ///////////////////////////////////////////////////////////////////////////
         // CONSTRUCTORS
         // ///////////////////////////////////////////////////////////////////////////
-        public Builder(Activity activity)
+        public Builder(FragmentActivity activity)
         {
             super(activity);
             this.extraConfiguration = new Bundle();
         }
 
-        public Builder(Activity appActivity, Map<String, Object> configuration)
+        public Builder(FragmentActivity appActivity, Map<String, Object> configuration)
         {
             super(appActivity, configuration);
             menuIconId = R.drawable.ic_person_light;

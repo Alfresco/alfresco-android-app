@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.fragments.node.details;
 
 import java.lang.ref.WeakReference;
@@ -42,12 +42,11 @@ import org.alfresco.mobile.android.sync.utils.NodeSyncPlaceHolder;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v13.app.FragmentStatePagerAdapter;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 
@@ -185,7 +184,7 @@ public class PagerNodeDetailsFragment extends NodeDetailsFragment
     // ///////////////////////////////////////////////////////////////////////////
     // BUILDER
     // ///////////////////////////////////////////////////////////////////////////
-    public static Builder with(Activity activity)
+    public static Builder with(FragmentActivity activity)
     {
         return new Builder(activity);
     }
@@ -195,12 +194,12 @@ public class PagerNodeDetailsFragment extends NodeDetailsFragment
         // //////////////////////////////////////////////////////////////////////////
         // CONSTRUCTORS
         // ///////////////////////////////////////////////////////////////////////////
-        public Builder(Activity activity)
+        public Builder(FragmentActivity activity)
         {
             super(activity);
         }
 
-        public Builder(Activity appActivity, Map<String, Object> configuration)
+        public Builder(FragmentActivity appActivity, Map<String, Object> configuration)
         {
             super(appActivity, configuration);
         }
@@ -228,7 +227,7 @@ class NodeDetailsPagerAdapter extends FragmentStatePagerAdapter
 
     protected static final int TAB_HISTORY = 3;
 
-    private WeakReference<Activity> activity;
+    private WeakReference<FragmentActivity> activity;
 
     private final Node node;
 
@@ -238,10 +237,11 @@ class NodeDetailsPagerAdapter extends FragmentStatePagerAdapter
 
     private boolean isTabletLayout = false;
 
-    public NodeDetailsPagerAdapter(FragmentManager fm, Activity activity, Node node, Folder parentFolder)
+    public NodeDetailsPagerAdapter(android.support.v4.app.FragmentManager fm, FragmentActivity activity, Node node,
+            Folder parentFolder)
     {
         super(fm);
-        this.activity = new WeakReference<Activity>(activity);
+        this.activity = new WeakReference<>(activity);
         this.node = node;
         this.parentFolder = parentFolder;
 
