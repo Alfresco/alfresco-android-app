@@ -30,7 +30,6 @@ import org.alfresco.mobile.android.async.site.member.CancelPendingMembershipEven
 import org.alfresco.mobile.android.async.site.member.SiteMembershipEvent;
 import org.alfresco.mobile.android.async.site.search.SiteSearchEvent;
 import org.alfresco.mobile.android.async.site.search.SiteSearchRequest;
-import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 
 import android.os.Bundle;
@@ -130,9 +129,9 @@ public class SearchSitesFragment extends CommonBrowserSitesFragment
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
             {
-                if (event != null && (event.getAction() == KeyEvent.ACTION_DOWN)
-                        && ((actionId == EditorInfo.IME_ACTION_SEARCH)
-                                || (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)))
+                if (event != null
+                        && (event.getAction() == KeyEvent.ACTION_DOWN)
+                        && ((actionId == EditorInfo.IME_ACTION_SEARCH) || (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)))
                 {
                     search();
                     return true;
@@ -198,28 +197,14 @@ public class SearchSitesFragment extends CommonBrowserSitesFragment
     // ///////////////////////////////////////////////////////////////////////////
     private void activateSend()
     {
-        if (searchText.getText().length() > 0)
-        {
-            bAdd.setEnabled(true);
-        }
-        else
-        {
-            bAdd.setEnabled(false);
-        }
+        bAdd.setEnabled(true);
     }
 
     private void search()
     {
-        if (searchText.getText().length() > 0)
-        {
-            keyword = searchText.getText().toString().trim();
-            refresh();
-            bAdd.setEnabled(false);
-        }
-        else
-        {
-            AlfrescoNotificationManager.getInstance(getActivity()).showToast(R.string.search_form_hint);
-        }
+        keyword = searchText.getText().toString().trim();
+        refresh();
+        bAdd.setEnabled(false);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
