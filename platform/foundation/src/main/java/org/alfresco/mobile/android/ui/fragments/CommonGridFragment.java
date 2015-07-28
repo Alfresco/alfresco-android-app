@@ -47,6 +47,7 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public abstract class CommonGridFragment extends AlfrescoFragment implements RefreshFragment, GridFragment,
@@ -222,7 +223,9 @@ public abstract class CommonGridFragment extends AlfrescoFragment implements Ref
             setListShown(true);
             adapter = onAdapterCreation();
             gv.setAdapter(adapter);
-            prepareEmptyInitialView(ev);
+            prepareEmptyInitialView(ev, (ImageView) ev.findViewById(R.id.empty_picture),
+                    (TextView) ev.findViewById(R.id.empty_text),
+                    (TextView) ev.findViewById(R.id.empty_text_description));
         }
     }
 
@@ -389,14 +392,16 @@ public abstract class CommonGridFragment extends AlfrescoFragment implements Ref
         }
     }
 
-    protected void prepareEmptyView(View ev)
+    protected void prepareEmptyView(View ev, ImageView emptyImageView, TextView firstEmptyMessage,
+            TextView secondEmptyMessage)
     {
 
     }
 
-    protected void prepareEmptyInitialView(View ev)
+    protected void prepareEmptyInitialView(View ev, ImageView emptyImageView, TextView firstEmptyMessage,
+            TextView secondEmptyMessage)
     {
-        prepareEmptyView(ev);
+        prepareEmptyView(ev, emptyImageView, firstEmptyMessage, secondEmptyMessage);
     }
 
     protected void displayEmptyView()

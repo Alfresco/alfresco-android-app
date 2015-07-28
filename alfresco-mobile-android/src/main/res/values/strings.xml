@@ -838,4 +838,35 @@
     <string name="description_alfresco_display_name">Name of the server associated to the repository.</string>
     <string name="default_alfresco_display_name" translatable="false">Alfresco Server</string>
 
+
+    <!-- Empty -->
+    <string name="nodebrowser_empty_ro_title">This folder is empty</string>
+    <string name="nodebrowser_empty_rw_title">@string/nodebrowser_empty_ro_title</string>
+    <string name="nodebrowser_empty_rw_description">Use + to add files to this folder.</string>
+    <string name="favorites_empty_title">No favorites found</string>
+    <string name="favorites_empty_description">You can favorite files and folders for quick access.</string>
+    <string name="sites_my_empty_title">You haven\'t joined any sites yet</string>
+    <string name="sites_my_empty_description">Look at Site Finder to find sites you can join.</string>
+    <string name="sites_favorites_empty_title">No favourites found</string>
+    <string name="sites_favorites_empty_description">You can favorite sites for quick access.</string>
+    <string name="sites_search_empty_title">No sites found</string>
+    <string name="sites_search_empty_description">Try using a different search term.</string>
+    <string name="tasks_list_empty_title">You don\'t have any tasks right now</string>
+    <string name="tasks_list_empty_description">Create a task for yourself or assign it to someone else.</string>
+    <string name="activities_list_empty_title">There are no activities to show</string>
+    <string name="activities_list_empty_description">Join Alfresco sites and you’ll see your colleagues activities.</string>
+    <string name="node_search_empty_title">No results found</string>
+    <string name="node_search_empty_description">Try using a different search term.</string>
+    <string name="people_search_empty_title">No users found</string>
+    <string name="people_search_empty_description">Try using a different search term.</string>
+
+
+    <string name="empty_site">No sites available</string>
+    <string name="empty_version">No version history available</string>
+    <string name="empty_session">No session available</string>
+    <string name="empty_actvity">No activity found</string>
+    <string name="empty_tag">No tag found</string>
+    <string name="empty_comment">No comments found</string>
+    <string name="empty_search">No files found</string>
+
 </resources>

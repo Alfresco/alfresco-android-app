@@ -37,6 +37,8 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.squareup.otto.Subscribe;
 
@@ -144,6 +146,17 @@ public class UsersFragment extends PeopleFragment
                 UserProfileFragment.with(getActivity()).personId(item.getIdentifier()).display();
             }
         }
+    }
+
+    @Override
+    protected void prepareEmptyView(View ev, ImageView emptyImageView, TextView firstEmptyMessage,
+            TextView secondEmptyMessage)
+    {
+        emptyImageView.setLayoutParams(DisplayUtils.resizeLayout(getActivity(), 275, 275));
+        emptyImageView.setImageResource(R.drawable.ic_empty_search_people);
+        firstEmptyMessage.setText(R.string.people_search_empty_title);
+        secondEmptyMessage.setVisibility(View.VISIBLE);
+        secondEmptyMessage.setText(R.string.people_search_empty_description);
     }
 
     // ///////////////////////////////////////////////////////////////////////////

@@ -27,6 +27,7 @@ import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import com.mobidevelop.widget.SplitPaneLayout;
 
@@ -168,6 +169,12 @@ public abstract class DisplayUtils
     public static int getPixels(Context context, int sizeInDp)
     {
         return context.getResources().getDimensionPixelSize(sizeInDp);
+    }
+
+    public static LinearLayout.LayoutParams resizeLayout(Context context, int widthInDp, int heightInDp)
+    {
+        return new LinearLayout.LayoutParams(getDPI(context.getResources().getDisplayMetrics(), widthInDp), getDPI(
+                context.getResources().getDisplayMetrics(), heightInDp));
     }
 
     // ///////////////////////////////////////////

@@ -259,12 +259,40 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
     }
 
     @Override
-    protected void prepareEmptyView(View ev)
+    protected void prepareEmptyView(View ev, ImageView emptyImageView, TextView firstEmptyMessage,
+            TextView secondEmptyMessage)
     {
-        ((ImageView) ev.findViewById(R.id.empty_picture)).setImageResource(R.drawable.ic_empty_folder);
-        ((TextView) ev.findViewById(R.id.empty_text)).setText("Create, Add and Upload");
-        ((TextView) ev.findViewById(R.id.empty_text_description)).setText("This folder is currently empty.");
-        ev.findViewById(R.id.empty_text_description).setVisibility(View.VISIBLE);
+
+        Permissions permission;
+        int iconId = R.drawable.ic_empty_folder_ro;
+        int titleId = R.string.nodebrowser_empty_ro_title;
+        int descriptionId = -1;
+        try
+        {
+            if (parentFolder != null)
+            {
+                permission = getSession().getServiceRegistry().getDocumentFolderService().getPermissions(parentFolder);
+                if (permission.canAddChildren())
+                {
+                    iconId = R.drawable.ic_empty_folder_rw;
+                    titleId = R.string.nodebrowser_empty_rw_title;
+                    descriptionId = R.string.nodebrowser_empty_rw_description;
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            // DO Nothing
+        }
+
+        emptyImageView.setImageResource(iconId);
+        emptyImageView.setLayoutParams(DisplayUtils.resizeLayout(getActivity(), 275, 275));
+        firstEmptyMessage.setText(titleId);
+        if (descriptionId != -1)
+        {
+            secondEmptyMessage.setVisibility(View.VISIBLE);
+            secondEmptyMessage.setText(descriptionId);
+        }
     }
 
     @Override
@@ -777,8 +805,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
 
         // Create and show the dialog.
         AddFolderDialogFragment.newInstance(parentFolder).show(
-                getActivity().getSupportFragmentManager().beginTransaction(),
-                CreateFolderDialogFragment.TAG);
+                getActivity().getSupportFragmentManager().beginTransaction(), CreateFolderDialogFragment.TAG);
     }
 
     public void refresh()

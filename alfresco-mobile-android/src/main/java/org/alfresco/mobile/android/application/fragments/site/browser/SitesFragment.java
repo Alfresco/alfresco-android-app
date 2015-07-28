@@ -20,6 +20,7 @@ package org.alfresco.mobile.android.application.fragments.site.browser;
 import java.util.Map;
 
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.builder.ListingFragmentBuilder;
 import org.alfresco.mobile.android.async.site.SiteFavoriteEvent;
 import org.alfresco.mobile.android.async.site.SitesEvent;
@@ -30,6 +31,9 @@ import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.squareup.otto.Subscribe;
 
@@ -72,6 +76,20 @@ public class SitesFragment extends CommonBrowserSitesFragment
             isFavoriteListing = favorite;
             isMemberSite = !favorite;
         }
+    }
+
+    @Override
+    protected void prepareEmptyView(View ev, ImageView emptyImageView, TextView firstEmptyMessage,
+            TextView secondEmptyMessage)
+    {
+        emptyImageView.setImageResource(isFavoriteListing ? R.drawable.ic_empty_sites_favorite
+                : R.drawable.ic_empty_sites_my);
+        emptyImageView.setLayoutParams(DisplayUtils.resizeLayout(getActivity(), 275, 275));
+        firstEmptyMessage.setText(isFavoriteListing ? R.string.sites_favorites_empty_title
+                : R.string.sites_my_empty_title);
+        secondEmptyMessage.setVisibility(View.VISIBLE);
+        secondEmptyMessage.setText(isFavoriteListing ? R.string.sites_favorites_empty_description
+                : R.string.sites_my_empty_description);
     }
 
     // ///////////////////////////////////////////////////////////////////////////

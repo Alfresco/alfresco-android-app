@@ -21,6 +21,7 @@ import java.util.Map;
 
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.builder.ListingFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.site.browser.CommonBrowserSitesFragment;
 import org.alfresco.mobile.android.async.OperationRequest;
@@ -44,6 +45,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.otto.Subscribe;
@@ -170,18 +172,25 @@ public class SearchSitesFragment extends CommonBrowserSitesFragment
     }
 
     @Override
-    protected void prepareEmptyInitialView(View ev)
+    protected void prepareEmptyInitialView(View ev, ImageView emptyImageView, TextView firstEmptyMessage,
+            TextView secondEmptyMessage)
     {
-        ev.findViewById(R.id.empty_text).setVisibility(View.GONE);
-        ev.findViewById(R.id.empty_text_description).setVisibility(View.GONE);
+        emptyImageView.setLayoutParams(DisplayUtils.resizeLayout(getActivity(), 275, 275));
+        emptyImageView.setImageResource(R.drawable.ic_empty_search_sites);
+        firstEmptyMessage.setVisibility(View.GONE);
+        secondEmptyMessage.setVisibility(View.GONE);
     }
 
     @Override
-    protected void prepareEmptyView(View ev)
+    protected void prepareEmptyView(View ev, ImageView emptyImageView, TextView firstEmptyMessage,
+            TextView secondEmptyMessage)
     {
-        ev.findViewById(R.id.empty_text).setVisibility(View.VISIBLE);
-        ((TextView) ev.findViewById(R.id.empty_text)).setText(R.string.sites_empty_title);
-        ev.findViewById(R.id.empty_text_description).setVisibility(View.GONE);
+        emptyImageView.setLayoutParams(DisplayUtils.resizeLayout(getActivity(), 275, 275));
+        emptyImageView.setImageResource(R.drawable.ic_empty_search_sites);
+        firstEmptyMessage.setVisibility(View.VISIBLE);
+        firstEmptyMessage.setText(R.string.sites_search_empty_title);
+        secondEmptyMessage.setVisibility(View.VISIBLE);
+        secondEmptyMessage.setText(R.string.sites_search_empty_description);
     }
 
     // ///////////////////////////////////////////////////////////////////////////

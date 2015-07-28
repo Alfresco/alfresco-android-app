@@ -48,6 +48,8 @@ import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.squareup.otto.Subscribe;
 
@@ -83,6 +85,17 @@ public class FavoritesFragment extends FavoritesNodeFragment
     {
         super.onResume();
         UIUtils.displayTitle(getActivity(), R.string.menu_favorites);
+    }
+
+    @Override
+    protected void prepareEmptyView(View ev, ImageView emptyImageView, TextView firstEmptyMessage,
+            TextView secondEmptyMessage)
+    {
+        emptyImageView.setImageResource(R.drawable.ic_empty_favorites);
+        emptyImageView.setLayoutParams(DisplayUtils.resizeLayout(getActivity(), 275, 275));
+        firstEmptyMessage.setText(R.string.favorites_empty_title);
+        secondEmptyMessage.setVisibility(View.VISIBLE);
+        secondEmptyMessage.setText(R.string.favorites_empty_description);
     }
 
     @Override
