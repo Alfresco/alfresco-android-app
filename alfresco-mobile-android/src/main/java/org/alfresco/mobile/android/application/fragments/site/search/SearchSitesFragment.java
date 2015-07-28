@@ -21,6 +21,7 @@ import java.util.Map;
 
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.builder.ListingFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.site.browser.CommonBrowserSitesFragment;
 import org.alfresco.mobile.android.async.OperationRequest;
@@ -29,7 +30,6 @@ import org.alfresco.mobile.android.async.site.member.CancelPendingMembershipEven
 import org.alfresco.mobile.android.async.site.member.SiteMembershipEvent;
 import org.alfresco.mobile.android.async.site.search.SiteSearchEvent;
 import org.alfresco.mobile.android.async.site.search.SiteSearchRequest;
-import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 
 import android.os.Bundle;
@@ -44,6 +44,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.otto.Subscribe;
@@ -128,9 +129,9 @@ public class SearchSitesFragment extends CommonBrowserSitesFragment
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
             {
-                if (event != null && (event.getAction() == KeyEvent.ACTION_DOWN)
-                        && ((actionId == EditorInfo.IME_ACTION_SEARCH)
-                                || (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)))
+                if (event != null
+                        && (event.getAction() == KeyEvent.ACTION_DOWN)
+                        && ((actionId == EditorInfo.IME_ACTION_SEARCH) || (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)))
                 {
                     search();
                     return true;
@@ -170,18 +171,25 @@ public class SearchSitesFragment extends CommonBrowserSitesFragment
     }
 
     @Override
-    protected void prepareEmptyInitialView(View ev)
+    protected void prepareEmptyInitialView(View ev, ImageView emptyImageView, TextView firstEmptyMessage,
+            TextView secondEmptyMessage)
     {
-        ev.findViewById(R.id.empty_text).setVisibility(View.GONE);
-        ev.findViewById(R.id.empty_text_description).setVisibility(View.GONE);
+        emptyImageView.setLayoutParams(DisplayUtils.resizeLayout(getActivity(), 275, 275));
+        emptyImageView.setImageResource(R.drawable.ic_empty_search_sites);
+        firstEmptyMessage.setVisibility(View.GONE);
+        secondEmptyMessage.setVisibility(View.GONE);
     }
 
     @Override
-    protected void prepareEmptyView(View ev)
+    protected void prepareEmptyView(View ev, ImageView emptyImageView, TextView firstEmptyMessage,
+            TextView secondEmptyMessage)
     {
-        ev.findViewById(R.id.empty_text).setVisibility(View.VISIBLE);
-        ((TextView) ev.findViewById(R.id.empty_text)).setText(R.string.sites_empty_title);
-        ev.findViewById(R.id.empty_text_description).setVisibility(View.GONE);
+        emptyImageView.setLayoutParams(DisplayUtils.resizeLayout(getActivity(), 275, 275));
+        emptyImageView.setImageResource(R.drawable.ic_empty_search_sites);
+        firstEmptyMessage.setVisibility(View.VISIBLE);
+        firstEmptyMessage.setText(R.string.sites_search_empty_title);
+        secondEmptyMessage.setVisibility(View.VISIBLE);
+        secondEmptyMessage.setText(R.string.sites_search_empty_description);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -189,28 +197,14 @@ public class SearchSitesFragment extends CommonBrowserSitesFragment
     // ///////////////////////////////////////////////////////////////////////////
     private void activateSend()
     {
-        if (searchText.getText().length() > 0)
-        {
-            bAdd.setEnabled(true);
-        }
-        else
-        {
-            bAdd.setEnabled(false);
-        }
+        bAdd.setEnabled(true);
     }
 
     private void search()
     {
-        if (searchText.getText().length() > 0)
-        {
-            keyword = searchText.getText().toString().trim();
-            refresh();
-            bAdd.setEnabled(false);
-        }
-        else
-        {
-            AlfrescoNotificationManager.getInstance(getActivity()).showToast(R.string.search_form_hint);
-        }
+        keyword = searchText.getText().toString().trim();
+        refresh();
+        bAdd.setEnabled(false);
     }
 
     // ///////////////////////////////////////////////////////////////////////////

@@ -59,5 +59,4 @@
     <string name="config_org_alfresco_client_view_sync" translatable="false">org.alfresco.mobile.android.application.fragments.sync.SyncFragment$Builder</string>
     <string name="config_org_alfresco_client_view_favorites" translatable="false">org.alfresco.mobile.android.application.fragments.node.favorite.FavoritesFragment$Builder</string>
 
-
 </resources>

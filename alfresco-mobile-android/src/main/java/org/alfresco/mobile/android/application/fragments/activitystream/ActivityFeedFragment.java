@@ -37,7 +37,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.squareup.otto.Subscribe;
 
@@ -64,6 +67,20 @@ public class ActivityFeedFragment extends org.alfresco.mobile.android.ui.activit
         cbf.setArguments(b);
         b.putBoolean(ARGUMENT_BASED_ON_TEMPLATE, true);
         return cbf;
+    }
+
+    // /////////////////////////////////////////////////////////////
+    // LIFECYCLE
+    // ////////////////////////////////////////////////////////////
+    @Override
+    protected void prepareEmptyView(View ev, ImageView emptyImageView, TextView firstEmptyMessage,
+            TextView secondEmptyMessage)
+    {
+        emptyImageView.setLayoutParams(DisplayUtils.resizeLayout(getActivity(), 275, 275));
+        emptyImageView.setImageResource(R.drawable.ic_empty_activities);
+        firstEmptyMessage.setText(R.string.activities_list_empty_title);
+        secondEmptyMessage.setVisibility(View.VISIBLE);
+        secondEmptyMessage.setText(R.string.activities_list_empty_description);
     }
 
     // /////////////////////////////////////////////////////////////

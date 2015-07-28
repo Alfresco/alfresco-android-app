@@ -17,6 +17,7 @@
  */
 package org.alfresco.mobile.android.ui.fragments;
 
+import org.alfresco.mobile.android.foundation.R;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
 
 import android.annotation.TargetApi;
@@ -24,6 +25,8 @@ import android.database.Cursor;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
 import android.widget.CursorAdapter;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 @TargetApi(11)
 /**
@@ -49,7 +52,9 @@ public abstract class BaseCursorGridFragment extends CommonGridFragment implemen
 
         if (cursor.getCount() == 0)
         {
-            prepareEmptyView(ev);
+            prepareEmptyView(ev, (ImageView) ev.findViewById(R.id.empty_picture),
+                    (TextView) ev.findViewById(R.id.empty_text),
+                    (TextView) ev.findViewById(R.id.empty_text_description));
             displayEmptyView();
         }
         else

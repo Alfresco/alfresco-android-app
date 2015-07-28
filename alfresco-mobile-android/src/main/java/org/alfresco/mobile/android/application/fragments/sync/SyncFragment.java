@@ -81,7 +81,6 @@ import android.view.View;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.squareup.otto.Subscribe;
@@ -273,15 +272,14 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
     }
 
     @Override
-    protected void prepareEmptyView(View ev)
+    protected void prepareEmptyView(View ev, ImageView emptyImageView, TextView firstEmptyMessage,
+            TextView secondEmptyMessage)
     {
-        ((ImageView) ev.findViewById(R.id.empty_picture)).setImageResource(R.drawable.ic_empty_folder);
-
-        ((ImageView) ev.findViewById(R.id.empty_picture)).setLayoutParams(new LinearLayout.LayoutParams(getDPI(
-                getResources().getDisplayMetrics(), 275), getDPI(getResources().getDisplayMetrics(), 275)));
-        ((TextView) ev.findViewById(R.id.empty_text)).setText(R.string.sync_empty_title);
-        ((TextView) ev.findViewById(R.id.empty_text_description)).setText(R.string.sync_empty_description);
-        ev.findViewById(R.id.empty_text_description).setVisibility(View.VISIBLE);
+        emptyImageView.setImageResource(R.drawable.ic_empty_folder_rw);
+        emptyImageView.setLayoutParams(DisplayUtils.resizeLayout(getActivity(), 275, 275));
+        firstEmptyMessage.setText(R.string.sync_empty_title);
+        secondEmptyMessage.setVisibility(View.VISIBLE);
+        secondEmptyMessage.setText(R.string.sync_empty_description);
     }
 
     // /////////////////////////////////////////////////////////////

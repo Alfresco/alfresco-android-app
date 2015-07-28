@@ -50,6 +50,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.squareup.otto.Subscribe;
 
@@ -100,6 +102,17 @@ public class TasksFragment extends TasksFoundationFragment
         }
         getActivity().invalidateOptionsMenu();
         super.onResume();
+    }
+
+    @Override
+    protected void prepareEmptyView(View ev, ImageView emptyImageView, TextView firstEmptyMessage,
+            TextView secondEmptyMessage)
+    {
+        emptyImageView.setLayoutParams(DisplayUtils.resizeLayout(getActivity(), 275, 275));
+        emptyImageView.setImageResource(R.drawable.ic_empty_tasks);
+        firstEmptyMessage.setText(R.string.tasks_list_empty_title);
+        secondEmptyMessage.setVisibility(View.VISIBLE);
+        secondEmptyMessage.setText(R.string.tasks_list_empty_description);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
