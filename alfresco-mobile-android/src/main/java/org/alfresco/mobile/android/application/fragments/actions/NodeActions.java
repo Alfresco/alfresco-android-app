@@ -33,6 +33,7 @@ import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsFragment;
 import org.alfresco.mobile.android.application.fragments.node.details.PagerNodeDetailsFragment;
+import org.alfresco.mobile.android.application.fragments.node.favorite.FavoritesFragment;
 import org.alfresco.mobile.android.application.fragments.node.search.DocumentFolderSearchFragment;
 import org.alfresco.mobile.android.application.fragments.node.update.UpdateDialogFragment;
 import org.alfresco.mobile.android.application.fragments.sync.SyncFragment;
@@ -420,7 +421,7 @@ public class NodeActions extends AbstractActions<Node>
 
     public void download()
     {
-        List<OperationBuilder> requestsBuilder = new ArrayList<OperationBuilder>(selectedItems.size());
+        List<OperationBuilder> requestsBuilder = new ArrayList<>(selectedItems.size());
         for (Document doc : selectedDocument)
         {
             requestsBuilder.add(new DownloadRequest.Builder(parentFolder, doc, false)
@@ -539,7 +540,7 @@ public class NodeActions extends AbstractActions<Node>
                 requestsBuilder);
 
         if (fr instanceof DocumentFolderBrowserFragment || fr instanceof SyncFragment
-                || fr instanceof DocumentFolderSearchFragment)
+                || fr instanceof DocumentFolderSearchFragment || fr instanceof FavoritesFragment)
         {
             int titleId = R.string.unfavorite;
             int iconId = R.drawable.ic_unfavorite_dark;
@@ -566,7 +567,7 @@ public class NodeActions extends AbstractActions<Node>
                 requestsBuilder);
 
         if (fr instanceof DocumentFolderBrowserFragment || fr instanceof SyncFragment
-                || fr instanceof DocumentFolderSearchFragment)
+                || fr instanceof DocumentFolderSearchFragment || fr instanceof FavoritesFragment)
         {
             int titleId = R.string.unsync;
             int iconId = R.drawable.ic_synced;
@@ -592,7 +593,7 @@ public class NodeActions extends AbstractActions<Node>
         String operationId = Operator.with(fr.getActivity(), SessionUtils.getAccount(fr.getActivity())).load(requestsBuilder);
 
         if (fr instanceof DocumentFolderBrowserFragment || fr instanceof SyncFragment
-                || fr instanceof DocumentFolderSearchFragment)
+                || fr instanceof DocumentFolderSearchFragment || fr instanceof FavoritesFragment)
         {
             int titleId = R.string.unlike;
             int iconId = R.drawable.ic_unlike;

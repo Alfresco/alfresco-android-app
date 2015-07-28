@@ -18,6 +18,7 @@
 package org.alfresco.mobile.android.application.fragments.node.favorite;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.model.Folder;
@@ -27,10 +28,14 @@ import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
+import org.alfresco.mobile.android.application.fragments.actions.AbstractActions;
+import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
 import org.alfresco.mobile.android.application.fragments.builder.ListingFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.node.browser.NodeAdapter;
+import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsActionMode;
 import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsFragment;
+import org.alfresco.mobile.android.async.node.favorite.FavoriteNodeEvent;
 import org.alfresco.mobile.android.async.node.favorite.FavoriteNodesEvent;
 import org.alfresco.mobile.android.ui.ListingModeFragment;
 import org.alfresco.mobile.android.ui.node.favorite.FavoritesNodeFragment;
@@ -49,6 +54,10 @@ import com.squareup.otto.Subscribe;
 public class FavoritesFragment extends FavoritesNodeFragment
 {
     public static final String TAG = FavoritesFragment.class.getName();
+
+    protected List<Node> selectedItems = new ArrayList<Node>(1);
+
+    private AbstractActions<Node> nActions;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTOR
@@ -74,6 +83,16 @@ public class FavoritesFragment extends FavoritesNodeFragment
     {
         super.onResume();
         UIUtils.displayTitle(getActivity(), R.string.menu_favorites);
+    }
+
+    @Override
+    public void onStop()
+    {
+        if (nActions != null)
+        {
+            nActions.finish();
+        }
+        super.onStop();
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -102,40 +121,129 @@ public class FavoritesFragment extends FavoritesNodeFragment
     {
         Node item = (Node) g.getItemAtPosition(position);
 
+        // In other case, listing mode
         Boolean hideDetails = false;
         if (!selectedItems.isEmpty())
         {
-            hideDetails = selectedItems.get(0).equals(item);
-            selectedItems.clear();
+            hideDetails = selectedItems.get(0).getIdentifier().equals(item.getIdentifier());
         }
-        g.setChoiceMode(GridView.CHOICE_MODE_SINGLE);
         g.setItemChecked(position, true);
-        v.setSelected(true);
 
-        if (DisplayUtils.hasCentralPane(getActivity()))
+        if (nActions != null && nActions.hasMultiSelectionEnabled())
         {
-            selectedItems.add(item);
+            nActions.selectNode(item);
+            if (selectedItems.size() == 0)
+            {
+                hideDetails = true;
+            }
+        }
+        else
+        {
+            selectedItems.clear();
+            if (!hideDetails && item.isDocument() && DisplayUtils.hasCentralPane(getActivity()))
+            {
+                selectedItems.add(item);
+            }
         }
 
         if (hideDetails)
         {
-            if (DisplayUtils.hasCentralPane(getActivity()))
+            FragmentDisplayer.clearCentralPane(getActivity());
+            if (nActions != null && !nActions.hasMultiSelectionEnabled())
             {
-                FragmentDisplayer.with(getActivity()).remove(DisplayUtils.getCentralFragmentId(getActivity()));
+                nActions.finish();
             }
-            selectedItems.clear();
         }
-        else
+        else if (nActions == null || (nActions != null && !nActions.hasMultiSelectionEnabled()))
         {
             if (item.isFolder())
             {
+                FragmentDisplayer.clearCentralPane(getActivity());
                 DocumentFolderBrowserFragment.with(getActivity()).folder((Folder) item).shortcut(true).display();
             }
             else
             {
-                // Show properties
                 NodeDetailsFragment.with(getActivity()).nodeId(item.getIdentifier()).display();
             }
+        }
+
+        if (nActions != null && nActions.hasMultiSelectionEnabled())
+        {
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    public boolean onListItemLongClick(GridView l, View v, int position, long id)
+    {
+        // We disable long click during import mode.
+        if (mode == MODE_IMPORT || mode == MODE_PICK) { return false; }
+
+        if (nActions != null && nActions instanceof NodeDetailsActionMode)
+        {
+            nActions.finish();
+        }
+
+        Node n = (Node) l.getItemAtPosition(position);
+        boolean b;
+        l.setItemChecked(position, true);
+        b = startSelection(n);
+        if (DisplayUtils.hasCentralPane(getActivity()))
+        {
+            FragmentDisplayer.with(getActivity()).remove(DisplayUtils.getCentralFragmentId(getActivity()));
+            FragmentDisplayer.with(getActivity()).remove(android.R.id.tabcontent);
+        }
+        return b;
+    }
+
+    private boolean startSelection(Node item)
+    {
+        if (nActions != null) { return false; }
+
+        selectedItems.clear();
+        selectedItems.add(item);
+
+        // Start the CAB using the ActionMode.Callback defined above
+        nActions = new NodeActions(FavoritesFragment.this, selectedItems);
+        nActions.setOnFinishModeListener(new AbstractActions.onFinishModeListener()
+        {
+            @Override
+            public void onFinish()
+            {
+                nActions = null;
+                unselect();
+                refreshListView();
+            }
+        });
+        getActivity().startActionMode(nActions);
+        adapter.notifyDataSetChanged();
+        return true;
+    }
+
+    public void unselect()
+    {
+        selectedItems.clear();
+    }
+
+    public void selectAll()
+    {
+        if (nActions != null && adapter != null)
+        {
+            nActions.selectNodes(((NodeAdapter) adapter).getNodes());
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // EVENTS
+    // ///////////////////////////////////////////////////////////////////////////
+    @Subscribe
+    public void onFavoriteNodeEvent(FavoriteNodeEvent event)
+    {
+        if (event.hasException) { return; }
+        if (adapter != null)
+        {
+            adapter.notifyDataSetChanged();
+            refresh();
         }
     }
 
