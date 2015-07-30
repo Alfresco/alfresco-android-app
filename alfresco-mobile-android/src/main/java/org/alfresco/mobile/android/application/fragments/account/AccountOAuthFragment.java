@@ -162,7 +162,7 @@ public class AccountOAuthFragment extends OAuthFragment
                 }
                 else
                 {
-                    getActivity().getFragmentManager().popBackStack();
+                    getActivity().getSupportFragmentManager().popBackStack();
                 }
 
                 Log.e(TAG, Log.getStackTraceString(e));
@@ -278,7 +278,7 @@ public class AccountOAuthFragment extends OAuthFragment
 
         if (event.hasException)
         {
-            getActivity().getFragmentManager().popBackStack();
+            getActivity().getSupportFragmentManager().popBackStack();
             retryOAuthAuthentication();
             return;
         }
@@ -286,7 +286,7 @@ public class AccountOAuthFragment extends OAuthFragment
         // AlfrescoAccount creation inside the app.
         if (getActivity() instanceof MainActivity)
         {
-            getActivity().getFragmentManager().popBackStack(AccountTypesFragment.TAG,
+            getActivity().getSupportFragmentManager().popBackStack(AccountTypesFragment.TAG,
                     FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
             long accountId = event.data.getId();

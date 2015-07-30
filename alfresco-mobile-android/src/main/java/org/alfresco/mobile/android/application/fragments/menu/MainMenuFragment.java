@@ -175,8 +175,8 @@ public class MainMenuFragment extends AlfrescoFragment implements AdapterView.On
         super.onStart();
 
         if (isAdded() && TAG.equals(getTag())
-                && getActivity().getFragmentManager().findFragmentByTag(GeneralPreferences.TAG) == null
-                && getActivity().getFragmentManager().findFragmentByTag(AboutFragment.TAG) == null)
+                && getActivity().getSupportFragmentManager().findFragmentByTag(GeneralPreferences.TAG) == null
+                && getActivity().getSupportFragmentManager().findFragmentByTag(AboutFragment.TAG) == null)
         {
             FragmentDisplayer.clearCentralPane(getActivity());
         }

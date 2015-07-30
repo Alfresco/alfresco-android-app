@@ -97,7 +97,7 @@ public final class FileExplorerHelper
 
                 if (!backStack)
                 {
-                    activity.getFragmentManager().popBackStack();
+                    activity.getSupportFragmentManager().popBackStack();
                 }
 
                 if (thirdPartyApp)

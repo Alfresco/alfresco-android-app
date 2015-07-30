@@ -648,7 +648,7 @@ public class CreateTaskFragment extends AlfrescoFragment implements UserPickerCa
 
         // Update documents
         updateDocuments();
-        getActivity().getFragmentManager().popBackStackImmediate(DocumentPickerFragment.TAG,
+        getActivity().getSupportFragmentManager().popBackStackImmediate(DocumentPickerFragment.TAG,
                 FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 
