@@ -847,7 +847,7 @@
     <string name="favorites_empty_description">You can favorite files and folders for quick access.</string>
     <string name="sites_my_empty_title">You haven\'t joined any sites yet</string>
     <string name="sites_my_empty_description">Look at Site Finder to find sites you can join.</string>
-    <string name="sites_favorites_empty_title">No favourites found</string>
+    <string name="sites_favorites_empty_title">No favorites found</string>
     <string name="sites_favorites_empty_description">You can favorite sites for quick access.</string>
     <string name="sites_search_empty_title">No sites found</string>
     <string name="sites_search_empty_description">Try using a different search term.</string>
