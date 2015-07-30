@@ -423,6 +423,20 @@
     <string name="download_await">等待下载&#8230;</string>
     <string name="sync_favorites">收藏夹</string>
 
+    <string name="sync_info_one_title">同步已更改！</string>
+    <string name="sync_info_one_first_text">现在，您可以在不同设备上同步不同的文件。 只需找到文件并同步！</string>
+    <string name="sync_info_one_second_text">在您离线时查看和编辑同步的文件。 在您重新上线后，它们将与 Alfresco 自动同步。</string>
+    <string name="sync_info_two_title">我已收藏的文件会怎么样？</string>
+    <string name="sync_info_two_first_text">没问题，它们都将会同步！</string>
+    <string name="sync_info_two_second_text">如果您从现在开始收藏文件，它们将出现在 \"收藏夹\" 选项卡中，但是，在您想要离线访问时，需要同步这些文件。</string>
+    <string name="sync_info_third_title">在哪里可以找到同步的文件？</string>
+    <string name="sync_info_third_first_text">您可以在新的 \"已同步内容\" 视图中查找所有同步的文件！</string>
+    <string name="sync_info_third_second_text">已同步内容</string>
+    <string name="sync_info_validation">好的，我知道了。</string>
+    <string name="sync_info_more_information">了解更多</string>
+    <string name="sync_info_skip">跳过</string>
+    <string name="sync_info_next">下一步</string>
+
 
     <plurals name="sync_complete_description">
         <item quantity="zero">没有同步内容</item>

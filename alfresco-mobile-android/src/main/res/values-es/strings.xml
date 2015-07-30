@@ -423,6 +423,20 @@
     <string name="download_await">Esperando descarga&#8230;</string>
     <string name="sync_favorites">Favoritos</string>
 
+    <string name="sync_info_one_title">La sincronización ha cambiado.</string>
+    <string name="sync_info_one_first_text">Ahora puede sincronizar ficheros diferentes en dispositivos diferentes. Busque un fichero y sincronícelo.</string>
+    <string name="sync_info_one_second_text">Vea y edite sus ficheros sincronizados cuando no esté conectado. Cuando vuelva a conectarse, se sincronizarán automáticamente con Alfresco.</string>
+    <string name="sync_info_two_title">¿Qué ocurre con los ficheros ya marcados como favoritos?</string>
+    <string name="sync_info_two_first_text">Ningún problema, siguen sincronizados.</string>
+    <string name="sync_info_two_second_text">Cuando marque ficheros como favoritos a partir de ahora, estarán en la pestaña Favoritos, pero deberá sincronizarlos si quiere acceder a ellos sin conexión.</string>
+    <string name="sync_info_third_title">¿Dónde están los ficheros sincronizados?</string>
+    <string name="sync_info_third_first_text">Puede encontrarlos en la nueva vista Contenido sincronizado.</string>
+    <string name="sync_info_third_second_text">Contenido sincronizado</string>
+    <string name="sync_info_validation">Lo tengo.</string>
+    <string name="sync_info_more_information">Más información</string>
+    <string name="sync_info_skip">Saltar</string>
+    <string name="sync_info_next">Siguiente</string>
+
 
     <plurals name="sync_complete_description">
         <item quantity="zero">ningún contenido sincronizado</item>

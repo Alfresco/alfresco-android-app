@@ -80,7 +80,7 @@
 
     <!-- WAITING SESSION -->
     <string name="wait_title">お待ちください</string>
-    <string name="wait_message">サーバーに接続しています...</string>
+    <string name="wait_message">サーバーに接続しています&#8230;</string>
 
     <!-- SESSION ERROR -->
     <string name="retry_account_loading">再試行</string>
@@ -162,8 +162,8 @@
     <string name="menu_prefs">設定</string>
 
     <!-- UPLOAD -->
-    <string name="upload_title">アップロード...</string>
-    <string name="upload_pick_document">コンテンツの選択...</string>
+    <string name="upload_title">アップロード&#8230;</string>
+    <string name="upload_pick_document">コンテンツの選択&#8230;</string>
 
     <!-- ACCOUNTS -->
     <string name="accounts_manage">アカウント</string>
@@ -178,8 +178,8 @@
 
     <!-- NETWORKS -->
     <string name="cloud_networks_empty">使用可能なネットワークはありません</string>
-    <string name="manage_accounts">アカウントの管理...</string>
-    <string name="cloud_networks_switch">ネットワークの切り替え...</string>
+    <string name="manage_accounts">アカウントの管理&#8230;</string>
+    <string name="cloud_networks_switch">ネットワークの切り替え&#8230;</string>
 
 
     <!-- AUTHENTICATION -->
@@ -190,9 +190,9 @@
     <!-- NOTIFICATION -->
     <string name="upload">アップロード </string>
     <string name="upload_complete">アップロードが完了しました。</string>
-    <string name="upload_in_progress">アップロードしています...</string>
+    <string name="upload_in_progress">アップロードしています&#8230;</string>
     <string name="update_complete">更新が完了しました。</string>
-    <string name="update_in_progress">更新しています...</string>
+    <string name="update_in_progress">更新しています&#8230;</string>
     <string name="error_unable_open_file_title">ファイルを開けませんでした。</string>
     <string name="error_unable_open_file">このファイル形式は使用できません。 このファイルを読み取ることができるアプリをインストールしてください。</string>
 
@@ -201,7 +201,7 @@
     <string name="error_retrieve_likes">このコンテンツの[いいね!]/[いいね!の取り消し] タグを取得できませんでした。</string>
     <string name="next">次へ</string>
     <string name="save">保存</string>
-    <string name="share_content">コンテンツの共有...</string>
+    <string name="share_content">コンテンツの共有&#8230;</string>
 
     <!-- HELP -->
     <string name="asset_folder_prefix">ja</string>
@@ -232,7 +232,7 @@
     </plurals>
 
     <string name="delete_description_data_protection">データ保護が有効です。\n\n このアカウントを削除すると、コンテンツは保護されていない状態に戻ります。\n\n\"%s\"を削除しますか?</string>
-    <string name="delete_in_progress">削除しています...</string>
+    <string name="delete_in_progress">削除しています&#8230;</string>
     <string name="delete_complete">削除が完了しました</string>
     <string name="delete_sucess">\"%s\" は正常に削除されました。</string>
 
@@ -258,7 +258,7 @@
     <string name="loginfirst">まず Alfresco アカウントにログインしてください</string>
 
     <!-- Comment -->
-    <string name="comment_add_hint">ここにコメントを追加してください...</string>
+    <string name="comment_add_hint">ここにコメントを追加してください&#8230;</string>
 
     <!-- DATA PROTECTION -->
     <string name="data_protection">データ保護</string>
@@ -266,8 +266,8 @@
     <string name="decryption_failed">暗号の解除が失敗しました</string>
     <string name="protect_question"><![CDATA[<p><b>ダウンロードしたすべての Alfresco コンテンツを今すぐ保護しますか?</b><p>  保護することを選択すると、各アカウントでダウンロードしたすべての Alfresco コンテンツが暗号化され、Alfresco 以外のアプリでは読み取ることができなくなります。]]></string>
     <string name="unprotect_question"><![CDATA[<p><b>ダウンロードしたすべての Alfresco コンテンツの保護を今すぐ解除しますか?</b><p>  解除することを選択すると、各 Alfresco アカウントからダウンロードしたすべてのコンテンツの保護が解除されます。]]></string>
-    <string name="decryption_title">データ保護を無効にしています...</string>
-    <string name="encryption_title">データ保護を有効にしています...</string>
+    <string name="decryption_title">データ保護を無効にしています&#8230;</string>
+    <string name="encryption_title">データ保護を有効にしています&#8230;</string>
     <string name="encrypt_action">暗号化</string>
     <string name="decrypt_action">暗号解除</string>
 
@@ -418,11 +418,24 @@
     <string name="sync_save_action">保存</string>
     <string name="sync_resolve_conflict">競合の解決</string>
     <string name="sync_complete">同期が完了しました</string>
-    <string name="sync_in_progress">同期しています...</string>
-    <string name="upload_await">アップロードを待っています...</string>
-    <string name="download_await">ダウンロードを待っています...</string>
+    <string name="sync_in_progress">同期しています&#8230;</string>
+    <string name="upload_await">アップロードを待っています&#8230;</string>
+    <string name="download_await">ダウンロードを待っています&#8230;</string>
     <string name="sync_favorites">お気に入り</string>
 
+    <string name="sync_info_one_title">同期機能が新しくなりました!</string>
+    <string name="sync_info_one_first_text">これからは異なる複数のデバイス上のファイルを同期できます。 操作は簡単! ファイルを選んで同期するだけです。</string>
+    <string name="sync_info_one_second_text">同期しているファイルをオフラインのときに表示して編集しておくと、 オンラインに戻ったときに、自動的に Alfresco と同期されます。</string>
+    <string name="sync_info_two_title">すでにお気に入りに登録済みのファイルはどうなりますか?</string>
+    <string name="sync_info_two_first_text">ご心配いりません。それらのファイルの同期もすべて維持されます。</string>
+    <string name="sync_info_two_second_text">今後お気に入りに登録するファイルは [お気に入り] タブに表示されますが、オフラインでこれらのファイルにアクセスする場合は、ファイルを同期する必要があります。</string>
+    <string name="sync_info_third_title">同期されているファイルはどこで見れますか?</string>
+    <string name="sync_info_third_first_text">同期されているファイルはすべて新しい [同期されているコンテンツ] ビューに表示されます。</string>
+    <string name="sync_info_third_second_text">同期されているコンテンツ</string>
+    <string name="sync_info_validation">了解</string>
+    <string name="sync_info_more_information">さらに詳しく</string>
+    <string name="sync_info_skip">スキップ</string>
+    <string name="sync_info_next">次へ</string>
 
     <plurals name="sync_complete_description">
         <item quantity="zero">同期されたコンテンツはありません</item>
@@ -631,7 +644,7 @@
     <string name="done">完了</string>
     <string name="task_completing">タスクの完了</string>
     <string name="task_reassign">再割り当て</string>
-    <string name="task_reassign_long">このタスクを再割り当てする...</string>
+    <string name="task_reassign_long">このタスクを再割り当てする&#8230;</string>
     <string name="task_claim">要求</string>
     <string name="task_unclaim">プールに戻す</string>
     <string name="task_priority">優先度</string>
@@ -648,7 +661,7 @@
     <string name="task_filter_due_today">本日が期限のタスク</string>
     <string name="task_filter_overdue">期限が過ぎたタスク</string>
     <string name="task_filter_assigned_me">あなたに割り当てられたタスク</string>
-    <string name="task_filter_custom">あなたのフィルタ...</string>
+    <string name="task_filter_custom">あなたのフィルタ&#8230;</string>
 
     <!-- Process Start -->
     <string name="process_start_review">レビューの開始</string>
@@ -665,10 +678,10 @@
     <string name="task_review_documents">このコンテンツをレビューしてください</string>
     <string name="task_assignees_plurals">{0,choice,0#担当者なし|1#1 名の担当者|1&lt;{0}名の担当者}</string>
     <string name="task_assignees">担当者</string>
-    <string name="task_assignees_selection">担当者の選択...</string>
+    <string name="task_assignees_selection">担当者の選択&#8230;</string>
     <string name="process_approvers_plurals">{0,choice,0#承認者なし|1#1/1 名の承認者|1&lt;%s/{0}名の承認者}</string>
     <string name="task_attachments_plurals">{0,choice,0#添付ファイルなし|1#1 個の添付ファイル|1&lt;{0} 個の添付ファイル}</string>
-    <string name="task_attachments_selection">添付ファイルの選択...</string>
+    <string name="task_attachments_selection">添付ファイルの選択&#8230;</string>
     <string name="task_attachments">添付ファイル</string>
     <string name="process_no_description">(メッセージなし)</string>
 
@@ -684,7 +697,7 @@
     <string name="task_todo_description">タスクを担当者に割り当てます</string>
     <string name="task_review_approve">レビューと承認</string>
     <string name="task_review_approve_description">タスクをコンテンツのレビューと承認を行う担当者に割り当てます。</string>
-    <string name="task_delegate_in_progress">再割り当てをしています...</string>
+    <string name="task_delegate_in_progress">再割り当てをしています&#8230;</string>
     <string name="task_delegate_complete">再割り当てが完了しました</string>
     <string name="picker_assignees">担当者の選択</string>
     <string name="picker_due_date">締切日の選択</string>
@@ -771,22 +784,22 @@
 
     <!-- CUSTOM FORMS -->
     <string name="picker_selected_value">%s を選択しました</string>
-    <string name="picker_select_value">%s を追加します...</string>
+    <string name="picker_select_value">%s を追加します&#8230;</string>
     <string name="picker_multi_value_selected">{0,choice,0#No %2$s|1#1 %2$s|1&lt;%1$s %2$s}</string>
 
     <!-- SHORTCUT & ACTIONS -->
     <string name="select_folder">選択</string>
     <string name="shortcut_actions_title">Alfresco - 作成</string>
     <string name="shortcut_title">Alfresco - ショートカット</string>
-    <string name="shortcut_create">ショートカットの作成...</string>
-    <string name="shortcut_action_create">アクションの定義...</string>
+    <string name="shortcut_create">ショートカットの作成&#8230;</string>
+    <string name="shortcut_action_create">アクションの定義&#8230;</string>
     <string name="action_associated">関連付けられているアクション</string>
     <string name="action_photo">写真を撮影する</string>
     <string name="action_text">テキストを書く</string>
     <string name="action_speech2text">音声入力</string>
 
     <string name="mdm_managed">管理者によって管理されています</string>
-    <string name="mdm_loading_configuration">設定を読み込んでいます...</string>
+    <string name="mdm_loading_configuration">設定を読み込んでいます&#8230;</string>
     <string name="sign_in">サインイン</string>
     <string name="error_mdm_loading_configuration"><![CDATA[<p><b>アプリケーションの設定が間違っているようです。</b><br/>問題が解決しない場合は、管理者に問い合わせてください。</p> <br/> エラー : %s]]></string>
     <string name="discardbutton">破棄</string>
