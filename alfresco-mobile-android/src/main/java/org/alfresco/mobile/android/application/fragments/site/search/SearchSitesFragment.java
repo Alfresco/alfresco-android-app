@@ -72,6 +72,7 @@ public class SearchSitesFragment extends CommonBrowserSitesFragment
     {
         super();
         retrieveDataOnCreation = false;
+        loadState = LOAD_VISIBLE;
     }
 
     public static SearchSitesFragment newInstanceByTemplate(Bundle b)
