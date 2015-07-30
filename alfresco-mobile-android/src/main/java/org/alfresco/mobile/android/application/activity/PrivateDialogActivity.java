@@ -165,11 +165,11 @@ public class PrivateDialogActivity extends BaseActivity
     {
         if (action != null && ACTION_EDIT_NODE.equals(action))
         {
-            return (onPickDocumentFragment) getFragmentManager().findFragmentByTag(EditPropertiesFragment.TAG);
+            return (onPickDocumentFragment) getSupportFragmentManager().findFragmentByTag(EditPropertiesFragment.TAG);
         }
         else
         {
-            return (onPickDocumentFragment) getFragmentManager().findFragmentByTag(CreateTaskFragment.TAG);
+            return (onPickDocumentFragment) getSupportFragmentManager().findFragmentByTag(CreateTaskFragment.TAG);
         }
     }
 

@@ -423,6 +423,20 @@
     <string name="download_await">En attente pour télécharger&#8230;</string>
     <string name="sync_favorites">Favoris</string>
 
+    <string name="sync_info_one_title">Synchronisation optimisée !</string>
+    <string name="sync_info_one_first_text">Désormais, synchronisez différents fichiers sur différents appareils. Il suffit de choisir un fichier pour le synchroniser !</string>
+    <string name="sync_info_one_second_text">Consultez et modifiez les fichiers synchronisés hors connexion. Ils seront automatiquement synchronisés dans Alfresco dès la connexion suivante.</string>
+    <string name="sync_info_two_title">Et les fichiers ajoutés aux favoris ?</string>
+    <string name="sync_info_two_first_text">Ils sont tous également synchronisés !</string>
+    <string name="sync_info_two_second_text">Désormais, les fichiers ajoutés aux favoris apparaissent dans l\'onglet Favoris, mais vous devez les synchroniser pour l\'accès hors connexion.</string>
+    <string name="sync_info_third_title">Où se trouvent les fichiers synchronisés ?</string>
+    <string name="sync_info_third_first_text">Tous vos fichiers synchronisés sont accessibles dans la nouvelle vue Contenu synchronisé !</string>
+    <string name="sync_info_third_second_text">Contenu synchronisé</string>
+    <string name="sync_info_validation">J\'ai bien compris.</string>
+    <string name="sync_info_more_information">En savoir plus</string>
+    <string name="sync_info_skip">Ignorer</string>
+    <string name="sync_info_next">Suivant</string>
+
 
     <plurals name="sync_complete_description">
         <item quantity="zero">aucun contenu synchronisé</item>

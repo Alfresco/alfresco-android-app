@@ -423,6 +423,19 @@
     <string name="download_await">Auf Download wird gewartet...</string>
     <string name="sync_favorites">Favoriten</string>
 
+    <string name="sync_info_one_title">Die Synchronisierung wurde geändert.</string>
+    <string name="sync_info_one_first_text">Sie können jetzt verschiedene Dateien auf verschiedenen Geräten synchronisieren. Suchen Sie einfach eine Datei und synchronisieren Sie sie.</string>
+    <string name="sync_info_one_second_text">Ihre synchronisierten Dateien können Sie auch offline anzeigen und bearbeiten. Wenn Sie wieder online sind, werden sie automatisch mit Alfresco synchronisiert.</string>
+    <string name="sync_info_two_title">Was ist mit den Dateien, die ich zu meinen Favoriten hinzugefügt habe?</string>
+    <string name="sync_info_two_first_text">Kein Problem. Die bleiben alle synchronisiert.</string>
+    <string name="sync_info_two_second_text">Wenn Sie künftig Dateien zu Ihren Favoriten hinzufügen, werden sie auf der Registerkarte \'Favoriten\' gespeichert. Sie müssen sie aber synchronisieren, wenn Sie offline darauf zugreifen möchten.</string>
+    <string name="sync_info_third_title">Wo finde ich synchronisierte Dateien?</string>
+    <string name="sync_info_third_first_text">Sie finden alle Ihre synchronisierten Dateien in der neuen Ansicht \'Synchronisierter Inhalt\'.</string>
+    <string name="sync_info_third_second_text">Synchronisierter Inhalt</string>
+    <string name="sync_info_validation">Alles klar.</string>
+    <string name="sync_info_more_information">Mehr dazu</string>
+    <string name="sync_info_skip">Überspringen</string>
+    <string name="sync_info_next">Weiter</string>
 
     <plurals name="sync_complete_description">
         <item quantity="zero">Keinen Inhalt synchronisiert.</item>

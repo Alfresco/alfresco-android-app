@@ -348,7 +348,7 @@ public class AccountEditFragment extends AlfrescoFragment
 
         if (getActivity() instanceof MainActivity)
         {
-            getActivity().getFragmentManager().popBackStack(AccountTypesFragment.TAG,
+            getActivity().getSupportFragmentManager().popBackStack(AccountTypesFragment.TAG,
                     FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
             if (event.data != null && !event.hasException)

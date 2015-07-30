@@ -118,7 +118,8 @@ public class BaseShortcutActivity extends BaseActivity
         // Remove OAuthFragment if one
         if (getFragment(AccountOAuthFragment.TAG) != null)
         {
-            getFragmentManager().popBackStack(AccountOAuthFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            getSupportFragmentManager()
+                    .popBackStack(AccountOAuthFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
 
         removeWaitingDialog();

@@ -40,7 +40,7 @@ public class PassCodeActivity extends FragmentActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.app_passcode_panel);
 
-        if (getFragmentManager().findFragmentByTag(PassCodeDialogFragment.TAG) == null)
+        if (getSupportFragmentManager().findFragmentByTag(PassCodeDialogFragment.TAG) == null)
         {
             PassCodeDialogFragment f = PassCodeDialogFragment.requestPasscode();
             FragmentDisplayer.with(this).load(f).back(false).animate(null).into(FragmentDisplayer.PANEL_LEFT);

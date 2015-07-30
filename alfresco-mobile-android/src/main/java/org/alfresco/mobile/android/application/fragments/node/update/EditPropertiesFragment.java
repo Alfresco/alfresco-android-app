@@ -237,7 +237,7 @@ public class EditPropertiesFragment extends EditNodePropertiesFragment implement
     public void onNodeSelected(String fieldId, Map<String, Node> items)
     {
         formManager.setPropertyValue(fieldId, items);
-        getActivity().getFragmentManager().popBackStackImmediate(DocumentPickerFragment.TAG,
+        getActivity().getSupportFragmentManager().popBackStackImmediate(DocumentPickerFragment.TAG,
                 FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 

@@ -50,6 +50,9 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
+
 public abstract class CommonGridFragment extends AlfrescoFragment implements RefreshFragment, GridFragment,
         ListingModeFragment, ListingTemplate
 {
@@ -526,8 +529,10 @@ public abstract class CommonGridFragment extends AlfrescoFragment implements Ref
         onPrepareRefresh();
         calculateSkipCount(currentListing);
         performRequest(currentListing);
-        // Crouton.showText(getActivity(), R.string.load_more_progress,
-        // Style.INFO, (ViewGroup) footer);
+        if (loadState == LOAD_VISIBLE)
+        {
+            Crouton.showText(getActivity(), R.string.load_more_progress, Style.INFO, (ViewGroup) footer);
+        }
     }
 
     protected static ListingContext copyListing(ListingContext lco)

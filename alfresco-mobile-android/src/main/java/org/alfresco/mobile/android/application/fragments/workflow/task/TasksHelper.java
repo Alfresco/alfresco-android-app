@@ -99,7 +99,7 @@ public final class TasksHelper
 
                 if (!backStack)
                 {
-                    activity.getFragmentManager().popBackStack();
+                    activity.getSupportFragmentManager().popBackStack();
                 }
 
                 if (isProcessFragment)

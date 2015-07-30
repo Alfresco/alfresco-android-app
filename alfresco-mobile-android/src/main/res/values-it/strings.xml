@@ -54,7 +54,7 @@
     <string name="account_servicedocument">URL servizio</string>
     <string name="account_servicedocument_hint">URL servizio (opzionale). </string>
     <string name="account_wizard_step2_title">Informazioni autenticazione account</string>
-    <string name="account_verify">Verifica informazioni account Alfresco in corso...</string>
+    <string name="account_verify">Verifica informazioni account Alfresco in corso&#8230;</string>
     <string name="account_validate">Salva</string>
     <string name="account_validate_hint">Salva informazioni account Alfresco</string>
     <string name="account_validate_disable_hint">Compilare i campi Nome utente, Password e Nome host.</string>
@@ -80,7 +80,7 @@
 
     <!-- WAITING SESSION -->
     <string name="wait_title">Attendere</string>
-    <string name="wait_message">Connessione con il server in corso...</string>
+    <string name="wait_message">Connessione con il server in corso&#8230;</string>
 
     <!-- SESSION ERROR -->
     <string name="retry_account_loading">Riprova</string>
@@ -162,7 +162,7 @@
     <string name="menu_prefs">Impostazioni</string>
 
     <!-- UPLOAD -->
-    <string name="upload_title">Carica...</string>
+    <string name="upload_title">Carica&#8230;</string>
     <string name="upload_pick_document">Scegli contenuto&#8230;</string>
 
     <!-- ACCOUNTS -->
@@ -178,8 +178,8 @@
 
     <!-- NETWORKS -->
     <string name="cloud_networks_empty">Nessuna rete disponibile</string>
-    <string name="manage_accounts">Gestione account...</string>
-    <string name="cloud_networks_switch">Cambia reti...</string>
+    <string name="manage_accounts">Gestione account&#8230;</string>
+    <string name="cloud_networks_switch">Cambia reti&#8230;</string>
 
 
     <!-- AUTHENTICATION -->
@@ -190,9 +190,9 @@
     <!-- NOTIFICATION -->
     <string name="upload">Carica </string>
     <string name="upload_complete">Caricamento completato.</string>
-    <string name="upload_in_progress">Caricamento in corso...</string>
+    <string name="upload_in_progress">Caricamento in corso&#8230;</string>
     <string name="update_complete">Aggiornamento completato.</string>
-    <string name="update_in_progress">Aggiornamento in corso...</string>
+    <string name="update_in_progress">Aggiornamento in corso&#8230;</string>
     <string name="error_unable_open_file_title">Impossibile aprire il file.</string>
     <string name="error_unable_open_file">Formato file non supportato. Installare un\'applicazione in grado di leggere il formato.</string>
 
@@ -232,7 +232,7 @@
     </plurals>
 
     <string name="delete_description_data_protection">Protezione dati attiva.\n\nEliminando l\'account, la protezione di tutti i contenuti personali verrà rimossa.\n\nContinuare \"%s\"?</string>
-    <string name="delete_in_progress">Eliminazione in corso...</string>
+    <string name="delete_in_progress">Eliminazione in corso&#8230;</string>
     <string name="delete_complete">Eliminazione completata</string>
     <string name="delete_sucess">Eliminazione di \"%s\" avvenuta con successo.</string>
 
@@ -246,8 +246,8 @@
 
     <!-- Create Document -->
     <string name="open_play_store">Apri Google Play Store</string>
-    <string name="create_document">Crea...</string>
-    <string name="create_document_title">Crea...</string>
+    <string name="create_document">Crea&#8230;</string>
+    <string name="create_document_title">Crea&#8230;</string>
     <string name="create_document_name_hint">Immetti qui il nome del file</string>
     <string name="create_document_filename_error">Nome già utilizzato.</string>
     <string name="create_document_editor_title">Completa azione con</string>
@@ -258,7 +258,7 @@
     <string name="loginfirst">Accedere prima all\'account Alfresco</string>
 
     <!-- Comment -->
-    <string name="comment_add_hint">Aggiungi qui un commento...</string>
+    <string name="comment_add_hint">Aggiungi qui un commento&#8230;</string>
 
     <!-- DATA PROTECTION -->
     <string name="data_protection">Protezione dati</string>
@@ -266,13 +266,13 @@
     <string name="decryption_failed">Decrittografia non riuscita</string>
     <string name="protect_question"><![CDATA[<p><b>Proteggere ora l\'intero contenuto Alfresco scaricato?</b><p>  L\'operazione crittograferà tutti i contenuti scaricati da tutti gli account Alfresco, che non potranno essere letti da altre applicazioni, ma solo dall\'applicazione Alfresco.]]></string>
     <string name="unprotect_question"><![CDATA[<p><b>Rimuovere la protezione per tutti i contenuti Alfresco scaricati?</b><p>  L\'operazione rimuoverà la protezione per tutti i contenuti scaricati da tutti gli account Alfresco.]]></string>
-    <string name="decryption_title">Disattivazione protezione dati in corso...</string>
-    <string name="encryption_title">Attivazione protezione dati in corso...</string>
+    <string name="decryption_title">Disattivazione protezione dati in corso&#8230;</string>
+    <string name="encryption_title">Attivazione protezione dati in corso&#8230;</string>
     <string name="encrypt_action">Crittografa</string>
     <string name="decrypt_action">Decrittogra</string>
 
     <!-- OPEN AS.. -->
-    <string name="open_as_title">Apri come...</string>
+    <string name="open_as_title">Apri come&#8230;</string>
     <string name="open_as_image">Immagine</string>
     <string name="open_as_audio">File audio</string>
     <string name="open_as_video">File video</string>
@@ -418,10 +418,24 @@
     <string name="sync_save_action">Salva</string>
     <string name="sync_resolve_conflict">Risolvi conflitto</string>
     <string name="sync_complete">Sincronizzazione completata</string>
-    <string name="sync_in_progress">Sincronizzazione in corso...</string>
-    <string name="upload_await">In attesa del caricamento...</string>
-    <string name="download_await">In attesa del download...</string>
+    <string name="sync_in_progress">Sincronizzazione in corso&#8230;</string>
+    <string name="upload_await">In attesa del caricamento&#8230;</string>
+    <string name="download_await">In attesa del download&#8230;</string>
     <string name="sync_favorites">Preferiti</string>
+
+    <string name="sync_info_one_title">La sincronizzazione è stata migliorata!</string>
+    <string name="sync_info_one_first_text">È ora possibile sincronizzare diversi file su diversi dispositivi. È sufficiente trovare un file e sincronizzarlo!</string>
+    <string name="sync_info_one_second_text">È possibile visualizzare e modificare i file sincronizzati anche offline. Quando si è di nuovo online, i file verranno sincronizzati automaticamente con Alfresco.</string>
+    <string name="sync_info_two_title">E per i file già contrassegnati come preferiti?</string>
+    <string name="sync_info_two_first_text">Nessun problema, tutti i file continuano a essere sincronizzati!</string>
+    <string name="sync_info_two_second_text">Se d\'ora in poi si contrassegnano file come preferiti, verranno inseriti nella scheda Preferiti, ma sarà necessario sincronizzarli per aprirli offline.</string>
+    <string name="sync_info_third_title">Dove si trovano i file sincronizzati?</string>
+    <string name="sync_info_third_first_text">Tutti i file sincronizzati si trovano nella nuova vista Contenuti sincronizzati.</string>
+    <string name="sync_info_third_second_text">Contenuti sincronizzati</string>
+    <string name="sync_info_validation">OK, chiaro.</string>
+    <string name="sync_info_more_information">Maggiori informazioni</string>
+    <string name="sync_info_skip">Salta</string>
+    <string name="sync_info_next">Continua</string>
 
 
     <plurals name="sync_complete_description">
@@ -631,7 +645,7 @@
     <string name="done">Fine</string>
     <string name="task_completing">Completamento compito in corso</string>
     <string name="task_reassign">Riassegna</string>
-    <string name="task_reassign_long">Riassegna questo compito a...</string>
+    <string name="task_reassign_long">Riassegna questo compito a&#8230;</string>
     <string name="task_claim">Richiedi</string>
     <string name="task_unclaim">Rilascia al pool</string>
     <string name="task_priority">Priorità</string>
@@ -648,7 +662,7 @@
     <string name="task_filter_due_today">Compiti in scadenza oggi</string>
     <string name="task_filter_overdue">Compiti scaduti</string>
     <string name="task_filter_assigned_me">Compiti assegnati a me</string>
-    <string name="task_filter_custom">Il mio filtro...</string>
+    <string name="task_filter_custom">Il mio filtro&#8230;</string>
 
     <!-- Process Start -->
     <string name="process_start_review">Inizia esame</string>
@@ -665,10 +679,10 @@
     <string name="task_review_documents">Esaminare questo contenuto</string>
     <string name="task_assignees_plurals">{0,choice,0#Nessun assegnatario|1#1 assegnatario|1&lt;{0} assegnatari}</string>
     <string name="task_assignees">Assegnatari</string>
-    <string name="task_assignees_selection">Seleziona assegnatari...</string>
+    <string name="task_assignees_selection">Seleziona assegnatari&#8230;</string>
     <string name="process_approvers_plurals">{0,choice,0#Nessun approvatore|1#1 su 1 approvatore|1&lt;%s su {0} approvatori}</string>
     <string name="task_attachments_plurals">{0,choice,0#Nessun allegato|1#1 allegato|1&lt;{0} allegati}</string>
-    <string name="task_attachments_selection">Seleziona allegati...</string>
+    <string name="task_attachments_selection">Seleziona allegati&#8230;</string>
     <string name="task_attachments">Allegati</string>
     <string name="process_no_description">(Nessun messaggio)</string>
 
@@ -684,7 +698,7 @@
     <string name="task_todo_description">Assegna compito a una persona</string>
     <string name="task_review_approve">Esamina e approva</string>
     <string name="task_review_approve_description">Assegna un compito a una o più persone per l\'esame e l\'approvazione di contenuti.</string>
-    <string name="task_delegate_in_progress">Riassegnazione in corso...</string>
+    <string name="task_delegate_in_progress">Riassegnazione in corso&#8230;</string>
     <string name="task_delegate_complete">Riassegnazione completata</string>
     <string name="picker_assignees">Seleziona assegnatari</string>
     <string name="picker_due_date">Seleziona una data di scadenza</string>
@@ -771,22 +785,22 @@
 
     <!-- CUSTOM FORMS -->
     <string name="picker_selected_value">Selezionato %s</string>
-    <string name="picker_select_value">Aggiungi %s...</string>
+    <string name="picker_select_value">Aggiungi %s&#8230;</string>
     <string name="picker_multi_value_selected">{0,choice,0#Nessun %2$s|1#1 %2$s|1&lt;%1$s %2$s}</string>
 
     <!-- SHORTCUT & ACTIONS -->
     <string name="select_folder">Seleziona</string>
     <string name="shortcut_actions_title">Alfresco - Crea</string>
     <string name="shortcut_title">Alfresco - Scorciatoia</string>
-    <string name="shortcut_create">Crea scorciatoia per...</string>
-    <string name="shortcut_action_create">Definisci l\'azione...</string>
+    <string name="shortcut_create">Crea scorciatoia per&#8230;</string>
+    <string name="shortcut_action_create">Definisci l\'azione&#8230;</string>
     <string name="action_associated">Azioni associate</string>
     <string name="action_photo">Scatta foto</string>
     <string name="action_text">Scrivi testo</string>
     <string name="action_speech2text">Speech to Text</string>
 
     <string name="mdm_managed">Gestito dall\'amministratore</string>
-    <string name="mdm_loading_configuration">Caricamento configurazione...</string>
+    <string name="mdm_loading_configuration">Caricamento configurazione&#8230;</string>
     <string name="sign_in">Accedi</string>
     <string name="error_mdm_loading_configuration"><![CDATA[<p><b>La configurazione dell\'applicazione è errata.</b><br/> Se il problema persiste, contattare l\'amministratore.</p> <br/> Errore: %s]]></string>
     <string name="discardbutton">Elimina</string>

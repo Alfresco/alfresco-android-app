@@ -65,7 +65,7 @@ public final class SessionUtils
     {
         if (alfSession == null)
         {
-            activity.getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            activity.getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
     }
 

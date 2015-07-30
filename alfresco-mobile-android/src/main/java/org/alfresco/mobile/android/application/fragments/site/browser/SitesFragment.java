@@ -54,6 +54,7 @@ public class SitesFragment extends CommonBrowserSitesFragment
     {
         super();
         retrieveDataOnCreation = true;
+        loadState = LOAD_VISIBLE;
     }
 
     public static SitesFragment newInstanceByTemplate(Bundle b)

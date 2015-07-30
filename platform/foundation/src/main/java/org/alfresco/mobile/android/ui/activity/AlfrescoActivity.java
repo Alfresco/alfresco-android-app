@@ -167,13 +167,13 @@ public abstract class AlfrescoActivity extends FragmentActivity
 
     protected boolean isVisible(String tag)
     {
-        return getFragmentManager().findFragmentByTag(tag) != null
-                && getFragmentManager().findFragmentByTag(tag).isAdded();
+        return getSupportFragmentManager().findFragmentByTag(tag) != null
+                && getSupportFragmentManager().findFragmentByTag(tag).isAdded();
     }
 
     public void displayWaitingDialog()
     {
-        if (getFragmentManager().findFragmentByTag(WaitingDialogFragment.TAG) == null)
+        if (getSupportFragmentManager().findFragmentByTag(WaitingDialogFragment.TAG) == null)
         {
             new WaitingDialogFragment().show(getSupportFragmentManager(), WaitingDialogFragment.TAG);
         }
@@ -181,12 +181,12 @@ public abstract class AlfrescoActivity extends FragmentActivity
 
     public void removeWaitingDialog()
     {
-        if (getFragmentManager().findFragmentByTag(WaitingDialogFragment.TAG) != null)
+        if (getSupportFragmentManager().findFragmentByTag(WaitingDialogFragment.TAG) != null)
         {
             ((DialogFragment) getSupportFragmentManager().findFragmentByTag(WaitingDialogFragment.TAG)).dismiss();
         }
 
-        if (getFragmentManager().findFragmentByTag(OperationWaitingDialogFragment.TAG) != null)
+        if (getSupportFragmentManager().findFragmentByTag(OperationWaitingDialogFragment.TAG) != null)
         {
             ((DialogFragment) getSupportFragmentManager().findFragmentByTag(OperationWaitingDialogFragment.TAG))
                     .dismiss();

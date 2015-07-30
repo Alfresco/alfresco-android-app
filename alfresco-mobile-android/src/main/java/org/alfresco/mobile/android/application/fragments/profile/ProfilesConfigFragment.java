@@ -119,7 +119,7 @@ public class ProfilesConfigFragment extends BaseGridFragment
         super.onListItemClick(l, v, position, id);
         ProfileConfig profile = (ProfileConfig) l.getItemAtPosition(position);
         ConfigManager.getInstance(getActivity()).swapProfile(getAccount(), profile.getIdentifier());
-        getActivity().getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        getActivity().getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 
     // ///////////////////////////////////////////////////////////////////////////

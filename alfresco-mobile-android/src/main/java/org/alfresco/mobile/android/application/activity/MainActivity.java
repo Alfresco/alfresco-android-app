@@ -659,9 +659,9 @@ public class MainActivity extends BaseActivity
                 }
                 return true;
             case R.id.menu_refresh:
-                if (getFragmentManager().findFragmentById(DisplayUtils.getLeftFragmentId(this)) instanceof RefreshFragment)
+                if (getSupportFragmentManager().findFragmentById(DisplayUtils.getLeftFragmentId(this)) instanceof RefreshFragment)
                 {
-                    ((RefreshFragment) getFragmentManager().findFragmentById(DisplayUtils.getLeftFragmentId(this)))
+                    ((RefreshFragment) getSupportFragmentManager().findFragmentById(DisplayUtils.getLeftFragmentId(this)))
                             .refresh();
                 }
                 return true;
@@ -787,7 +787,7 @@ public class MainActivity extends BaseActivity
         }
 
         // Return to root screen
-        getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
         // Display progress
         setProgressBarIndeterminateVisibility(true);

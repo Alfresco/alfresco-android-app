@@ -86,7 +86,7 @@ public class NetworksFragment extends CloudNetworksFragment
         if (currentAccount != null && !currentAccount.getRepositoryId().equals(network.getIdentifier()))
         {
             EventBusManager.getInstance().post(new RequestSessionEvent(currentAccount, network.getIdentifier(), true));
-            getActivity().getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            getActivity().getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
     }
 
