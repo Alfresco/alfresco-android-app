@@ -36,6 +36,7 @@ import org.alfresco.mobile.android.ui.fragments.WaitingDialogFragment;
 import org.alfresco.mobile.android.ui.operation.OperationWaitingDialogFragment;
 import org.alfresco.mobile.android.ui.rendition.RenditionManager;
 
+import android.app.ActionBar;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -67,8 +68,6 @@ public abstract class AlfrescoActivity extends FragmentActivity
     protected List<BroadcastReceiver> receivers = new ArrayList<BroadcastReceiver>(2);
 
     protected List<BroadcastReceiver> publicReceivers = new ArrayList<BroadcastReceiver>(2);
-
-    protected AlfrescoAccount currentAccount;
 
     protected RenditionManager renditionManager;
 
@@ -204,17 +203,22 @@ public abstract class AlfrescoActivity extends FragmentActivity
 
     public void setCurrentAccount(AlfrescoAccount account)
     {
-        this.currentAccount = account;
+        sessionManager.saveAccount(account);
     }
 
     public void setCurrentAccount(long accountId)
     {
-        this.currentAccount = AlfrescoAccountManager.getInstance(this).retrieveAccount(accountId);
+        sessionManager.saveAccount(AlfrescoAccountManager.getInstance(this).retrieveAccount(accountId));
     }
 
     public AlfrescoAccount getCurrentAccount()
     {
-        return currentAccount;
+        if (sessionManager == null)
+        {
+            sessionManager = SessionManager.getInstance(this);
+        }
+
+        return sessionManager.getCurrentAccount();
     }
 
     public AlfrescoSession getCurrentSession()
@@ -225,12 +229,7 @@ public abstract class AlfrescoActivity extends FragmentActivity
             return null;
         }
 
-        if (sessionManager != null && currentAccount == null)
-        {
-            currentAccount = sessionManager.getCurrentAccount();
-        }
-
-        return currentAccount != null ? sessionManager.getSession(currentAccount.getId()) : null;
+        return getCurrentAccount() != null ? sessionManager.getSession(getCurrentAccount().getId()) : null;
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -244,6 +243,11 @@ public abstract class AlfrescoActivity extends FragmentActivity
     public void setRenditionManager(RenditionManager renditionManager)
     {
         this.renditionManager = renditionManager;
+    }
+
+    public ActionBar getAppActionBar()
+    {
+        return getActionBar();
     }
 
     // ////////////////////////////////////////////////////////
@@ -316,7 +320,6 @@ public abstract class AlfrescoActivity extends FragmentActivity
         public void onReceive(Context context, Intent intent)
         {
             FragmentActivity activity = AlfrescoActivity.this;
-
 
             if (activity.isFinishing() || activity.isChangingConfigurations()) { return; }
 

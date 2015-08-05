@@ -20,6 +20,7 @@ package org.alfresco.mobile.android.application.activity;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.preferences.PasscodePreferences;
 import org.alfresco.mobile.android.application.security.PassCodeActivity;
+import org.alfresco.mobile.android.platform.SessionManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.intent.AlfrescoIntentAPI;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
@@ -60,13 +61,15 @@ public abstract class BaseActivity extends AlfrescoActivity
         if (getIntent().hasExtra(PrivateIntent.EXTRA_ACCOUNT_ID))
         {
             long accountId = getIntent().getExtras().getLong(PrivateIntent.EXTRA_ACCOUNT_ID);
-            currentAccount = AlfrescoAccountManager.getInstance(this).retrieveAccount(accountId);
+            SessionManager.getInstance(this)
+                    .saveAccount(AlfrescoAccountManager.getInstance(this).retrieveAccount(accountId));
         }
 
         if (getIntent().hasExtra(AlfrescoIntentAPI.EXTRA_ACCOUNT_ID))
         {
             long accountId = getIntent().getExtras().getLong(AlfrescoIntentAPI.EXTRA_ACCOUNT_ID);
-            currentAccount = AlfrescoAccountManager.getInstance(this).retrieveAccount(accountId);
+            SessionManager.getInstance(this)
+                    .saveAccount(AlfrescoAccountManager.getInstance(this).retrieveAccount(accountId));
         }
     }
 

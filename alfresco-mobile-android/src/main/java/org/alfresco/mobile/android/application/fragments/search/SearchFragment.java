@@ -318,7 +318,7 @@ public class SearchFragment extends BaseCursorGridFragment
         // /QUICK PATH
         if (getActivity().getActionBar() != null)
         {
-            getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+           getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 
             optionAdapter = new SearchOptionAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item,
                     SearchOptionAdapter.getSearchOptions(getSession(), (tmpParentFolder != null)));
@@ -335,8 +335,8 @@ public class SearchFragment extends BaseCursorGridFragment
                     return true;
                 }
             };
-            getActivity().getActionBar().setListNavigationCallbacks(optionAdapter, mOnNavigationListener);
-            getActivity().getActionBar().setSelectedNavigationItem(optionPosition);
+           getActionBar().setListNavigationCallbacks(optionAdapter, mOnNavigationListener);
+           getActionBar().setSelectedNavigationItem(optionPosition);
         }
     }
 

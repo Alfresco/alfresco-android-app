@@ -121,6 +121,7 @@ public class HolderUtils
         }
         else
         {
+            vh.icon.setVisibility(View.VISIBLE);
             vh.icon.setImageResource(imageId);
         }
     }

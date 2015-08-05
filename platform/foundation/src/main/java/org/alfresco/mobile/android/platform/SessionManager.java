@@ -162,6 +162,7 @@ public abstract class SessionManager extends Manager
         if (account == null && accountToLoad == null)
         {
             accountToLoad = accountManager.getDefaultAccount();
+            SessionManager.getInstance(appContext).saveAccount(accountToLoad);
             if (accountToLoad == null)
             {
                 EventBusManager.getInstance().post(new LoadInactiveAccountEvent(null, accountToLoad));

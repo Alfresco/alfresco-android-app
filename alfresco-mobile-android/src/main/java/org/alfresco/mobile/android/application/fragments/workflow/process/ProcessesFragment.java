@@ -38,6 +38,7 @@ import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 import org.alfresco.mobile.android.ui.workflow.process.ProcessesFoundationFragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -48,6 +49,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.squareup.otto.Subscribe;
 
@@ -88,9 +91,9 @@ public class ProcessesFragment extends ProcessesFoundationFragment
         if (getArguments().containsKey(ARGUMENT_MENUID))
         {
             TasksHelper.displayNavigationMode(getActivity(), false, getArguments().getInt(ARGUMENT_MENUID));
-            getActivity().getActionBar().setDisplayShowTitleEnabled(false);
-            getActivity().getActionBar().setDisplayShowCustomEnabled(true);
-            getActivity().getActionBar().setCustomView(null);
+           getActionBar().setDisplayShowTitleEnabled(false);
+           getActionBar().setDisplayShowCustomEnabled(true);
+           getActionBar().setCustomView(null);
         }
         else
         {
@@ -117,28 +120,59 @@ public class ProcessesFragment extends ProcessesFoundationFragment
         super.onResult(event);
     }
 
+    @Override
+    protected void prepareEmptyView(View ev, ImageView emptyImageView, TextView firstEmptyMessage,
+            TextView secondEmptyMessage)
+    {
+        emptyImageView.setLayoutParams(DisplayUtils.resizeLayout(getActivity(), 275, 275));
+        emptyImageView.setImageResource(R.drawable.ic_empty_tasks);
+        firstEmptyMessage.setText(R.string.tasks_list_empty_title);
+        secondEmptyMessage.setVisibility(View.VISIBLE);
+        secondEmptyMessage.setText(R.string.tasks_list_empty_description);
+    }
+
+    @Override
+    protected View.OnClickListener onPrepareFabClickListener()
+    {
+        return new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                onOptionMenuItemSelected(R.id.menu_workflow_add);
+            }
+        };
+    }
     // ///////////////////////////////////////////////////////////////////////////
     // MENU
     // ///////////////////////////////////////////////////////////////////////////
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    public static void getMenu(Context context, Menu menu)
     {
-        super.onCreateOptionsMenu(menu, inflater);
-        if (!MenuFragmentHelper.canDisplayFragmentMenu(getActivity())) { return; }
-        menu.clear();
         MenuItem mi;
 
         mi = menu.add(Menu.NONE, R.id.menu_workflow_add, Menu.FIRST, R.string.workflow_start);
         mi.setIcon(android.R.drawable.ic_menu_add);
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
-        MenuFragmentHelper.getMenu(getActivity(), menu);
+        MenuFragmentHelper.getMenu(context, menu);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        super.onCreateOptionsMenu(menu, inflater);
+        menu.clear();
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        switch (item.getItemId())
+        return !onOptionMenuItemSelected(item.getItemId()) ? false : super.onOptionsItemSelected(item);
+    }
+
+    private boolean onOptionMenuItemSelected(int itemId)
+    {
+        switch (itemId)
         {
             case R.id.menu_workflow_add:
                 Intent in = new Intent(PrivateIntent.ACTION_START_PROCESS, null, getActivity(),

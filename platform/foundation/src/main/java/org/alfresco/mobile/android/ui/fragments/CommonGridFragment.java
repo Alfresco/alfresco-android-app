@@ -40,7 +40,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
@@ -50,11 +49,13 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.github.clans.fab.FloatingActionButton;
+
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
-public abstract class CommonGridFragment extends AlfrescoFragment implements RefreshFragment, GridFragment,
-        ListingModeFragment, ListingTemplate
+public abstract class CommonGridFragment extends AlfrescoFragment
+        implements RefreshFragment, GridFragment, ListingModeFragment, ListingTemplate
 {
     // /////////////////////////////////////////////////////////////
     // CONSTANTS
@@ -138,6 +139,10 @@ public abstract class CommonGridFragment extends AlfrescoFragment implements Ref
     protected boolean displayAsList = true;
 
     protected int mode = MODE_LISTING;
+
+    protected FloatingActionButton fab;
+
+    private int mLastFirstVisibleItem;
 
     // /////////////////////////////////////////////////////////////
     // BUNDLE CONSTRUCTOR
@@ -338,7 +343,7 @@ public abstract class CommonGridFragment extends AlfrescoFragment implements Ref
             }
         });
 
-        gv.setOnScrollListener(new OnScrollListener()
+        AbsListView.OnScrollListener listener = new AbsListView.OnScrollListener()
         {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState)
@@ -348,6 +353,12 @@ public abstract class CommonGridFragment extends AlfrescoFragment implements Ref
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount)
             {
+                /*
+                 * if (fab == null) { return; } if (firstVisibleItem >
+                 * selectedPosition) { fab.hide(true); } else if
+                 * (firstVisibleItem < selectedPosition) { fab.show(true); }
+                 */
+
                 savePosition();
                 if (totalItemCount > 0 && firstVisibleItem + visibleItemCount == totalItemCount
                         && loadState == LOAD_VISIBLE && !isLockVisibleLoader)
@@ -363,12 +374,26 @@ public abstract class CommonGridFragment extends AlfrescoFragment implements Ref
                     refreshHelper.setEnabled(firstItemVisible && topOfFirstItemVisible);
                 }
             }
-        });
+        };
+
+        fab = (FloatingActionButton) v.findViewById(R.id.fab);
+        View.OnClickListener onFabClickListener = onPrepareFabClickListener();
+        if (onFabClickListener != null)
+        {
+            fab.setVisibility(View.VISIBLE);
+            gv.setOnScrollListener(listener);
+            fab.setOnClickListener(onFabClickListener);
+        }
+        else
+        {
+            fab.setVisibility(View.GONE);
+            gv.setOnScrollListener(listener);
+        }
     }
 
     /**
      * Control whether the list is being displayed.
-     * 
+     *
      * @param shown : If true, the list view is shown; if false, the progress
      *            indicator. The initial value is true.
      */
@@ -438,6 +463,11 @@ public abstract class CommonGridFragment extends AlfrescoFragment implements Ref
     // /////////////////////////////////////////////////////////////
     // ITEMS SELECTION
     // ////////////////////////////////////////////////////////////
+    protected View.OnClickListener onPrepareFabClickListener()
+    {
+        return null;
+    }
+
     /**
      * Affect a clickListener to the principal GridView.
      */
@@ -471,8 +501,8 @@ public abstract class CommonGridFragment extends AlfrescoFragment implements Ref
             maxItems = lc.getMaxItems();
             if (hasmore)
             {
-                skipCount = (adapter != null) ? (((ArrayAdapter<Object>) adapter)).getCount() : lc.getSkipCount()
-                        + lc.getMaxItems();
+                skipCount = (adapter != null) ? (((ArrayAdapter<Object>) adapter)).getCount()
+                        : lc.getSkipCount() + lc.getMaxItems();
             }
             lc.setSkipCount(skipCount);
         }
@@ -565,7 +595,7 @@ public abstract class CommonGridFragment extends AlfrescoFragment implements Ref
 
     /**
      * Override this method to handle an exception coming back from the server.
-     * 
+     *
      * @param e : exception raised by the client API.
      */
     public void onResultError(Exception e)

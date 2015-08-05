@@ -27,11 +27,11 @@ import java.util.Map.Entry;
 import org.alfresco.mobile.android.api.constants.CloudConstant;
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.model.ActivityEntry;
-import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.foundation.R;
 import org.alfresco.mobile.android.platform.mimetype.MimeTypeManager;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
+import org.alfresco.mobile.android.ui.holder.HolderUtils;
 import org.alfresco.mobile.android.ui.holder.TwoLinesCaptionViewHolder;
 import org.alfresco.mobile.android.ui.rendition.RenditionManager;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
@@ -40,7 +40,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.text.Html;
 import android.view.View;
-import android.widget.RelativeLayout;
+import android.view.ViewGroup;
 
 /**
  * Provides access to activity entries and displays them as a view based on
@@ -58,7 +58,7 @@ public class ActivityStreamAdapter extends BaseListAdapter<ActivityEntry, TwoLin
 
     protected List<ActivityEntry> selectedOptionItems = new ArrayList<>();
 
-    public ActivityStreamAdapter(Fragment fr, AlfrescoSession session, int textViewResourceId,
+    public ActivityStreamAdapter(Fragment fr, int textViewResourceId,
             List<ActivityEntry> listItems, List<ActivityEntry> selectedItems)
     {
         super(fr.getActivity(), textViewResourceId, listItems);
@@ -72,8 +72,7 @@ public class ActivityStreamAdapter extends BaseListAdapter<ActivityEntry, TwoLin
     {
         vh.topText.setText(getUser(item));
         vh.bottomText.setText(Html.fromHtml(getActivityTypeMessage(item)));
-        vh.bottomText.setSingleLine(false);
-        vh.bottomText.setMaxLines(3);
+        HolderUtils.makeMultiLine(vh.bottomText, 3);
     }
 
     @Override
@@ -88,12 +87,11 @@ public class ActivityStreamAdapter extends BaseListAdapter<ActivityEntry, TwoLin
 
         if (selectedItems != null && selectedItems.contains(item))
         {
-            UIUtils.setBackground(((RelativeLayout) vh.icon.getParent().getParent()), getContext()
-                    .getResources().getDrawable(R.drawable.list_longpressed_holo));
+            ((ViewGroup) vh.icon.getParent()).setBackgroundResource(R.drawable.list_longpressed_holo);
         }
         else
         {
-            UIUtils.setBackground(((RelativeLayout) vh.icon.getParent().getParent()), null);
+            UIUtils.setBackground(((ViewGroup) vh.icon.getParent()), null);
         }
     }
 

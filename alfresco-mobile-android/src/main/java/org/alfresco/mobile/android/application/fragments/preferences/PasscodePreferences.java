@@ -102,6 +102,7 @@ public class PasscodePreferences extends AlfrescoFragment
     // ///////////////////////////////////////////////////////////////////////////
     public PasscodePreferences()
     {
+        requiredSession = false;
     }
 
     protected static PasscodePreferences newInstanceByTemplate(Bundle b)
@@ -170,8 +171,7 @@ public class PasscodePreferences extends AlfrescoFragment
         int minutes = Math.round(timeout / ONE_MINUTE);
         passcodeTimeoutVH.bottomText.setText(String.format(
                 MessageFormat.format(getString(R.string.passcode_timeout_summary), minutes), minutes));
-        passcodeTimeoutVH.bottomText.setSingleLine(false);
-        passcodeTimeoutVH.bottomText.setMaxLines(3);
+        HolderUtils.makeMultiLine(passcodeTimeoutVH.bottomText, 3);
 
         if (passcodeEnable)
         {
@@ -207,8 +207,7 @@ public class PasscodePreferences extends AlfrescoFragment
         passcodeDataVH = HolderUtils.configure(viewById(R.id.passcode_erase_data),
                 getString(R.string.passcode_erase_data), getString(R.string.passcode_erase_data_summary),
                 maxAttemptActivated);
-        passcodeDataVH.bottomText.setSingleLine(false);
-        passcodeDataVH.bottomText.setMaxLines(3);
+        HolderUtils.makeMultiLine(passcodeDataVH.bottomText, 3);
         if (passcodeEnable)
         {
             viewById(R.id.passcode_erase_data_container).setOnClickListener(new View.OnClickListener()

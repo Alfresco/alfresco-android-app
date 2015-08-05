@@ -23,6 +23,7 @@ import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.foundation.R;
 import org.alfresco.mobile.android.platform.mimetype.MimeTypeManager;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
+import org.alfresco.mobile.android.ui.holder.HolderUtils;
 import org.alfresco.mobile.android.ui.holder.TwoLinesProgressViewHolder;
 
 import android.content.res.Resources;
@@ -54,8 +55,7 @@ public class VersionsNodeAdapter extends BaseListAdapter<Document, TwoLinesProgr
     @Override
     protected void updateBottomText(TwoLinesProgressViewHolder vh, Document item)
     {
-        vh.bottomText.setSingleLine(false);
-        vh.bottomText.setMaxLines(2);
+        HolderUtils.makeMultiLine(vh.bottomText, 2);
         String s = formatDate(getContext(), item.getModifiedAt().getTime());
         vh.bottomText.setText(res.getString(R.string.metadata_prop_version_modified_by) + " " + item.getModifiedBy()
                 + " - " + s);

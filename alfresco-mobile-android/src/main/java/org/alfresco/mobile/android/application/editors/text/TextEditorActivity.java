@@ -195,10 +195,10 @@ public class TextEditorActivity extends BaseActivity
     @Override
     protected void onStart()
     {
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getAppActionBar().setDisplayHomeAsUpEnabled(true);
 
         retrieveTitle();
-        getActionBar().show();
+        getAppActionBar().show();
         UIUtils.displayTitle(this, title);
 
         super.onStart();
@@ -236,7 +236,7 @@ public class TextEditorActivity extends BaseActivity
     {
         super.onCreateOptionsMenu(menu);
 
-        getActionBar().setDisplayShowTitleEnabled(true);
+        getAppActionBar().setDisplayShowTitleEnabled(true);
         MenuItem mi = menu.add(Menu.NONE, R.id.menu_editor_save, Menu.FIRST, R.string.save);
         mi.setIcon(R.drawable.ic_save);
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT);

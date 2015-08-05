@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~  Copyright (C) 2005-2015 Alfresco Software Limited.
   ~
   ~  This file is part of Alfresco Mobile for Android.
@@ -28,6 +27,57 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
+        <!-- Accounts !-->
+        <TextView
+            style="@style/AlfrescoMaterialTheme.Text.Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/d_16"
+            android:text="@string/menu_accounts"
+            android:textColor="@color/secondary_text" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dip"
+            android:background="?android:attr/dividerVertical" />
+
+        <!-- ADD ACCOUNT PROGRAMMATICALLY -->
+        <LinearLayout
+            android:id="@+id/settings_accounts_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/secondary_background"
+            android:orientation="vertical">
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/settings_accounts_actions_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/secondary_background"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/settings_accounts_create_container"
+                style="@style/AlfrescoMaterialTheme.Button.BorderLess"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <include
+                    android:id="@+id/settings_accounts_create"
+                    layout="@layout/row_single_line"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+        </LinearLayout>
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dip"
+            android:background="?android:attr/dividerVertical" />
 
         <!-- Enterprise Settings !-->
         <TextView
@@ -75,8 +125,8 @@
 
             <!-- Passcode !-->
             <LinearLayout
-                style="@style/AlfrescoMaterialTheme.Button.BorderLess"
                 android:id="@+id/passcode_preference_container"
+                style="@style/AlfrescoMaterialTheme.Button.BorderLess"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -86,83 +136,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </LinearLayout>
-
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dip"
-            android:background="?android:attr/dividerVertical" />
-
-        <!-- Customization Settings !-->
-        <TextView
-            style="@style/AlfrescoMaterialTheme.Text.Title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/d_16"
-            android:text="@string/settings_custom_menu"
-            android:textColor="@color/secondary_text" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dip"
-            android:background="?android:attr/dividerVertical" />
-
-        <LinearLayout
-            android:id="@+id/settings_custom_menu_manage_container"
-            style="@style/AlfrescoMaterialTheme.Button.BorderLess"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/secondary_background">
-
-            <include
-                android:id="@+id/settings_custom_menu_manage"
-                layout="@layout/row_two_lines"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dip"
-            android:background="?android:attr/dividerVertical" />
-
-        <!-- Sync Settings Content (added programmatically) !-->
-        <LinearLayout
-            android:id="@+id/settings_sync_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <!-- Sync Settings !-->
-            <TextView
-                style="@style/AlfrescoMaterialTheme.Text.Title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/d_16"
-                android:text="@string/settings_synced_content"
-                android:textColor="@color/secondary_text" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="2dip"
-                android:background="?android:attr/dividerVertical" />
-
-
-            <LinearLayout
-                android:id="@+id/favorite_sync_wifi_container"
-                style="@style/AlfrescoMaterialTheme.Button.BorderLess"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/secondary_background">
-
-                <include
-                    android:id="@+id/favorite_sync_wifi"
-                    layout="@layout/row_two_lines_checkbox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
-
 
         </LinearLayout>
 
@@ -242,6 +215,47 @@
 
                 <include
                     android:id="@+id/settings_links_facebook"
+                    layout="@layout/row_two_lines"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dip"
+            android:background="?android:attr/dividerVertical" />
+
+
+        <!-- About Content !-->
+        <TextView
+            style="@style/AlfrescoMaterialTheme.Text.Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/primary_background"
+            android:padding="@dimen/d_16"
+            android:text="@string/menu_about"
+            android:textColor="@color/secondary_text" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dip"
+            android:background="?android:attr/dividerVertical" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/secondary_background"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/settings_about_container"
+                style="@style/AlfrescoMaterialTheme.Button.BorderLess"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <include
+                    android:id="@+id/settings_about"
                     layout="@layout/row_two_lines"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />

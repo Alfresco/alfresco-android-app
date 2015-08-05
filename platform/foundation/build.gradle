@@ -58,6 +58,6 @@ android {
 }
 
 dependencies {
-    compile project(':platform:thirdparty')
     compile 'org.alfresco.mobile.android.sdk:alfresco-mobile-android-client-api:1.4.1-SNAPSHOT'
+    compile project(':platform:thirdparty')
 }

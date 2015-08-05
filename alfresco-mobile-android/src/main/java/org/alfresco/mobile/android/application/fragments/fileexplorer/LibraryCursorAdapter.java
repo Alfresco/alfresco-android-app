@@ -33,6 +33,7 @@ import org.alfresco.mobile.android.platform.mimetype.MimeTypeManager;
 import org.alfresco.mobile.android.platform.utils.AndroidVersion;
 import org.alfresco.mobile.android.ui.ListingModeFragment;
 import org.alfresco.mobile.android.ui.fragments.BaseCursorLoader;
+import org.alfresco.mobile.android.ui.holder.HolderUtils;
 import org.alfresco.mobile.android.ui.holder.TwoLinesViewHolder;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
@@ -133,8 +134,7 @@ public class LibraryCursorAdapter extends BaseCursorLoader<TwoLinesViewHolder> i
             }
         }
 
-        vh.bottomText.setSingleLine(false);
-        vh.bottomText.setMaxLines(3);
+        HolderUtils.makeMultiLine(vh.bottomText, 3);
 
         if (selectedItems != null && selectedItems.contains(f))
         {

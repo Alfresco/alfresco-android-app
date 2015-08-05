@@ -204,7 +204,7 @@ public class FileExplorerMenuFragment extends AlfrescoFragment
         {
             super(appActivity, configuration);
             sessionRequired = false;
-            menuIconId = R.drawable.ic_download_dark;
+            menuIconId = R.drawable.ic_local_files_dark;
             menuTitleId = R.string.menu_local_files;
             templateArguments = new String[] {};
         }

@@ -26,6 +26,7 @@ import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
+import org.alfresco.mobile.android.application.fragments.help.HelpDialogFragment;
 import org.alfresco.mobile.android.application.fragments.node.update.EditPropertiesFragment;
 import org.alfresco.mobile.android.application.fragments.operation.OperationsFragment;
 import org.alfresco.mobile.android.application.fragments.preferences.GeneralPreferences;
@@ -38,6 +39,7 @@ import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.squareup.otto.Subscribe;
@@ -45,7 +47,7 @@ import com.squareup.otto.Subscribe;
 /**
  * @author Jean Marie Pascal
  */
-public class PrivateDialogActivity extends BaseActivity
+public class PrivateDialogActivity extends BaseAppCompatActivity
 {
     private static final String TAG = PrivateDialogActivity.class.getName();
 
@@ -66,14 +68,33 @@ public class PrivateDialogActivity extends BaseActivity
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
-        displayAsDialogActivity();
-        setContentView(R.layout.app_left_panel);
-
         action = getIntent().getAction();
-        if (PrivateIntent.ACTION_DISPLAY_SETTINGS.equals(action))
+
+        if (PrivateIntent.ACTION_DISPLAY_HELP.equals(action))
         {
-            GeneralPreferences.with(this).back(false).display();
+            setTheme(R.style.AlfrescoMaterialTheme);
+        }
+        else
+        {
+            displayAsDialogActivity();
+            setTheme(R.style.AlfrescoMaterialTheme);
+        }
+
+        setContentView(R.layout.activitycompat_left_panel);
+
+        // TOOLBAR
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        if (toolbar != null)
+        {
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
+        }
+
+        if (PrivateIntent.ACTION_DISPLAY_SETTINGS.equals(action) && getFragment(GeneralPreferences.TAG) == null)
+        {
+            FragmentDisplayer.with(this).load(GeneralPreferences.with(this).createFragment()).back(false).animate(null)
+                    .into(FragmentDisplayer.PANEL_LEFT);
             return;
         }
 
@@ -113,12 +134,21 @@ public class PrivateDialogActivity extends BaseActivity
                     .newInstance(docs);
             FragmentDisplayer.with(this).load(f).back(false).animate(null).into(FragmentDisplayer.PANEL_LEFT);
         }
+
+        if (PrivateIntent.ACTION_DISPLAY_HELP.equals(action))
+        {
+            FragmentDisplayer.with(this).load(HelpDialogFragment.with(this).createFragment()).back(false).animate(null)
+                    .into(FragmentDisplayer.PANEL_LEFT);
+        }
     }
 
     @Override
     protected void onStart()
     {
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null)
+        {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         super.onStart();
     }
 

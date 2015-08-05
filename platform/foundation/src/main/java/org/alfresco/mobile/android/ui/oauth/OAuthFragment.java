@@ -53,11 +53,11 @@ public abstract class OAuthFragment extends DialogFragment
 
     private String apiSecret;
 
-    private String callback;
+    protected String callback;
 
     private String scope;
 
-    private int layout_id = R.layout.app_webview;
+    protected int layout_id = R.layout.app_webview;
 
     private String baseOAuthUrl = OAuthConstant.PUBLIC_API_HOSTNAME;
 
@@ -66,6 +66,8 @@ public abstract class OAuthFragment extends DialogFragment
     private OnOAuthWebViewListener onOAuthWebViewListener;
 
     private boolean isLoaded;
+
+    protected WebView webview;
 
     public OAuthFragment()
     {
@@ -116,7 +118,7 @@ public abstract class OAuthFragment extends DialogFragment
             this.scope = getText(R.string.oauth_scope).toString();
         }
 
-        final WebView webview = (WebView) v.findViewById(R.id.webview);
+        webview = (WebView) v.findViewById(R.id.webview);
         webview.getSettings().setJavaScriptEnabled(true);
 
         final FragmentActivity activity = getActivity();
@@ -289,5 +291,11 @@ public abstract class OAuthFragment extends DialogFragment
 
         void onReceivedError(WebView view, int errorCode, String description, String failingUrl);
 
+    }
+
+    protected void reload()
+    {
+        OAuthHelper helper = new OAuthHelper(baseOAuthUrl);
+        webview.loadUrl(helper.getAuthorizationUrl(apiKey, callback, scope));
     }
 }

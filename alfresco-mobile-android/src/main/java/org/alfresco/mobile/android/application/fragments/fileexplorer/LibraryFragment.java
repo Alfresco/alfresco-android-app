@@ -95,9 +95,9 @@ public class LibraryFragment extends BaseCursorGridFragment
         super.onActivityCreated(savedInstanceState);
         if (getDialog() == null && isShortCut)
         {
-            getActivity().getActionBar().show();
+            getActionBar().show();
             FileExplorerHelper.displayNavigationMode(getActivity(), getMode(), false, menuId);
-            getActivity().getActionBar().setDisplayShowTitleEnabled(false);
+            getActionBar().setDisplayShowTitleEnabled(false);
         }
     }
 

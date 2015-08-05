@@ -146,12 +146,12 @@ public class FileExplorerFragment extends FileExplorerFoundationFragment impleme
         }
         privateFolder = AlfrescoStorageManager.getInstance(getActivity()).getRootPrivateFolder().getParentFile();
 
-        getActivity().getActionBar().show();
+        getActionBar().show();
         if (isShortCut)
         {
             enableTitle = false;
             FileExplorerHelper.displayNavigationMode(getActivity(), getMode(), false, menuId);
-            getActivity().getActionBar().setDisplayShowTitleEnabled(false);
+            getActionBar().setDisplayShowTitleEnabled(false);
         }
     }
 
@@ -511,7 +511,7 @@ public class FileExplorerFragment extends FileExplorerFoundationFragment impleme
 
     public static class Builder extends AlfrescoFragmentBuilder
     {
-        public static final int ICON_ID = R.drawable.ic_download_dark;
+        public static final int ICON_ID = R.drawable.ic_local_files_dark;
 
         public static final int LABEL_ID = R.string.menu_local_files;
 

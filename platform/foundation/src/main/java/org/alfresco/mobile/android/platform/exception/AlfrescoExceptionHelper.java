@@ -38,9 +38,13 @@ import org.apache.chemistry.opencmis.commons.exceptions.CmisRuntimeException;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisUnauthorizedException;
 
 import android.accounts.NetworkErrorException;
+import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 
 /**
  * Helper class to find the right user message to display when an exception has
@@ -53,6 +57,40 @@ public final class AlfrescoExceptionHelper
 
     private AlfrescoExceptionHelper()
     {
+    }
+
+    public static int getMessageErrorId(Context context, Exception e, boolean longMessage)
+    {
+        int messageId = R.string.error_session_creation;
+
+        try
+        {
+            if (e.getCause() != null)
+            {
+                throw e.getCause();
+            }
+            else
+            {
+                throw e;
+            }
+        }
+        catch (UnknownHostException ue)
+        {
+            if (ConnectivityUtils.hasInternetAvailable(context))
+            {
+                messageId = longMessage ? R.string.error_session_hostname_short : R.string.error_session_hostname;
+            }
+            else
+            {
+                messageId = longMessage ? R.string.error_session_nodata_short : R.string.error_session_nodata;
+            }
+        }
+        catch (Throwable er)
+        {
+            messageId = R.string.error_unknown;
+        }
+
+        return messageId;
     }
 
     /**
@@ -201,6 +239,21 @@ public final class AlfrescoExceptionHelper
             return true;
         }
         return false;
+    }
+
+    public static void displayErrorStackTrace(Activity activity, Exception e)
+    {
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(activity).title("Error Informations")
+                .cancelListener(new DialogInterface.OnCancelListener()
+                {
+                    @Override
+                    public void onCancel(DialogInterface dialog)
+                    {
+                        dialog.dismiss();
+                    }
+                }).content(Log.getStackTraceString(e)).negativeText(R.string.share).positiveText(R.string.cancel);
+        builder.show();
+        return;
     }
 
 }

@@ -26,6 +26,7 @@ import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -84,20 +85,7 @@ public class AboutFragment extends AlfrescoFragment
 
         // Version Number
         TextView tv = (TextView) v.findViewById(R.id.about_buildnumber);
-        String versionNumber;
-        try
-        {
-            StringBuilder sb = new StringBuilder(getText(R.string.buildnumber_version))
-                    .append(" ")
-                    .append(getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0).versionName)
-                    .append(".").append(getText(R.string.bamboo_buildnumber));
-            versionNumber = sb.toString();
-        }
-        catch (NameNotFoundException e)
-        {
-            versionNumber = "X.x.x.x";
-        }
-        tv.setText(versionNumber);
+        tv.setText(getVersionNumber(getActivity()));
 
         // SDK Version Number
         tv = (TextView) v.findViewById(R.id.about_sdknumber);
@@ -105,6 +93,24 @@ public class AboutFragment extends AlfrescoFragment
         tv.setText(sb.toString());
 
         return v;
+    }
+
+    public static String getVersionNumber(Context context)
+    {
+        String versionNumber;
+        try
+        {
+            StringBuilder sb = new StringBuilder(context.getString(R.string.buildnumber_version))
+                    .append(" ")
+                    .append(context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName)
+                    .append(".").append(context.getString(R.string.bamboo_buildnumber));
+            versionNumber = sb.toString();
+        }
+        catch (NameNotFoundException e)
+        {
+            versionNumber = "X.x.x.x";
+        }
+        return versionNumber;
     }
 
     // ///////////////////////////////////////////////////////////////////////////
