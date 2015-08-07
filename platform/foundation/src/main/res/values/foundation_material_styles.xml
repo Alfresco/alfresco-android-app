@@ -39,14 +39,96 @@
         <item name="android:textColorSecondary">@color/secondary_text</item>
     </style>
 
+    <!-- FIXME Need Refactoring after moving to Material -->
     <style name="AlfrescoMaterialTheme" parent="@style/_AlfrescoMaterialTheme">
-
+        <item name="MainTheme">@style/AlfrescoHoloTheme</item>
+        <item name="android:actionBarStyle">@style/AlfrescoHoloTheme.ActionBar</item>
+        <item name="android:fastScrollTrackDrawable">@null</item>
+        <item name="MainTheme.ActionBar.Primary">@style/AlfrescoHoloTheme.ActionBar.Primary</item>
+        <item name="MainTheme.ActionBar.Secondary">@style/AlfrescoHoloTheme.ActionBar.Secondary
+        </item>
+        <item name="MainTheme.Background">@style/AlfrescoHoloTheme.Background</item>
+        <item name="MainTheme.Background.White">@style/AlfrescoHoloTheme.Background.White</item>
+        <item name="MainTheme.Background.Logo">@style/AlfrescoHoloTheme.Background.Logo</item>
+        <item name="MainTheme.Background.Light">@style/AlfrescoHoloTheme.Background.Light</item>
+        <item name="MainTheme.Background.GreyGradient">
+            @style/AlfrescoHoloTheme.Background.GreyGradient
+        </item>
+        <item name="MainTheme.Button">@style/AlfrescoHoloTheme.Button</item>
+        <item name="MainTheme.Button.Large">@style/AlfrescoHoloTheme.Button.Large</item>
+        <item name="MainTheme.TextView">@style/AlfrescoHoloTheme.TextView</item>
+        <item name="MainTheme.TextView.Primary">@style/AlfrescoHoloTheme.TextView.Primary</item>
+        <item name="MainTheme.TextView.Primary.Task">
+            @style/AlfrescoHoloTheme.TextView.Primary.Task
+        </item>
+        <item name="MainTheme.TextView.Secondary">@style/AlfrescoHoloTheme.TextView.Secondary</item>
+        <item name="MainTheme.TextView.SecondaryBold">
+            @style/AlfrescoHoloTheme.TextView.SecondaryBold
+        </item>
+        <item name="MainTheme.TextView.MenuItem">@style/AlfrescoHoloTheme.TextView.MenuItem</item>
+        <item name="MainTheme.TextView.ListItem">@style/AlfrescoHoloTheme.TextView.ListItem</item>
+        <item name="MainTheme.TextView.ListItem.Primary">
+            @style/AlfrescoHoloTheme.TextView.ListItem.Primary
+        </item>
+        <item name="MainTheme.TextView.ListItem.Secondary">
+            @style/AlfrescoHoloTheme.TextView.ListItem.Secondary
+        </item>
+        <item name="MainTheme.TextView.GridItem">@style/AlfrescoHoloTheme.TextView.GridItem</item>
+        <item name="MainTheme.TextView.GridItem.Primary">
+            @style/AlfrescoHoloTheme.TextView.GridItem.Primary
+        </item>
+        <item name="MainTheme.TextView.GridItem.Secondary">
+            @style/AlfrescoHoloTheme.TextView.GridItem.Secondary
+        </item>
+        <item name="MainTheme.TextView.SearchHeader">
+            @style/AlfrescoHoloTheme.TextView.SearchHeader
+        </item>
+        <item name="MainTheme.TextView.SectionHeader">
+            @style/AlfrescoHoloTheme.TextView.SectionHeader
+        </item>
+        <item name="MainTheme.TextView.SectionHeader.Grey">
+            @style/AlfrescoHoloTheme.TextView.SectionHeader.Grey
+        </item>
+        <item name="MainTheme.TextView.SectionHeader.Grey.Thin">
+            @style/AlfrescoHoloTheme.TextView.SectionHeader.Grey.Thin
+        </item>
+        <item name="MainTheme.TextView.SectionHeader.Primary">
+            @style/AlfrescoHoloTheme.TextView.SectionHeader.Primary
+        </item>
+        <item name="MainTheme.ImageView">@style/AlfrescoHoloTheme.ImageView</item>
+        <item name="MainTheme.ImageView.ActionIcon">@style/AlfrescoHoloTheme.ImageView.ActionIcon
+        </item>
+        <item name="MainTheme.ImageView.ActionIcon.Fixed">
+            @style/AlfrescoHoloTheme.ImageView.ActionIcon.Fixed
+        </item>
+        <item name="MainTheme.ImageView.Thumbnail">@style/AlfrescoHoloTheme.ImageView.Thumbnail
+        </item>
+        <item name="MainTheme.ImageView.Thumbnail.Large">
+            @style/AlfrescoHoloTheme.ImageView.Thumbnail.Large
+        </item>
+        <item name="MainTheme.ImageView.Thumbnail.QuickContact">
+            @style/AlfrescoHoloTheme.ImageView.Thumbnail.QuickContact
+        </item>
+        <item name="MainTheme.PasscodeButton">@style/AlfrescoHoloTheme.PasscodeButton</item>
+        <item name="MainTheme.PasscodeInput">@style/AlfrescoHoloTheme.PasscodeInput</item>
+        <item name="MainTheme.Progress">@style/AlfrescoHoloTheme.Progress</item>
+        <item name="MainTheme.Progress.Horizontal">@style/AlfrescoHoloTheme.Progress.Horizontal
+        </item>
+        <item name="MainTheme.Dialog">@style/AlfrescoHoloTheme.Dialog</item>
     </style>
 
 
     <!-- =============================================================== -->
     <!-- STYLE -->
     <!-- =============================================================== -->
+    <style name="AlfrescoMaterialTheme.Dialog">
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowSoftInputMode">stateAlwaysHidden</item>
+        <item name="android:windowActionModeOverlay">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
     <style name="AlfrescoMaterialTheme.Toolbar" parent="Base.ThemeOverlay.AppCompat.ActionBar">
         <item name="android:textColorPrimary">@color/primary_text</item>
         <item name="android:background">@color/background_material_light</item>
@@ -212,4 +294,11 @@
         <item name="android:layout_marginLeft">@dimen/d_16</item>
         <item name="android:layout_marginTop">@dimen/d_16</item>
     </style>
+
+    <style name="M.StyleDialog" parent="BottomSheet.Dialog">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="bs_numColumns">3</item>
+        <item name="bs_dividerColor">@color/primary</item>
+    </style>
+
 </resources>

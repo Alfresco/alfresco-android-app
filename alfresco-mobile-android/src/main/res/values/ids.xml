@@ -17,6 +17,8 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
     <item name="tab_comment" type="id" />
+    <item name="my_profile" type="id" />
+
 
     <!-- MAIN MENU -->
     <item name="menu_settings" type="id" />

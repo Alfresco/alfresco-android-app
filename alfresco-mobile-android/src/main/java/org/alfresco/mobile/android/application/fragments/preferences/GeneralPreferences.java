@@ -18,33 +18,40 @@
 package org.alfresco.mobile.android.application.fragments.preferences;
 
 import java.io.File;
+import java.util.List;
 import java.util.Map;
 
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.activity.WelcomeActivity;
+import org.alfresco.mobile.android.application.fragments.about.AboutFragment;
+import org.alfresco.mobile.android.application.fragments.account.AccountsAdapter;
 import org.alfresco.mobile.android.application.fragments.builder.LeafFragmentBuilder;
-import org.alfresco.mobile.android.application.fragments.config.MenuConfigFragment;
+import org.alfresco.mobile.android.application.fragments.signin.AccountSignInFragment;
 import org.alfresco.mobile.android.application.managers.ActionUtils;
-import org.alfresco.mobile.android.application.managers.ConfigManager;
 import org.alfresco.mobile.android.application.security.DataProtectionUserDialogFragment;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
+import org.alfresco.mobile.android.platform.SessionManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
+import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.mdm.MDMManager;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
-import org.alfresco.mobile.android.sync.SyncContentManager;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.holder.HolderUtils;
-import org.alfresco.mobile.android.ui.holder.TwoLinesCheckboxViewHolder;
 import org.alfresco.mobile.android.ui.holder.TwoLinesViewHolder;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 /**
  * Manage global application preferences.
@@ -63,15 +70,15 @@ public class GeneralPreferences extends AlfrescoFragment
 
     private MDMManager mdmManager;
 
-    private TwoLinesViewHolder dataProtectionVH, passcodeVH, menuCustomizationVH;
-
-    private TwoLinesCheckboxViewHolder syncFavoritesVH;
+    private TwoLinesViewHolder dataProtectionVH, passcodeVH;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
     public GeneralPreferences()
     {
+        requiredSession = false;
+        setHasOptionsMenu(true);
     }
 
     protected static GeneralPreferences newInstanceByTemplate(Bundle b)
@@ -92,9 +99,9 @@ public class GeneralPreferences extends AlfrescoFragment
         // TITLE
         getActivity().setTitle(R.string.settings);
 
+        TwoLinesViewHolder vh;
         // Links
         // Alfresco Website
-        TwoLinesViewHolder vh;
         vh = HolderUtils.configure(viewById(R.id.settings_links_website), getString(R.string.settings_links_website),
                 getString(R.string.settings_links_website_summary), -1);
         viewById(R.id.settings_links_website_container).setOnClickListener(new View.OnClickListener()
@@ -130,6 +137,18 @@ public class GeneralPreferences extends AlfrescoFragment
             }
         });
 
+        // About
+        vh = HolderUtils.configure(viewById(R.id.settings_about), getString(R.string.version_number),
+                AboutFragment.getVersionNumber(getActivity()), -1);
+        viewById(R.id.settings_about_container).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                AboutFragment.with(getActivity()).displayAsDialog();
+            }
+        });
+
         recreate();
 
         return getRootView();
@@ -143,13 +162,83 @@ public class GeneralPreferences extends AlfrescoFragment
         mdmManager = MDMManager.getInstance(getActivity());
     }
 
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        recreate();
+    }
+
     // ///////////////////////////////////////////////////////////////////////////
     // INTERNAL
     // ///////////////////////////////////////////////////////////////////////////
     private void recreate()
     {
-
         account = getAccount();
+
+        // Accounts
+        List<AlfrescoAccount> accounts = AlfrescoAccountManager.retrieveAccounts(getActivity());
+        View accountView;
+        LinearLayout accountContainer = (LinearLayout) viewById(R.id.settings_accounts_container);
+        accountContainer.removeAllViews();
+        TwoLinesViewHolder vh;
+        for (AlfrescoAccount account : accounts)
+        {
+            accountView = LayoutInflater.from(getActivity()).inflate(R.layout.row_two_lines_borderless,
+                    accountContainer, false);
+            accountView.setTag(account.getId());
+            vh = HolderUtils.configure(accountView, account.getUsername(), account.getTitle(),
+                    R.drawable.ic_account_circle_grey);
+            AccountsAdapter.displayAvatar(getActivity(), account, R.drawable.ic_account_light, vh.icon);
+
+            if (SessionManager.getInstance(getActivity()).getSession(account.getId()) != null)
+            {
+                vh.choose.setVisibility(View.VISIBLE);
+                vh.choose.setImageResource(R.drawable.ic_validate);
+            }
+
+            accountView.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+
+                    if (mdmManager.hasConfig())
+                    {
+                        AlfrescoAccount selectedAccount = AlfrescoAccountManager.getInstance(getActivity())
+                                .retrieveAccount((Long) v.getTag());
+                        AccountSignInFragment.with(getActivity()).account(selectedAccount).display();
+                    }
+                    else
+                    {
+                        AccountSettingsFragment.with(getActivity()).accountId((Long) v.getTag()).display();
+                    }
+                }
+            });
+            accountContainer.addView(accountView);
+        }
+
+        // Add Account
+        if (!mdmManager.hasConfig())
+        {
+            HolderUtils.configure(viewById(R.id.settings_accounts_create), getString(R.string.action_add_account),
+                    R.drawable.ic_add);
+            viewById(R.id.settings_accounts_create_container).setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    Intent i = new Intent(getActivity(), WelcomeActivity.class);
+                    i.putExtra(WelcomeActivity.EXTRA_ADD_ACCOUNT, true);
+                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    getActivity().startActivity(i);
+                }
+            });
+        }
+        else
+        {
+            hide(R.id.settings_accounts_create_container);
+        }
 
         // Preferences
         final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -224,54 +313,6 @@ public class GeneralPreferences extends AlfrescoFragment
             viewById(R.id.passcode_preference_container).setEnabled(false);
             passcodeVH.bottomText.setText(R.string.mdm_managed);
         }
-
-        // CUSTOMIZATION
-        menuCustomizationVH = HolderUtils.configure(viewById(R.id.settings_custom_menu_manage),
-                getString(R.string.settings_custom_menu_manage), getString(R.string.settings_custom_menu_summary), -1);
-
-        if (ConfigManager.getInstance(getActivity()).hasRemoteConfig(account.getId())
-                && ConfigManager.getInstance(getActivity()).getRemoteConfig(account.getId()).hasViewConfig())
-        {
-            viewById(R.id.settings_custom_menu_manage_container).setEnabled(false);
-            menuCustomizationVH.bottomText.setText(R.string.settings_custom_menu_disable);
-        }
-        else
-        {
-            viewById(R.id.settings_custom_menu_manage_container).setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View v)
-                {
-                    MenuConfigFragment.with(getActivity()).display();
-                }
-            });
-        }
-
-        // SYNC
-        Boolean syncEnable = SyncContentManager.getInstance(getActivity()).hasActivateSync(account);
-        Boolean syncWifiEnable = SyncContentManager.getInstance(getActivity()).hasWifiOnlySync(account);
-
-        if (!syncEnable)
-        {
-            viewById(R.id.settings_sync_container).setVisibility(View.GONE);
-        }
-        else if (syncEnable)
-        {
-            viewById(R.id.settings_sync_container).setVisibility(View.VISIBLE);
-            syncFavoritesVH = HolderUtils.configure(viewById(R.id.favorite_sync_wifi),
-                    getString(R.string.settings_favorite_sync_data),
-                    getString(R.string.settings_favorite_sync_data_all), !syncWifiEnable);
-
-            syncFavoritesVH.choose.setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View v)
-                {
-                    SyncContentManager.getInstance(getActivity()).setWifiOnlySync(account,
-                            syncFavoritesVH.choose.isChecked());
-                }
-            });
-        }
     }
 
     private void startPlayStore()
@@ -289,6 +330,15 @@ public class GeneralPreferences extends AlfrescoFragment
             dataProtectionVH.bottomText.setText(DataProtectionManager.getInstance(getActivity())
                     .hasDataProtectionEnable() ? R.string.data_protection_on : R.string.data_protection_off);
         }
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // MENU
+    // ///////////////////////////////////////////////////////////////////////////
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        menu.clear();
     }
 
     // ///////////////////////////////////////////////////////////////////////////

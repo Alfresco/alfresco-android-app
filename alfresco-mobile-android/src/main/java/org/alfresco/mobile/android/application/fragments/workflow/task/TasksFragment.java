@@ -92,9 +92,9 @@ public class TasksFragment extends TasksFoundationFragment
         if (getArguments().containsKey(ARGUMENT_MENU_ID))
         {
             TasksHelper.displayNavigationMode(getActivity(), false, getArguments().getInt(ARGUMENT_MENU_ID));
-            getActivity().getActionBar().setDisplayShowTitleEnabled(false);
-            getActivity().getActionBar().setDisplayShowCustomEnabled(true);
-            getActivity().getActionBar().setCustomView(null);
+            getActionBar().setDisplayShowTitleEnabled(false);
+            getActionBar().setDisplayShowCustomEnabled(true);
+            getActionBar().setCustomView(null);
         }
         else
         {
@@ -121,8 +121,8 @@ public class TasksFragment extends TasksFoundationFragment
     @Override
     protected ArrayAdapter<?> onAdapterCreation()
     {
-        return new TasksFoundationAdapter(getActivity(), R.layout.row_two_lines_caption_divider,
-                new ArrayList<Task>(0), selectedItems);
+        return new TasksFoundationAdapter(getActivity(), R.layout.row_two_lines_caption_divider, new ArrayList<Task>(0),
+                selectedItems);
     }
 
     @Override
@@ -130,6 +130,19 @@ public class TasksFragment extends TasksFoundationFragment
     public void onResult(TasksEvent request)
     {
         super.onResult(request);
+    }
+
+    @Override
+    protected View.OnClickListener onPrepareFabClickListener()
+    {
+        return new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                onOptionMenuItemSelected(R.id.menu_workflow_add);
+            }
+        };
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -150,15 +163,18 @@ public class TasksFragment extends TasksFoundationFragment
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-        if (!MenuFragmentHelper.canDisplayFragmentMenu(getActivity())) { return; }
         menu.clear();
-        getMenu(getActivity(), menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        switch (item.getItemId())
+        return !onOptionMenuItemSelected(item.getItemId()) ? false : super.onOptionsItemSelected(item);
+    }
+
+    private boolean onOptionMenuItemSelected(int itemId)
+    {
+        switch (itemId)
         {
             case R.id.menu_workflow_add:
                 Intent in = new Intent(PrivateIntent.ACTION_START_PROCESS, null, getActivity(),
@@ -167,7 +183,7 @@ public class TasksFragment extends TasksFoundationFragment
                 getActivity().startActivity(in);
                 return true;
         }
-        return super.onOptionsItemSelected(item);
+        return false;
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -259,7 +275,8 @@ public class TasksFragment extends TasksFoundationFragment
             menuIconId = R.drawable.ic_task_dark;
             menuTitleId = R.string.my_tasks;
             templateArguments = new String[] { ListingTemplate.ARGUMENT_HAS_FILTER, TasksTemplate.FILTER_KEY_STATUS,
-                    TasksTemplate.FILTER_KEY_DUE, TasksTemplate.FILTER_KEY_PRIORITY, TasksTemplate.FILTER_KEY_ASSIGNEE };
+                    TasksTemplate.FILTER_KEY_DUE, TasksTemplate.FILTER_KEY_PRIORITY,
+                    TasksTemplate.FILTER_KEY_ASSIGNEE };
         }
 
         protected void retrieveCustomArgument(Map<String, Object> properties, Bundle b)

@@ -1,82 +1,97 @@
 /*
  *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- *  This file is part of Alfresco Mobile for Android.
+ * This file is part of Alfresco Activiti Mobile for Android.
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ * Alfresco Activiti Mobile for Android is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * Alfresco Activiti Mobile for Android is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
+ *
  */
+
 package org.alfresco.mobile.android.application.fragments.account;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.activity.BaseActivity;
-import org.alfresco.mobile.android.application.activity.MainActivity;
-import org.alfresco.mobile.android.application.activity.WelcomeActivity;
-import org.alfresco.mobile.android.application.fragments.builder.LeafFragmentBuilder;
-import org.alfresco.mobile.android.application.managers.ConfigManager;
+import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 import org.alfresco.mobile.android.async.Operator;
-import org.alfresco.mobile.android.async.account.CreateAccountEvent;
-import org.alfresco.mobile.android.async.account.CreateAccountRequest;
+import org.alfresco.mobile.android.async.session.CheckSessionEvent;
+import org.alfresco.mobile.android.async.session.CheckSessionRequest;
+import org.alfresco.mobile.android.async.session.LoadSessionCallBack;
+import org.alfresco.mobile.android.platform.EventBusManager;
+import org.alfresco.mobile.android.platform.SessionManager;
+import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
+import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.exception.AlfrescoExceptionHelper;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
-import org.alfresco.mobile.android.platform.utils.SessionUtils;
-import org.alfresco.mobile.android.ui.activity.AlfrescoActivity;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
-import org.alfresco.mobile.android.ui.fragments.SimpleAlertDialogFragment;
-import org.alfresco.mobile.android.ui.operation.OperationWaitingDialogFragment;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.text.Html;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.Window;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.EditText;
+import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.rengwuxian.materialedittext.MaterialAutoCompleteTextView;
+import com.rengwuxian.materialedittext.MaterialEditText;
 import com.squareup.otto.Subscribe;
 
 public class AccountEditFragment extends AlfrescoFragment
 {
-    public static final String TAG = "AccountEditFragment";
+    public static final String TAG = AccountEditFragment.class.getName();
 
-    private Button validate;
+    public static final String ARGUMENT_ACCOUNT_ID = "accountId";
 
-    private String url = null, username = null, password = null, description = null;
+    // UI references.
+    private MaterialAutoCompleteTextView usernameField;
+
+    private MaterialEditText passwordField;
+
+    private View progressView, formView;
+
+    private MaterialEditText alfrescoUrlField;
+
+    private String username, password, hostname;
+
+    private AlfrescoAccount acc;
+
+    private Long accountId;
 
     // ///////////////////////////////////////////////////////////////////////////
-    // CONSTRUCTORS
+    // CONSTRUCTORS & HELPERS
     // ///////////////////////////////////////////////////////////////////////////
     public AccountEditFragment()
     {
-        setStyle(android.R.style.Theme_Holo_Light_Dialog, android.R.style.Theme_Holo_Light_Dialog);
+        super();
+        eventBusRequired = true;
         requiredSession = false;
-        checkSession = false;
     }
 
-    protected static AccountEditFragment newInstanceByTemplate(Bundle b)
+    public static AccountEditFragment newInstanceByTemplate(Bundle b)
     {
         AccountEditFragment cbf = new AccountEditFragment();
         cbf.setArguments(b);
@@ -86,289 +101,231 @@ public class AccountEditFragment extends AlfrescoFragment
     // ///////////////////////////////////////////////////////////////////////////
     // LIFECYCLE
     // ///////////////////////////////////////////////////////////////////////////
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        if (getDialog() != null)
-        {
-            getDialog().setTitle(R.string.account_authentication);
-            getDialog().requestWindowFeature(Window.FEATURE_LEFT_ICON);
-        }
-        else
-        {
-            UIUtils.displayTitle(getActivity(), R.string.account_authentication,
-                    !(getActivity() instanceof WelcomeActivity));
-        }
-
-        View v = inflater.inflate(R.layout.app_wizard_account_step2, container, false);
-
-        validate = (Button) v.findViewById(R.id.next);
-        validate.setOnClickListener(new OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                validateServer();
-            }
-        });
-
-        final CheckBox sw = (CheckBox) v.findViewById(R.id.repository_https);
-        final EditText portForm = (EditText) v.findViewById(R.id.repository_port);
-        sw.setOnCheckedChangeListener(new OnCheckedChangeListener()
-        {
-
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-            {
-                if (!sw.isChecked()
-                        && (portForm.getText().toString().isEmpty() || portForm.getText().toString().equals("443")))
-                {
-                    portForm.setText("80");
-                    AccessibilityUtils.addContentDescription(buttonView, R.string.account_https_off_hint);
-                }
-                else if (sw.isChecked()
-                        && (portForm.getText().toString().isEmpty() || portForm.getText().toString().equals("80")))
-                {
-                    portForm.setText("443");
-                    AccessibilityUtils.addContentDescription(buttonView, R.string.account_https_on_hint);
-                }
-            }
-        });
-
-        sw.setChecked(true);
-        portForm.setText("443");
-
-        // Accessibility
-        if (AccessibilityUtils.isEnabled(getActivity()))
-        {
-            ((EditText) v.findViewById(R.id.repository_username))
-                    .setHint(getString(R.string.account_username_required_hint));
-            ((EditText) v.findViewById(R.id.repository_password))
-                    .setHint(getString(R.string.account_password_required_hint));
-            ((EditText) v.findViewById(R.id.repository_hostname))
-                    .setHint(getString(R.string.account_hostname_required_hint));
-            ((EditText) v.findViewById(R.id.repository_description))
-                    .setHint(getString(R.string.account_description_optional_hint));
-            sw.setContentDescription(getString(R.string.account_https_on_hint));
-            portForm.setHint(getString(R.string.account_port_hint));
-            ((EditText) v.findViewById(R.id.repository_servicedocument))
-                    .setHint(getString(R.string.account_servicedocument_hint));
-        }
-
-        return v;
+        setRootView(inflater.inflate(R.layout.fr_account_signin, container, false));
+        getRootView().setBackgroundColor(getResources().getColor(R.color.secondary_background));
+        return getRootView();
     }
 
     @Override
     public void onStart()
     {
-        if (getDialog() != null)
-        {
-            getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.ic_application_logo);
-        }
-
-        initForm();
-
-        if (retrieveFormValues())
-        {
-            validate.setEnabled(true);
-        }
-        else
-        {
-            validate.setEnabled(false);
-        }
-
         super.onStart();
     }
 
-    // /////////////////////////////////////////////////////////////
-    // INTERNALS
-    // ////////////////////////////////////////////////////////////
-    private void validateServer()
+    // ///////////////////////////////////////////////////////////////////////////
+    // UTILS
+    // ///////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState)
     {
-        if (retrieveFormValues())
+        super.onActivityCreated(savedInstanceState);
+
+        if (getArguments() != null)
         {
-            // Remove Keyboard
-            UIUtils.hideKeyboard(getActivity());
-
-            // Create AlfrescoAccount + Session
-            Operator.with(getActivity()).load(new CreateAccountRequest.Builder(url, username, password, description));
-
-            OperationWaitingDialogFragment.newInstance(CreateAccountRequest.TYPE_ID, R.drawable.ic_onpremise,
-                    getString(R.string.account), getString(R.string.account_verify), null, -1, null).show(
-                    getActivity().getSupportFragmentManager(), OperationWaitingDialogFragment.TAG);
+            accountId = getArguments().getLong(ARGUMENT_ACCOUNT_ID);
         }
-    }
+        acc = AlfrescoAccountManager.getInstance(getActivity()).retrieveAccount(accountId);
 
-    private void initForm()
-    {
-        int[] ids = new int[] { R.id.repository_username, R.id.repository_hostname, R.id.repository_password,
-                R.id.repository_port };
-        EditText formValue;
-        for (int i = 0; i < ids.length; i++)
+        // It's not default we display full url in hostname
+        hostname = acc.getUrl();
+
+        // TITLE
+        TextView tv = (TextView) viewById(R.id.signin_title);
+        tv.setText(R.string.settings_userinfo_account_summary);
+
+        // USERNAME
+        usernameField = (MaterialAutoCompleteTextView) viewById(R.id.username);
+        Account[] accounts = AccountManager.get(getActivity()).getAccounts();
+        List<String> names = new ArrayList<>(accounts.length);
+        String accountName;
+        for (int i = 0; i < accounts.length; i++)
         {
-            formValue = (EditText) findViewByIdInternal(ids[i]);
-            formValue.addTextChangedListener(watcher);
-        }
-    }
-
-    private TextWatcher watcher = new TextWatcher()
-    {
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count)
-        {
-            if (retrieveFormValues())
+            accountName = accounts[i].name;
+            if (!TextUtils.isEmpty(accountName) && !names.contains(accountName))
             {
-                validate.setEnabled(true);
-            }
-            else
-            {
-                validate.setEnabled(false);
+                names.add(accounts[i].name);
             }
         }
+        ArrayAdapter adapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, names);
+        usernameField.setAdapter(adapter);
+        usernameField.setText(acc.getUsername());
+        usernameField.setEnabled(true);
+        usernameField.setFocusable(true);
 
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after)
+        // PASSWORD
+        passwordField = (MaterialEditText) viewById(R.id.password);
+        passwordField.setText(acc.getPassword());
+        passwordField.setEnabled(true);
+        passwordField.setFocusable(true);
+
+        Button validate = (Button) viewById(R.id.email_sign_in_button);
+        validate.setText(R.string.save);
+        validate.setOnClickListener(new View.OnClickListener()
         {
-            // Nothing special
+            @Override
+            public void onClick(View view)
+            {
+                attemptLogin();
+            }
+        });
+
+        progressView = viewById(R.id.login_progress);
+        formView = viewById(R.id.login_form);
+
+        // Server part
+        alfrescoUrlField = (MaterialEditText) viewById(R.id.signing_hostname);
+        alfrescoUrlField.setText(hostname);
+        alfrescoUrlField.setHint("Alfresco URL");
+
+        // Accessibility
+        if (AccessibilityUtils.isEnabled(getActivity()))
+        {
+            usernameField.setHint(getString(R.string.account_username_required_hint));
+            passwordField.setHint(getString(R.string.account_password_required_hint));
+            alfrescoUrlField.setHint(getString(R.string.account_hostname_required_hint));
         }
 
-        @Override
-        public void afterTextChanged(Editable s)
-        {
-
-        }
-    };
-
-    private boolean retrieveFormValues()
-    {
-
-        EditText formValue = (EditText) findViewByIdInternal(R.id.repository_username);
-        if (formValue != null && formValue.getText() != null && formValue.getText().length() > 0)
-        {
-            username = formValue.getText().toString();
-        }
-        else
-        {
-            AccessibilityUtils.addContentDescription(validate, R.string.account_validate_disable_hint);
-            return false;
-        }
-
-        formValue = (EditText) findViewByIdInternal(R.id.repository_description);
-        description = formValue.getText().toString();
-
-        formValue = (EditText) findViewByIdInternal(R.id.repository_password);
-        if (formValue != null && formValue.getText() != null && formValue.getText().length() > 0)
-        {
-            password = formValue.getText().toString();
-        }
-        else
-        {
-            AccessibilityUtils.addContentDescription(validate, R.string.account_validate_disable_hint);
-            return false;
-        }
-
-        String host;
-        formValue = (EditText) findViewByIdInternal(R.id.repository_hostname);
-        if (formValue != null && formValue.getText() != null && formValue.getText().length() > 0)
-        {
-            host = formValue.getText().toString();
-        }
-        else
-        {
-            AccessibilityUtils.addContentDescription(validate, R.string.account_validate_disable_hint);
-            return false;
-        }
-
-        CheckBox sw = (CheckBox) findViewByIdInternal(R.id.repository_https);
-        boolean https = sw.isChecked();
-        String protocol = https ? "https" : "http";
-
-        int port;
-        formValue = (EditText) findViewByIdInternal(R.id.repository_port);
-        if (formValue.getText().length() > 0)
-        {
-            port = Integer.parseInt(formValue.getText().toString());
-        }
-        else
-        {
-            port = (protocol.equals("https")) ? 443 : 80;
-        }
-
-        formValue = (EditText) findViewByIdInternal(R.id.repository_servicedocument);
-        String servicedocument = formValue.getText().toString();
-        URL u;
-        try
-        {
-            u = new URL(protocol, host, port, servicedocument);
-        }
-        catch (MalformedURLException e)
-        {
-            AccessibilityUtils.addContentDescription(validate, R.string.account_validate_disable_url_hint);
-            return false;
-        }
-
-        url = u.toString();
-        AccessibilityUtils.addContentDescription(validate, R.string.account_validate_hint);
-
-        return true;
+        show(R.id.server_form);
     }
 
-    private View findViewByIdInternal(int id)
+    /**
+     * Attempts to sign in or register the account specified by the login form.
+     * If there are form errors (invalid email, missing fields, etc.), the
+     * errors are presented and no actual login attempt is made.
+     */
+    public void attemptLogin()
     {
-        if (getDialog() != null)
+        // Reset errors.
+        usernameField.setError(null);
+        passwordField.setError(null);
+        alfrescoUrlField.setError(null);
+
+        // Store values at the time of the login attempt.
+        username = usernameField.getText().toString();
+        password = passwordField.getText().toString();
+        hostname = alfrescoUrlField.getText().toString();
+
+        boolean cancel = false;
+        View focusView = null;
+
+        // Check for a valid password, if the task entered one.
+        if (TextUtils.isEmpty(password))
         {
-            return getDialog().findViewById(id);
+            passwordField.setError(getString(R.string.error_field_required));
+            focusView = passwordField;
+            cancel = true;
+        }
+
+        // Check for a valid email address.
+        if (TextUtils.isEmpty(username))
+        {
+            usernameField.setError(getString(R.string.error_field_required));
+            focusView = usernameField;
+            cancel = true;
+        }
+
+        // Check for a valid hostname.
+        if (TextUtils.isEmpty(hostname))
+        {
+            alfrescoUrlField.setError(getString(R.string.error_field_required));
+            focusView = alfrescoUrlField;
+            cancel = true;
+        }
+
+        if (cancel)
+        {
+            // There was an error; don't attempt login and focus the first
+            // form field with an error.
+            focusView.requestFocus();
         }
         else
         {
-            return getActivity().findViewById(id);
+            showProgress(true);
+            connect();
         }
+    }
+
+    /**
+     * Shows the progress UI and hides the login form.
+     */
+    public void showProgress(final boolean show)
+    {
+        int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+        progressView.setVisibility(show ? View.VISIBLE : View.GONE);
+        progressView.animate().setDuration(shortAnimTime).alpha(show ? 1 : 0).setListener(new AnimatorListenerAdapter()
+        {
+            @Override
+            public void onAnimationEnd(Animator animation)
+            {
+                progressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            }
+        });
+        formView.setVisibility(show ? View.GONE : View.VISIBLE);
+        formView.animate().setDuration(shortAnimTime).alpha(show ? 0 : 1).setListener(new AnimatorListenerAdapter()
+        {
+            @Override
+            public void onAnimationEnd(Animator animation)
+            {
+                formView.setVisibility(show ? View.GONE : View.VISIBLE);
+            }
+        });
+    }
+
+    private void connect()
+    {
+        showProgress(true);
+
+        UIUtils.hideKeyboard(getActivity(), usernameField);
+
+        // Create AlfrescoAccount + Session
+        Operator.with(getActivity()).load(new CheckSessionRequest.Builder(hostname, username, password));
     }
 
     // ///////////////////////////////////////////////////////////////////////////
-    // EVENTS RECEIVER
+    // EVENTS
     // ///////////////////////////////////////////////////////////////////////////
     @Subscribe
-    public void onAccountCreated(CreateAccountEvent event)
+    public void onCheckSessionEvent(CheckSessionEvent event)
     {
         if (event.hasException)
         {
-            ((AlfrescoActivity) getActivity()).removeWaitingDialog();
-            Bundle b = new Bundle();
-            b.putInt(SimpleAlertDialogFragment.ARGUMENT_ICON, R.drawable.ic_application_logo);
-            b.putInt(SimpleAlertDialogFragment.ARGUMENT_TITLE, R.string.error_session_creation_title);
-            b.putInt(SimpleAlertDialogFragment.ARGUMENT_POSITIVE_BUTTON, android.R.string.ok);
-            b.putInt(SimpleAlertDialogFragment.ARGUMENT_MESSAGE,
-                    AlfrescoExceptionHelper.getMessageId(getActivity(), event.exception));
-            SimpleAlertDialogFragment.newInstance(b).show(getActivity().getSupportFragmentManager(),
-                    SimpleAlertDialogFragment.TAG);
-            return;
-        }
+            // Display error
+            View focusView = null;
+            showProgress(false);
+            UIUtils.showKeyboard(getActivity(), focusView);
 
-        if (getActivity() instanceof MainActivity)
-        {
-            getActivity().getSupportFragmentManager().popBackStack(AccountTypesFragment.TAG,
-                    FragmentManager.POP_BACK_STACK_INCLUSIVE);
-
-            if (event.data != null && !event.hasException)
+            if (focusView == null)
             {
-                long accountId = event.data.getId();
-
-                AccountsFragment frag = (AccountsFragment) getActivity().getSupportFragmentManager().findFragmentByTag(
-                        AccountsFragment.TAG);
-                if (frag != null)
-                {
-                    frag.select(event.data);
-                }
-                ((BaseActivity) getActivity()).setCurrentAccount(accountId);
+                int messageId = AlfrescoExceptionHelper.getMessageId(getActivity(), event.exception);
+                // Revert to Alfresco WebApp
+                MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity())
+                        .title(R.string.error_session_creation_title)
+                        .content(
+                                Html.fromHtml(messageId == R.string.error_unknown ? String.format(getString(messageId),
+                                        event.exception.getCause()) : getString(messageId))).positiveText(R.string.ok);
+                builder.show();
             }
         }
-
-        if (getActivity() instanceof WelcomeActivity)
+        else
         {
-            ConfigManager.getInstance(getActivity()).setSession(event.data.getId(),
-                    SessionUtils.getSession(getActivity()));
+            AlfrescoAccount updatedAccount = event.updatedAccount;
+            // Save
+            acc = AlfrescoAccountManager.getInstance(getActivity()).update(updatedAccount.getId(),
+                    updatedAccount.getTitle(), updatedAccount.getUrl(), updatedAccount.getUsername(),
+                    updatedAccount.getPassword(), updatedAccount.getRepositoryId(), updatedAccount.getTypeId(), null,
+                    updatedAccount.getAccessToken(), updatedAccount.getRefreshToken(),
+                    updatedAccount.getIsPaidAccount() ? 1 : 0);
+
+            SessionManager.getInstance(getActivity()).saveAccount(acc);
+            SessionManager.getInstance(getActivity()).saveSession(acc, event.data);
+
+            EventBusManager.getInstance().post(
+                    new LoadSessionCallBack.LoadAccountCompletedEvent(updatedAccount.getTitle(), updatedAccount));
+
+            getActivity().onBackPressed();
         }
     }
 
@@ -380,7 +337,7 @@ public class AccountEditFragment extends AlfrescoFragment
         return new Builder(activity);
     }
 
-    public static class Builder extends LeafFragmentBuilder
+    public static class Builder extends AlfrescoFragmentBuilder
     {
         // ///////////////////////////////////////////////////////////////////////////
         // CONSTRUCTORS
@@ -396,12 +353,18 @@ public class AccountEditFragment extends AlfrescoFragment
             super(appActivity, configuration);
         }
 
+        public Builder accountId(Long accountId)
+        {
+            extraConfiguration.putLong(ARGUMENT_ACCOUNT_ID, accountId);
+            return this;
+        }
+
         // ///////////////////////////////////////////////////////////////////////////
-        // SETTERS
+        // CLICK
         // ///////////////////////////////////////////////////////////////////////////
         protected Fragment createFragment(Bundle b)
         {
             return newInstanceByTemplate(b);
-        }
+        };
     }
 }

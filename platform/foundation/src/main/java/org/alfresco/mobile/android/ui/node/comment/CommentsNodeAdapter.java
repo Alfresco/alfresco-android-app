@@ -26,6 +26,7 @@ import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.foundation.R;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
+import org.alfresco.mobile.android.ui.holder.HolderUtils;
 import org.alfresco.mobile.android.ui.holder.TwoLinesCaptionViewHolder;
 import org.alfresco.mobile.android.ui.rendition.RenditionManager;
 
@@ -84,9 +85,8 @@ public class CommentsNodeAdapter extends BaseListAdapter<Comment, TwoLinesCaptio
                         .toString());
             }
             vh.bottomText.setText(Html.fromHtml(value, null, tagHandler), TextView.BufferType.SPANNABLE);
-            vh.bottomText.setSingleLine(false);
+            HolderUtils.makeMultiLine(vh.bottomText, 25);
             vh.bottomText.setTextIsSelectable(true);
-            vh.bottomText.setMaxLines(25);
         }
     }
 

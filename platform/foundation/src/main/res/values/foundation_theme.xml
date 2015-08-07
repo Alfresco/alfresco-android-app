@@ -367,6 +367,12 @@
         <item name="android:textColor">@color/emphasis</item>
     </style>
 
+    <style name="AlfrescoHoloTheme.TextView.SectionHeader.Primary.D">
+        <item name="android:drawableBottom">@drawable/section_header</item>
+        <item name="android:textColor">@color/emphasis</item>
+        <item name="android:padding">0dip</item>
+    </style>
+
     <!-- ========= -->
     <!-- IMAGEVIEW -->
     <!-- ========= -->

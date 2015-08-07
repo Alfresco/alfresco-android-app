@@ -23,7 +23,6 @@ import java.util.List;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.configuration.ConfigurationConstant;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
-import org.alfresco.mobile.android.application.fragments.account.AccountOAuthFragment;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.builder.FragmentBuilderFactory;
 import org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerFragment;
@@ -31,6 +30,7 @@ import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFo
 import org.alfresco.mobile.android.application.fragments.node.favorite.FavoritesFragment;
 import org.alfresco.mobile.android.application.fragments.node.upload.UploadFormFragment;
 import org.alfresco.mobile.android.application.fragments.preferences.PasscodePreferences;
+import org.alfresco.mobile.android.application.fragments.signin.AccountOAuthFragment;
 import org.alfresco.mobile.android.application.fragments.sync.SyncFragment;
 import org.alfresco.mobile.android.application.security.PassCodeActivity;
 import org.alfresco.mobile.android.async.node.favorite.FavoriteNodesRequest;
@@ -107,7 +107,7 @@ public class PublicDispatcherActivity extends BaseActivity
     @Override
     protected void onStart()
     {
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getAppActionBar().setDisplayHomeAsUpEnabled(true);
         super.onStart();
         PassCodeActivity.requestUserPasscode(this);
         activateCheckPasscode = PasscodePreferences.hasPasscodeEnable(this);
@@ -257,7 +257,7 @@ public class PublicDispatcherActivity extends BaseActivity
     public void onSessionRequested(RequestSessionEvent event)
     {
         requestedAccountId = event.accountToLoad.getId();
-        currentAccount = event.accountToLoad;
+        setCurrentAccount(event.accountToLoad);
         displayWaitingDialog();
     }
 }

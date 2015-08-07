@@ -133,7 +133,7 @@ public class AccountsAdapter extends BaseListAdapter<AlfrescoAccount, TwoLinesVi
                     case NETWORK_ITEM:
                     case MANAGE_ITEM:
                         defaultIcon = R.drawable.ic_settings_light;
-                        vh.icon.setImageDrawable(getContext().getResources().getDrawable(defaultIcon));
+                        vh.icon.setImageResource(defaultIcon);
                         break;
                     default:
                         displayAvatar(getContext(), acc, defaultIcon, vh.icon);

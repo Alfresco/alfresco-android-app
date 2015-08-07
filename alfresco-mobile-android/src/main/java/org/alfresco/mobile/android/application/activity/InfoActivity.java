@@ -27,7 +27,7 @@ import android.os.Bundle;
 /**
  * @author Jean Marie Pascal
  */
-public class InfoActivity extends BaseActivity
+public class InfoActivity extends BaseAppCompatActivity
 {
     private static final String TAG = InfoActivity.class.getName();
 

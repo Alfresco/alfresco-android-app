@@ -105,7 +105,10 @@ public class HelpDialogFragment extends DialogFragment implements RefreshFragmen
                 super.onPageStarted(view, url, favicon);
                 hasError = false;
                 getActivity().setProgressBarIndeterminateVisibility(true);
-                refreshIcon.setVisible(false);
+                if (refreshIcon != null)
+                {
+                    refreshIcon.setVisible(false);
+                }
             }
 
             @Override
@@ -133,6 +136,7 @@ public class HelpDialogFragment extends DialogFragment implements RefreshFragmen
             @Override
             public void onPageFinished(WebView view, String url)
             {
+                if (getActivity() == null) { return; }
                 super.onPageFinished(view, url);
                 if (hasError)
                 {
@@ -143,7 +147,10 @@ public class HelpDialogFragment extends DialogFragment implements RefreshFragmen
                     view.setVisibility(View.VISIBLE);
                 }
                 getActivity().setProgressBarIndeterminateVisibility(false);
-                refreshIcon.setVisible(true);
+                if (refreshIcon != null)
+                {
+                    refreshIcon.setVisible(true);
+                }
             }
 
             public void onFormResubmission(WebView view, Message dontResend, Message resend)
@@ -179,6 +186,16 @@ public class HelpDialogFragment extends DialogFragment implements RefreshFragmen
         webView.loadUrl(rootUrl);
 
         return v;
+    }
+
+    @Override
+    public void onStop()
+    {
+        super.onStop();
+        if (webView != null)
+        {
+            webView.stopLoading();
+        }
     }
 
     // ///////////////////////////////////////////////////////////////////////////

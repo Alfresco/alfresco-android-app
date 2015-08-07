@@ -88,7 +88,7 @@
                 android:contentDescription="@null"
                 android:scaleType="centerInside"
                 android:src="@drawable/ic_empty"
-                android:visibility="visible" />
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/sync_icon"

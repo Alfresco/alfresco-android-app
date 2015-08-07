@@ -25,7 +25,9 @@ import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
+import org.alfresco.mobile.android.ui.activity.AlfrescoActivity;
 
+import android.app.ActionBar;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
@@ -188,5 +190,17 @@ public abstract class AlfrescoFragment extends DialogFragment
         if (getRootView() == null) { return; }
         if (getRootView().findViewById(id) == null) { return; }
         getRootView().findViewById(id).setVisibility(View.VISIBLE);
+    }
+
+    protected ActionBar getActionBar()
+    {
+        if (getActivity() instanceof AlfrescoActivity)
+        {
+            return ((AlfrescoActivity) getActivity()).getAppActionBar();
+        }
+        else
+        {
+            return null;
+        }
     }
 }

@@ -45,7 +45,10 @@ import org.alfresco.mobile.android.application.fragments.sync.SyncFragment;
 import org.alfresco.mobile.android.application.fragments.workflow.task.TasksFragment;
 import org.alfresco.mobile.android.application.managers.ConfigManager;
 import org.alfresco.mobile.android.platform.EventBusManager;
+import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
+import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
+import org.alfresco.mobile.android.platform.utils.BundleUtils;
 import org.alfresco.mobile.android.sync.SyncContentManager;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.node.browse.NodeBrowserTemplate;
@@ -72,6 +75,8 @@ import com.afollestad.materialdialogs.MaterialDialog;
  */
 public class MenuConfigFragment extends AlfrescoFragment
 {
+    private static final String ARGUMENT_ACCOUNT_ID = "accountId";
+
     public static final String TAG = MenuConfigFragment.class.getSimpleName();
 
     public static final String VIEW_ACTIVITIES = "view-activities-default";
@@ -111,6 +116,10 @@ public class MenuConfigFragment extends AlfrescoFragment
 
     private boolean originalSyncState;
 
+    private AlfrescoAccount account;
+
+    private Long accountId = null;
+
     // //////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // //////////////////////////////////////////////////////////////////////
@@ -142,8 +151,15 @@ public class MenuConfigFragment extends AlfrescoFragment
     {
         setRootView(inflater.inflate(R.layout.config_default_menu, container, false));
 
+        account = null;
+        if (getArguments() != null)
+        {
+            accountId = BundleUtils.getLong(getArguments(), ARGUMENT_ACCOUNT_ID);
+            account = AlfrescoAccountManager.getInstance(getActivity()).retrieveAccount(accountId);
+        }
+
         configManager = ConfigManager.getInstance(getActivity());
-        customConfiguration = ConfigManager.getInstance(getActivity()).getCustomConfig(getAccount().getId());
+        customConfiguration = ConfigManager.getInstance(getActivity()).getCustomConfig(accountId);
 
         createDefaultMenu();
         if (customConfiguration != null)
@@ -153,7 +169,7 @@ public class MenuConfigFragment extends AlfrescoFragment
 
         menuConfigItems = new ArrayList<>(defaultMenuItems.values());
 
-        adapter = new MenuItemConfigAdapter(this, R.layout.config_menu_row_dynamic, menuConfigItems);
+        adapter = new MenuItemConfigAdapter(this, R.layout.row_single_line_checkbox, menuConfigItems);
         DynamicListView listView = (DynamicListView) viewById(R.id.listview);
         listView.setCheeseList(menuConfigItems);
         listView.setAdapter(adapter);
@@ -202,8 +218,8 @@ public class MenuConfigFragment extends AlfrescoFragment
                         @Override
                         public void onPositive(MaterialDialog dialog)
                         {
-                            SyncContentManager.getInstance(getActivity()).setActivateSync(getAccount(), false);
-                            SyncContentManager.getInstance(getActivity()).unsync(getAccount());
+                            SyncContentManager.getInstance(getActivity()).setActivateSync(account, false);
+                            SyncContentManager.getInstance(getActivity()).unsync(account);
                             saveConfiguration();
                             getActivity().onBackPressed();
                         }
@@ -213,7 +229,7 @@ public class MenuConfigFragment extends AlfrescoFragment
         }
         else if (defaultMenuItems.get(VIEW_SYNC).isEnable() && !originalSyncState)
         {
-            SyncContentManager.getInstance(getActivity()).setActivateSync(getAccount(), true);
+            SyncContentManager.getInstance(getActivity()).setActivateSync(account, true);
             saveConfiguration();
             getActivity().onBackPressed();
         }
@@ -275,7 +291,7 @@ public class MenuConfigFragment extends AlfrescoFragment
             OutputStream sourceFile = null;
             try
             {
-                File configFolder = AlfrescoStorageManager.getInstance(getActivity()).getCustomFolder(getAccount());
+                File configFolder = AlfrescoStorageManager.getInstance(getActivity()).getCustomFolder(account);
                 File configFile = new File(configFolder, ConfigConstants.CONFIG_FILENAME);
 
                 sourceFile = new FileOutputStream(configFile);
@@ -283,8 +299,8 @@ public class MenuConfigFragment extends AlfrescoFragment
                 sourceFile.close();
 
                 // Send Event
-                ConfigManager.getInstance(getActivity()).loadAndUseCustom(getAccount());
-                EventBusManager.getInstance().post(new ConfigManager.ConfigurationMenuEvent(getAccount().getId()));
+                ConfigManager.getInstance(getActivity()).loadAndUseCustom(account);
+                EventBusManager.getInstance().post(new ConfigManager.ConfigurationMenuEvent(accountId));
             }
             catch (Exception e)
             {
@@ -412,6 +428,12 @@ public class MenuConfigFragment extends AlfrescoFragment
         public Builder(FragmentActivity appActivity, Map<String, Object> configuration)
         {
             super(appActivity, configuration);
+        }
+
+        public Builder accountId(long accountId)
+        {
+            extraConfiguration.putLong(ARGUMENT_ACCOUNT_ID, accountId);
+            return this;
         }
 
         // ///////////////////////////////////////////////////////////////////////////

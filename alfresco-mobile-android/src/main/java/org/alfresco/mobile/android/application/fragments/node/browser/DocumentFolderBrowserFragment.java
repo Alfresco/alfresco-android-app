@@ -80,7 +80,6 @@ import org.alfresco.mobile.android.platform.extensions.ScanSnapManager;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
-import org.alfresco.mobile.android.platform.utils.AndroidVersion;
 import org.alfresco.mobile.android.platform.utils.BundleUtils;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.sync.SyncContentManager;
@@ -95,6 +94,7 @@ import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 
 import android.app.ActionBar;
 import android.app.ActionBar.OnNavigationListener;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -105,7 +105,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.SubMenu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -116,6 +115,7 @@ import android.widget.ImageView;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
+import com.cocosw.bottomsheet.BottomSheet;
 import com.squareup.otto.Subscribe;
 
 /**
@@ -157,6 +157,8 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
     private String fieldId;
 
     private boolean doFavorite;
+
+    private Permissions permission;
 
     // //////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
@@ -258,6 +260,12 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
         return v;
     }
 
+    protected void prepareEmptyInitialView(View ev, ImageView emptyImageView, TextView firstEmptyMessage,
+            TextView secondEmptyMessage)
+    {
+        prepareEmptyView(ev, emptyImageView, firstEmptyMessage, secondEmptyMessage);
+    }
+
     @Override
     protected void prepareEmptyView(View ev, ImageView emptyImageView, TextView firstEmptyMessage,
             TextView secondEmptyMessage)
@@ -354,8 +362,8 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
 
         if (getActivity().getActionBar() != null)
         {
-            getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
-            getActivity().getActionBar().setDisplayShowCustomEnabled(false);
+            getActionBar().setDisplayHomeAsUpEnabled(true);
+            getActionBar().setDisplayShowCustomEnabled(false);
             getActivity().setTitle(titleId);
             AccessibilityUtils.sendAccessibilityEvent(getActivity());
             if (shortcutAlreadyVisible)
@@ -400,10 +408,10 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
     private void displayPathShortcut()
     {
         // /QUICK PATH
-        if (parentFolder != null && getActivity().getActionBar() != null)
+        if (parentFolder != null && getActionBar() != null)
         {
             //
-            getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+            getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
             String pathValue = parentFolder.getName();
             if (parentFolder.getProperty(PropertyIds.PATH) != null)
             {
@@ -418,8 +426,8 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
 
             List<String> listFolder = getPath(pathValue, fromSite);
 
-            SpinnerAdapter adapter = new FolderPathAdapter(getActivity(),
-                    android.R.layout.simple_spinner_dropdown_item, listFolder);
+            SpinnerAdapter adapter = new FolderPathAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item,
+                    listFolder);
 
             OnNavigationListener mOnNavigationListener = new OnNavigationListener()
             {
@@ -463,7 +471,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
 
             };
 
-            getActivity().getActionBar().setListNavigationCallbacks(adapter, mOnNavigationListener);
+            getActionBar().setListNavigationCallbacks(adapter, mOnNavigationListener);
 
             shortcutAlreadyVisible = true;
         }
@@ -611,9 +619,8 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
         boolean b;
         if (n instanceof NodePlaceHolder)
         {
-            getActivity().startActivity(
-                    new Intent(PrivateIntent.ACTION_DISPLAY_OPERATIONS).putExtra(PrivateIntent.EXTRA_ACCOUNT_ID,
-                            SessionUtils.getAccount(getActivity()).getId()));
+            getActivity().startActivity(new Intent(PrivateIntent.ACTION_DISPLAY_OPERATIONS)
+                    .putExtra(PrivateIntent.EXTRA_ACCOUNT_ID, SessionUtils.getAccount(getActivity()).getId()));
             b = false;
         }
         else
@@ -709,11 +716,13 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
         if (mode == MODE_PICK && adapter == null)
         {
             pickedNodes = fragmentPick.getNodeSelected(fieldId);
-            return new ProgressNodeAdapter(getActivity(), GridAdapterHelper.getDisplayItemLayout(getActivity(), gv,
-                    displayMode), parentFolder, new ArrayList<Node>(0), pickedNodes);
+            return new ProgressNodeAdapter(getActivity(),
+                    GridAdapterHelper.getDisplayItemLayout(getActivity(), gv, displayMode), parentFolder,
+                    new ArrayList<Node>(0), pickedNodes);
         }
-        else if (adapter == null) { return new ProgressNodeAdapter(this, GridAdapterHelper.getDisplayItemLayout(
-                getActivity(), gv, displayMode), parentFolder, new ArrayList<Node>(0), selectedItems, mode); }
+        else if (adapter == null) { return new ProgressNodeAdapter(this,
+                GridAdapterHelper.getDisplayItemLayout(getActivity(), gv, displayMode), parentFolder,
+                new ArrayList<Node>(0), selectedItems, mode); }
         return null;
     }
 
@@ -742,8 +751,8 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
                         // Error case : Unable to find the file path associated
                         // to user pick.
                         // Sample : Picasa image case
-                        ActionUtils.actionDisplayError(this, new AlfrescoAppException(
-                                getString(R.string.error_unknown_filepath), true));
+                        ActionUtils.actionDisplayError(this,
+                                new AlfrescoAppException(getString(R.string.error_unknown_filepath), true));
                     }
                 }
                 else if (data != null && data.getExtras() != null && data.getExtras().containsKey(Intent.EXTRA_STREAM))
@@ -786,7 +795,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
             {
                 requestsBuilder.add(new CreateDocumentRequest.Builder(importFolder, file.getName(),
                         new ContentFileProgressImpl(file))
-                        .setNotificationVisibility(OperationRequest.VISIBILITY_NOTIFICATIONS));
+                                .setNotificationVisibility(OperationRequest.VISIBILITY_NOTIFICATIONS));
             }
             Operator.with(getActivity(), getAccount()).load(requestsBuilder);
 
@@ -804,16 +813,12 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
         FragmentDisplayer.with(getActivity()).remove(CreateFolderDialogFragment.TAG);
 
         // Create and show the dialog.
-        AddFolderDialogFragment.newInstance(parentFolder).show(
-                getActivity().getSupportFragmentManager().beginTransaction(), CreateFolderDialogFragment.TAG);
+        AddFolderDialogFragment.newInstance(parentFolder)
+                .show(getActivity().getSupportFragmentManager().beginTransaction(), CreateFolderDialogFragment.TAG);
     }
 
     public void refresh()
     {
-        if (parentFolder == null)
-        {
-            parentFolder = SessionUtils.getSession(getActivity()).getRootFolder();
-        }
         super.refresh();
 
         // Display Refresh Progress
@@ -839,8 +844,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
         }
         else if (getActivity() instanceof PublicDispatcherActivity || getActivity() instanceof BaseShortcutActivity)
         {
-            Permissions permission = getSession().getServiceRegistry().getDocumentFolderService()
-                    .getPermissions(parentFolder);
+            permission = getSession().getServiceRegistry().getDocumentFolderService().getPermissions(parentFolder);
 
             if (permission.canAddChildren())
             {
@@ -858,7 +862,6 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
         MenuItem mi;
 
         if (parentFolder == null) { return; }
-        Permissions permission;
         try
         {
             permission = session.getServiceRegistry().getDocumentFolderService().getPermissions(parentFolder);
@@ -874,32 +877,52 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
 
         if (permission.canAddChildren())
         {
-            mi = menu.add(Menu.NONE, R.id.menu_create_folder, Menu.FIRST, R.string.folder_create);
-            mi.setIcon(R.drawable.ic_add_folder);
-            mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+            displayFab();
+        }
+    }
 
-            SubMenu createMenu = menu.addSubMenu(Menu.NONE, R.id.menu_create, Menu.FIRST + 30, R.string.add_menu);
-            createMenu.setIcon(android.R.drawable.ic_menu_add);
-            createMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+    @Override
+    protected OnClickListener onPrepareFabClickListener()
+    {
+        if (permission == null || !permission.canAddChildren()) { return null; }
 
-            createMenu.add(Menu.NONE, R.id.menu_upload, Menu.FIRST + 30, R.string.upload_title);
-
-            createMenu.add(Menu.NONE, R.id.menu_create_document, Menu.FIRST + 1, R.string.create_document);
-
-            createMenu.add(Menu.NONE, R.id.menu_device_capture_camera_photo, Menu.FIRST + 1, R.string.take_photo);
-
-            if (AndroidVersion.isICSOrAbove())
+        return new OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
             {
-                createMenu.add(Menu.NONE, R.id.menu_device_capture_camera_video, Menu.FIRST + 2, R.string.make_video);
+                BottomSheet.Builder builder = new BottomSheet.Builder(getActivity(), R.style.M_StyleDialog)
+                        .title(R.string.add_menu);
+                builder.sheet(R.id.menu_create_folder, R.drawable.ic_add_folder, R.string.folder_create);
+                builder.sheet(R.id.menu_upload, R.drawable.ic_upload, R.string.upload_title);
+                builder.sheet(R.id.menu_create_document, R.drawable.ic_doc_light, R.string.create_document);
+                builder.sheet(R.id.menu_device_capture_camera_photo, R.drawable.ic_camera, R.string.take_photo);
+                builder.sheet(R.id.menu_device_capture_camera_video, R.drawable.ic_videos, R.string.make_video);
+                builder.sheet(R.id.menu_device_capture_mic_audio, R.drawable.ic_microphone, R.string.record_audio);
+                if (ScanSnapManager.getInstance(getActivity()) != null
+                        && ScanSnapManager.getInstance(getActivity()).hasScanSnapApplication())
+                {
+                    builder.sheet(R.id.menu_scan_document, R.drawable.ic_add_folder, R.string.scan);
+                }
+                builder.grid().listener(new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        onOptionMenuItemSelected(which);
+                    }
+                }).show();
             }
+        };
+    }
 
-            createMenu.add(Menu.NONE, R.id.menu_device_capture_mic_audio, Menu.FIRST + 3, R.string.record_audio);
-
-            if (ScanSnapManager.getInstance(getActivity()) != null
-                    && ScanSnapManager.getInstance(getActivity()).hasScanSnapApplication())
-            {
-                createMenu.add(Menu.NONE, R.id.menu_scan_document, Menu.FIRST + 4, R.string.scan);
-            }
+    private void displayFab()
+    {
+        if (fab != null && fab.getVisibility() == View.GONE)
+        {
+            fab.setVisibility(View.VISIBLE);
+            fab.setOnClickListener(onPrepareFabClickListener());
+            fab.show(true);
         }
     }
 
@@ -915,7 +938,12 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        switch (item.getItemId())
+        return !onOptionMenuItemSelected(item.getItemId()) ? false : super.onOptionsItemSelected(item);
+    }
+
+    private boolean onOptionMenuItemSelected(int itemId)
+    {
+        switch (itemId)
         {
             case R.id.menu_search_from_folder:
                 search();
@@ -932,8 +960,8 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
                 startActivityForResult(i, RequestCode.FILEPICKER);
                 return true;
             case R.id.menu_create_document:
-                DocumentTypesDialogFragment dialogft = DocumentTypesDialogFragment.newInstance(
-                        SessionUtils.getAccount(getActivity()), TAG);
+                DocumentTypesDialogFragment dialogft = DocumentTypesDialogFragment
+                        .newInstance(SessionUtils.getAccount(getActivity()), TAG);
                 dialogft.show(getFragmentManager(), DocumentTypesDialogFragment.TAG);
                 return true;
             case R.id.menu_gallery:
@@ -942,7 +970,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
             default:
                 break;
         }
-        return super.onOptionsItemSelected(item);
+        return false;
     }
 
     // //////////////////////////////////////////////////////////////////////
@@ -1082,9 +1110,9 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
         }
         else if (mode == MODE_PICK && selectedItems != null)
         {
-            validationButton.setText(String.format(
-                    MessageFormat.format(getString(R.string.picker_attach_document), pickedNodes.size()),
-                    pickedNodes.size()));
+            validationButton.setText(
+                    String.format(MessageFormat.format(getString(R.string.picker_attach_document), pickedNodes.size()),
+                            pickedNodes.size()));
             validationButton.setEnabled(!pickedNodes.isEmpty());
             validationButton.setOnClickListener(new OnClickListener()
             {
@@ -1249,9 +1277,10 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
                 titleId = R.string.favorite;
                 iconId = R.drawable.ic_favorite_light;
             }
-            OperationWaitingDialogFragment.newInstance(FavoriteNodeRequest.TYPE_ID, iconId,
-                    getActivity().getString(titleId), null, parentFolder, selectedItems.size(), false).show(
-                    getActivity().getSupportFragmentManager(), OperationWaitingDialogFragment.TAG);
+            OperationWaitingDialogFragment
+                    .newInstance(FavoriteNodeRequest.TYPE_ID, iconId, getActivity().getString(titleId), null,
+                            parentFolder, selectedItems.size(), false)
+                    .show(getActivity().getSupportFragmentManager(), OperationWaitingDialogFragment.TAG);
         }
     }
 
@@ -1280,9 +1309,10 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
                 titleId = R.string.sync;
                 iconId = R.drawable.ic_sync_light;
             }
-            OperationWaitingDialogFragment.newInstance(SyncNodeRequest.TYPE_ID, iconId,
-                    getActivity().getString(titleId), null, parentFolder, selectedItems.size(), operationId).show(
-                    getActivity().getSupportFragmentManager(), OperationWaitingDialogFragment.TAG);
+            OperationWaitingDialogFragment
+                    .newInstance(SyncNodeRequest.TYPE_ID, iconId, getActivity().getString(titleId), null, parentFolder,
+                            selectedItems.size(), operationId)
+                    .show(getActivity().getSupportFragmentManager(), OperationWaitingDialogFragment.TAG);
         }
     }
 
@@ -1296,7 +1326,9 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
 
     public static class Builder extends ListingFragmentBuilder
     {
-        public static final int ICON_ID_REPOSITORY = R.drawable.ic_repository_dark;
+        public static final int ICON_ID_REPOSITORY = R.drawable.ic_companyhome_dark;
+
+        public static final int ICON_ID_FOLDER = R.drawable.ic_repository_dark;
 
         public static final int LABEL_ID_REPOSITORY = R.string.menu_browse_root;
 
@@ -1341,7 +1373,8 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
             this(activity, null, null, null, folderId);
         }
 
-        protected Builder(FragmentActivity activity, Folder parentFolder, String pathFolder, Site site, Integer folderId)
+        protected Builder(FragmentActivity activity, Folder parentFolder, String pathFolder, Site site,
+                Integer folderId)
         {
             this(activity);
             BundleUtils.addIfNotEmpty(extraConfiguration, createBundleArgs(parentFolder, pathFolder, site));
@@ -1388,6 +1421,12 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
             else
             {
                 shortcut(false);
+            }
+
+            if (configuration != null && configuration.containsKey(NodeBrowserTemplate.ARGUMENT_FOLDER_NODEREF)
+                    || configuration.containsKey(NodeBrowserTemplate.ARGUMENT_PATH))
+            {
+                this.menuIconId = ICON_ID_FOLDER;
             }
 
             this.templateArguments = new String[] { ARGUMENT_FOLDER_NODEREF, ARGUMENT_SITE_SHORTNAME, ARGUMENT_PATH,

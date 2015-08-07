@@ -21,9 +21,9 @@ import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.BaseActivity;
-import org.alfresco.mobile.android.application.fragments.account.AccountOAuthFragment;
 import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.node.favorite.FavoritesFragment;
+import org.alfresco.mobile.android.application.fragments.signin.AccountOAuthFragment;
 import org.alfresco.mobile.android.application.fragments.site.browser.BrowserSitesPagerFragment;
 import org.alfresco.mobile.android.async.node.favorite.FavoriteNodesRequest;
 import org.alfresco.mobile.android.async.session.LoadSessionCallBack.LoadAccountCompletedEvent;
@@ -144,7 +144,7 @@ public class BaseShortcutActivity extends BaseActivity
     public void onSessionRequested(RequestSessionEvent event)
     {
         requestedAccountId = event.accountToLoad.getId();
-        currentAccount = event.accountToLoad;
+        setCurrentAccount(event.accountToLoad);
         displayWaitingDialog();
     }
 }

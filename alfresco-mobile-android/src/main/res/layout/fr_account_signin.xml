@@ -1,0 +1,143 @@
+<!--
+  ~  Copyright (C) 2005-2015 Alfresco Software Limited.
+  ~
+  ~ This file is part of Alfresco Activiti Mobile for Android.
+  ~
+  ~ Alfresco Activiti Mobile for Android is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Alfresco Activiti Mobile for Android is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public License
+  ~ along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
+  ~
+  -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="org.activiti.bpmn.android.app.activity.LoginActivity">
+
+    <!-- Login progress -->
+    <LinearLayout
+        android:id="@+id/login_progress"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:visibility="gone">
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="100dip"
+            android:layout_height="100dip"
+            android:layout_marginBottom="8dp" />
+    </LinearLayout>
+
+    <ScrollView
+        android:id="@+id/login_form"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/email_login_form"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/signin_title"
+                style="@style/AlfrescoMaterialTheme.Text.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingBottom="@dimen/d_8"
+                android:text="@string/general_login_credentials_title" />
+
+            <com.rengwuxian.materialedittext.MaterialAutoCompleteTextView
+                android:id="@+id/username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/general_login_credentials_username"
+                app:met_floatingLabel="highlight"
+                android:singleLine="true"
+                app:met_primaryColor="@color/accent" />
+
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/password"
+                android:textCursorDrawable="@drawable/accent_cursor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/general_login_credentials_password"
+                android:imeActionLabel="@string/action_sign_in_short"
+                android:imeOptions="actionUnspecified"
+                android:inputType="textPassword"
+                app:met_floatingLabel="highlight"
+                app:met_primaryColor="@color/accent" />
+
+
+            <LinearLayout
+                android:id="@+id/server_form"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:id="@+id/signing_hostname"
+                    android:textCursorDrawable="@drawable/accent_cursor"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/general_login_server_hostname"
+                    app:met_floatingLabel="highlight"
+                    app:met_primaryColor="@color/accent" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/validation_panel"
+                style="?android:attr/buttonBarStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginTop="@dimen/d_16"
+                android:background="@color/accent"
+                android:gravity="bottom"
+                android:measureWithLargestChild="true"
+                android:orientation="horizontal"
+                android:paddingLeft="2dip"
+                android:paddingRight="2dip"
+                android:paddingTop="0dip">
+
+                <Button
+                    android:id="@+id/email_sign_in_button"
+                    style="@style/AlfrescoMaterialTheme.Text.Title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/alfrescohololight_item_background_holo_light"
+                    android:gravity="center"
+                    android:onClick="signIn"
+                    android:text="@string/action_sign_in_short"
+                    android:textColor="@color/secondary_background" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>
+
+
+

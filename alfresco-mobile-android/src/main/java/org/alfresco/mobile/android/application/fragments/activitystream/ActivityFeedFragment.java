@@ -31,6 +31,7 @@ import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmen
 import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsFragment;
 import org.alfresco.mobile.android.application.fragments.user.UserProfileFragment;
 import org.alfresco.mobile.android.async.activitystream.ActivityStreamEvent;
+import org.alfresco.mobile.android.ui.activitystream.ActivityStreamFragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -39,12 +40,13 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.otto.Subscribe;
 
-public class ActivityFeedFragment extends org.alfresco.mobile.android.ui.activitystream.ActivityStreamFragment
+public class ActivityFeedFragment extends ActivityStreamFragment
 {
     public static final String TAG = ActivityFeedFragment.class.getName();
 
@@ -92,6 +94,12 @@ public class ActivityFeedFragment extends org.alfresco.mobile.android.ui.activit
         {
             FragmentDisplayer.with(getActivity()).remove(DisplayUtils.getCentralFragmentId(getActivity()));
         }
+    }
+
+    @Override
+    public void onListItemClick(GridView g, View v, int position, long id)
+    {
+        onItemSelected((ActivityEntry) g.getItemAtPosition(position));
     }
 
     protected void onItemSelected(ActivityEntry item)
@@ -145,10 +153,10 @@ public class ActivityFeedFragment extends org.alfresco.mobile.android.ui.activit
     // REQUEST & RESULT
     // ///////////////////////////////////////////////////////////////////////////
     @Override
-    protected ArrayAdapter<?> onAdapterCreation()
+    protected ArrayAdapter<ActivityEntry> onAdapterCreation()
     {
-        return new ActivityFeedAdapter(this, getSession(), R.layout.row_two_lines_icon_selectable,
-                new ArrayList<ActivityEntry>(0), selectedItems);
+        return new ActivityFeedAdapter(this, R.layout.row_two_lines_caption_divider, new ArrayList<ActivityEntry>(0),
+                selectedEntry);
     }
 
     @Subscribe

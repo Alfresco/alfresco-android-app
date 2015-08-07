@@ -22,6 +22,7 @@ import java.util.List;
 import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.foundation.R;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
+import org.alfresco.mobile.android.ui.holder.HolderUtils;
 import org.alfresco.mobile.android.ui.holder.TwoLinesViewHolder;
 
 import android.support.v4.app.FragmentActivity;
@@ -51,8 +52,7 @@ public class SitesFoundationAdapter extends BaseListAdapter<Site, TwoLinesViewHo
     protected void updateBottomText(TwoLinesViewHolder vh, Site item)
     {
         vh.bottomText.setText(item.getDescription());
-        vh.bottomText.setMaxLines(3);
-        vh.bottomText.setSingleLine(false);
+        HolderUtils.makeMultiLine(vh.bottomText, 3);
     }
 
     @Override

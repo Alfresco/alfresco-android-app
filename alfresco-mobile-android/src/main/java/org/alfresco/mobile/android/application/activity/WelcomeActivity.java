@@ -1,136 +1,114 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ * This file is part of Alfresco Activiti Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Alfresco Activiti Mobile for Android is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ * Alfresco Activiti Mobile for Android is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
 package org.alfresco.mobile.android.application.activity;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.about.AboutFragment;
-import org.alfresco.mobile.android.application.fragments.help.HelpDialogFragment;
-import org.alfresco.mobile.android.application.fragments.welcome.WelcomeFragment;
-import org.alfresco.mobile.android.async.account.CreateAccountEvent;
-import org.alfresco.mobile.android.async.session.oauth.RetrieveOAuthDataEvent;
+import org.alfresco.mobile.android.application.fragments.signin.AccountOAuthFragment;
+import org.alfresco.mobile.android.application.fragments.signin.AccountServerFragment;
+import org.alfresco.mobile.android.application.fragments.signin.WelcomeFragment;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
-import org.alfresco.mobile.android.platform.mdm.MDMManager;
+import org.alfresco.mobile.android.platform.utils.BundleUtils;
 
-import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
+import android.support.v7.widget.PopupMenu;
 import android.view.MenuItem;
-
-import com.squareup.otto.Subscribe;
+import android.view.View;
 
 /**
- * Displays a wizard for the first AlfrescoAccount creation.
- * 
- * @author Jean Marie Pascal
+ * A login screen that offers login via email/password.
  */
-@TargetApi(21)
 public class WelcomeActivity extends BaseActivity
 {
-    private static final String TAG = WelcomeActivity.class.getName();
+    public static final String EXTRA_ADD_ACCOUNT = "addAccount";
 
-    // ///////////////////////////////////////////////////////////////////////////
-    // LIFECYCLE
-    // ///////////////////////////////////////////////////////////////////////////
-    /** Called when the activity is first created. */
+    protected boolean isCreation = false;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.app_main_single);
+        setContentView(R.layout.activity_signin);
 
-        if (getFragment(WelcomeFragment.TAG) == null)
+        if (getIntent().getExtras() != null)
         {
-            FragmentDisplayer.load(WelcomeFragment.with(this).back(false)).animate(null)
-                    .into(FragmentDisplayer.PANEL_LEFT);
+            isCreation = BundleUtils.getBoolean(getIntent().getExtras(), EXTRA_ADD_ACCOUNT);
         }
-    }
 
-    @Override
-    protected void onNewIntent(Intent intent)
-    {
-        super.onNewIntent(intent);
-
-        if (intent.getAction() == null || intent.getData() == null || !Intent.ACTION_VIEW.equals(intent.getAction())) { return; }
-
-        if (PrivateIntent.ALFRESCO_SCHEME_SHORT.equals(intent.getData().getScheme())
-                && PrivateIntent.HELP_GUIDE.equals(intent.getData().getHost()))
+        if (getSupportFragmentManager().findFragmentByTag(WelcomeFragment.TAG) == null)
         {
-            HelpDialogFragment.with(this).display();
+            FragmentDisplayer.with(this)
+                    .load(WelcomeFragment.with(this).addExtra(getIntent().getExtras()).createFragment()).animate(null)
+                    .back(false).into(FragmentDisplayer.PANEL_LEFT);
         }
-    }
 
-    @Override
-    public void onBackPressed()
-    {
-        if (MDMManager.getInstance(this).hasConfig() && getFragment(WelcomeFragment.TAG) != null)
+        findViewById(R.id.signin_more_information).setOnClickListener(new View.OnClickListener()
         {
-            finish();
-        }
-        else
-        {
-            super.onBackPressed();
-        }
+            @Override
+            public void onClick(View v)
+            {
+                PopupMenu popup = new PopupMenu(WelcomeActivity.this, v);
+                popup.getMenuInflater().inflate(R.menu.signin_information, popup.getMenu());
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener()
+                {
+                    public boolean onMenuItemClick(MenuItem item)
+                    {
+                        switch (item.getItemId())
+                        {
+                            case R.id.menu_about:
+                                AboutFragment.with(WelcomeActivity.this).displayAsDialog();
+                                break;
+                            case R.id.menu_help:
+                                Intent i = new Intent(WelcomeActivity.this, PrivateDialogActivity.class);
+                                i.setAction(PrivateIntent.ACTION_DISPLAY_HELP);
+                                if (isCreation())
+                                {
+                                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                }
+                                startActivity(i);
+                                break;
+                        }
+                        return true;
+                    }
+                });
+                popup.show();
+            }
+        });
+
     }
 
-    // ///////////////////////////////////////////////////////////////////////////
-    // MENU
-    // ///////////////////////////////////////////////////////////////////////////
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu)
+    public void signIn(View v)
     {
-        MenuItem mi = menu.add(Menu.NONE, R.id.menu_about, Menu.FIRST + 2, R.string.menu_about);
-        mi.setIcon(R.drawable.ic_about_light);
-        mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-
-        return super.onCreateOptionsMenu(menu);
+        AccountServerFragment.with(this).display();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
+    public void signInOnline(View v)
     {
-        switch (item.getItemId())
-        {
-            case R.id.menu_about:
-                AboutFragment.with(this).display();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
+        AccountOAuthFragment.with(this).isCreation(true).display();
     }
 
-    // ///////////////////////////////////////////////////////////////////////////
-    // BROADCAST RECEIVER
-    // ///////////////////////////////////////////////////////////////////////////
-    @Subscribe
-    public void onRetrieveOAuthDataEvent(RetrieveOAuthDataEvent event)
+    public boolean isCreation()
     {
-        displayWaitingDialog();
-    }
-
-    @Subscribe
-    public void onAccountCreated(CreateAccountEvent event)
-    {
-        if (event.hasException) { return; }
-        Intent i = new Intent(this, MainActivity.class);
-        i.putExtra(PrivateIntent.EXTRA_ACCOUNT_ID, event.data.getId());
-        startActivity(i);
-        finish();
+        return isCreation;
     }
 }

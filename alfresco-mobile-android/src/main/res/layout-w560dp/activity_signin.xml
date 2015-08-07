@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~  Copyright (C) 2005-2015 Alfresco Software Limited.
+  ~
+  ~ This file is part of Alfresco Activiti Mobile for Android.
+  ~
+  ~ Alfresco Activiti Mobile for Android is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Alfresco Activiti Mobile for Android is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public License
+  ~ along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
+  ~
+  -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/alfresco_lime_darker">
+
+    <FrameLayout
+        android:id="@+id/double_panel"
+        android:layout_width="match_parent"
+        android:layout_height="?android:attr/actionBarSize">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/primary"
+            android:padding="@dimen/d_4"
+            android:src="@drawable/alfresco_banner" />
+
+        <ImageButton
+            android:id="@+id/signin_more_information"
+            android:layout_width="wrap_content"
+            style="@style/AlfrescoMaterialTheme.Button.BorderLess"
+            android:layout_height="match_parent"
+            android:padding="@dimen/d_16"
+            android:layout_gravity="center|right"
+            android:src="@drawable/ic_more_white" />
+
+    </FrameLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dip"
+        android:background="@color/primary_dark" />
+
+    <FrameLayout
+        android:id="@+id/content_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:layout_gravity="bottom"
+            android:src="@drawable/login_banner"
+            android:adjustViewBounds="true" />
+
+        <LinearLayout
+            android:layout_width="500dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:background="@color/secondary_background_translucent" />
+
+        <include
+            layout="@layout/panel_left"
+            android:layout_width="500dp"
+            android:layout_gravity="center"
+            android:layout_height="match_parent" />
+
+    </FrameLayout>
+
+</LinearLayout>
+

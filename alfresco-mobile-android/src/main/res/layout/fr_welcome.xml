@@ -1,0 +1,145 @@
+<!--
+  ~  Copyright (C) 2005-2015 Alfresco Software Limited.
+  ~
+  ~  This file is part of Alfresco Mobile for Android.
+  ~
+  ~  Licensed under the Apache License, Version 2.0 (the "License");
+  ~  you may not use this file except in compliance with the License.
+  ~  You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~  limitations under the License.
+  -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="org.alfresco.mobile.android.application.activity.WelcomeActivity">
+
+    <include
+        layout="@layout/app_config_waiting"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <LinearLayout
+        android:id="@+id/homescreen_login"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/welcome_title"
+            style="@style/AlfrescoMaterialTheme.Text.Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/d_16"
+            android:gravity="center"
+            android:text="@string/app_name"
+            android:visibility="gone" />
+
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/welcome_pager"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:visibility="gone" />
+
+        <me.relex.circleindicator.CircleIndicator
+            android:id="@+id/welcome_pager_indicator"
+            android:layout_width="fill_parent"
+            android:layout_height="25dp"
+            app:ci_drawable="@drawable/ic_crop_3_2_grey"
+            app:ci_drawable_unselected="@drawable/ic_crop_7_5_grey"
+            app:ci_height="10dp"
+            app:ci_width="10dp"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/welcome_page_actions_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/AlfrescoMaterialTheme.Text.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/d_16"
+                android:gravity="center"
+                android:text="@string/home_signin" />
+
+            <LinearLayout
+                style="?android:attr/buttonBarStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_margin="@dimen/d_16"
+                android:background="@color/accent"
+                android:gravity="bottom"
+                android:measureWithLargestChild="true"
+                android:orientation="vertical"
+                android:paddingLeft="2dip"
+                android:paddingRight="2dip"
+                android:paddingTop="0dip">
+
+                <Button
+                    android:id="@+id/welcome_onpremise"
+                    style="@style/AlfrescoMaterialTheme.Text.Title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/theme_item_background_holo_light"
+                    android:gravity="center"
+                    android:onClick="signIn"
+                    android:text="@string/account_wizard_alfresco_server"
+                    android:textColor="@color/secondary_background" />
+
+            </LinearLayout>
+
+
+            <TextView
+                style="@style/AlfrescoMaterialTheme.Text.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/account_wizard_or" />
+
+            <LinearLayout
+                style="?android:attr/buttonBarStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_margin="@dimen/d_16"
+                android:background="@color/accent"
+                android:gravity="bottom"
+                android:measureWithLargestChild="true"
+                android:orientation="vertical"
+                android:paddingLeft="2dip"
+                android:paddingRight="2dip"
+                android:paddingTop="0dip">
+
+                <Button
+                    android:id="@+id/welcome_sign_in"
+                    style="@style/AlfrescoMaterialTheme.Text.Title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/theme_item_background_holo_light"
+                    android:gravity="center"
+                    android:onClick="signInOnline"
+                    android:text="@string/account_wizard_alfresco_cloud"
+                    android:textColor="@color/secondary_background" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+</LinearLayout>

@@ -121,8 +121,7 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
     }
 
     public ProgressNodeAdapter(FragmentActivity activity, int textViewResourceId, Node parentNode,
-            List<Node> listItems,
-            Map<String, Node> selectedItems)
+            List<Node> listItems, Map<String, Node> selectedItems)
     {
         super(activity, textViewResourceId, listItems, selectedItems);
         vhClassName = TwoLinesProgressViewHolder.class.getCanonicalName();
@@ -204,7 +203,8 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
     @Override
     protected void updateBottomText(TwoLinesProgressViewHolder vh, Node item)
     {
-        if (favoritesNodeIndex != null && favoritesNodeIndex.contains(NodeRefUtils.getCleanIdentifier(item.getIdentifier())))
+        if (favoritesNodeIndex != null
+                && favoritesNodeIndex.contains(NodeRefUtils.getCleanIdentifier(item.getIdentifier())))
         {
             vh.favoriteIcon.setVisibility(View.VISIBLE);
             vh.favoriteIcon.setImageResource(R.drawable.ic_favorite_light);
@@ -439,7 +439,8 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
                 {
                     while (cursor.moveToNext())
                     {
-                        favoritesNodeIndex.add(NodeRefUtils.getCleanIdentifier(cursor.getString(FavoritesSchema.COLUMN_NODE_ID_ID)));
+                        favoritesNodeIndex.add(NodeRefUtils.getCleanIdentifier(cursor
+                                .getString(FavoritesSchema.COLUMN_NODE_ID_ID)));
                     }
                 }
                 notifyDataSetChanged();
@@ -591,10 +592,13 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
     // ///////////////////////////////////////////////////////////////////////////
     public void refreshOperations()
     {
-        getActivity().getSupportLoaderManager().restartLoader(LOADER_OPERATION_ID, null, this);
-        getActivity().getSupportLoaderManager().restartLoader(LOADER_SYNC_ID, null, this);
-        getActivity().getSupportLoaderManager().restartLoader(LOADER_FAVORITE_ID, null, this);
-        notifyDataSetChanged();
+        if (parentNode != null)
+        {
+            getActivity().getSupportLoaderManager().restartLoader(LOADER_OPERATION_ID, null, this);
+            getActivity().getSupportLoaderManager().restartLoader(LOADER_SYNC_ID, null, this);
+            getActivity().getSupportLoaderManager().restartLoader(LOADER_FAVORITE_ID, null, this);
+            notifyDataSetChanged();
+        }
     }
 
     private static class SyncInfo
