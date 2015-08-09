@@ -49,17 +49,17 @@ public class UploadFolderAdapter extends BaseListAdapter<Integer, SingleLineView
     @Override
     protected void updateIcon(SingleLineViewHolder vh, Integer item)
     {
-        int iconId = R.drawable.ic_flatten_folder;
+        int iconId = R.drawable.ic_companyhome_light;
         switch (item)
         {
             case R.string.menu_favorites_folder:
                 iconId = R.drawable.ic_favorite_light;
                 break;
             case R.string.menu_browse_root:
-                iconId = R.drawable.ic_flatten_folder;
+                iconId = R.drawable.ic_companyhome_light;
                 break;
             case R.string.menu_downloads:
-                iconId = R.drawable.ic_download_light;
+                iconId = R.drawable.ic_local_files_light;
                 break;
             case R.string.menu_browse_sites:
                 iconId = R.drawable.ic_site_light;

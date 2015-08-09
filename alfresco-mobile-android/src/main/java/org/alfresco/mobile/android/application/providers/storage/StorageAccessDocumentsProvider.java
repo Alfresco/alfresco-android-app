@@ -17,25 +17,21 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.application.providers.storage;
 
-import android.annotation.TargetApi;
-import android.content.Context;
-import android.content.pm.ProviderInfo;
-import android.content.res.AssetFileDescriptor;
-import android.database.Cursor;
-import android.graphics.Point;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Build;
-import android.os.CancellationSignal;
-import android.os.Handler;
-import android.os.ParcelFileDescriptor;
-import android.provider.DocumentsContract;
-import android.provider.DocumentsContract.Document;
-import android.provider.DocumentsContract.Root;
-import android.provider.DocumentsProvider;
-import android.support.v4.util.LongSparseArray;
-import android.text.TextUtils;
-import android.util.Log;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.alfresco.mobile.android.api.exceptions.AlfrescoException;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
@@ -67,21 +63,25 @@ import org.alfresco.mobile.android.platform.mimetype.MimeTypeManager;
 import org.alfresco.mobile.android.platform.provider.AlfrescoContentProvider;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
+import android.annotation.TargetApi;
+import android.content.Context;
+import android.content.pm.ProviderInfo;
+import android.content.res.AssetFileDescriptor;
+import android.database.Cursor;
+import android.graphics.Point;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Build;
+import android.os.CancellationSignal;
+import android.os.Handler;
+import android.os.ParcelFileDescriptor;
+import android.provider.DocumentsContract;
+import android.provider.DocumentsContract.Document;
+import android.provider.DocumentsContract.Root;
+import android.provider.DocumentsProvider;
+import android.support.v4.util.LongSparseArray;
+import android.text.TextUtils;
+import android.util.Log;
 
 @TargetApi(Build.VERSION_CODES.KITKAT)
 public class StorageAccessDocumentsProvider extends DocumentsProvider implements AlfrescoContentProvider
@@ -1053,7 +1053,7 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
 
         row.add(Document.COLUMN_LAST_MODIFIED, isRoot ? null : node.getModifiedAt().getTimeInMillis());
         row.add(Document.COLUMN_FLAGS, flags);
-        row.add(Document.COLUMN_ICON, R.drawable.ic_person);
+        row.add(Document.COLUMN_ICON, R.drawable.ic_person_light);
         row.add(AlfrescoContract.Document.COLUMN_TYPE, node.getType());
         row.add(AlfrescoContract.Document.COLUMN_ACCOUNT_ID, selectedAccount.getId());
         row.add(AlfrescoContract.Document.COLUMN_PATH, currentFolder.getPropertyValue(PropertyIds.PATH));

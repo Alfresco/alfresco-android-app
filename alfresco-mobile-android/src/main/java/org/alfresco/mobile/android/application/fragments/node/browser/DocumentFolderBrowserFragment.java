@@ -849,7 +849,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
             if (permission.canAddChildren())
             {
                 MenuItem mi = menu.add(Menu.NONE, R.id.menu_create_folder, Menu.FIRST, R.string.folder_create);
-                mi.setIcon(R.drawable.ic_add_folder);
+                mi.setIcon(R.drawable.ic_repository_light);
                 mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
             }
         }
@@ -893,7 +893,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
             {
                 BottomSheet.Builder builder = new BottomSheet.Builder(getActivity(), R.style.M_StyleDialog)
                         .title(R.string.add_menu);
-                builder.sheet(R.id.menu_create_folder, R.drawable.ic_add_folder, R.string.folder_create);
+                builder.sheet(R.id.menu_create_folder, R.drawable.ic_repository_light, R.string.folder_create);
                 builder.sheet(R.id.menu_upload, R.drawable.ic_upload, R.string.upload_title);
                 builder.sheet(R.id.menu_create_document, R.drawable.ic_doc_light, R.string.create_document);
                 builder.sheet(R.id.menu_device_capture_camera_photo, R.drawable.ic_camera, R.string.take_photo);
@@ -902,7 +902,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
                 if (ScanSnapManager.getInstance(getActivity()) != null
                         && ScanSnapManager.getInstance(getActivity()).hasScanSnapApplication())
                 {
-                    builder.sheet(R.id.menu_scan_document, R.drawable.ic_add_folder, R.string.scan);
+                    builder.sheet(R.id.menu_scan_document, R.drawable.ic_camera, R.string.scan);
                 }
                 builder.grid().listener(new DialogInterface.OnClickListener()
                 {

@@ -273,12 +273,12 @@ public class UserSearchFragment extends BaseGridFragment implements ListingModeF
             }
             else if (fragmentPick instanceof AdvancedSearchFragment)
             {
-                getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.ic_person);
+                getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.ic_person_light);
                 getDialog().setTitle(R.string.metadata_modified_by);
             }
             else
             {
-                getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.ic_person);
+                getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.ic_person_light);
                 getDialog().setTitle(R.string.search_title);
             }
         }

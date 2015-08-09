@@ -34,7 +34,7 @@ public class BusinessCardPreset extends DefaultPreset
 
         //UI parameters
         titleId = R.string.scan_preset_business_card;
-        iconId = R.drawable.ic_person;
+        iconId = R.drawable.ic_person_light;
 
         
         //Scan parameters

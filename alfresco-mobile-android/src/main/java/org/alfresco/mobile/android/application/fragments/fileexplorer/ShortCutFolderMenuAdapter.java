@@ -64,7 +64,7 @@ public class ShortCutFolderMenuAdapter extends BaseListAdapter<Integer, GenericV
                 iconId = R.drawable.ic_sdcard;
                 break;
             case R.string.shortcut_library_office:
-                iconId = R.drawable.ic_office;
+                iconId = R.drawable.ic_doc_light;
                 break;
             case R.string.shortcut_library_images:
                 iconId = R.drawable.ic_pictures;

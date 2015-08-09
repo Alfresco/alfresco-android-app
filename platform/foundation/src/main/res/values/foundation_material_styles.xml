@@ -106,9 +106,6 @@
         <item name="MainTheme.ImageView.Thumbnail.Large">
             @style/AlfrescoHoloTheme.ImageView.Thumbnail.Large
         </item>
-        <item name="MainTheme.ImageView.Thumbnail.QuickContact">
-            @style/AlfrescoHoloTheme.ImageView.Thumbnail.QuickContact
-        </item>
         <item name="MainTheme.PasscodeButton">@style/AlfrescoHoloTheme.PasscodeButton</item>
         <item name="MainTheme.PasscodeInput">@style/AlfrescoHoloTheme.PasscodeInput</item>
         <item name="MainTheme.Progress">@style/AlfrescoHoloTheme.Progress</item>

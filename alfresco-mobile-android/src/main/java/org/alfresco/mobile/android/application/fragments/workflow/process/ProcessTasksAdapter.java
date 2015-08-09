@@ -156,7 +156,7 @@ public class ProcessTasksAdapter extends BaseListAdapter<Task, ProcessViewHolder
             }
         });
         RenditionManager.with(activityRef.get()).loadAvatar(item.getAssigneeIdentifier())
-                .placeHolder(R.drawable.ic_person).into(vh.icon);
+                .placeHolder(R.drawable.ic_person_light).into(vh.icon);
     }
 }
 

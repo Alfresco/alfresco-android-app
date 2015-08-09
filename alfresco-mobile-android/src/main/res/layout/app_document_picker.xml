@@ -31,7 +31,7 @@
         <Button
             android:id="@+id/picker_root"
             style="?MainTheme.Button.Large"
-            android:drawableTop="@drawable/ic_flatten_folder"
+            android:drawableTop="@drawable/ic_companyhome_light"
             android:text="@string/menu_browse_root" />
 
         <Button

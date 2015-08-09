@@ -97,7 +97,7 @@ public class TaskFilterExpandableAdapter extends BaseExpandableListAdapter
                 iconId = R.drawable.ic_priority_medium;
                 break;
             case R.string.tasks_assignee:
-                iconId = R.drawable.ic_person;
+                iconId = R.drawable.ic_person_light;
                 break;
             default:
                 break;

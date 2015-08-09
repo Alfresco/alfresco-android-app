@@ -489,7 +489,7 @@ public class SearchFragment extends BaseCursorGridFragment
         {
             case HistorySearch.TYPE_PERSON:
                 hintId = R.string.search_person_hint;
-                // iconId = R.drawable.ic_person;
+                // iconId = R.drawable.ic_person_light;
                 break;
             case HistorySearch.TYPE_DOCUMENT:
                 hintId = R.string.search_form_hint;

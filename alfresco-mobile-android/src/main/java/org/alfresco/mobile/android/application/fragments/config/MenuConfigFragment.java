@@ -366,7 +366,7 @@ public class MenuConfigFragment extends AlfrescoFragment
 
         // Repository
         addMenuConfigItem(VIEW_REPOSITORY, DocumentFolderBrowserFragment.Builder.LABEL_ID_REPOSITORY,
-                ConfigurationConstant.KEY_REPOSITORY, R.drawable.ic_repository_light, null);
+                ConfigurationConstant.KEY_REPOSITORY, R.drawable.ic_companyhome_light, null);
 
         // Shared Files
         HashMap<String, Object> sharedProperties = new HashMap<String, Object>();
@@ -403,7 +403,7 @@ public class MenuConfigFragment extends AlfrescoFragment
 
         // Local Files
         addMenuConfigItem(VIEW_LOCAL_FILE, FileExplorerFragment.Builder.LABEL_ID, ConfigurationConstant.KEY_LOCALFILES,
-                R.drawable.ic_download_light, null);
+                R.drawable.ic_local_files_light, null);
     }
 
     // ///////////////////////////////////////////////////////////////////////////

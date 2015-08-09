@@ -120,7 +120,7 @@ public class UserProfileFragment extends AlfrescoFragment implements OnMenuItemC
         }
 
         // Icon
-        RenditionManager.with(getActivity()).loadAvatar(userName).placeHolder(R.drawable.ic_person)
+        RenditionManager.with(getActivity()).loadAvatar(userName).placeHolder(R.drawable.ic_person_light)
                 .into((ImageView) viewById(R.id.preview));
         return getRootView();
     }
@@ -143,7 +143,7 @@ public class UserProfileFragment extends AlfrescoFragment implements OnMenuItemC
         super.onStart();
         if (getDialog() != null)
         {
-            getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.ic_person);
+            getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.ic_person_light);
             getDialog().setTitle(titleId);
         }
         else
@@ -862,7 +862,7 @@ public class UserProfileFragment extends AlfrescoFragment implements OnMenuItemC
         public Builder(FragmentActivity appActivity, Map<String, Object> configuration)
         {
             super(appActivity, configuration);
-            menuIconId = R.drawable.ic_person_light;
+            menuIconId = R.drawable.ic_person_dark;
             menuTitleId = R.string.user_profile;
             templateArguments = new String[] { ARGUMENT_USERNAME };
         }

@@ -147,9 +147,9 @@ public class SearchOptionAdapter extends ArrayAdapter<Integer>
     private static final Map<Integer, Integer> ITEMS_ICONS = new HashMap<Integer, Integer>()
     {
         {
-            put(HistorySearch.TYPE_DOCUMENT, R.drawable.ic_office);
+            put(HistorySearch.TYPE_DOCUMENT, R.drawable.ic_doc_light);
             put(HistorySearch.TYPE_FOLDER, R.drawable.ic_repository_light);
-            put(HistorySearch.TYPE_PERSON, R.drawable.ic_person);
+            put(HistorySearch.TYPE_PERSON, R.drawable.ic_person_light);
             put(HistorySearch.TYPE_SITE, R.drawable.ic_site_light);
         }
     };

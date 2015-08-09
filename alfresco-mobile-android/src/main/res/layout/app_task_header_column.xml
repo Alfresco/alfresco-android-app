@@ -91,7 +91,7 @@
             style="?MainTheme.ImageView"
             android:layout_gravity="bottom"
             android:contentDescription="@null"
-            android:src="@drawable/ic_person" />
+            android:src="@drawable/ic_person_light" />
 
         <LinearLayout
             android:id="@+id/task_initiator_group"
