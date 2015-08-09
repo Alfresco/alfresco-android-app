@@ -122,6 +122,7 @@ public class SearchOptionAdapter extends ArrayAdapter<Integer>
             add(HistorySearch.TYPE_DOCUMENT);
             add(HistorySearch.TYPE_FOLDER);
             add(HistorySearch.TYPE_PERSON);
+            add(HistorySearch.TYPE_SITE);
         }
     };
 
@@ -139,6 +140,7 @@ public class SearchOptionAdapter extends ArrayAdapter<Integer>
             put(HistorySearch.TYPE_DOCUMENT, R.string.search_documents);
             put(HistorySearch.TYPE_FOLDER, R.string.search_folders);
             put(HistorySearch.TYPE_PERSON, R.string.search_person);
+            put(HistorySearch.TYPE_SITE, R.string.search_site);
         }
     };
 
@@ -148,6 +150,7 @@ public class SearchOptionAdapter extends ArrayAdapter<Integer>
             put(HistorySearch.TYPE_DOCUMENT, R.drawable.ic_office);
             put(HistorySearch.TYPE_FOLDER, R.drawable.ic_repository_light);
             put(HistorySearch.TYPE_PERSON, R.drawable.ic_person);
+            put(HistorySearch.TYPE_SITE, R.drawable.ic_site_light);
         }
     };
 

@@ -32,6 +32,7 @@ import org.alfresco.mobile.android.application.fragments.MenuFragmentHelper;
 import org.alfresco.mobile.android.application.fragments.actions.AbstractActions;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.node.search.DocumentFolderSearchFragment;
+import org.alfresco.mobile.android.application.fragments.site.browser.SitesFragment;
 import org.alfresco.mobile.android.application.fragments.user.UsersFragment;
 import org.alfresco.mobile.android.application.intent.RequestCode;
 import org.alfresco.mobile.android.application.managers.ActionUtils;
@@ -40,7 +41,6 @@ import org.alfresco.mobile.android.application.providers.search.HistorySearchCur
 import org.alfresco.mobile.android.application.providers.search.HistorySearchManager;
 import org.alfresco.mobile.android.application.providers.search.HistorySearchSchema;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
-import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseCursorGridFragment;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
@@ -173,9 +173,9 @@ public class SearchFragment extends BaseCursorGridFragment
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
             {
-                if (event != null
-                        && (event.getAction() == KeyEvent.ACTION_DOWN)
-                        && ((actionId == EditorInfo.IME_ACTION_SEARCH) || (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)))
+                if (event != null && (event.getAction() == KeyEvent.ACTION_DOWN)
+                        && ((actionId == EditorInfo.IME_ACTION_SEARCH)
+                                || (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)))
                 {
                     if (searchForm.getText().length() > 0)
                     {
@@ -184,8 +184,8 @@ public class SearchFragment extends BaseCursorGridFragment
                     }
                     else
                     {
-                        AlfrescoNotificationManager.getInstance(getActivity()).showLongToast(
-                                getString(R.string.search_form_hint));
+                        AlfrescoNotificationManager.getInstance(getActivity())
+                                .showLongToast(getString(R.string.search_form_hint));
                     }
                     return true;
                 }
@@ -318,7 +318,7 @@ public class SearchFragment extends BaseCursorGridFragment
         // /QUICK PATH
         if (getActivity().getActionBar() != null)
         {
-           getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+            getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 
             optionAdapter = new SearchOptionAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item,
                     SearchOptionAdapter.getSearchOptions(getSession(), (tmpParentFolder != null)));
@@ -335,8 +335,8 @@ public class SearchFragment extends BaseCursorGridFragment
                     return true;
                 }
             };
-           getActionBar().setListNavigationCallbacks(optionAdapter, mOnNavigationListener);
-           getActionBar().setSelectedNavigationItem(optionPosition);
+            getActionBar().setListNavigationCallbacks(optionAdapter, mOnNavigationListener);
+            getActionBar().setSelectedNavigationItem(optionPosition);
         }
     }
 
@@ -411,16 +411,25 @@ public class SearchFragment extends BaseCursorGridFragment
             case HistorySearch.TYPE_PERSON:
                 UsersFragment.with(getActivity()).keywords(keywords).display();
                 break;
+            case HistorySearch.TYPE_SITE:
+                SitesFragment.with(getActivity()).keywords(keywords).display();
+                break;
             default:
                 DocumentFolderSearchFragment.with(getActivity()).keywords(keywords).searchFolder(true).display();
                 break;
         }
 
+        if (search == null)
+        {
+            search = HistorySearchManager.retrieveHistorySearchByQuery(getActivity(), getAccount().getId(), searchKey,
+                    keywords);
+        }
+
         // Save history or update
         if (search == null)
         {
-            HistorySearchManager.createHistorySearch(getActivity(), SessionUtils.getAccount(getActivity()).getId(),
-                    searchKey, 0, getQueryDescription(keywords, tmpParentFolder, site), keywords, new Date().getTime());
+            HistorySearchManager.createHistorySearch(getActivity(), getAccount().getId(), searchKey, 0,
+                    getQueryDescription(keywords, tmpParentFolder, site), keywords, new Date().getTime());
         }
         else
         {
@@ -441,9 +450,8 @@ public class SearchFragment extends BaseCursorGridFragment
         {
             // If Site Documentlibrary we display the site name instead of
             // folder name
-            if (site != null
-                    && String.format(DOCUMENT_LIBRARY_PATTERN, site.getIdentifier()).equalsIgnoreCase(
-                            (String) folder.getPropertyValue(PropertyIds.PATH)))
+            if (site != null && String.format(DOCUMENT_LIBRARY_PATTERN, site.getIdentifier())
+                    .equalsIgnoreCase((String) folder.getPropertyValue(PropertyIds.PATH)))
             {
                 addParameter(builder, "in", site.getTitle());
             }
@@ -518,7 +526,9 @@ public class SearchFragment extends BaseCursorGridFragment
     public Loader<Cursor> onCreateLoader(int id, Bundle args)
     {
         return new CursorLoader(getActivity(), HistorySearchManager.CONTENT_URI, HistorySearchManager.COLUMN_ALL,
-                HistorySearchSchema.COLUMN_TYPE + " = " + searchKey, null,
+                HistorySearchSchema.COLUMN_ACCOUNT_ID + " = " + getAccount().getId() + " AND "
+                        + HistorySearchSchema.COLUMN_TYPE + " = " + searchKey,
+                null,
                 HistorySearchSchema.COLUMN_LAST_REQUEST_TIMESTAMP + " DESC " + " LIMIT 20");
     }
 

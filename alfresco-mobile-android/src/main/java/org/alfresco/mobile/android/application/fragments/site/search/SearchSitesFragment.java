@@ -17,6 +17,7 @@
  */
 package org.alfresco.mobile.android.application.fragments.site.search;
 
+import java.util.Date;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.model.ListingContext;
@@ -24,29 +25,40 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.builder.ListingFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.site.browser.CommonBrowserSitesFragment;
+import org.alfresco.mobile.android.application.providers.search.HistorySearch;
+import org.alfresco.mobile.android.application.providers.search.HistorySearchInlineCursorAdapter;
+import org.alfresco.mobile.android.application.providers.search.HistorySearchManager;
+import org.alfresco.mobile.android.application.providers.search.HistorySearchSchema;
 import org.alfresco.mobile.android.async.OperationRequest;
 import org.alfresco.mobile.android.async.site.SiteFavoriteEvent;
 import org.alfresco.mobile.android.async.site.member.CancelPendingMembershipEvent;
 import org.alfresco.mobile.android.async.site.member.SiteMembershipEvent;
 import org.alfresco.mobile.android.async.site.search.SiteSearchEvent;
 import org.alfresco.mobile.android.async.site.search.SiteSearchRequest;
+import org.alfresco.mobile.android.ui.holder.TwoLinesViewHolder;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
+import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.rengwuxian.materialedittext.MaterialAutoCompleteTextView;
 import com.squareup.otto.Subscribe;
 
 /**
@@ -55,15 +67,19 @@ import com.squareup.otto.Subscribe;
  * 
  * @author Jean Marie Pascal
  */
-public class SearchSitesFragment extends CommonBrowserSitesFragment
+public class SearchSitesFragment extends CommonBrowserSitesFragment implements LoaderManager.LoaderCallbacks<Cursor>
 {
     public static final String TAG = SearchSitesFragment.class.getName();
 
-    private EditText searchText;
+    private MaterialAutoCompleteTextView searchText;
 
     private String keyword;
 
     private ImageButton bAdd;
+
+    private HistorySearchInlineCursorAdapter searchAdapter;
+
+    private HistorySearch historySearchItem;
 
     // //////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
@@ -93,7 +109,24 @@ public class SearchSitesFragment extends CommonBrowserSitesFragment
         setRootView(inflater.inflate(R.layout.fr_site_search, container, false));
         init(getRootView(), emptyListMessageId);
 
-        searchText = (EditText) viewById(R.id.search_query);
+        searchText = (MaterialAutoCompleteTextView) viewById(R.id.search_query);
+        searchAdapter = new HistorySearchInlineCursorAdapter(this, null, R.layout.row_two_lines_search);
+        getLoaderManager().initLoader(0, null, this);
+        searchText.setAdapter(searchAdapter);
+        searchText.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+            {
+                TwoLinesViewHolder vh = (TwoLinesViewHolder) view.getTag();
+                HistorySearch tmphistorySearchItem = HistorySearchManager.retrieveHistorySearch(getActivity(),
+                        (Long) vh.choose.getTag());
+                searchText.setText(tmphistorySearchItem.getQuery());
+                historySearchItem = tmphistorySearchItem;
+                search();
+            }
+        });
+
         bAdd = (ImageButton) viewById(R.id.search_action);
         bAdd.setEnabled(false);
         activateSend();
@@ -111,6 +144,7 @@ public class SearchSitesFragment extends CommonBrowserSitesFragment
         {
             public void afterTextChanged(Editable s)
             {
+                historySearchItem = null;
                 activateSend();
             }
 
@@ -130,9 +164,9 @@ public class SearchSitesFragment extends CommonBrowserSitesFragment
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
             {
-                if (event != null
-                        && (event.getAction() == KeyEvent.ACTION_DOWN)
-                        && ((actionId == EditorInfo.IME_ACTION_SEARCH) || (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)))
+                if (event != null && (event.getAction() == KeyEvent.ACTION_DOWN)
+                        && ((actionId == EditorInfo.IME_ACTION_SEARCH)
+                                || (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)))
                 {
                     search();
                     return true;
@@ -199,11 +233,33 @@ public class SearchSitesFragment extends CommonBrowserSitesFragment
     private void activateSend()
     {
         bAdd.setEnabled(true);
+        getLoaderManager().restartLoader(0, null, this);
     }
 
     private void search()
     {
+        searchText.dismissDropDown();
         keyword = searchText.getText().toString().trim();
+        // Save history or update
+
+        if (historySearchItem == null)
+        {
+            historySearchItem = HistorySearchManager.retrieveHistorySearchByQuery(getActivity(), getAccount().getId(),
+                    HistorySearch.TYPE_SITE, keyword);
+        }
+
+        if (historySearchItem == null)
+        {
+            HistorySearchManager.createHistorySearch(getActivity(), getAccount().getId(), HistorySearch.TYPE_SITE, 0,
+                    keyword, keyword, new Date().getTime());
+        }
+        else
+        {
+            HistorySearchManager.update(getActivity(), historySearchItem.getId(), historySearchItem.getAccountId(),
+                    historySearchItem.getType(), historySearchItem.getAdvanced(), historySearchItem.getDescription(),
+                    historySearchItem.getQuery(), new Date().getTime());
+        }
+
         refresh();
         bAdd.setEnabled(false);
     }
@@ -215,6 +271,52 @@ public class SearchSitesFragment extends CommonBrowserSitesFragment
     public void refresh()
     {
         super.refresh();
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // LOADERS
+    // ///////////////////////////////////////////////////////////////////////////
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args)
+    {
+        if (searchText == null || TextUtils.isEmpty(searchText.getText().toString()))
+        {
+            return new CursorLoader(getActivity(), HistorySearchManager.CONTENT_URI, HistorySearchManager.COLUMN_ALL,
+                    HistorySearchSchema.COLUMN_ACCOUNT_ID + " = " + getAccount().getId() + " AND "
+                            + HistorySearchSchema.COLUMN_TYPE + " = " + HistorySearch.TYPE_SITE,
+                    null, HistorySearchSchema.COLUMN_LAST_REQUEST_TIMESTAMP + " DESC " + " LIMIT 5");
+        }
+        else
+        {
+            return new CursorLoader(getActivity(), HistorySearchManager.CONTENT_URI, HistorySearchManager.COLUMN_ALL,
+                    HistorySearchSchema.COLUMN_ACCOUNT_ID + " = " + getAccount().getId() + " AND "
+                            + HistorySearchSchema.COLUMN_TYPE + " = " + HistorySearch.TYPE_SITE + " AND "
+                            + HistorySearchSchema.COLUMN_DESCRIPTION + " LIKE ?",
+                    new String[] { "%" + searchText.getText().toString() + "%" },
+                    HistorySearchSchema.COLUMN_LAST_REQUEST_TIMESTAMP + " DESC " + " LIMIT 5");
+        }
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data)
+    {
+        searchAdapter.changeCursor(data);
+        // searchText.setAdapter(searchAdapter);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader)
+    {
+
+    }
+
+    public void setSearchValue(String searchValue)
+    {
+        if (searchText != null)
+        {
+            searchText.setText(searchValue);
+            searchText.setSelection(searchValue.length());
+        }
     }
 
     // ///////////////////////////////////////////////////////////////////////////

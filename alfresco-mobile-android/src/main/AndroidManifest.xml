@@ -38,6 +38,7 @@
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
 
     <application
+        tools:replace="android:allowBackup"
         android:name="org.alfresco.mobile.android.application.AlfrescoApplication"
         android:allowBackup="false"
         android:configChanges="locale|keyboardHidden|orientation|screenSize"

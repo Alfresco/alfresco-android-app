@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+ * Copyright (C) 2005-2015 Alfresco Software Limited.
  *
  * This file is part of Alfresco Mobile for Android.
  *
@@ -35,7 +35,7 @@ import android.view.View;
 public class HistorySearchCursorAdapter extends BaseCursorLoader<SingleLineViewHolder>
 {
     protected List<Long> selectedItems;
-    
+
     public HistorySearchCursorAdapter(Context context, Cursor c, int layoutId, List<Long> selectedItems)
     {
         super(context, c, layoutId);
@@ -68,7 +68,7 @@ public class HistorySearchCursorAdapter extends BaseCursorLoader<SingleLineViewH
     {
         vh.icon.setImageResource(R.drawable.ic_clock);
     }
-    
+
     private View getSelectionLayout(SingleLineViewHolder vh)
     {
         return (View) vh.icon.getParent();

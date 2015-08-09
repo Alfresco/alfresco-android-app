@@ -19,13 +19,19 @@ package org.alfresco.mobile.android.application.fragments.site.browser;
 
 import java.util.Map;
 
+import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.builder.ListingFragmentBuilder;
+import org.alfresco.mobile.android.async.OperationRequest;
 import org.alfresco.mobile.android.async.site.SiteFavoriteEvent;
 import org.alfresco.mobile.android.async.site.SitesEvent;
 import org.alfresco.mobile.android.async.site.member.CancelPendingMembershipEvent;
 import org.alfresco.mobile.android.async.site.member.SiteMembershipEvent;
+import org.alfresco.mobile.android.async.site.search.SiteSearchEvent;
+import org.alfresco.mobile.android.async.site.search.SiteSearchRequest;
+import org.alfresco.mobile.android.platform.utils.BundleUtils;
+import org.alfresco.mobile.android.ui.utils.UIUtils;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 
 import android.os.Bundle;
@@ -46,6 +52,10 @@ import com.squareup.otto.Subscribe;
 public class SitesFragment extends CommonBrowserSitesFragment
 {
     public static final String TAG = SitesFragment.class.getName();
+
+    private static final String ARGUMENT_KEYWORD = "siteKeywords";
+
+    protected String keywords;
 
     // //////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
@@ -77,20 +87,57 @@ public class SitesFragment extends CommonBrowserSitesFragment
             isFavoriteListing = favorite;
             isMemberSite = !favorite;
         }
+        keywords = BundleUtils.getString(bundle, ARGUMENT_KEYWORD);
+
     }
 
     @Override
     protected void prepareEmptyView(View ev, ImageView emptyImageView, TextView firstEmptyMessage,
             TextView secondEmptyMessage)
     {
-        emptyImageView.setImageResource(isFavoriteListing ? R.drawable.ic_empty_sites_favorite
-                : R.drawable.ic_empty_sites_my);
-        emptyImageView.setLayoutParams(DisplayUtils.resizeLayout(getActivity(), 275, 275));
-        firstEmptyMessage.setText(isFavoriteListing ? R.string.sites_favorites_empty_title
-                : R.string.sites_my_empty_title);
-        secondEmptyMessage.setVisibility(View.VISIBLE);
-        secondEmptyMessage.setText(isFavoriteListing ? R.string.sites_favorites_empty_description
-                : R.string.sites_my_empty_description);
+        if (keywords == null)
+        {
+            emptyImageView.setImageResource(
+                    isFavoriteListing ? R.drawable.ic_empty_sites_favorite : R.drawable.ic_empty_sites_my);
+            emptyImageView.setLayoutParams(DisplayUtils.resizeLayout(getActivity(), 275, 275));
+            firstEmptyMessage
+                    .setText(isFavoriteListing ? R.string.sites_favorites_empty_title : R.string.sites_my_empty_title);
+            secondEmptyMessage.setVisibility(View.VISIBLE);
+            secondEmptyMessage.setText(isFavoriteListing ? R.string.sites_favorites_empty_description
+                    : R.string.sites_my_empty_description);
+        }
+        else
+        {
+            emptyImageView.setLayoutParams(DisplayUtils.resizeLayout(getActivity(), 275, 275));
+            emptyImageView.setImageResource(R.drawable.ic_empty_search_sites);
+            firstEmptyMessage.setVisibility(View.VISIBLE);
+            firstEmptyMessage.setText(R.string.sites_search_empty_title);
+            secondEmptyMessage.setVisibility(View.VISIBLE);
+            secondEmptyMessage.setText(R.string.sites_search_empty_description);
+        }
+    }
+
+    @Override
+    protected OperationRequest.OperationBuilder onCreateOperationRequest(ListingContext listingContext)
+    {
+        if (keywords == null)
+        {
+            return super.onCreateOperationRequest(listingContext);
+        }
+        else
+        {
+            return new SiteSearchRequest.Builder(keywords).setListingContext(listingContext);
+        }
+    }
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        if (keywords != null)
+        {
+            UIUtils.displayTitle(getActivity(), String.format(getString(R.string.search_title), keywords));
+        }
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -109,6 +156,12 @@ public class SitesFragment extends CommonBrowserSitesFragment
     // ///////////////////////////////////////////////////////////////////////////
     // EVENTS
     // ///////////////////////////////////////////////////////////////////////////
+    @Subscribe
+    public void onResult(SiteSearchEvent event)
+    {
+        displayData(event);
+    }
+
     @Override
     @Subscribe
     public void onResult(SitesEvent event)
@@ -184,6 +237,12 @@ public class SitesFragment extends CommonBrowserSitesFragment
         public Builder favorite(boolean onlyFavorites)
         {
             extraConfiguration.putBoolean(ARGUMENT_SHOW, onlyFavorites);
+            return this;
+        }
+
+        public Builder keywords(String keywords)
+        {
+            extraConfiguration.putString(ARGUMENT_KEYWORD, keywords);
             return this;
         }
 

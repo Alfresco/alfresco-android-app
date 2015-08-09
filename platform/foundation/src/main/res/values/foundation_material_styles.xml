@@ -264,6 +264,10 @@
         <item name="android:textColor">@color/accent_text</item>
     </style>
 
+    <style name="AlfrescoMaterialTheme.AutoCompleteText" parent="Base.Widget.AppCompat.EditText">
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Body1</item>
+    </style>
+
 
     <!-- ACTION BAR -->
     <style name="AlfrescoMaterialTheme.Container"></style>
