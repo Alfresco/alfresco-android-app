@@ -730,6 +730,7 @@
 
 
     <!-- Storage Access Framework -->
+    <string name="menu_browse_sync_content_folder">Synced Content</string>
     <string name="menu_browse_favorites_folder">Favorites Folder</string>
     <string name="account_alfresco">Alfresco</string>
     <string name="account_alfresco_cloud">Alfresco Cloud</string>
