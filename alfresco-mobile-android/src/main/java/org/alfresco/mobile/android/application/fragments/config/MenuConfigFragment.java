@@ -33,7 +33,7 @@ import org.alfresco.mobile.android.api.model.config.ViewGroupConfig;
 import org.alfresco.mobile.android.api.model.config.impl.ViewConfigImpl;
 import org.alfresco.mobile.android.api.services.ConfigService;
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.configuration.model.DevConfigModelHelper;
+import org.alfresco.mobile.android.application.configuration.model.ConfigModelHelper;
 import org.alfresco.mobile.android.application.configuration.model.view.ActivitiesConfigModel;
 import org.alfresco.mobile.android.application.configuration.model.view.FavoritesConfigModel;
 import org.alfresco.mobile.android.application.configuration.model.view.LocalConfigModel;
@@ -456,8 +456,7 @@ public class MenuConfigFragment extends AlfrescoFragment implements DefaultMenuC
             }
             else
             {
-                this.iconId = DevConfigModelHelper.getLightIconId(config.getType(), config.getIconIdentifier(),
-                        config.getIdentifier());
+                this.iconId = ConfigModelHelper.getLightIconId(config);
             }
         }
 
