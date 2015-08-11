@@ -48,20 +48,20 @@ public class GridAdapterHelper
 
     public static int getDisplayItemLayout(FragmentActivity activity, GridView gv, int displayMode)
     {
-        int displayItemLayout = R.layout.app_grid_large_progress_row;
+        int displayItemLayout = R.layout.row_large_tile_single_line;
 
         if (activity instanceof PublicDispatcherActivity || activity instanceof PrivateDialogActivity
                 || activity instanceof BaseShortcutActivity)
         {
             gv.setColumnWidth(DisplayUtils.getDPI(activity.getResources().getDisplayMetrics(), 1000));
-            return R.layout.app_grid_large_progress_row;
+            return R.layout.row_large_tile_single_line;
         }
 
         switch (displayMode)
         {
             case DISPLAY_LIST:
                 gv.setColumnWidth(DisplayUtils.getDPI(activity.getResources().getDisplayMetrics(), 240));
-                displayItemLayout = R.layout.app_grid_large_progress_row;
+                displayItemLayout = R.layout.row_large_tile_single_line;
                 break;
             case DISPLAY_LIST_LARGE:
                 gv.setColumnWidth(DisplayUtils.getDPI(activity.getResources().getDisplayMetrics(), 320));

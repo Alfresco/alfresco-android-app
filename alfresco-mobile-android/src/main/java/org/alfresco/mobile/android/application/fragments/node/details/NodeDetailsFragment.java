@@ -37,6 +37,7 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.activity.PrivateDialogActivity;
 import org.alfresco.mobile.android.application.activity.PublicDispatcherActivity;
+import org.alfresco.mobile.android.application.configuration.model.view.NodeDetailsConfigModel;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.MenuFragmentHelper;
@@ -97,7 +98,6 @@ import org.alfresco.mobile.android.ui.rendition.RenditionManager;
 import org.alfresco.mobile.android.ui.rendition.RenditionRequest;
 import org.alfresco.mobile.android.ui.template.ViewTemplate;
 import org.alfresco.mobile.android.ui.utils.Formatter;
-import org.alfresco.mobile.android.ui.utils.UIUtils;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.enums.Action;
 
@@ -156,8 +156,6 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
 
     protected String shareUrl = null;
 
-    protected String mTitle = null;
-
     protected boolean isSynced = false;
 
     // //////////////////////////////////////////////////////////////////////
@@ -174,6 +172,12 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
     // LIFE CYCLE
     // //////////////////////////////////////////////////////////////////////
     @Override
+    public String onPrepareTitle()
+    {
+        return super.onPrepareTitle();
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
@@ -185,7 +189,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
             nodeIdentifier = (String) getArguments().get(ARGUMENT_NODE_ID);
             parentNode = (Folder) getArguments().get(ARGUMENT_FOLDER_PARENT);
             favoriteOffline = getArguments().containsKey(ARGUMENT_FAVORITE);
-            mTitle = (String) getArguments().get(ViewTemplate.ARGUMENT_LABEL);
+            title = (String) getArguments().get(ViewTemplate.ARGUMENT_LABEL);
             if (favoriteOffline)
             {
                 checkSession = false;
@@ -195,11 +199,6 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         }
         // If no Node we display nothing.
         if (node == null && nodeIdentifier == null && TextUtils.isEmpty(nodePath)) { return; }
-
-        if (!TextUtils.isEmpty(mTitle))
-        {
-            UIUtils.displayTitle(getActivity(), mTitle);
-        }
     }
 
     @Override
@@ -227,6 +226,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
             {
                 EventBusManager.getInstance().register(this);
             }
+
             Operator.with(getActivity()).load(new NodeRequest.Builder(null, nodeIdentifier));
             displayLoading();
         }
@@ -1461,8 +1461,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         {
             super(appActivity, configuration);
             this.extraConfiguration = new Bundle();
-            this.menuIconId = R.drawable.ic_doc_dark;
-            this.menuTitleId = R.string.details;
+            viewConfigModel = new NodeDetailsConfigModel(configuration);
             templateArguments = new String[] { ARGUMENT_NODE_ID, ARGUMENT_PATH };
         }
 

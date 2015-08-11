@@ -29,10 +29,8 @@ import org.alfresco.mobile.android.async.OperationEvent;
 import org.alfresco.mobile.android.async.OperationRequest;
 import org.alfresco.mobile.android.async.tag.TagsEvent;
 import org.alfresco.mobile.android.async.tag.TagsOperationRequest;
-import org.alfresco.mobile.android.platform.utils.AndroidVersion;
 
 import android.content.Context;
-import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,27 +79,15 @@ public class TagsField extends BaseField
                 return;
             }
 
-            if (AndroidVersion.isICSOrAbove())
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < result.getTotalItems(); i++)
             {
-                StringBuilder builder = new StringBuilder();
-                for (int i = 0; i < result.getTotalItems(); i++)
-                {
-                    builder.append(" ¤").append(result.getList().get(i).getValue()).append("¤¤ ");
-                }
-                setPropertyValue(builder.toString());
+                builder.append(" ¤").append(result.getList().get(i).getValue()).append("¤¤ ");
+            }
+            setPropertyValue(builder.toString());
 
-                AwesomeTextHandler awesomeTextViewHandler = new AwesomeTextHandler();
-                awesomeTextViewHandler.addViewSpanRenderer(COMMA_PATTERN, new TagsSpanRenderer()).setView(tv);
-            }
-            else
-            {
-                String[] tags = new String[result.getTotalItems()];
-                for (int i = 0; i < result.getTotalItems(); i++)
-                {
-                    tags[i] = result.getList().get(i).getValue();
-                }
-                setPropertyValue(TextUtils.join(", ", tags));
-            }
+            AwesomeTextHandler awesomeTextViewHandler = new AwesomeTextHandler();
+            awesomeTextViewHandler.addViewSpanRenderer(COMMA_PATTERN, new TagsSpanRenderer()).setView(tv);
         }
     }
 

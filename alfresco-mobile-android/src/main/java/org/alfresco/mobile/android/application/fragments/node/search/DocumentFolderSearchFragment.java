@@ -28,6 +28,7 @@ import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.SearchLanguage;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.configuration.model.view.RepositorySearchConfigModel;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.actions.AbstractActions;
@@ -84,7 +85,6 @@ public class DocumentFolderSearchFragment extends SearchNodesFragment
         super();
         loadState = LOAD_VISIBLE;
         displayAsList = false;
-        enableTitle = true;
     }
 
     protected static DocumentFolderSearchFragment newInstanceByTemplate(Bundle b)
@@ -101,26 +101,13 @@ public class DocumentFolderSearchFragment extends SearchNodesFragment
     protected void onRetrieveParameters(Bundle bundle)
     {
         super.onRetrieveParameters(bundle);
-        if (TextUtils.isEmpty(mTitle) && bundle.containsKey(ARGUMENT_TITLE))
+        if (TextUtils.isEmpty(title) && bundle.containsKey(ARGUMENT_TITLE))
         {
-            mTitle = (String) bundle.get(ARGUMENT_TITLE);
+            title = (String) bundle.get(ARGUMENT_TITLE);
         }
-    }
-
-    @Override
-    protected String onCreateTitle(String title)
-    {
-        if (!TextUtils.isEmpty(mTitle))
+        if (keywords != null)
         {
-            return mTitle;
-        }
-        else if (keywords != null)
-        {
-            return String.format(getString(R.string.search_title), keywords);
-        }
-        else
-        {
-            return super.onCreateTitle(title);
+            title = String.format(getString(R.string.search_title), keywords);
         }
     }
 
@@ -283,8 +270,8 @@ public class DocumentFolderSearchFragment extends SearchNodesFragment
             TextView secondEmptyMessage)
     {
         emptyImageView.setLayoutParams(DisplayUtils.resizeLayout(getActivity(), 275, 275));
-        emptyImageView.setImageResource(searchFolderOnly ? R.drawable.ic_empty_search_folders
-                : R.drawable.ic_empty_search_documents);
+        emptyImageView.setImageResource(
+                searchFolderOnly ? R.drawable.ic_empty_search_folders : R.drawable.ic_empty_search_documents);
         firstEmptyMessage.setText(R.string.node_search_empty_title);
         secondEmptyMessage.setVisibility(View.VISIBLE);
         secondEmptyMessage.setText(R.string.node_search_empty_description);
@@ -311,8 +298,8 @@ public class DocumentFolderSearchFragment extends SearchNodesFragment
             return new SearchRequest.Builder(statement, SearchLanguage.fromValue(language))
                     .setListingContext(listingContext);
         }
-        else if (keywords != null) { return new SearchRequest.Builder(keywords, new KeywordSearchOptions(f,
-                includeDescendants, fullText, isExact)).setListingContext(listingContext); }
+        else if (keywords != null) { return new SearchRequest.Builder(keywords,
+                new KeywordSearchOptions(f, includeDescendants, fullText, isExact)).setListingContext(listingContext); }
         return null;
     }
 
@@ -326,7 +313,6 @@ public class DocumentFolderSearchFragment extends SearchNodesFragment
 
     public static class Builder extends ListingFragmentBuilder
     {
-
         // ///////////////////////////////////////////////////////////////////////////
         // CONSTRUCTORS
         // ///////////////////////////////////////////////////////////////////////////
@@ -339,8 +325,7 @@ public class DocumentFolderSearchFragment extends SearchNodesFragment
         public Builder(FragmentActivity appActivity, Map<String, Object> configuration)
         {
             super(appActivity, configuration);
-            this.menuIconId = R.drawable.ic_search_dark;
-            this.menuTitleId = R.string.search;
+            viewConfigModel = new RepositorySearchConfigModel(configuration);
             this.templateArguments = new String[] { ARGUMENT_KEYWORDS, ARGUMENT_STATEMENT };
         }
 

@@ -34,7 +34,7 @@ import android.widget.ArrayAdapter;
 
 import com.squareup.otto.Subscribe;
 
-public class PeopleFragment extends BaseGridFragment implements PeopleTemplate
+public class PeopleFragment extends BaseGridFragment implements PeopleFragmentArgument
 {
     public static final String TAG = PeopleFragment.class.getName();
 
@@ -50,7 +50,6 @@ public class PeopleFragment extends BaseGridFragment implements PeopleTemplate
     public PeopleFragment()
     {
         emptyListMessageId = R.string.empty_users;
-        enableTitle = true;
     }
 
     // //////////////////////////////////////////////////////////////////////

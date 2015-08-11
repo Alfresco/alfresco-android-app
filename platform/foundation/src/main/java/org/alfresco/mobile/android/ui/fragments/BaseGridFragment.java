@@ -172,7 +172,7 @@ public abstract class BaseGridFragment extends CommonGridFragment
         super.onRetrieveParameters(bundle);
         if (bundle.containsKey(ARGUMENT_LABEL))
         {
-            mTitle = bundle.getString(ARGUMENT_LABEL);
+            title = bundle.getString(ARGUMENT_LABEL);
         }
     }
 

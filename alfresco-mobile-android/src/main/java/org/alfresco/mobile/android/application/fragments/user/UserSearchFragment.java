@@ -134,7 +134,7 @@ public class UserSearchFragment extends BaseGridFragment implements ListingModeF
         {
             fieldId = getArguments().getString(ARGUMENT_FIELD_ID);
             keywords = getArguments().getString(ARGUMENT_KEYWORD);
-            mTitle = getArguments().getString(ARGUMENT_TITLE);
+            title = getArguments().getString(ARGUMENT_TITLE);
             mode = getArguments().getInt(ARGUMENT_MODE);
             singleChoice = getArguments().getBoolean(ARGUMENT_SINGLE_CHOICE);
             String pickFragmentTag = getArguments().getString(ARGUMENT_FRAGMENT_TAG);
@@ -273,20 +273,20 @@ public class UserSearchFragment extends BaseGridFragment implements ListingModeF
             }
             else if (fragmentPick instanceof AdvancedSearchFragment)
             {
-                getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.ic_person);
+                getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.ic_person_light);
                 getDialog().setTitle(R.string.metadata_modified_by);
             }
             else
             {
-                getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.ic_person);
+                getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.ic_person_light);
                 getDialog().setTitle(R.string.search_title);
             }
         }
         else
         {
-            if (mTitle != null)
+            if (title != null)
             {
-                UIUtils.displayTitle(getActivity(), String.format(getString(R.string.search_title), mTitle));
+                UIUtils.displayTitle(getActivity(), String.format(getString(R.string.search_title), title));
             }
             else if (keywords != null)
             {

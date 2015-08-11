@@ -33,7 +33,6 @@ import org.alfresco.mobile.android.async.node.sync.SyncNodeRequest;
 import org.alfresco.mobile.android.platform.mimetype.MimeType;
 import org.alfresco.mobile.android.platform.mimetype.MimeTypeManager;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
-import org.alfresco.mobile.android.platform.utils.AndroidVersion;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.sync.SyncContentManager;
 import org.alfresco.mobile.android.sync.SyncContentSchema;
@@ -63,7 +62,7 @@ import android.widget.PopupMenu.OnMenuItemClickListener;
  * @since 1.2
  * @author Jean Marie Pascal
  */
-public class SyncCursorAdapter extends BaseCursorLoader<TwoLinesProgressViewHolder> implements OnMenuItemClickListener
+public class SyncCursorAdapter extends BaseCursorLoader<TwoLinesProgressViewHolder>implements OnMenuItemClickListener
 {
     private static final String TAG = SyncCursorAdapter.class.getName();
 
@@ -86,8 +85,8 @@ public class SyncCursorAdapter extends BaseCursorLoader<TwoLinesProgressViewHold
         this.selectedItems = selectedItems;
         this.mode = mode;
         vhClassName = TwoLinesProgressViewHolder.class.getCanonicalName();
-        hasSynchroActive = SyncContentManager.getInstance(fr.getActivity()).hasActivateSync(
-                SessionUtils.getAccount(context));
+        hasSynchroActive = SyncContentManager.getInstance(fr.getActivity())
+                .hasActivateSync(SessionUtils.getAccount(context));
     }
 
     public View newView(Context context, Cursor cursor, ViewGroup parent)
@@ -122,23 +121,23 @@ public class SyncCursorAdapter extends BaseCursorLoader<TwoLinesProgressViewHold
         }
         else
         {
-            MimeType mime = MimeTypeManager.getInstance(context).getMimetype(
-                    cursor.getString(SyncContentSchema.COLUMN_TITLE_ID));
+            MimeType mime = MimeTypeManager.getInstance(context)
+                    .getMimetype(cursor.getString(SyncContentSchema.COLUMN_TITLE_ID));
 
             if (SessionUtils.getSession(context) != null)
             {
-                RenditionManager
-                        .with(fragmentRef.get().getActivity())
+                RenditionManager.with(fragmentRef.get().getActivity())
                         .loadNode(cursor.getString(SyncContentSchema.COLUMN_NODE_ID_ID))
-                        .placeHolder(
-                                mime != null ? mime.getLargeIconId(context) : MimeTypeManager.getInstance(context)
+                        .placeHolder(mime != null ? mime.getLargeIconId(context)
+                                : MimeTypeManager.getInstance(context)
                                         .getIcon(cursor.getString(SyncContentSchema.COLUMN_TITLE_ID), true))
                         .into(vh.icon);
             }
             else
             {
-                vh.icon.setImageResource(mime != null ? mime.getLargeIconId(context) : MimeTypeManager.getInstance(
-                        context).getIcon(cursor.getString(SyncContentSchema.COLUMN_TITLE_ID), true));
+                vh.icon.setImageResource(mime != null ? mime.getLargeIconId(context)
+                        : MimeTypeManager.getInstance(context)
+                                .getIcon(cursor.getString(SyncContentSchema.COLUMN_TITLE_ID), true));
             }
 
             if (mime != null)
@@ -235,8 +234,8 @@ public class SyncCursorAdapter extends BaseCursorLoader<TwoLinesProgressViewHold
         {
             vh.bottomText.setVisibility(View.VISIBLE);
             vh.bottomText.setText(createContentBottomText(context, cursor));
-            AccessibilityUtils
-                    .addContentDescription(vh.bottomText, createContentDescriptionBottomText(context, cursor));
+            AccessibilityUtils.addContentDescription(vh.bottomText,
+                    createContentDescriptionBottomText(context, cursor));
         }
         else
         {
@@ -261,8 +260,7 @@ public class SyncCursorAdapter extends BaseCursorLoader<TwoLinesProgressViewHold
             vh.choose.setTag(R.id.favorite_id, favoriteId);
             vh.choose.setTag(R.id.operation_status, status);
             vh.choose.setTag(R.id.is_synced, syncRoot);
-            AccessibilityUtils.addContentDescription(
-                    vh.choose,
+            AccessibilityUtils.addContentDescription(vh.choose,
                     String.format(context.getString(R.string.more_options_favorite),
                             cursor.getString(SyncContentSchema.COLUMN_TITLE_ID)));
             vh.choose.setOnClickListener(new OnClickListener()
@@ -281,18 +279,14 @@ public class SyncCursorAdapter extends BaseCursorLoader<TwoLinesProgressViewHold
 
                     PopupMenu popup = new PopupMenu(context, v);
                     getMenu(popup.getMenu(), statut, rootSynced);
-
-                    if (AndroidVersion.isICSOrAbove())
+                    popup.setOnDismissListener(new OnDismissListener()
                     {
-                        popup.setOnDismissListener(new OnDismissListener()
+                        @Override
+                        public void onDismiss(PopupMenu menu)
                         {
-                            @Override
-                            public void onDismiss(PopupMenu menu)
-                            {
-                                selectedOptionItems.clear();
-                            }
-                        });
-                    }
+                            selectedOptionItems.clear();
+                        }
+                    });
 
                     popup.setOnMenuItemClickListener(SyncCursorAdapter.this);
 

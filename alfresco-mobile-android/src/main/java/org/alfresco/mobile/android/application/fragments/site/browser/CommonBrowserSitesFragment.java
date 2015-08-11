@@ -32,7 +32,6 @@ import org.alfresco.mobile.android.async.site.member.CancelPendingMembershipEven
 import org.alfresco.mobile.android.async.site.member.SiteMembershipEvent;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.ui.site.SitesFoundationFragment;
-import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -59,7 +58,6 @@ public abstract class CommonBrowserSitesFragment extends SitesFoundationFragment
     public CommonBrowserSitesFragment()
     {
         super();
-        enableTitle = false;
         mode = MODE_LISTING;
         setHasOptionsMenu(true);
     }
@@ -77,20 +75,27 @@ public abstract class CommonBrowserSitesFragment extends SitesFoundationFragment
     }
 
     @Override
+    public String onPrepareTitle()
+    {
+        title = getString(R.string.menu_browse_sites);
+        if (getActivity() instanceof PublicDispatcherActivity)
+        {
+            title = getString(R.string.import_document_title);
+        }
+        return title;
+    }
+
+    @Override
     public void onResume()
     {
-        titleId = R.string.menu_browse_sites;
         if (getActivity() instanceof PublicDispatcherActivity)
         {
             mode = MODE_IMPORT;
-            titleId = R.string.import_document_title;
         }
         else if (getActivity() instanceof PrivateDialogActivity)
         {
             mode = MODE_PICK;
         }
-
-        UIUtils.displayTitle(getActivity(), titleId);
 
         super.onResume();
 

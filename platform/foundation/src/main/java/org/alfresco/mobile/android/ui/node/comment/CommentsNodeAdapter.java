@@ -93,7 +93,7 @@ public class CommentsNodeAdapter extends BaseListAdapter<Comment, TwoLinesCaptio
     @Override
     protected void updateIcon(TwoLinesCaptionViewHolder vh, final Comment item)
     {
-        RenditionManager.with(activityRef.get()).loadAvatar(item.getCreatedBy()).placeHolder(R.drawable.ic_person)
+        RenditionManager.with(activityRef.get()).loadAvatar(item.getCreatedBy()).placeHolder(R.drawable.ic_person_light)
                 .into(vh.icon);
         AccessibilityUtils.addContentDescription(vh.icon, String.format(getContext().getString(R.string.contact_card),
                 ((CommentImpl) item).getCreatedByPerson().getFullName()));

@@ -39,6 +39,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.configuration.model.ConfigModelHelper;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 import org.alfresco.mobile.android.ui.holder.SingleLineCheckBoxViewHolder;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
@@ -66,6 +67,10 @@ public class MenuItemConfigAdapter extends
 
         for (int i = 0; i < objects.size(); ++i)
         {
+            if (objects.get(i) == null)
+            {
+                continue;
+            }
             mIdMap.put(objects.get(i), i);
             if (objects.get(i).isEnable())
             {
@@ -109,7 +114,7 @@ public class MenuItemConfigAdapter extends
     @Override
     protected void updateIcon(SingleLineCheckBoxViewHolder vh, MenuConfigFragment.MenuItemConfig item)
     {
-        vh.icon.setImageDrawable(getContext().getResources().getDrawable(item.iconId));
+        vh.icon.setImageResource(ConfigModelHelper.getLightIconId(item.config));
         UIUtils.setBackground((View) vh.choose.getParent(), (vh.choose.isChecked()) ? null : getContext()
                 .getResources().getDrawable(R.drawable.list_longpressed_holo));
     }

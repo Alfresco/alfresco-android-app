@@ -123,7 +123,7 @@
                     style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_person"
+                    android:src="@drawable/ic_person_light"
                     android:contentDescription="@string/picker_user" />
             </LinearLayout>
 

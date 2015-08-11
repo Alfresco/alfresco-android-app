@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="all">
+
+    <!-- Dev Tools Manager -->
+    <bool name="manager_isEnable_DevToolsManager">true</bool>
+    <string name="manager_DevToolsManager">org.alfresco.mobile.android.application.managers.DevToolsManagerImpl</string>
+
+</resources>

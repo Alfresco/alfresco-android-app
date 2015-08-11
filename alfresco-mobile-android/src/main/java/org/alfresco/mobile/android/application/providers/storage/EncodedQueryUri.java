@@ -35,7 +35,7 @@ public class EncodedQueryUri
 
     private static final String ARGUMENT_ACCOUNT = "acc";
 
-    private static final String ARGUMENT_ID = "id";
+    private static final String ARGUMENT_ID = "type";
 
     // //////////////////////////////////////////////////////////////////////
     // MEMBERS
@@ -94,7 +94,7 @@ public class EncodedQueryUri
     // //////////////////////////////////////////////////////////////////////
     public static String encodeItem(Integer prefix, Long accountId, String id)
     {
-        // t=xxx;acc=xxx;id=xxx
+        // t=xxx;acc=xxx;type=xxx
         StringBuilder encodedItem = new StringBuilder();
         if (prefix != null && prefix > 0)
         {

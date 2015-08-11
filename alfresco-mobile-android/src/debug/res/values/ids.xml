@@ -20,4 +20,8 @@
     <string name="help_user_guide_url" formatted="false">http://docs.alfresco.com/android-%1$s/topics/mobile-overview.html</string>
     <string name="help_user_guide_default_url">http://docs.alfresco.com/android/topics/mobile-overview.html</string>
 
+    <item name="config_menu_save" type="id" />
+    <item name="config_menu_reset" type="id" />
+    <item name="config_menu_clear" type="id" />
+
 </resources>

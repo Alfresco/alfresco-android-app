@@ -1,0 +1,163 @@
+<!--
+  ~  Copyright (C) 2005-2015 Alfresco Software Limited.
+  ~
+  ~ This file is part of Alfresco Activiti Mobile for Android.
+  ~
+  ~ Alfresco Activiti Mobile for Android is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Alfresco Activiti Mobile for Android is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public License
+  ~ along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
+  ~
+  -->
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/primary_background"
+    android:fillViewport="true"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            style="@style/AlfrescoMaterialTheme.Text.Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/d_16"
+            android:text="Type"
+            android:textColor="@color/secondary_text" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/secondary_background"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/config_menu_type_container"
+                style="@style/AlfrescoMaterialTheme.Button.BorderLess"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <include
+                    android:id="@+id/config_menu_type"
+                    layout="@layout/row_two_lines"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/config_menu_info_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/AlfrescoMaterialTheme.Text.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/d_16"
+                android:text="Informations"
+                android:textColor="@color/secondary_text" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/secondary_background"
+                android:orientation="vertical"
+                android:padding="@dimen/d_16">
+
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:id="@+id/config_menu_id"
+                    style="@style/AlfrescoMaterialTheme.EditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Unique Id"
+                    android:textCursorDrawable="@drawable/accent_cursor"
+                    app:met_floatingLabel="highlight"
+                    app:met_primaryColor="@color/accent" />
+
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:id="@+id/config_menu_name"
+                    style="@style/AlfrescoMaterialTheme.EditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Label"
+                    android:textCursorDrawable="@drawable/accent_cursor"
+                    app:met_floatingLabel="highlight"
+                    app:met_primaryColor="@color/accent" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/config_menu_parameters_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <TextView
+                style="@style/AlfrescoMaterialTheme.Text.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/d_16"
+                android:text="Parameters"
+                android:textColor="@color/secondary_text" />
+
+            <LinearLayout
+                android:id="@+id/config_menu_parameters"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/secondary_background"
+                android:orientation="vertical"
+                android:padding="@dimen/d_16" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/validation_panel"
+            style="?android:attr/buttonBarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginTop="@dimen/d_16"
+            android:background="@color/accent"
+            android:gravity="bottom"
+            android:measureWithLargestChild="true"
+            android:orientation="horizontal"
+            android:paddingLeft="2dip"
+            android:paddingRight="2dip"
+            android:paddingTop="0dip">
+
+            <Button
+                android:id="@+id/config_menu_add"
+                style="@style/AlfrescoMaterialTheme.Text.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/alfrescohololight_item_background_holo_light"
+                android:gravity="center"
+                android:text="@string/save"
+                android:textColor="@color/secondary_background" />
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>
+
+
+
+

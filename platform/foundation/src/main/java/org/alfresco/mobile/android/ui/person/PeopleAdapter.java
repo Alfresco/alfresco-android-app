@@ -92,7 +92,8 @@ public class PeopleAdapter extends BaseListAdapter<Person, TwoLinesViewHolder>
     @Override
     protected void updateIcon(final TwoLinesViewHolder vh, final Person item)
     {
-        RenditionManager.with(activityRef.get()).loadAvatar(item.getIdentifier()).placeHolder(R.drawable.ic_person)
+        RenditionManager.with(activityRef.get()).loadAvatar(item.getIdentifier())
+                .placeHolder(R.drawable.ic_person_light)
                 .into(vh.icon);
     }
 

@@ -111,7 +111,7 @@ public class ActivityStreamAdapter extends BaseListAdapter<ActivityEntry, TwoLin
 
         if (type.startsWith(PREFIX_FILE))
         {
-            RenditionManager.with(activityRef.get()).loadAvatar(item.getCreatedBy()).placeHolder(R.drawable.ic_person)
+            RenditionManager.with(activityRef.get()).loadAvatar(item.getCreatedBy()).placeHolder(R.drawable.ic_person_light)
                     .into(vh.icon);
         }
         else if (type.startsWith(PREFIX_GROUP))
@@ -125,7 +125,7 @@ public class ActivityStreamAdapter extends BaseListAdapter<ActivityEntry, TwoLin
             {
                 tmp = null;
             }
-            RenditionManager.with(activityRef.get()).loadAvatar(tmp).placeHolder(R.drawable.ic_person).into(vh.icon);
+            RenditionManager.with(activityRef.get()).loadAvatar(tmp).placeHolder(R.drawable.ic_person_light).into(vh.icon);
         }
         else if (type.startsWith(PREFIX_SUBSCRIPTION))
         {
@@ -134,11 +134,11 @@ public class ActivityStreamAdapter extends BaseListAdapter<ActivityEntry, TwoLin
             {
                 tmp = null;
             }
-            RenditionManager.with(activityRef.get()).loadAvatar(tmp).placeHolder(R.drawable.ic_person).into(vh.icon);
+            RenditionManager.with(activityRef.get()).loadAvatar(tmp).placeHolder(R.drawable.ic_person_light).into(vh.icon);
         }
         else
         {
-            RenditionManager.with(activityRef.get()).loadAvatar(tmp).placeHolder(R.drawable.ic_person).into(vh.icon);
+            RenditionManager.with(activityRef.get()).loadAvatar(tmp).placeHolder(R.drawable.ic_person_light).into(vh.icon);
         }
     }
 
@@ -199,7 +199,7 @@ public class ActivityStreamAdapter extends BaseListAdapter<ActivityEntry, TwoLin
             put(PREFIX_LINK, R.drawable.ic_menu_share);
             put(PREFIX_EVENT, R.drawable.ic_menu_today);
             put(PREFIX_WIKI, R.drawable.ic_menu_notif);
-            put(PREFIX_USER, R.drawable.ic_person);
+            put(PREFIX_USER, R.drawable.ic_person_light);
             put(PREFIX_DATALIST, R.drawable.ic_menu_notif);
             put(PREFIX_DISCUSSIONS, R.drawable.ic_action_dialog);
             put(PREFIX_FOLDER, R.drawable.ic_menu_archive);

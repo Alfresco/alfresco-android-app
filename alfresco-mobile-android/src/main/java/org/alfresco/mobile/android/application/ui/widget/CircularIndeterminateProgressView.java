@@ -18,7 +18,6 @@
 package org.alfresco.mobile.android.application.ui.widget;
 
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.platform.utils.AndroidVersion;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -47,16 +46,7 @@ public class CircularIndeterminateProgressView extends View
     public CircularIndeterminateProgressView(Context context, AttributeSet attrs, int defStyleAttr)
     {
         super(context, attrs, defStyleAttr);
-
-        if (AndroidVersion.isICSOrAbove())
-        {
-            mDrawable = new CircularProgressDrawable(getContext().getResources().getColor(R.color.holo_blue_dark), 25);
-        }
-        else
-        {
-            mDrawable = new CircularProgressDrawable(getContext().getResources().getColor(R.color.blue_light), 25);
-        }
-
+        mDrawable = new CircularProgressDrawable(getContext().getResources().getColor(R.color.holo_blue_dark), 25);
         mDrawable.setCallback(this);
     }
 

@@ -48,7 +48,6 @@ import org.alfresco.mobile.android.async.workflow.process.start.StartProcessEven
 import org.alfresco.mobile.android.async.workflow.process.start.StartProcessRequest;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.mimetype.MimeTypeManager;
-import org.alfresco.mobile.android.platform.utils.AndroidVersion;
 import org.alfresco.mobile.android.ui.ListingModeFragment;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.operation.OperationWaitingDialogFragment;
@@ -70,7 +69,6 @@ import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Switch;
@@ -78,8 +76,8 @@ import android.widget.ToggleButton;
 
 import com.squareup.otto.Subscribe;
 
-public class CreateTaskFragment extends AlfrescoFragment implements UserPickerCallback, onPickDocumentFragment,
-        onPickDateFragment
+public class CreateTaskFragment extends AlfrescoFragment
+        implements UserPickerCallback, onPickDocumentFragment, onPickDateFragment
 {
     public static final String TAG = CreateTaskFragment.class.getName();
 
@@ -313,14 +311,7 @@ public class CreateTaskFragment extends AlfrescoFragment implements UserPickerCa
         });
 
         // Email Notification
-        if (AndroidVersion.isICSOrAbove())
-        {
-            emailNotification = viewById(R.id.action_send_notification);
-        }
-        else
-        {
-            emailNotification = viewById(R.id.action_send_notification);
-        }
+        emailNotification = viewById(R.id.action_send_notification);
 
         return getRootView();
     }
@@ -414,13 +405,14 @@ public class CreateTaskFragment extends AlfrescoFragment implements UserPickerCa
         List<Document> attachments = new ArrayList<Document>(items.values());
 
         // Start process
-        String operationId = Operator.with(getActivity(), getAccount()).load(
-                new StartProcessRequest.Builder(processDefinition, persons, variables, attachments));
+        String operationId = Operator.with(getActivity(), getAccount())
+                .load(new StartProcessRequest.Builder(processDefinition, persons, variables, attachments));
 
         // Display waiting dialog
-        OperationWaitingDialogFragment.newInstance(StartProcessRequest.TYPE_ID, R.drawable.ic_task_light,
-                getString(R.string.process_starting), null, null, 0, operationId).show(
-                getActivity().getSupportFragmentManager(), OperationWaitingDialogFragment.TAG);
+        OperationWaitingDialogFragment
+                .newInstance(StartProcessRequest.TYPE_ID, R.drawable.ic_task_light,
+                        getString(R.string.process_starting), null, null, 0, operationId)
+                .show(getActivity().getSupportFragmentManager(), OperationWaitingDialogFragment.TAG);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -428,14 +420,7 @@ public class CreateTaskFragment extends AlfrescoFragment implements UserPickerCa
     // ///////////////////////////////////////////////////////////////////////////
     private boolean hasEmailNotification()
     {
-        if (AndroidVersion.isICSOrAbove())
-        {
-            return ((Switch) emailNotification).isChecked();
-        }
-        else
-        {
-            return ((CheckBox) emailNotification).isChecked();
-        }
+        return ((Switch) emailNotification).isChecked();
     }
 
     private double calculateApprovalPercent()

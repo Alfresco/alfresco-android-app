@@ -55,7 +55,6 @@ import org.alfresco.mobile.android.platform.accounts.AccountsPreferences;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
-import org.alfresco.mobile.android.platform.utils.AndroidVersion;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.sync.SyncContentManager;
 import org.alfresco.mobile.android.sync.SyncContentProvider;
@@ -68,7 +67,6 @@ import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.annotation.TargetApi;
-import android.app.ActionBar;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
@@ -78,6 +76,8 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -206,7 +206,7 @@ public class MainMenuFragment extends AlfrescoFragment implements AdapterView.On
             FragmentDisplayer.clearCentralPane(getActivity());
         }
 
-        UIUtils.displayTitle(getActivity(), R.string.app_name, !TAG.equals(getTag()));
+        UIUtils.displayTitle(R.string.app_name, (ActionBarActivity) getActivity(), !TAG.equals(getTag()));
         EventBusManager.getInstance().register(this);
     }
 
@@ -215,15 +215,12 @@ public class MainMenuFragment extends AlfrescoFragment implements AdapterView.On
     public void onResume()
     {
         super.onResume();
-       getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+        getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 
         if (TAG.equals(getTag()))
         {
-           getActionBar().setDisplayHomeAsUpEnabled(false);
-            if (AndroidVersion.isICSOrAbove())
-            {
-               getActionBar().setHomeButtonEnabled(false);
-            }
+            getActionBar().setDisplayHomeAsUpEnabled(false);
+            getActionBar().setHomeButtonEnabled(false);
             if (getActivity() instanceof MainActivity)
             {
                 ((MainActivity) getActivity()).lockSlidingMenu();
@@ -239,11 +236,8 @@ public class MainMenuFragment extends AlfrescoFragment implements AdapterView.On
         super.onPause();
         if (!isVisible() && TAG.equals(getTag()))
         {
-           getActionBar().setDisplayHomeAsUpEnabled(true);
-            if (AndroidVersion.isICSOrAbove())
-            {
-               getActionBar().setHomeButtonEnabled(true);
-            }
+            getActionBar().setDisplayHomeAsUpEnabled(true);
+            getActionBar().setHomeButtonEnabled(true);
             if (getActivity() instanceof MainActivity)
             {
                 ((MainActivity) getActivity()).unlockSlidingMenu();
@@ -318,8 +312,8 @@ public class MainMenuFragment extends AlfrescoFragment implements AdapterView.On
                 {
                     if (getActivity() instanceof AlfrescoActivity)
                     {
-                        ((TextView) accountsSpinnerButton.findViewById(R.id.accounts_spinner_title)).setText(acc
-                                .getTitle());
+                        ((TextView) accountsSpinnerButton.findViewById(R.id.accounts_spinner_title))
+                                .setText(acc.getTitle());
                         ((AlfrescoActivity) getActivity()).swapAccount(acc);
                         if (SLIDING_TAG.equals(getTag()))
                         {
@@ -361,9 +355,8 @@ public class MainMenuFragment extends AlfrescoFragment implements AdapterView.On
         }
 
         // Default only available since configuration 0.1
-        if (configService.getConfigInfo() == null
-                || (configService.getConfigInfo() != null && ConfigInfo.SCHEMA_VERSION_BETA.equals(configService
-                        .getConfigInfo().getSchemaVersion())))
+        if (configService.getConfigInfo() == null || (configService.getConfigInfo() != null
+                && ConfigInfo.SCHEMA_VERSION_BETA.equals(configService.getConfigInfo().getSchemaVersion())))
         {
             // BETA
             DisplayUtils.hide(viewById(R.id.custom_menu_group));
@@ -474,12 +467,12 @@ public class MainMenuFragment extends AlfrescoFragment implements AdapterView.On
         if (configManager != null && configManager.getConfig(currentAccount.getId()) != null
                 && configManager.getConfig(currentAccount.getId()).getProfiles().size() > 1)
         {
-            list.add(new AlfrescoAccount(AccountsAdapter.PROFILES_ITEM, getString(R.string.profiles_switch), null,
-                    null, null, null, "0", null, "false"));
+            list.add(new AlfrescoAccount(AccountsAdapter.PROFILES_ITEM, getString(R.string.profiles_switch), null, null,
+                    null, null, "0", null, "false"));
         }
 
-        list.add(new AlfrescoAccount(AccountsAdapter.MANAGE_ITEM, getString(R.string.manage_accounts), null, null,
-                null, null, "0", null, "false"));
+        list.add(new AlfrescoAccount(AccountsAdapter.MANAGE_ITEM, getString(R.string.manage_accounts), null, null, null,
+                null, "0", null, "false"));
 
         // Init the adapter and create the menu
         if (accountsAdapter == null)
@@ -510,8 +503,8 @@ public class MainMenuFragment extends AlfrescoFragment implements AdapterView.On
                 else
                 {
                     listPopupWindow = new ListPopupWindow(getActivity());
-                    GradientDrawable gd = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, new int[] {
-                            0xFF282828, 0xFF282828 });
+                    GradientDrawable gd = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,
+                            new int[] { 0xFF282828, 0xFF282828 });
                     gd.setCornerRadius(0f);
                     listPopupWindow.setBackgroundDrawable(gd);
                     listPopupWindow.setAnchorView(accountsSpinnerButton);
@@ -621,8 +614,8 @@ public class MainMenuFragment extends AlfrescoFragment implements AdapterView.On
         {
             Boolean hasSynchroActive = SyncContentManager.getInstance(getActivity()).hasActivateSync(currentAccount);
 
-            long startTimeStamp = SyncContentManager.getInstance(getActivity()).getStartSyncPrepareTimestamp(
-                    currentAccount);
+            long startTimeStamp = SyncContentManager.getInstance(getActivity())
+                    .getStartSyncPrepareTimestamp(currentAccount);
             long finalTimeStamp = SyncContentManager.getInstance(getActivity()).getSyncPrepareTimestamp(currentAccount);
 
             // Sync Prepare in Progress ?
@@ -647,10 +640,8 @@ public class MainMenuFragment extends AlfrescoFragment implements AdapterView.On
             // Is there a doc warning ?
             if (hasSynchroActive && currentAccount != null)
             {
-                statutCursor = getActivity().getContentResolver().query(
-                        SyncContentProvider.CONTENT_URI,
-                        SyncContentSchema.COLUMN_ALL,
-                        SyncContentProvider.getAccountFilter(currentAccount) + " AND "
+                statutCursor = getActivity().getContentResolver().query(SyncContentProvider.CONTENT_URI,
+                        SyncContentSchema.COLUMN_ALL, SyncContentProvider.getAccountFilter(currentAccount) + " AND "
                                 + SyncContentSchema.COLUMN_STATUS + " == " + SyncContentStatus.STATUS_REQUEST_USER,
                         null, null);
                 if (statutCursor.getCount() > 0)

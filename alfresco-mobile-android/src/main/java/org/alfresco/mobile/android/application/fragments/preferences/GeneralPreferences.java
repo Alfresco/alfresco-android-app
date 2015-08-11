@@ -33,6 +33,7 @@ import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.SessionManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
+import org.alfresco.mobile.android.platform.extensions.DevToolsManager;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.mdm.MDMManager;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
@@ -92,12 +93,15 @@ public class GeneralPreferences extends AlfrescoFragment
     // LIFE CYCLE
     // ///////////////////////////////////////////////////////////////////////////
     @Override
+    public String onPrepareTitle()
+    {
+        return getString(R.string.settings);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         setRootView(inflater.inflate(R.layout.fr_settings, container, false));
-
-        // TITLE
-        getActivity().setTitle(R.string.settings);
 
         TwoLinesViewHolder vh;
         // Links
@@ -148,6 +152,25 @@ public class GeneralPreferences extends AlfrescoFragment
                 AboutFragment.with(getActivity()).displayAsDialog();
             }
         });
+
+        if (DevToolsManager.getInstance(getActivity()) != null)
+        {
+            show(R.id.settings_dev_tools_container);
+            vh = HolderUtils.configure(viewById(R.id.settings_dev_menu_config), "Menu Editor",
+                    "Tools to edit and manage menu and profiles", -1);
+            viewById(R.id.settings_dev_menu_config_container).setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    DevToolsManager.getInstance(getActivity()).displayMenuConfig(getActivity());
+                }
+            });
+        }
+        else
+        {
+            hide(R.id.settings_dev_tools_container);
+        }
 
         recreate();
 
@@ -261,8 +284,9 @@ public class GeneralPreferences extends AlfrescoFragment
             viewById(R.id.settings_privatefolder_container).setFocusable(true);
             viewById(R.id.settings_privatefolder_container).setClickable(true);
             viewById(R.id.settings_privatefolder_container).setEnabled(true);
-            dataProtectionVH.bottomText.setText(DataProtectionManager.getInstance(getActivity())
-                    .hasDataProtectionEnable() ? R.string.data_protection_on : R.string.data_protection_off);
+            dataProtectionVH.bottomText
+                    .setText(DataProtectionManager.getInstance(getActivity()).hasDataProtectionEnable()
+                            ? R.string.data_protection_on : R.string.data_protection_off);
         }
 
         viewById(R.id.settings_privatefolder_container).setOnClickListener(new View.OnClickListener()
@@ -278,8 +302,8 @@ public class GeneralPreferences extends AlfrescoFragment
                 }
                 else
                 {
-                    AlfrescoNotificationManager.getInstance(getActivity()).showLongToast(
-                            getString(R.string.sdinaccessible));
+                    AlfrescoNotificationManager.getInstance(getActivity())
+                            .showLongToast(getString(R.string.sdinaccessible));
                 }
 
             }
@@ -327,8 +351,9 @@ public class GeneralPreferences extends AlfrescoFragment
     {
         if (dataProtectionVH != null)
         {
-            dataProtectionVH.bottomText.setText(DataProtectionManager.getInstance(getActivity())
-                    .hasDataProtectionEnable() ? R.string.data_protection_on : R.string.data_protection_off);
+            dataProtectionVH.bottomText
+                    .setText(DataProtectionManager.getInstance(getActivity()).hasDataProtectionEnable()
+                            ? R.string.data_protection_on : R.string.data_protection_off);
         }
     }
 

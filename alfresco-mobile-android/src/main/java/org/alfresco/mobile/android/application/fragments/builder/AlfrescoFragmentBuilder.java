@@ -21,8 +21,11 @@ import java.lang.ref.WeakReference;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.model.ListingContext;
+import org.alfresco.mobile.android.api.model.config.ViewConfig;
 import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.configuration.ConfigurationConstant;
+import org.alfresco.mobile.android.application.configuration.model.ConfigModelHelper;
+import org.alfresco.mobile.android.application.configuration.model.ViewConfigModel;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.platform.utils.BundleUtils;
@@ -53,6 +56,8 @@ public abstract class AlfrescoFragmentBuilder
     // ///////////////////////////////////////////////////////////////////////////
     // MEMBERS
     // ///////////////////////////////////////////////////////////////////////////
+    protected ViewConfigModel viewConfigModel;
+
     protected int menuIconId;
 
     protected int menuTitleId;
@@ -195,9 +200,23 @@ public abstract class AlfrescoFragmentBuilder
     // MENU CONFIGURATION
     // Responsible to display the fragment after selection
     // ///////////////////////////////////////////////////////////////////////////
-    public void createMenuItem(Button v)
+    public void createMenuItem(ViewConfig config, Button v)
     {
-        v.setCompoundDrawablesWithIntrinsicBounds(menuIconId, 0, 0, 0);
+        if (viewConfigModel != null)
+        {
+            menuIconId = viewConfigModel.getIconResId();
+            menuTitleId = viewConfigModel.getLabelId();
+        }
+
+        if (config != null && !TextUtils.isEmpty(config.getIconIdentifier()))
+        {
+            menuIconId = ConfigModelHelper.getDarkIconId(config);
+        }
+
+        if (menuIconId != -1)
+        {
+            v.setCompoundDrawablesWithIntrinsicBounds(menuIconId, 0, 0, 0);
+        }
         v.setText(menuTitleId);
         v.setTag(this);
         v.setOnClickListener(onClick);

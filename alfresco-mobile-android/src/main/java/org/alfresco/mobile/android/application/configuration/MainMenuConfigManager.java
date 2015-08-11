@@ -129,7 +129,7 @@ public class MainMenuConfigManager extends BaseConfigManager
             }
             AlfrescoFragmentBuilder fragmentBuilder = FragmentBuilderFactory.createViewConfig(getActivity(),
                     config.getType(), parameters);
-            fragmentBuilder.createMenuItem(buttonView);
+            fragmentBuilder.createMenuItem(config, buttonView);
             if (!TextUtils.isEmpty(label))
             {
                 buttonView.setText(label);

@@ -62,16 +62,16 @@ public class VersionFragment extends VersionsNodeFragment
     // LIFECYCLE
     // ///////////////////////////////////////////////////////////////////////////
     @Override
+    public String onPrepareTitle()
+    {
+        return getString(R.string.document_version_header);
+    }
+
+    @Override
     protected void onRetrieveParameters(Bundle bundle)
     {
         super.onRetrieveParameters(bundle);
         parentFolder = bundle.getParcelable(ARGUMENT_FOLDER);
-    }
-
-    @Override
-    protected String onCreateTitle(String title)
-    {
-        return getString(R.string.document_version_header);
     }
 
     // ///////////////////////////////////////////////////////////////////////////

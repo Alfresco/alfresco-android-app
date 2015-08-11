@@ -46,7 +46,7 @@ public class NodeField extends BaseField
 {
     public static final String OUTPUT_OBJECT = "object";
 
-    public static final String OUTPUT_ID = "id";
+    public static final String OUTPUT_ID = "type";
 
     private Map<String, Node> nodes = new HashMap<String, Node>(0);
 

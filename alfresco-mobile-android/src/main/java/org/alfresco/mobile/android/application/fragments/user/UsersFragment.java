@@ -23,6 +23,7 @@ import java.util.Map;
 import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.configuration.ConfigurationConstant;
+import org.alfresco.mobile.android.application.configuration.model.view.PeopleConfigModel;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.builder.ListingFragmentBuilder;
@@ -33,7 +34,6 @@ import org.alfresco.mobile.android.ui.person.PeopleFragment;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
@@ -70,24 +70,17 @@ public class UsersFragment extends PeopleFragment
     // LIST ACTIONS
     // ///////////////////////////////////////////////////////////////////////////
     @Override
-    protected String onCreateTitle(String title)
+    public void onResume()
     {
-        if (!TextUtils.isEmpty(title))
+        if (keywords != null)
         {
-            return super.onCreateTitle(title);
-        }
-        else if (keywords != null)
-        {
-            return String.format(getString(R.string.search_title), keywords);
+            title = String.format(getString(R.string.search_title), keywords);
         }
         else if (siteShortName != null)
         {
-            return getString(R.string.members);
+            title = getString(R.string.members);
         }
-        else
-        {
-            return super.onCreateTitle(title);
-        }
+        super.onResume();
     }
 
     @Override
@@ -197,16 +190,9 @@ public class UsersFragment extends PeopleFragment
         public Builder(FragmentActivity appActivity, Map<String, Object> configuration)
         {
             super(appActivity, configuration);
-            menuIconId = R.drawable.ic_users_dark;
-            if (configuration.containsKey(ARGUMENT_SITE_SHORTNAME))
-            {
-                menuTitleId = R.string.members;
-            }
-            else
-            {
-                menuTitleId = R.string.users;
-            }
-            templateArguments = new String[] { ARGUMENT_SITE_SHORTNAME, ARGUMENT_KEYWORDS };
+            viewConfigModel = new PeopleConfigModel(configuration);
+            templateArguments = new String[] { PeopleConfigModel.ARGUMENT_SITE_SHORTNAME,
+                    PeopleConfigModel.ARGUMENT_KEYWORDS };
         }
 
         // ///////////////////////////////////////////////////////////////////////////
@@ -214,13 +200,13 @@ public class UsersFragment extends PeopleFragment
         // ///////////////////////////////////////////////////////////////////////////
         public Builder keywords(String keywords)
         {
-            extraConfiguration.putString(ARGUMENT_KEYWORDS, keywords);
+            extraConfiguration.putString(PeopleConfigModel.ARGUMENT_KEYWORDS, keywords);
             return this;
         }
 
         public Builder siteShortName(String siteShortName)
         {
-            extraConfiguration.putString(ARGUMENT_SITE_SHORTNAME, siteShortName);
+            extraConfiguration.putString(PeopleConfigModel.ARGUMENT_SITE_SHORTNAME, siteShortName);
             return this;
         }
 

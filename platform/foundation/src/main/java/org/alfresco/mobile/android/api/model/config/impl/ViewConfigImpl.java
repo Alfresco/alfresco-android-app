@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.model.config.impl;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +28,7 @@ import org.alfresco.mobile.android.api.model.config.ViewConfig;
  * @author Jean Marie Pascal
  *
  */
-public class ViewConfigImpl extends ItemConfigImpl implements ViewConfig
+public class ViewConfigImpl extends ItemConfigImpl implements ViewConfig, Serializable
 {
     protected String evaluatorId;
 
@@ -41,13 +42,20 @@ public class ViewConfigImpl extends ItemConfigImpl implements ViewConfig
         super(identifier, null, label, null, type, null, properties);
     }
 
-    ViewConfigImpl(String identifier, String label, String type, String evaluatorId)
+    public ViewConfigImpl(String identifier, String iconIdentifier, String label, String type,
+            Map<String, Object> properties)
+    {
+        super(identifier, null, label, null, type, null, properties);
+    }
+
+    public ViewConfigImpl(String identifier, String label, String type, String evaluatorId)
     {
         super(identifier, null, label, null, type, evaluatorId, null);
         this.evaluatorId = evaluatorId;
     }
 
-    ViewConfigImpl(String identifier, String iconIdentifier, String label, String description, String type, Map<String, Object> properties,
+    public ViewConfigImpl(String identifier, String iconIdentifier, String label, String description, String type,
+            Map<String, Object> properties,
            ArrayList<String> forms, String evaluatorId)
     {
         super(identifier, iconIdentifier, label, description, type, evaluatorId, properties);

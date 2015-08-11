@@ -30,7 +30,7 @@
         android:orientation="vertical" />
 
     <!-- <fragment
-         android:id="@+id/sliding_menu"
+         android:type="@+type/sliding_menu"
          android:name="org.alfresco.mobile.android.application.fragments.menu.MainMenuFragment"
          android:layout_width="match_parent"
          android:layout_height="match_parent"

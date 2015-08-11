@@ -168,7 +168,7 @@ public class ActionUtils extends BaseActionUtils
     {
         // Retrieve list of application that understand market Intent
         Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(Uri.parse("market://details?id=org.alfresco.mobile.android.application"));
+        intent.setData(Uri.parse("market://details?type=org.alfresco.mobile.android.application"));
         final PackageManager mgr = c.getPackageManager();
         List<ResolveInfo> list = mgr.queryIntentActivities(intent, 0);
 
@@ -496,12 +496,12 @@ public class ActionUtils extends BaseActionUtils
         final String appPackageName = appPackage;
         try
         {
-            context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+            context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?type=" + appPackageName)));
         }
         catch (android.content.ActivityNotFoundException anfe)
         {
             context.startActivity(new Intent(Intent.ACTION_VIEW, Uri
-                    .parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+.parse("https://play.google.com/store/apps/details?type=" + appPackageName)));
         }
     }
 

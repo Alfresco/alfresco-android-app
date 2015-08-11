@@ -80,9 +80,9 @@ public class JoinSiteRequestsFragment extends SitesPendingMembershipFoundationFr
         setSession(SessionUtils.getSession(getActivity()));
         SessionUtils.checkSession(getActivity(), getSession());
 
-        mTitle = getString(R.string.joinsiterequest_list_title);
+        title = getString(R.string.joinsiterequest_list_title);
         Dialog d = super.onCreateDialog(savedInstanceState);
-        d.setTitle(mTitle);
+        d.setTitle(title);
 
         return d;
     }
