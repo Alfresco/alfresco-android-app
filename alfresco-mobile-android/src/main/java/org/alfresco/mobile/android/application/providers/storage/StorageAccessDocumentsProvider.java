@@ -364,7 +364,8 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
             try
             {
                 // DocumentId can be an old one stored as "recent doc"
-                // This id might have been updated/changed until the last access
+                // This type might have been updated/changed until the last
+                // access
                 // That's why We ALWAYS request the latest version
                 // Log.d(TAG, "retrieve latest version");
                 currentNode = session.getServiceRegistry().getVersionService()
@@ -1291,7 +1292,7 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
     private Node retrieveNode(String docId)
     {
         Node currentNode = null;
-        // Retrieve node by its id
+        // Retrieve node by its type
         if (nodesIndex.containsKey(docId))
         {
             currentNode = nodesIndex.get(docId);

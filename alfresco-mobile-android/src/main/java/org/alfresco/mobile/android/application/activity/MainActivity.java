@@ -75,10 +75,10 @@ import org.alfresco.mobile.android.platform.intent.AlfrescoIntentAPI;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.mdm.MDMManager;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
-import org.alfresco.mobile.android.platform.utils.AndroidVersion;
 import org.alfresco.mobile.android.platform.utils.ConnectivityUtils;
 import org.alfresco.mobile.android.sync.SyncContentManager;
 import org.alfresco.mobile.android.ui.RefreshFragment;
+import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.fragments.SimpleAlertDialogFragment;
 import org.alfresco.mobile.android.ui.node.browse.NodeBrowserTemplate;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
@@ -160,12 +160,12 @@ public class MainActivity extends BaseActivity
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
+        supportRequestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         super.onCreate(savedInstanceState);
 
         // Loading progress
-        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.app_main);
         mdmManager = MDMManager.getInstance(this);
 
@@ -226,6 +226,23 @@ public class MainActivity extends BaseActivity
             {
                 super.onDrawerClosed(view);
                 invalidateOptionsMenu();
+
+                // Refresh Title from Fragments
+                AlfrescoFragment fr = (AlfrescoFragment) getSupportFragmentManager()
+                        .findFragmentById(DisplayUtils.getLeftFragmentId(MainActivity.this));
+                if (fr != null)
+                {
+                    fr.displayTitle();
+                    if (DisplayUtils.hasCentralPane(MainActivity.this))
+                    {
+                        fr = (AlfrescoFragment) getSupportFragmentManager()
+                                .findFragmentById(DisplayUtils.getCentralFragmentId(MainActivity.this));
+                        if (fr != null)
+                        {
+                            fr.displayTitle();
+                        }
+                    }
+                }
             }
 
             /** Called when a drawer has settled in a completely open state. */
@@ -238,6 +255,7 @@ public class MainActivity extends BaseActivity
                 }
                 super.onDrawerOpened(drawerView);
                 invalidateOptionsMenu();
+                UIUtils.displayTitle(R.string.app_name, MainActivity.this);
             }
         };
 
@@ -245,10 +263,7 @@ public class MainActivity extends BaseActivity
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
         getAppActionBar().setDisplayHomeAsUpEnabled(true);
-        if (AndroidVersion.isICSOrAbove())
-        {
-            getAppActionBar().setHomeButtonEnabled(true);
-        }
+        getAppActionBar().setHomeButtonEnabled(true);
     }
 
     @Override
@@ -269,8 +284,8 @@ public class MainActivity extends BaseActivity
 
         if (getFragment(MainMenuFragment.TAG) != null && requestSwapAccount)
         {
-            EventBusManager.getInstance().post(
-                    new LoadAccountCompletedEvent(LoadAccountCompletedEvent.SWAP, getCurrentAccount()));
+            EventBusManager.getInstance()
+                    .post(new LoadAccountCompletedEvent(LoadAccountCompletedEvent.SWAP, getCurrentAccount()));
             requestSwapAccount = false;
         }
 
@@ -504,7 +519,7 @@ public class MainActivity extends BaseActivity
                 }
                 else
                 {
-                    type = ConfigurationConstant.KEY_LOCALFILES;
+                    type = ConfigurationConstant.KEY_LOCAL_FILES;
                 }
                 break;
             case R.id.menu_notifications:
@@ -514,8 +529,8 @@ public class MainActivity extends BaseActivity
                 }
                 else
                 {
-                    startActivity(new Intent(PrivateIntent.ACTION_DISPLAY_OPERATIONS).putExtra(
-                            PrivateIntent.EXTRA_ACCOUNT_ID, getCurrentAccount().getId()));
+                    startActivity(new Intent(PrivateIntent.ACTION_DISPLAY_OPERATIONS)
+                            .putExtra(PrivateIntent.EXTRA_ACCOUNT_ID, getCurrentAccount().getId()));
                 }
                 break;
             default:
@@ -649,10 +664,11 @@ public class MainActivity extends BaseActivity
                 }
                 return true;
             case R.id.menu_refresh:
-                if (getSupportFragmentManager().findFragmentById(DisplayUtils.getLeftFragmentId(this)) instanceof RefreshFragment)
+                if (getSupportFragmentManager()
+                        .findFragmentById(DisplayUtils.getLeftFragmentId(this)) instanceof RefreshFragment)
                 {
-                    ((RefreshFragment) getSupportFragmentManager().findFragmentById(
-                            DisplayUtils.getLeftFragmentId(this))).refresh();
+                    ((RefreshFragment) getSupportFragmentManager()
+                            .findFragmentById(DisplayUtils.getLeftFragmentId(this))).refresh();
                 }
                 return true;
             case R.id.menu_settings:
@@ -783,7 +799,7 @@ public class MainActivity extends BaseActivity
         setProgressBarIndeterminateVisibility(true);
 
         // Add accountName in actionBar
-        UIUtils.displayTitle(this, getString(R.string.app_name));
+        UIUtils.displayTitle(R.string.app_name, MainActivity.this);
     }
 
     boolean fromSessionRequested = false;
@@ -859,7 +875,7 @@ public class MainActivity extends BaseActivity
 
         setSessionState(SESSION_ACTIVE);
         setProgressBarIndeterminateVisibility(false);
-        UIUtils.displayTitle(this, getString(R.string.app_name), false);
+        UIUtils.displayTitle(R.string.app_name, this, false);
 
         // Retrieve Rendition Manager associated to this account
         RenditionManagerImpl.getInstance(this).setSession(getCurrentSession());
@@ -867,8 +883,8 @@ public class MainActivity extends BaseActivity
         // Remove OAuthFragment if one
         if (getFragment(AccountOAuthFragment.TAG) != null)
         {
-            getSupportFragmentManager()
-                    .popBackStack(AccountOAuthFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            getSupportFragmentManager().popBackStack(AccountOAuthFragment.TAG,
+                    FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
 
         removeWaitingDialog();

@@ -170,8 +170,8 @@
             <Button
                 android:id="@+id/menu_settings"
                 style="?MainTheme.TextView.MenuItem"
-                android:drawableLeft="@drawable/ic_settings_white"
-                android:drawableStart="@drawable/ic_settings_light"
+                android:drawableLeft="@drawable/ic_settings_dark"
+                android:drawableStart="@drawable/ic_settings_dark"
                 android:text="@string/menu_settings" />
 
             <Button

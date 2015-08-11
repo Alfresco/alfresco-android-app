@@ -28,13 +28,14 @@ import org.alfresco.mobile.android.platform.utils.AndroidVersion;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 
 import android.annotation.TargetApi;
-import android.app.ActionBar;
 import android.content.Context;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -76,7 +77,6 @@ public class UIUtils
      * @param activity
      * @return
      */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     public static int[] getScreenDimension(FragmentActivity activity)
     {
         int width = 0;
@@ -108,6 +108,22 @@ public class UIUtils
         return matcher.matches();
     }
 
+    public static void displayTitle(int titleId, ActionBarActivity activity)
+    {
+        displayTitle(activity, activity.getString(titleId));
+        ActionBar bar = activity.getSupportActionBar();
+        bar.setDisplayUseLogoEnabled(true);
+        bar.setLogo(R.drawable.ic_application_logo);
+    }
+
+    public static void displayTitle(int titleId, ActionBarActivity activity, boolean isUpEnable)
+    {
+        displayTitle(activity, activity.getString(titleId), isUpEnable);
+        ActionBar bar = activity.getSupportActionBar();
+        bar.setDisplayUseLogoEnabled(true);
+        bar.setLogo(R.drawable.ic_application_logo);
+    }
+
     public static void displayTitle(FragmentActivity activity, int titleId)
     {
         displayTitle(activity, activity.getString(titleId));
@@ -123,38 +139,30 @@ public class UIUtils
         displayTitle(activity, title, true);
     }
 
-    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     public static void displayTitle(FragmentActivity activity, String title, boolean isUpEnable)
     {
-        if (activity.getActionBar() != null)
+        if (activity instanceof ActionBarActivity)
         {
-            ActionBar bar = activity.getActionBar();
+            ActionBar bar = ((ActionBarActivity) activity).getSupportActionBar();
 
             bar.setDisplayShowTitleEnabled(false);
             bar.setDisplayShowCustomEnabled(true);
             bar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME);
-            bar.setDisplayOptions(ActionBar.DISPLAY_USE_LOGO, ActionBar.DISPLAY_USE_LOGO);
+            bar.setDisplayUseLogoEnabled(false);
             bar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-
-            if (AndroidVersion.isICSOrAbove())
-            {
-                bar.setHomeButtonEnabled(isUpEnable);
-            }
+            bar.setHomeButtonEnabled(isUpEnable);
 
             // If MenuFragment is visible => up is disable.
-            Fragment fr = activity.getSupportFragmentManager().findFragmentByTag(
-                    "org.alfresco.mobile.android.application.fragments.menu.MainMenuFragment");
+            Fragment fr = activity.getSupportFragmentManager()
+                    .findFragmentByTag("org.alfresco.mobile.android.application.fragments.menu.MainMenuFragment");
             if (fr != null && fr.isVisible())
             {
-                activity.getActionBar().setDisplayHomeAsUpEnabled(false);
-                if (AndroidVersion.isICSOrAbove())
-                {
-                    bar.setHomeButtonEnabled(false);
-                }
+                bar.setDisplayHomeAsUpEnabled(false);
+                bar.setHomeButtonEnabled(false);
             }
             else
             {
-                activity.getActionBar().setDisplayHomeAsUpEnabled(isUpEnable);
+                bar.setDisplayHomeAsUpEnabled(isUpEnable);
             }
 
             View v = bar.getCustomView();

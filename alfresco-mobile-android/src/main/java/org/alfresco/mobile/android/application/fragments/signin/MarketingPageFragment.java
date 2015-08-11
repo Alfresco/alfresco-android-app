@@ -67,8 +67,8 @@ public class MarketingPageFragment extends AlfrescoFragment
 
         // ((WelcomeActivity)
         // getActivity()).getPicasso().load(imageId).into((ImageView)
-        // viewById(R.id.image));
-        // ((TextView) viewById(R.id.text)).setText(textId);
+        // viewById(R.type.image));
+        // ((TextView) viewById(R.type.text)).setText(textId);
 
         return getRootView();
     }

@@ -132,7 +132,7 @@ public class AccountsAdapter extends BaseListAdapter<AlfrescoAccount, TwoLinesVi
                     case PROFILES_ITEM:
                     case NETWORK_ITEM:
                     case MANAGE_ITEM:
-                        defaultIcon = R.drawable.ic_settings_light;
+                        defaultIcon = R.drawable.ic_settings_dark;
                         vh.icon.setImageResource(defaultIcon);
                         break;
                     default:

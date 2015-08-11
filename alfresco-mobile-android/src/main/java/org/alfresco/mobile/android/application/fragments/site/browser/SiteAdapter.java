@@ -31,7 +31,6 @@ import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.site.SiteFavoriteRequest;
 import org.alfresco.mobile.android.async.site.member.SiteMembershipRequest;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
-import org.alfresco.mobile.android.platform.utils.AndroidVersion;
 import org.alfresco.mobile.android.ui.ListingModeFragment;
 import org.alfresco.mobile.android.ui.holder.TwoLinesViewHolder;
 import org.alfresco.mobile.android.ui.site.SitesFoundationAdapter;
@@ -102,17 +101,14 @@ public class SiteAdapter extends SitesFoundationAdapter implements OnMenuItemCli
                 PopupMenu popup = new PopupMenu(getContext(), v);
                 getMenu(popup.getMenu(), item);
 
-                if (AndroidVersion.isICSOrAbove())
+                popup.setOnDismissListener(new OnDismissListener()
                 {
-                    popup.setOnDismissListener(new OnDismissListener()
+                    @Override
+                    public void onDismiss(PopupMenu menu)
                     {
-                        @Override
-                        public void onDismiss(PopupMenu menu)
-                        {
-                            selectedOptionItems.clear();
-                        }
-                    });
-                }
+                        selectedOptionItems.clear();
+                    }
+                });
 
                 popup.setOnMenuItemClickListener(SiteAdapter.this);
 
@@ -140,8 +136,9 @@ public class SiteAdapter extends SitesFoundationAdapter implements OnMenuItemCli
         }
         else if (!SiteVisibility.PRIVATE.equals(site.getVisibility()) && !site.isPendingMember())
         {
-            menu.add(Menu.NONE, R.id.menu_site_join, Menu.FIRST + 1, (SiteVisibility.MODERATED.equals(site
-                    .getVisibility())) ? R.string.action_join_request_site : R.string.action_join_site);
+            menu.add(Menu.NONE, R.id.menu_site_join, Menu.FIRST + 1,
+                    (SiteVisibility.MODERATED.equals(site.getVisibility())) ? R.string.action_join_request_site
+                            : R.string.action_join_site);
         }
 
         if (site.isFavorite())
@@ -171,19 +168,19 @@ public class SiteAdapter extends SitesFoundationAdapter implements OnMenuItemCli
                 onMenuItemClick = true;
                 break;
             case R.id.menu_site_leave:
-                Operator.with(fragmentRef.get().getActivity()).load(
-                        new SiteMembershipRequest.Builder(selectedOptionItems.get(0), false));
+                Operator.with(fragmentRef.get().getActivity())
+                        .load(new SiteMembershipRequest.Builder(selectedOptionItems.get(0), false));
                 onMenuItemClick = true;
                 break;
             case R.id.menu_site_join:
-                Operator.with(fragmentRef.get().getActivity()).load(
-                        new SiteMembershipRequest.Builder(selectedOptionItems.get(0), true));
+                Operator.with(fragmentRef.get().getActivity())
+                        .load(new SiteMembershipRequest.Builder(selectedOptionItems.get(0), true));
                 onMenuItemClick = true;
                 break;
             case R.id.menu_site_favorite:
             case R.id.menu_site_unfavorite:
-                Operator.with(fragmentRef.get().getActivity()).load(
-                        new SiteFavoriteRequest.Builder(selectedOptionItems.get(0)));
+                Operator.with(fragmentRef.get().getActivity())
+                        .load(new SiteFavoriteRequest.Builder(selectedOptionItems.get(0)));
                 onMenuItemClick = true;
                 break;
             default:

@@ -22,6 +22,7 @@ import java.util.Map;
 import org.alfresco.mobile.android.api.model.Company;
 import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.configuration.model.view.UserProfileConfigModel;
 import org.alfresco.mobile.android.application.fragments.builder.LeafFragmentBuilder;
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.person.PersonEvent;
@@ -823,7 +824,7 @@ public class UserProfileFragment extends AlfrescoFragment implements OnMenuItemC
     {
         try
         {
-            Uri marketUri = Uri.parse("market://details?id=com.skype.raider");
+            Uri marketUri = Uri.parse("market://details?type=com.skype.raider");
             Intent myIntent = new Intent(Intent.ACTION_VIEW, marketUri);
             myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             if (myIntent.resolveActivity(myContext.getPackageManager()) == null)
@@ -862,9 +863,8 @@ public class UserProfileFragment extends AlfrescoFragment implements OnMenuItemC
         public Builder(FragmentActivity appActivity, Map<String, Object> configuration)
         {
             super(appActivity, configuration);
-            menuIconId = R.drawable.ic_person_dark;
-            menuTitleId = R.string.user_profile;
-            templateArguments = new String[] { ARGUMENT_USERNAME };
+            viewConfigModel = new UserProfileConfigModel(configuration);
+            templateArguments = new String[] { UserProfileConfigModel.ARGUMENT_USERNAME };
         }
 
         // ///////////////////////////////////////////////////////////////////////////

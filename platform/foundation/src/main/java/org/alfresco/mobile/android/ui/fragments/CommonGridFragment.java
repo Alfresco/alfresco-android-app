@@ -30,7 +30,6 @@ import org.alfresco.mobile.android.ui.GridFragment;
 import org.alfresco.mobile.android.ui.ListingModeFragment;
 import org.alfresco.mobile.android.ui.RefreshFragment;
 import org.alfresco.mobile.android.ui.template.ListingTemplate;
-import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -122,17 +121,11 @@ public abstract class CommonGridFragment extends AlfrescoFragment
 
     protected View footer;
 
-    protected int titleId = -1;
-
-    protected String mTitle = "";
-
     protected RefreshHelper refreshHelper;
 
     protected ListingContext originListing;
 
     protected ListingContext currentListing;
-
-    protected boolean enableTitle = false;
 
     protected BaseAdapter adapter;
 
@@ -257,16 +250,6 @@ public abstract class CommonGridFragment extends AlfrescoFragment
         setListShown(!(adapter == null));
     }
 
-    @Override
-    public void onResume()
-    {
-        super.onResume();
-        if (enableTitle)
-        {
-            UIUtils.displayTitle(getActivity(), onCreateTitle(mTitle));
-        }
-    }
-
     // /////////////////////////////////////////////////////////////
     // SESSION MANAGEMENT
     // ////////////////////////////////////////////////////////////
@@ -276,15 +259,6 @@ public abstract class CommonGridFragment extends AlfrescoFragment
         super.onSessionMissing();
         setListShown(true);
         gv.setEmptyView(ev);
-    }
-
-    // /////////////////////////////////////////////////////////////
-    // TITLE
-    // ////////////////////////////////////////////////////////////
-    /** Title is displayed during onResume. */
-    protected String onCreateTitle(String title)
-    {
-        return TextUtils.isEmpty(title) ? (titleId == -1) ? mTitle : getString(titleId) : title;
     }
 
     // /////////////////////////////////////////////////////////////

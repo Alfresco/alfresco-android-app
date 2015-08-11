@@ -70,7 +70,6 @@ public class ProcessesFragment extends ProcessesFoundationFragment
     public ProcessesFragment()
     {
         emptyListMessageId = R.string.empty_tasks;
-        enableTitle = false;
         loadState = LOAD_VISIBLE;
         setHasOptionsMenu(true);
     }

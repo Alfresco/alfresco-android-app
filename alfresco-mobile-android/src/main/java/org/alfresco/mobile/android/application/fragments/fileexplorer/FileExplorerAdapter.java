@@ -36,7 +36,6 @@ import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.mimetype.MimeTypeManager;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
-import org.alfresco.mobile.android.platform.utils.AndroidVersion;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.ListingModeFragment;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
@@ -65,8 +64,8 @@ import android.widget.PopupMenu.OnMenuItemClickListener;
  * 
  * @author Jean Marie Pascal
  */
-public class FileExplorerAdapter extends BaseListAdapter<File, TwoLinesProgressViewHolder> implements
-        OnMenuItemClickListener
+public class FileExplorerAdapter extends BaseListAdapter<File, TwoLinesProgressViewHolder>
+        implements OnMenuItemClickListener
 {
     private List<File> originalFiles;
 
@@ -99,8 +98,8 @@ public class FileExplorerAdapter extends BaseListAdapter<File, TwoLinesProgressV
         this.mode = mode;
         if (((BaseActivity) fr.getActivity()).getCurrentAccount() != null)
         {
-            File f = AlfrescoStorageManager.getInstance(fr.getActivity()).getDownloadFolder(
-                    ((BaseActivity) fr.getActivity()).getCurrentAccount());
+            File f = AlfrescoStorageManager.getInstance(fr.getActivity())
+                    .getDownloadFolder(((BaseActivity) fr.getActivity()).getCurrentAccount());
             this.downloadPath = (f != null) ? f.getPath() : null;
         }
         this.renditionManager = RenditionManagerImpl.getInstance(fr.getActivity());
@@ -161,8 +160,8 @@ public class FileExplorerAdapter extends BaseListAdapter<File, TwoLinesProgressV
     {
         if (item.isFile())
         {
-            Drawable drawable = getContext().getResources().getDrawable(
-                    MimeTypeManager.getInstance(getContext()).getIcon(item.getName()));
+            Drawable drawable = getContext().getResources()
+                    .getDrawable(MimeTypeManager.getInstance(getContext()).getIcon(item.getName()));
             renditionManager.getPicasso().load(item).placeholder(drawable).error(drawable).into(vh.icon);
             AccessibilityUtils.addContentDescription(vh.icon, R.string.mime_document);
         }
@@ -194,18 +193,14 @@ public class FileExplorerAdapter extends BaseListAdapter<File, TwoLinesProgressV
                     selectedOptionItems.add(item);
                     PopupMenu popup = new PopupMenu(getContext(), v);
                     getMenu(popup.getMenu(), item);
-
-                    if (AndroidVersion.isICSOrAbove())
+                    popup.setOnDismissListener(new OnDismissListener()
                     {
-                        popup.setOnDismissListener(new OnDismissListener()
+                        @Override
+                        public void onDismiss(PopupMenu menu)
                         {
-                            @Override
-                            public void onDismiss(PopupMenu menu)
-                            {
-                                selectedOptionItems.clear();
-                            }
-                        });
-                    }
+                            selectedOptionItems.clear();
+                        }
+                    });
 
                     popup.setOnMenuItemClickListener(FileExplorerAdapter.this);
 

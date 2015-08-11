@@ -49,7 +49,6 @@ public class ActivityStreamFragment extends BaseGridFragment implements Activity
     public ActivityStreamFragment()
     {
         emptyListMessageId = R.string.empty_actvity;
-        enableTitle = true;
     }
 
     // //////////////////////////////////////////////////////////////////////

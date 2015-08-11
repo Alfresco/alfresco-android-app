@@ -261,13 +261,13 @@
         <item name="android:textColor">@color/accent_text</item>
     </style>
 
-    <style name="AlfrescoMaterialTheme.AutoCompleteText" parent="Base.Widget.AppCompat.EditText">
+    <style name="AlfrescoMaterialTheme.EditText" parent="Widget.AppCompat.EditText">
         <item name="android:textAppearance">@style/TextAppearance.AppCompat.Body1</item>
     </style>
 
 
     <!-- ACTION BAR -->
-    <style name="AlfrescoMaterialTheme.Container"></style>
+    <style name="AlfrescoMaterialTheme.Container" />
 
     <style name="AlfrescoMaterialTheme.Container.Padding8">
         <item name="android:paddingLeft">@dimen/d_8</item>

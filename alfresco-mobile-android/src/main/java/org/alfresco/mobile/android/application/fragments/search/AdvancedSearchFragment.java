@@ -32,6 +32,7 @@ import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.configuration.model.view.AdvancedSearchConfigModel;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.node.search.DocumentFolderSearchFragment;
 import org.alfresco.mobile.android.application.fragments.user.UserPickerCallback;
@@ -71,7 +72,8 @@ import android.widget.TextView;
  * @since 1.4
  * @author Jean Marie Pascal
  */
-public class AdvancedSearchFragment extends AlfrescoFragment implements UserPickerCallback, onPickDateFragment
+public class AdvancedSearchFragment extends AlfrescoFragment
+        implements UserPickerCallback, onPickDateFragment, AdvancedSearchFragmentTemplate
 {
     public static final String TAG = AdvancedSearchFragment.class.getName();
 
@@ -79,17 +81,9 @@ public class AdvancedSearchFragment extends AlfrescoFragment implements UserPick
 
     private static final String DATE_TO = "dateTo";
 
-    private static final String ARGUMENT_SEARCH_TYPE = "type";
-
     private static final String ARGUMENT_SITE = "site";
 
     private static final String ARGUMENT_FOLDER = "parentFolder";
-
-    private static final String TYPE_FOLDER = "folder";
-
-    private static final String TYPE_DOCUMENT = "document";
-
-    private static final String TYPE_PEOPLE = "people";
 
     // ///////////////////////////////////////////////////////////////////////////
     // VARIABLES
@@ -706,6 +700,9 @@ public class AdvancedSearchFragment extends AlfrescoFragment implements UserPick
 
     public static class Builder extends AlfrescoFragmentBuilder
     {
+        public static final int ICON_ID = R.drawable.ic_search_dark;
+
+        public static final int LABEL_ID = R.string.search_advanced;
         // ///////////////////////////////////////////////////////////////////////////
         // CONSTRUCTORS
         // ///////////////////////////////////////////////////////////////////////////
@@ -718,8 +715,7 @@ public class AdvancedSearchFragment extends AlfrescoFragment implements UserPick
         public Builder(FragmentActivity appActivity, Map<String, Object> configuration)
         {
             super(appActivity, configuration);
-            menuIconId = R.drawable.ic_search_dark;
-            menuTitleId = R.string.search_advanced;
+            viewConfigModel = new AdvancedSearchConfigModel(configuration);
         }
 
         @Override
@@ -737,7 +733,7 @@ public class AdvancedSearchFragment extends AlfrescoFragment implements UserPick
                 {
                     searchType = HistorySearch.TYPE_DOCUMENT;
                 }
-                else if (TYPE_PEOPLE.equalsIgnoreCase(type))
+                else if (TYPE_PERSON.equalsIgnoreCase(type))
                 {
                     searchType = HistorySearch.TYPE_PERSON;
                 }

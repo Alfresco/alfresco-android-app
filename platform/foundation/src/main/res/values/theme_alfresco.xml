@@ -16,59 +16,17 @@
   ~    limitations under the License.
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <!-- =============================================================== -->
-    <!-- REFERENCE : ATTRIBUTES -->
-    <!-- =============================================================== -->
-    <attr name="MainTheme" format="reference" />
-    <attr name="MainTheme.Dialog" format="reference" />
-    <attr name="MainTheme.ActionBar.Primary" format="reference" />
-    <attr name="MainTheme.ActionBar.Secondary" format="reference" />
-    <attr name="MainTheme.Background" format="reference" />
-    <attr name="MainTheme.Background.White" format="reference" />
-    <attr name="MainTheme.Background.Logo" format="reference" />
-    <attr name="MainTheme.Background.Light" format="reference" />
-    <attr name="MainTheme.Background.GreyGradient" format="reference" />
-    <attr name="MainTheme.Button" format="reference" />
-    <attr name="MainTheme.Button.Large" format="reference" />
-    <attr name="MainTheme.TextView" format="reference" />
-    <attr name="MainTheme.TextView.Primary" format="reference" />
-    <attr name="MainTheme.TextView.Primary.Task" format="reference" />
-    <attr name="MainTheme.TextView.Secondary" format="reference" />
-    <attr name="MainTheme.TextView.SecondaryBold" format="reference" />
-    <attr name="MainTheme.TextView.MenuItem" format="reference" />
-    <attr name="MainTheme.TextView.ListItem" format="reference" />
-    <attr name="MainTheme.TextView.ListItem.Primary" format="reference" />
-    <attr name="MainTheme.TextView.ListItem.Secondary" format="reference" />
-    <attr name="MainTheme.TextView.GridItem" format="reference" />
-    <attr name="MainTheme.TextView.GridItem.Primary" format="reference" />
-    <attr name="MainTheme.TextView.GridItem.Secondary" format="reference" />
-    <attr name="MainTheme.TextView.SearchHeader" format="reference" />
-    <attr name="MainTheme.TextView.SectionHeader" format="reference" />
-    <attr name="MainTheme.TextView.SectionHeader.Grey" format="reference" />
-    <attr name="MainTheme.TextView.SectionHeader.Grey.Thin" format="reference" />
-    <attr name="MainTheme.TextView.SectionHeader.Primary" format="reference" />
-    <attr name="MainTheme.ImageView" format="reference" />
-    <attr name="MainTheme.ImageView.ActionIcon" format="reference" />
-    <attr name="MainTheme.ImageView.ActionIcon.Fixed" format="reference" />
-    <attr name="MainTheme.ImageView.Thumbnail" format="reference" />
-    <attr name="MainTheme.ImageView.Thumbnail.Large" format="reference" />
-    <attr name="MainTheme.ImageView.Thumbnail.QuickContact" format="reference" />
-    <attr name="MainTheme.PasscodeButton" format="reference" />
-    <attr name="MainTheme.PasscodeInput" format="reference" />
-    <attr name="MainTheme.Progress" format="reference" />
-    <attr name="MainTheme.Progress.Horizontal" format="reference" />
-
     <!-- =============================================================== -->
     <!-- REFERENCE : THEME -->
     <!-- =============================================================== -->
-    <style name="AlfrescoBaseTheme" parent="AlfrescoHoloLight" />
+    <style name="AlfrescoBaseTheme" parent="AlfrescoAppcompatLight" />
 
     <!-- =============================================================== -->
     <!-- DEFAULT THEME -->
     <!-- =============================================================== -->
     <style name="AlfrescoHoloTheme" parent="AlfrescoBaseTheme">
         <item name="MainTheme">@style/AlfrescoHoloTheme</item>
+        <item name="actionBarStyle">@style/AlfrescoHoloTheme.ActionBar</item>
         <item name="android:actionBarStyle">@style/AlfrescoHoloTheme.ActionBar</item>
         <item name="android:fastScrollTrackDrawable">@null</item>
         <item name="MainTheme.ActionBar.Primary">@style/AlfrescoHoloTheme.ActionBar.Primary</item>
@@ -147,7 +105,7 @@
     <!-- ========= -->
     <!-- ACTIONBAR -->
     <!-- ========= -->
-    <style name="AlfrescoHoloTheme.ActionBar" parent="ActionBar.Solid.Alfrescohololight" />
+    <style name="AlfrescoHoloTheme.ActionBar" parent="ActionBar.Solid.AlfrescoAppcompatLight" />
 
     <style name="AlfrescoHoloTheme.ActionBar.Primary">
         <item name="android:background">@null</item>

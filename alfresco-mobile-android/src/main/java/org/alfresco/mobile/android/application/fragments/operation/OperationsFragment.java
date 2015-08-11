@@ -59,7 +59,6 @@ public class OperationsFragment extends BaseCursorGridFragment
     public OperationsFragment()
     {
         emptyListMessageId = R.string.operations_empty;
-        titleId = R.string.operation_default;
         requiredSession = false;
         checkSession = false;
         displayAsList = true;
@@ -68,6 +67,12 @@ public class OperationsFragment extends BaseCursorGridFragment
     // /////////////////////////////////////////////////////////////
     // LIFECYCLE
     // ////////////////////////////////////////////////////////////
+    @Override
+    public String onPrepareTitle()
+    {
+        return getString(R.string.operation_default);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {

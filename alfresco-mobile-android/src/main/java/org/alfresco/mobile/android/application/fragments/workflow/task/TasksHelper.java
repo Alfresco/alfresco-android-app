@@ -26,10 +26,10 @@ import org.alfresco.mobile.android.api.services.impl.publicapi.PublicAPIWorkflow
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.workflow.process.ProcessesFragment;
 
-import android.app.ActionBar;
-import android.app.ActionBar.OnNavigationListener;
 import android.content.SharedPreferences;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 
 public final class TasksHelper
 {
@@ -53,10 +53,11 @@ public final class TasksHelper
 
     public static void displayNavigationMode(final FragmentActivity activity, final boolean backStack, int menuId)
     {
-        activity.getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+        ActionBar bar = ((ActionBarActivity) activity).getSupportActionBar();
+        bar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
         TasksShortCutAdapter adapter = new TasksShortCutAdapter(activity);
 
-        OnNavigationListener mOnNavigationListener = new OnNavigationListener()
+        ActionBar.OnNavigationListener mOnNavigationListener = new ActionBar.OnNavigationListener()
         {
             @Override
             public boolean onNavigationItemSelected(int itemPosition, long itemId)
@@ -121,8 +122,8 @@ public final class TasksHelper
                 return true;
             }
         };
-        activity.getActionBar().setListNavigationCallbacks(adapter, mOnNavigationListener);
-        activity.getActionBar().setSelectedNavigationItem(menuId);
+        bar.setListNavigationCallbacks(adapter, mOnNavigationListener);
+        bar.setSelectedNavigationItem(menuId);
     }
 
     public static ListingFilter createFilter(Collection<Integer> selectedItems)

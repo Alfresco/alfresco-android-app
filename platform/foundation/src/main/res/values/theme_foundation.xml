@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~    Copyright (C) 2005-2015 Alfresco Software Limited.
+  ~
+  ~    This file is part of Alfresco Mobile for Android.
+  ~
+  ~    Licensed under the Apache License, Version 2.0 (the "License");
+  ~    you may not use this file except in compliance with the License.
+  ~    You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~    Unless required by applicable law or agreed to in writing, software
+  ~    distributed under the License is distributed on an "AS IS" BASIS,
+  ~    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~    See the License for the specific language governing permissions and
+  ~    limitations under the License.
+-->
+<resources>
+    <!-- =============================================================== -->
+    <!-- REFERENCE : ATTRIBUTES -->
+    <!-- =============================================================== -->
+    <attr name="MainTheme" format="reference" />
+    <attr name="MainTheme.Dialog" format="reference" />
+    <attr name="MainTheme.ActionBar.Primary" format="reference" />
+    <attr name="MainTheme.ActionBar.Secondary" format="reference" />
+    <attr name="MainTheme.Background" format="reference" />
+    <attr name="MainTheme.Background.White" format="reference" />
+    <attr name="MainTheme.Background.Logo" format="reference" />
+    <attr name="MainTheme.Background.Light" format="reference" />
+    <attr name="MainTheme.Background.GreyGradient" format="reference" />
+    <attr name="MainTheme.Button" format="reference" />
+    <attr name="MainTheme.Button.Large" format="reference" />
+    <attr name="MainTheme.TextView" format="reference" />
+    <attr name="MainTheme.TextView.Primary" format="reference" />
+    <attr name="MainTheme.TextView.Primary.Task" format="reference" />
+    <attr name="MainTheme.TextView.Secondary" format="reference" />
+    <attr name="MainTheme.TextView.SecondaryBold" format="reference" />
+    <attr name="MainTheme.TextView.MenuItem" format="reference" />
+    <attr name="MainTheme.TextView.ListItem" format="reference" />
+    <attr name="MainTheme.TextView.ListItem.Primary" format="reference" />
+    <attr name="MainTheme.TextView.ListItem.Secondary" format="reference" />
+    <attr name="MainTheme.TextView.GridItem" format="reference" />
+    <attr name="MainTheme.TextView.GridItem.Primary" format="reference" />
+    <attr name="MainTheme.TextView.GridItem.Secondary" format="reference" />
+    <attr name="MainTheme.TextView.SearchHeader" format="reference" />
+    <attr name="MainTheme.TextView.SectionHeader" format="reference" />
+    <attr name="MainTheme.TextView.SectionHeader.Grey" format="reference" />
+    <attr name="MainTheme.TextView.SectionHeader.Grey.Thin" format="reference" />
+    <attr name="MainTheme.TextView.SectionHeader.Primary" format="reference" />
+    <attr name="MainTheme.ImageView" format="reference" />
+    <attr name="MainTheme.ImageView.ActionIcon" format="reference" />
+    <attr name="MainTheme.ImageView.ActionIcon.Fixed" format="reference" />
+    <attr name="MainTheme.ImageView.Thumbnail" format="reference" />
+    <attr name="MainTheme.ImageView.Thumbnail.Large" format="reference" />
+    <attr name="MainTheme.ImageView.Thumbnail.QuickContact" format="reference" />
+    <attr name="MainTheme.PasscodeButton" format="reference" />
+    <attr name="MainTheme.PasscodeInput" format="reference" />
+    <attr name="MainTheme.Progress" format="reference" />
+    <attr name="MainTheme.Progress.Horizontal" format="reference" />
+</resources>

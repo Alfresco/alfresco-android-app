@@ -36,7 +36,6 @@ import org.alfresco.mobile.android.ui.fragments.WaitingDialogFragment;
 import org.alfresco.mobile.android.ui.operation.OperationWaitingDialogFragment;
 import org.alfresco.mobile.android.ui.rendition.RenditionManager;
 
-import android.app.ActionBar;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -46,6 +45,8 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 
 import com.mattprecious.telescope.EmailDeviceInfoLens;
 import com.mattprecious.telescope.TelescopeLayout;
@@ -55,7 +56,7 @@ import com.mattprecious.telescope.TelescopeLayout;
  * 
  * @author Jean Marie Pascal
  */
-public abstract class AlfrescoActivity extends FragmentActivity
+public abstract class AlfrescoActivity extends ActionBarActivity
 {
     protected LocalBroadcastManager broadcastManager;
 
@@ -247,7 +248,7 @@ public abstract class AlfrescoActivity extends FragmentActivity
 
     public ActionBar getAppActionBar()
     {
-        return getActionBar();
+        return getSupportActionBar();
     }
 
     // ////////////////////////////////////////////////////////

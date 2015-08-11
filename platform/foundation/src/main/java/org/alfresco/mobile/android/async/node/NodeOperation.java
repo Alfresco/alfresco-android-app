@@ -21,6 +21,7 @@ import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.impl.publicapi.PublicAPINodeImpl;
+import org.alfresco.mobile.android.api.session.impl.RepositorySessionImpl;
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.async.LoaderResult;
 import org.alfresco.mobile.android.async.OperationAction;
@@ -77,6 +78,10 @@ public abstract class NodeOperation<T> extends BaseOperation<T>
             {
                 nodeIdentifier = NodeRefUtils.createNodeRefByIdentifier(node.getIdentifier());
                 node = null;
+            }
+            else if (NodeRefUtils.isIdentifier(nodeIdentifier) && session instanceof RepositorySessionImpl)
+            {
+                nodeIdentifier = NodeRefUtils.createNodeRefByIdentifier(nodeIdentifier);
             }
 
             if (parentFolder != null && parentFolder instanceof PublicAPINodeImpl)

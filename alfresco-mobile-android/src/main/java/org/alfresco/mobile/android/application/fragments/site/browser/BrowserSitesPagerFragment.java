@@ -22,6 +22,8 @@ import java.util.Map;
 
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.activity.PublicDispatcherActivity;
+import org.alfresco.mobile.android.application.configuration.model.view.SiteBrowserConfigModel;
 import org.alfresco.mobile.android.application.fragments.builder.ListingFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.site.search.SearchSitesFragment;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
@@ -81,6 +83,17 @@ public class BrowserSitesPagerFragment extends AlfrescoFragment
         return v;
     }
 
+    @Override
+    public String onPrepareTitle()
+    {
+        title = getString(R.string.menu_browse_sites);
+        if (getActivity() instanceof PublicDispatcherActivity)
+        {
+            title = getString(R.string.import_document_title);
+        }
+        return title;
+    }
+
     // ///////////////////////////////////////////////////////////////////////////
     // BUILDER
     // ///////////////////////////////////////////////////////////////////////////
@@ -91,10 +104,6 @@ public class BrowserSitesPagerFragment extends AlfrescoFragment
 
     public static class Builder extends ListingFragmentBuilder
     {
-        public static final int ICON_ID = R.drawable.ic_site_dark;
-
-        public static final int LABEL_ID = R.string.menu_browse_sites;
-
         // ///////////////////////////////////////////////////////////////////////////
         // CONSTRUCTORS
         // ///////////////////////////////////////////////////////////////////////////
@@ -108,8 +117,8 @@ public class BrowserSitesPagerFragment extends AlfrescoFragment
         {
             super(appActivity, configuration);
             this.extraConfiguration = new Bundle();
-            menuIconId = ICON_ID;
-            menuTitleId = LABEL_ID;
+            viewConfigModel = new SiteBrowserConfigModel(configuration);
+            // TODO Used ?
             templateArguments = new String[] { SitesTemplate.ARGUMENT_SHOW };
         }
 

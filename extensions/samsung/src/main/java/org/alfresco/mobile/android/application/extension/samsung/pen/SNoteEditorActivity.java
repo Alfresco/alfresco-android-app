@@ -42,6 +42,7 @@ import android.graphics.RectF;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.ActionBarActivity;
 import android.text.Html;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -82,7 +83,7 @@ import com.samsung.android.sdk.pen.settingui.SpenSettingPenLayout;
 import com.samsung.android.sdk.pen.settingui.SpenSettingSelectionLayout;
 import com.samsung.android.sdk.pen.settingui.SpenSettingTextLayout;
 
-public class SNoteEditorActivity extends FragmentActivity
+public class SNoteEditorActivity extends ActionBarActivity
 {
     protected static final String TAG = SNoteEditorActivity.class.getName();
 
@@ -281,7 +282,7 @@ public class SNoteEditorActivity extends FragmentActivity
     @Override
     protected void onStart()
     {
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         super.onStart();
     }
 

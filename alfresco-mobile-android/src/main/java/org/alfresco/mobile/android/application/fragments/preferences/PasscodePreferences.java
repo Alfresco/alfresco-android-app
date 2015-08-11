@@ -116,12 +116,15 @@ public class PasscodePreferences extends AlfrescoFragment
     // LIFE CYCLE
     // ///////////////////////////////////////////////////////////////////////////
     @Override
+    public String onPrepareTitle()
+    {
+        return getString(R.string.settings);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         setRootView(inflater.inflate(R.layout.fr_settings_passcode, container, false));
-
-        // TITLE
-        getActivity().setTitle(R.string.settings);
 
         timeOutValues = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.passcode_timeout_values)));
 

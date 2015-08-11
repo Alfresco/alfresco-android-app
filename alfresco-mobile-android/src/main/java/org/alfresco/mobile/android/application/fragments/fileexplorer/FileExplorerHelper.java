@@ -25,13 +25,13 @@ import org.alfresco.mobile.android.application.intent.RequestCode;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 
-import android.app.ActionBar;
-import android.app.ActionBar.OnNavigationListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 
 public final class FileExplorerHelper
 {
@@ -47,10 +47,12 @@ public final class FileExplorerHelper
     public static void displayNavigationMode(final FragmentActivity activity, final int mode, final boolean backStack,
             int menuId)
     {
-        activity.getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+        ActionBar bar = ((ActionBarActivity) activity).getSupportActionBar();
+        bar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+
         ShortCutFolderMenuAdapter adapter = new ShortCutFolderMenuAdapter(activity);
 
-        OnNavigationListener mOnNavigationListener = new OnNavigationListener()
+        ActionBar.OnNavigationListener mOnNavigationListener = new ActionBar.OnNavigationListener()
         {
             @Override
             public boolean onNavigationItemSelected(int itemPosition, long itemId)
@@ -111,8 +113,8 @@ public final class FileExplorerHelper
                 }
                 else if (currentLocation != null)
                 {
-                    FileExplorerFragment.with(activity).file(currentLocation).mode(mode).isShortCut(true)
-                            .menuId(itemPosition).display();
+                    FileExplorerFragment.with(activity).menuId(itemPosition).isShortCut(true).file(currentLocation)
+                            .mode(mode).display();
                 }
                 else if (mediatype >= 0)
                 {
@@ -125,7 +127,7 @@ public final class FileExplorerHelper
             }
 
         };
-        activity.getActionBar().setListNavigationCallbacks(adapter, mOnNavigationListener);
-        activity.getActionBar().setSelectedNavigationItem(menuId);
+        bar.setListNavigationCallbacks(adapter, mOnNavigationListener);
+        bar.setSelectedNavigationItem(menuId);
     }
 }

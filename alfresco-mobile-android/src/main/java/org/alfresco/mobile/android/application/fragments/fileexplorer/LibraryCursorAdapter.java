@@ -30,7 +30,6 @@ import org.alfresco.mobile.android.application.managers.ActionUtils;
 import org.alfresco.mobile.android.application.managers.RenditionManagerImpl;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.mimetype.MimeTypeManager;
-import org.alfresco.mobile.android.platform.utils.AndroidVersion;
 import org.alfresco.mobile.android.ui.ListingModeFragment;
 import org.alfresco.mobile.android.ui.fragments.BaseCursorLoader;
 import org.alfresco.mobile.android.ui.holder.HolderUtils;
@@ -58,7 +57,7 @@ import android.widget.RelativeLayout;
  * @since 1.3
  * @author Jean Marie Pascal
  */
-public class LibraryCursorAdapter extends BaseCursorLoader<TwoLinesViewHolder> implements OnMenuItemClickListener
+public class LibraryCursorAdapter extends BaseCursorLoader<TwoLinesViewHolder>implements OnMenuItemClickListener
 {
     private List<File> selectedItems;
 
@@ -76,14 +75,15 @@ public class LibraryCursorAdapter extends BaseCursorLoader<TwoLinesViewHolder> i
 
     private RenditionManagerImpl renditionManager;
 
-    public LibraryCursorAdapter(Fragment fr, Cursor c, int layoutId, List<File> selectedItems, int mediaTypeId, int mode)
+    public LibraryCursorAdapter(Fragment fr, Cursor c, int layoutId, List<File> selectedItems, int mediaTypeId,
+            int mode)
     {
         super(fr.getActivity(), c, layoutId);
         this.fragmentRef = new WeakReference<Fragment>(fr);
         this.selectedItems = selectedItems;
         this.sdcardPath = Environment.getExternalStorageDirectory().getPath();
-        File f = AlfrescoStorageManager.getInstance(context).getDownloadFolder(
-                ((BaseActivity) fr.getActivity()).getCurrentAccount());
+        File f = AlfrescoStorageManager.getInstance(context)
+                .getDownloadFolder(((BaseActivity) fr.getActivity()).getCurrentAccount());
         this.downloadPath = (f != null) ? f.getPath() : sdcardPath;
         this.mediaTypeId = mediaTypeId;
         this.mode = mode;
@@ -157,8 +157,8 @@ public class LibraryCursorAdapter extends BaseCursorLoader<TwoLinesViewHolder> i
         {
             case MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE:
                 vh.icon.setImageResource(R.drawable.mime_img);
-                renditionManager.getPicasso().load(f).resize(150, 150).centerCrop()
-                        .placeholder(R.drawable.mime_256_img).error(R.drawable.mime_256_img).into(vh.icon);
+                renditionManager.getPicasso().load(f).resize(150, 150).centerCrop().placeholder(R.drawable.mime_256_img)
+                        .error(R.drawable.mime_256_img).into(vh.icon);
                 break;
             case MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO:
                 vh.icon.setImageResource(R.drawable.mime_video);
@@ -191,18 +191,14 @@ public class LibraryCursorAdapter extends BaseCursorLoader<TwoLinesViewHolder> i
                     selectedOptionItems.add(item);
                     PopupMenu popup = new PopupMenu(context, v);
                     getMenu(popup.getMenu(), item);
-
-                    if (AndroidVersion.isICSOrAbove())
+                    popup.setOnDismissListener(new OnDismissListener()
                     {
-                        popup.setOnDismissListener(new OnDismissListener()
+                        @Override
+                        public void onDismiss(PopupMenu menu)
                         {
-                            @Override
-                            public void onDismiss(PopupMenu menu)
-                            {
-                                selectedOptionItems.clear();
-                            }
-                        });
-                    }
+                            selectedOptionItems.clear();
+                        }
+                    });
 
                     popup.setOnMenuItemClickListener(LibraryCursorAdapter.this);
 

@@ -21,6 +21,7 @@ import java.util.Map;
 
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.configuration.model.view.SitesConfigModel;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.builder.ListingFragmentBuilder;
 import org.alfresco.mobile.android.async.OperationRequest;
@@ -31,7 +32,6 @@ import org.alfresco.mobile.android.async.site.member.SiteMembershipEvent;
 import org.alfresco.mobile.android.async.site.search.SiteSearchEvent;
 import org.alfresco.mobile.android.async.site.search.SiteSearchRequest;
 import org.alfresco.mobile.android.platform.utils.BundleUtils;
-import org.alfresco.mobile.android.ui.utils.UIUtils;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 
 import android.os.Bundle;
@@ -131,13 +131,13 @@ public class SitesFragment extends CommonBrowserSitesFragment
     }
 
     @Override
-    public void onResume()
+    public String onPrepareTitle()
     {
-        super.onResume();
         if (keywords != null)
         {
-            UIUtils.displayTitle(getActivity(), String.format(getString(R.string.search_title), keywords));
+ return String.format(getString(R.string.search_title), keywords);
         }
+        return super.onPrepareTitle();
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -197,7 +197,6 @@ public class SitesFragment extends CommonBrowserSitesFragment
 
     public static class Builder extends ListingFragmentBuilder
     {
-
         // ///////////////////////////////////////////////////////////////////////////
         // CONSTRUCTORS & HELPERS
         // ///////////////////////////////////////////////////////////////////////////
@@ -210,8 +209,7 @@ public class SitesFragment extends CommonBrowserSitesFragment
         public Builder(FragmentActivity activity, Map<String, Object> configuration)
         {
             super(activity, configuration);
-            menuIconId = R.drawable.ic_site_dark;
-            menuTitleId = R.string.menu_browse_sites;
+            viewConfigModel = new SitesConfigModel(configuration);
         }
 
         @Override

@@ -26,6 +26,7 @@ import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.ListingFilter;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.configuration.model.view.FavoritesConfigModel;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.actions.AbstractActions;
@@ -40,7 +41,6 @@ import org.alfresco.mobile.android.async.node.favorite.FavoriteNodesEvent;
 import org.alfresco.mobile.android.ui.ListingModeFragment;
 import org.alfresco.mobile.android.ui.node.favorite.FavoritesNodeFragment;
 import org.alfresco.mobile.android.ui.template.ListingTemplate;
-import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -81,10 +81,9 @@ public class FavoritesFragment extends FavoritesNodeFragment
     // LIFECYCLE
     // ///////////////////////////////////////////////////////////////////////////
     @Override
-    public void onResume()
+    public String onPrepareTitle()
     {
-        super.onResume();
-        UIUtils.displayTitle(getActivity(), R.string.menu_favorites);
+        return getString(R.string.menu_favorites);
     }
 
     @Override
@@ -270,10 +269,6 @@ public class FavoritesFragment extends FavoritesNodeFragment
 
     public static class Builder extends ListingFragmentBuilder
     {
-        public static final int ICON_ID = R.drawable.ic_favorite_dark;
-
-        public static final int LABEL_ID = R.string.menu_favorites;
-
         // ///////////////////////////////////////////////////////////////////////////
         // CONSTRUCTORS & HELPERS
         // ///////////////////////////////////////////////////////////////////////////
@@ -285,9 +280,7 @@ public class FavoritesFragment extends FavoritesNodeFragment
         public Builder(FragmentActivity appActivity, Map<String, Object> configuration)
         {
             super(appActivity, configuration);
-
-            menuIconId = ICON_ID;
-            menuTitleId = LABEL_ID;
+            viewConfigModel = new FavoritesConfigModel(configuration);
             templateArguments = new String[] { FILTER_KEY_MODE };
         }
 

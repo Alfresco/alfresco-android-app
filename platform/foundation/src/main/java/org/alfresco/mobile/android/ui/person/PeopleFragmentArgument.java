@@ -20,7 +20,7 @@ package org.alfresco.mobile.android.ui.person;
 import org.alfresco.mobile.android.api.model.config.ConfigConstants;
 import org.alfresco.mobile.android.ui.template.ListingTemplate;
 
-public interface PeopleTemplate extends ListingTemplate
+public interface PeopleFragmentArgument extends ListingTemplate
 {
     String ARGUMENT_SITE_SHORTNAME = ConfigConstants.SITE_SHORTNAME_VALUE;
 

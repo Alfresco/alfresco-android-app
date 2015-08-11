@@ -44,7 +44,6 @@ import org.alfresco.mobile.android.platform.favorite.FavoritesSchema;
 import org.alfresco.mobile.android.platform.mimetype.MimeTypeManager;
 import org.alfresco.mobile.android.platform.provider.CursorUtils;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
-import org.alfresco.mobile.android.platform.utils.AndroidVersion;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.sync.SyncContentManager;
 import org.alfresco.mobile.android.sync.SyncContentProvider;
@@ -77,8 +76,8 @@ import android.widget.ProgressBar;
  * @since 1.2
  * @author Jean Marie Pascal
  */
-public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.LoaderCallbacks<Cursor>,
-        OnMenuItemClickListener
+public class ProgressNodeAdapter extends NodeAdapter
+        implements LoaderManager.LoaderCallbacks<Cursor>, OnMenuItemClickListener
 {
     private static final String TAG = ProgressNodeAdapter.class.getName();
 
@@ -120,8 +119,8 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
         super(context, textViewResourceId, listItems);
     }
 
-    public ProgressNodeAdapter(FragmentActivity activity, int textViewResourceId, Node parentNode,
-            List<Node> listItems, Map<String, Node> selectedItems)
+    public ProgressNodeAdapter(FragmentActivity activity, int textViewResourceId, Node parentNode, List<Node> listItems,
+            Map<String, Node> selectedItems)
     {
         super(activity, textViewResourceId, listItems, selectedItems);
         vhClassName = TwoLinesProgressViewHolder.class.getCanonicalName();
@@ -171,7 +170,8 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
 
                     if (percentage == MAX_PROGRESS)
                     {
-                        if ((Integer) item.getPropertyValue(PublicAPIPropertyIds.REQUEST_TYPE) == DownloadRequest.TYPE_ID)
+                        if ((Integer) item
+                                .getPropertyValue(PublicAPIPropertyIds.REQUEST_TYPE) == DownloadRequest.TYPE_ID)
                         {
                             progressView.setVisibility(View.GONE);
                             super.updateTopText(vh, item);
@@ -349,17 +349,14 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
                     PopupMenu popup = new PopupMenu(getActivity(), v);
                     getMenu(popup.getMenu(), item);
 
-                    if (AndroidVersion.isICSOrAbove())
+                    popup.setOnDismissListener(new OnDismissListener()
                     {
-                        popup.setOnDismissListener(new OnDismissListener()
+                        @Override
+                        public void onDismiss(PopupMenu menu)
                         {
-                            @Override
-                            public void onDismiss(PopupMenu menu)
-                            {
-                                selectedOptionItems.clear();
-                            }
-                        });
-                    }
+                            selectedOptionItems.clear();
+                        }
+                    });
 
                     popup.setOnMenuItemClickListener(ProgressNodeAdapter.this);
 
@@ -383,16 +380,14 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
         {
             case LOADER_OPERATION_ID:
                 return new CursorLoader(getActivity(), OperationsContentProvider.CONTENT_URI,
-                        OperationSchema.COLUMN_ALL, OperationSchema.COLUMN_PARENT_ID + "=\""
-                                + parentNode.getIdentifier() + "\" AND " + OperationSchema.COLUMN_REQUEST_TYPE + " IN("
-                                + CreateDocumentRequest.TYPE_ID + " , " + DownloadRequest.TYPE_ID + " , "
-                                + UpdateContentRequest.TYPE_ID + ")", null, null);
+                        OperationSchema.COLUMN_ALL,
+                        OperationSchema.COLUMN_PARENT_ID + "=\"" + parentNode.getIdentifier() + "\" AND "
+                                + OperationSchema.COLUMN_REQUEST_TYPE + " IN(" + CreateDocumentRequest.TYPE_ID + " , "
+                                + DownloadRequest.TYPE_ID + " , " + UpdateContentRequest.TYPE_ID + ")",
+                        null, null);
 
             case LOADER_SYNC_ID:
-                return new CursorLoader(
-                        getActivity(),
-                        SyncContentProvider.CONTENT_URI,
-                        SyncContentSchema.COLUMN_ALL,
+                return new CursorLoader(getActivity(), SyncContentProvider.CONTENT_URI, SyncContentSchema.COLUMN_ALL,
                         SyncContentSchema.COLUMN_PARENT_ID + " =\"" + parentNode.getIdentifier() + "\" AND "
                                 + SyncContentSchema.COLUMN_STATUS + " NOT IN (" + SyncContentStatus.STATUS_HIDDEN + ")",
                         null, null);
@@ -439,8 +434,8 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
                 {
                     while (cursor.moveToNext())
                     {
-                        favoritesNodeIndex.add(NodeRefUtils.getCleanIdentifier(cursor
-                                .getString(FavoritesSchema.COLUMN_NODE_ID_ID)));
+                        favoritesNodeIndex.add(
+                                NodeRefUtils.getCleanIdentifier(cursor.getString(FavoritesSchema.COLUMN_NODE_ID_ID)));
                     }
                 }
                 notifyDataSetChanged();
@@ -575,8 +570,8 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
                 break;
             case R.id.menu_action_delete_folder:
                 onMenuItemClick = true;
-                Fragment fr = getActivity().getSupportFragmentManager().findFragmentByTag(
-                        DocumentFolderBrowserFragment.TAG);
+                Fragment fr = getActivity().getSupportFragmentManager()
+                        .findFragmentByTag(DocumentFolderBrowserFragment.TAG);
                 NodeActions.delete(getActivity(), fr, selectedOptionItems.get(0));
                 break;
             default:

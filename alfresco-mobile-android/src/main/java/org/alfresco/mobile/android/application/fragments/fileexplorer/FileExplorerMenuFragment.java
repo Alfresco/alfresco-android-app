@@ -24,6 +24,7 @@ import java.util.Map;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.BaseActivity;
+import org.alfresco.mobile.android.application.configuration.model.view.LocalConfigModel;
 import org.alfresco.mobile.android.application.fragments.MenuFragmentHelper;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
@@ -63,6 +64,12 @@ public class FileExplorerMenuFragment extends AlfrescoFragment
     // LIFECYCLE
     // ///////////////////////////////////////////////////////////////////////////
     @Override
+    public String onPrepareTitle()
+    {
+        return getString(R.string.menu_local_files);
+    }
+
+    @Override
     public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
@@ -76,13 +83,6 @@ public class FileExplorerMenuFragment extends AlfrescoFragment
         initClickListener(rootView);
 
         return rootView;
-    }
-
-    @Override
-    public void onResume()
-    {
-        UIUtils.displayTitle(getActivity(), getString(R.string.menu_local_files));
-        super.onResume();
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -204,8 +204,7 @@ public class FileExplorerMenuFragment extends AlfrescoFragment
         {
             super(appActivity, configuration);
             sessionRequired = false;
-            menuIconId = R.drawable.ic_local_files_dark;
-            menuTitleId = R.string.menu_local_files;
+            viewConfigModel = new LocalConfigModel(configuration);
             templateArguments = new String[] {};
         }
 

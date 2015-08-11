@@ -90,6 +90,12 @@ public class LibraryFragment extends BaseCursorGridFragment
     // LIFECYCLE
     // ///////////////////////////////////////////////////////////////////////////
     @Override
+    public String onPrepareTitle()
+    {
+        return getString(R.string.menu_local_files);
+    }
+
+    @Override
     public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);

@@ -98,7 +98,7 @@ public class PublicDispatcherActivity extends BaseActivity
             if (getIntent().hasExtra(PrivateIntent.EXTRA_FOLDER))
             {
                 f = (File) getIntent().getExtras().getSerializable(PrivateIntent.EXTRA_FOLDER);
-                FileExplorerFragment.with(this).file(f).mode(ListingModeFragment.MODE_PICK).isShortCut(true).menuId(1)
+                FileExplorerFragment.with(this).menuId(1).file(f).isShortCut(true).mode(ListingModeFragment.MODE_PICK)
                         .display();
             }
         }

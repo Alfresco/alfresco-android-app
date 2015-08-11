@@ -116,8 +116,8 @@ public class WelcomeFragment extends AlfrescoFragment
             // TODO Uncomment with marketing material
             /*
              * CircleIndicator defaultIndicator = (CircleIndicator)
-             * viewById(R.id.welcome_pager_indicator); mPager = (ViewPager)
-             * viewById(R.id.welcome_pager); mPagerAdapter = new
+             * viewById(R.type.welcome_pager_indicator); mPager = (ViewPager)
+             * viewById(R.type.welcome_pager); mPagerAdapter = new
              * ScreenSlidePagerAdapter(getFragmentManager());
              * mPager.setAdapter(mPagerAdapter);
              * defaultIndicator.setViewPager(mPager);

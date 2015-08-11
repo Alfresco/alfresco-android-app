@@ -36,6 +36,7 @@ import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.activity.PrivateDialogActivity;
 import org.alfresco.mobile.android.application.activity.PublicDispatcherActivity;
+import org.alfresco.mobile.android.application.configuration.model.view.RepositoryConfigModel;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.GridAdapterHelper;
@@ -92,14 +93,13 @@ import org.alfresco.mobile.android.ui.operation.OperationWaitingDialogFragment;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 
-import android.app.ActionBar;
-import android.app.ActionBar.OnNavigationListener;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -360,7 +360,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
             createFile(tmpFile);
         }
 
-        if (getActivity().getActionBar() != null)
+        if (getActionBar() != null)
         {
             getActionBar().setDisplayHomeAsUpEnabled(true);
             getActionBar().setDisplayShowCustomEnabled(false);
@@ -410,7 +410,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
         // /QUICK PATH
         if (parentFolder != null && getActionBar() != null)
         {
-            //
+            getActionBar().setDisplayUseLogoEnabled(false);
             getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
             String pathValue = parentFolder.getName();
             if (parentFolder.getProperty(PropertyIds.PATH) != null)
@@ -425,11 +425,10 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
             }
 
             List<String> listFolder = getPath(pathValue, fromSite);
-
             SpinnerAdapter adapter = new FolderPathAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item,
                     listFolder);
 
-            OnNavigationListener mOnNavigationListener = new OnNavigationListener()
+            ActionBar.OnNavigationListener mOnNavigationListener = new android.support.v7.app.ActionBar.OnNavigationListener()
             {
 
                 @Override
@@ -1137,6 +1136,12 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
         }
     }
 
+    @Override
+    public void displayTitle()
+    {
+        displayPathShortcut();
+    }
+
     // ///////////////////////////////////////////////////////////////////////////
     // EVENTS RECEIVER
     // ///////////////////////////////////////////////////////////////////////////
@@ -1326,20 +1331,6 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
 
     public static class Builder extends ListingFragmentBuilder
     {
-        public static final int ICON_ID_REPOSITORY = R.drawable.ic_companyhome_dark;
-
-        public static final int ICON_ID_FOLDER = R.drawable.ic_repository_dark;
-
-        public static final int LABEL_ID_REPOSITORY = R.string.menu_browse_root;
-
-        public static final int ICON_ID_SHARED = R.drawable.ic_shared_dark;
-
-        public static final int LABEL_ID_SHARED = R.string.menu_browse_shared;
-
-        public static final int ICON_ID_USERHOME = R.drawable.ic_myfiles_dark;
-
-        public static final int LABEL_ID_USERHOME = R.string.menu_browse_userhome;
-
         // ///////////////////////////////////////////////////////////////////////////
         // CONSTRUCTORS
         // ///////////////////////////////////////////////////////////////////////////
@@ -1384,30 +1375,19 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
         public Builder(FragmentActivity appActivity, Map<String, Object> configuration)
         {
             super(appActivity, configuration);
+            viewConfigModel = new RepositoryConfigModel(configuration);
             this.extraConfiguration = new Bundle();
-
-            this.menuIconId = ICON_ID_REPOSITORY;
-            this.menuTitleId = LABEL_ID_REPOSITORY;
-            if (configuration != null && configuration.containsKey(ARGUMENT_SITE_SHORTNAME))
-            {
-                this.menuIconId = R.drawable.ic_site_dark;
-            }
-
             if (configuration != null && configuration.containsKey(NodeBrowserTemplate.ARGUMENT_FOLDER_TYPE_ID))
             {
                 String folderTypeValue = JSONConverter.getString(configuration,
                         NodeBrowserTemplate.ARGUMENT_FOLDER_TYPE_ID);
                 if (NodeBrowserTemplate.FOLDER_TYPE_SHARED.equalsIgnoreCase(folderTypeValue))
                 {
-                    this.menuIconId = ICON_ID_SHARED;
-                    this.menuTitleId = LABEL_ID_SHARED;
                     extraConfiguration.putSerializable(ARGUMENT_FOLDER_TYPE_ID, NodeChildrenRequest.FOLDER_SHARED);
                     shortcut(true);
                 }
                 else if (NodeBrowserTemplate.FOLDER_TYPE_USERHOME.equalsIgnoreCase(folderTypeValue))
                 {
-                    this.menuIconId = ICON_ID_USERHOME;
-                    this.menuTitleId = LABEL_ID_USERHOME;
                     extraConfiguration.putSerializable(ARGUMENT_FOLDER_TYPE_ID, NodeChildrenRequest.FOLDER_USER_HOMES);
                     shortcut(true);
                 }
@@ -1421,12 +1401,6 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
             else
             {
                 shortcut(false);
-            }
-
-            if (configuration != null && configuration.containsKey(NodeBrowserTemplate.ARGUMENT_FOLDER_NODEREF)
-                    || configuration.containsKey(NodeBrowserTemplate.ARGUMENT_PATH))
-            {
-                this.menuIconId = ICON_ID_FOLDER;
             }
 
             this.templateArguments = new String[] { ARGUMENT_FOLDER_NODEREF, ARGUMENT_SITE_SHORTNAME, ARGUMENT_PATH,

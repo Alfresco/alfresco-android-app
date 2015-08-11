@@ -44,9 +44,7 @@ import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.widget.RemoteViews;
 import android.widget.Toast;
-
 
 /**
  * Manager responsible of all dialog, notification and warning
@@ -297,29 +295,18 @@ public class AlfrescoNotificationManager extends Manager
         }
         builder.setContentIntent(pIntent);
 
-        if (AndroidVersion.isICSOrAbove())
+        if (params.containsKey(ARGUMENT_PROGRESS_MAX) && params.containsKey(ARGUMENT_PROGRESS))
         {
-            if (params.containsKey(ARGUMENT_PROGRESS_MAX) && params.containsKey(ARGUMENT_PROGRESS))
-            {
-                long max = params.getLong(ARGUMENT_PROGRESS_MAX);
-                long progress = params.getLong(ARGUMENT_PROGRESS);
-                float value = (((float) progress / ((float) max)) * 100);
-                int percentage = Math.round(value);
-                builder.setProgress(100, percentage, false);
-            }
-
-            if (params.getBoolean(ARGUMENT_INDETERMINATE))
-            {
-                builder.setProgress(0, 0, true);
-            }
+            long max = params.getLong(ARGUMENT_PROGRESS_MAX);
+            long progress = params.getLong(ARGUMENT_PROGRESS);
+            float value = (((float) progress / ((float) max)) * 100);
+            int percentage = Math.round(value);
+            builder.setProgress(100, percentage, false);
         }
-        else
+
+        if (params.getBoolean(ARGUMENT_INDETERMINATE))
         {
-            RemoteViews remote = new RemoteViews(appContext.getPackageName(), R.layout.app_notification);
-            remote.setImageViewResource(R.id.status_icon, R.drawable.ic_application_logo);
-            remote.setTextViewText(R.id.status_text, params.getString(ARGUMENT_TITLE));
-            remote.setProgressBar(R.id.status_progress, params.getInt(ARGUMENT_PROGRESS_MAX), 0, false);
-            builder.setContent(remote);
+            builder.setProgress(0, 0, true);
         }
 
         if (AndroidVersion.isJBOrAbove())
@@ -526,9 +513,8 @@ public class AlfrescoNotificationManager extends Manager
                     // COMPLETED
                     if (completed == total)
                     {
-                        title = String.format(
-                                appContext.getResources().getQuantityString(R.plurals.download_complete_description,
-                                        completed), Integer.toString(completed));
+                        title = String.format(appContext.getResources().getQuantityString(
+                                R.plurals.download_complete_description, completed), Integer.toString(completed));
                         description = appContext.getString(R.string.download_complete);
                         cancelMonitorChannel(CHANNEL_DOWNLOAD);
                     }
@@ -550,9 +536,8 @@ public class AlfrescoNotificationManager extends Manager
                     // COMPLETED
                     if (completed == total)
                     {
-                        title = String.format(
-                                appContext.getResources().getQuantityString(R.plurals.upload_complete_description,
-                                        completed), Integer.toString(completed));
+                        title = String.format(appContext.getResources().getQuantityString(
+                                R.plurals.upload_complete_description, completed), Integer.toString(completed));
                         description = appContext.getString(R.string.upload_complete);
                         cancelMonitorChannel(CHANNEL_UPLOAD);
                     }

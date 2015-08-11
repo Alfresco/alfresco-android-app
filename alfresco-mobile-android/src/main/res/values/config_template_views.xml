@@ -43,6 +43,8 @@
     <string name="config_org_alfresco_client_view_sites" translatable="false">org.alfresco.mobile.android.application.fragments.site.browser.SitesFragment$Builder</string>
 
     <!-- NODE DETAILS -->
+    <string name="config_org_alfresco_client_view_document_details" translatable="false">org.alfresco.mobile.android.application.fragments.node.details.PagerNodeDetailsFragment$Builder</string>
+    <string name="config_org_alfresco_client_view_folder_details" translatable="false">org.alfresco.mobile.android.application.fragments.node.details.PagerNodeDetailsFragment$Builder</string>
     <string name="config_org_alfresco_client_view_node_details" translatable="false">org.alfresco.mobile.android.application.fragments.node.details.PagerNodeDetailsFragment$Builder</string>
 
     <!-- GALLERY -->

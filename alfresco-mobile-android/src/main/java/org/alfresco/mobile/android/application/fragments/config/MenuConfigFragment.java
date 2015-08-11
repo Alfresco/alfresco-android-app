@@ -33,16 +33,16 @@ import org.alfresco.mobile.android.api.model.config.ViewGroupConfig;
 import org.alfresco.mobile.android.api.model.config.impl.ViewConfigImpl;
 import org.alfresco.mobile.android.api.services.ConfigService;
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.configuration.ConfigurationConstant;
-import org.alfresco.mobile.android.application.fragments.activitystream.ActivityFeedFragment;
+import org.alfresco.mobile.android.application.configuration.model.DevConfigModelHelper;
+import org.alfresco.mobile.android.application.configuration.model.view.ActivitiesConfigModel;
+import org.alfresco.mobile.android.application.configuration.model.view.FavoritesConfigModel;
+import org.alfresco.mobile.android.application.configuration.model.view.LocalConfigModel;
+import org.alfresco.mobile.android.application.configuration.model.view.RepositoryConfigModel;
+import org.alfresco.mobile.android.application.configuration.model.view.SearchConfigModel;
+import org.alfresco.mobile.android.application.configuration.model.view.SiteBrowserConfigModel;
+import org.alfresco.mobile.android.application.configuration.model.view.SyncConfigModel;
+import org.alfresco.mobile.android.application.configuration.model.view.TasksConfigModel;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
-import org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerFragment;
-import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
-import org.alfresco.mobile.android.application.fragments.node.favorite.FavoritesFragment;
-import org.alfresco.mobile.android.application.fragments.search.SearchFragment;
-import org.alfresco.mobile.android.application.fragments.site.browser.BrowserSitesPagerFragment;
-import org.alfresco.mobile.android.application.fragments.sync.SyncFragment;
-import org.alfresco.mobile.android.application.fragments.workflow.task.TasksFragment;
 import org.alfresco.mobile.android.application.managers.ConfigManager;
 import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
@@ -73,31 +73,11 @@ import com.afollestad.materialdialogs.MaterialDialog;
 /**
  * Created by jpascal on 21/01/2015.
  */
-public class MenuConfigFragment extends AlfrescoFragment
+public class MenuConfigFragment extends AlfrescoFragment implements DefaultMenuConfigIds
 {
     private static final String ARGUMENT_ACCOUNT_ID = "accountId";
 
     public static final String TAG = MenuConfigFragment.class.getSimpleName();
-
-    public static final String VIEW_ACTIVITIES = "view-activities-default";
-
-    public static final String VIEW_REPOSITORY = "view-repository-default";
-
-    public static final String VIEW_REPOSITORY_SHARED = "view-repository-shared-default";
-
-    public static final String VIEW_SITES = "view-sites-default";
-
-    public static final String VIEW_REPOSITORY_USERHOME = "view-repository-userhome-default";
-
-    public static final String VIEW_TASKS = "view-task-default";
-
-    public static final String VIEW_FAVORITES = "view-favorites-default";
-
-    public static final String VIEW_SYNC = "view-sync-default";
-
-    public static final String VIEW_SEARCH = "view-search-default";
-
-    public static final String VIEW_LOCAL_FILE = "view-local-default";
 
     // //////////////////////////////////////////////////////////////////////
     // VARIABLES
@@ -318,15 +298,26 @@ public class MenuConfigFragment extends AlfrescoFragment
         return configuration;
     }
 
-    private void addMenuConfigItem(String id, int labelId, String type, int iconId, HashMap<String, Object> properties)
+    private void addMenuConfigItem(String id, int labelId, String type, Integer iconId,
+            HashMap<String, Object> properties)
     {
         if (defaultMenuItems == null)
         {
-            defaultMenuItems = new LinkedHashMap<String, MenuItemConfig>();
+            defaultMenuItems = new LinkedHashMap<>();
+        }
+        defaultMenuItems.put(id,
+                new MenuItemConfig(new ViewConfigImpl(id, getString(labelId), type, properties), iconId));
+    }
+
+    private void addMenuConfigItem(String id, int labelId, String type, HashMap<String, Object> properties)
+    {
+        if (defaultMenuItems == null)
+        {
+            defaultMenuItems = new LinkedHashMap<>();
         }
 
-        defaultMenuItems.put(id, new MenuItemConfig(new ViewConfigImpl(id, getString(labelId), type, properties),
-                iconId));
+        defaultMenuItems.put(id,
+                new MenuItemConfig(new ViewConfigImpl(id, getString(labelId), type, properties), null));
     }
 
     private void updateMenu()
@@ -361,49 +352,48 @@ public class MenuConfigFragment extends AlfrescoFragment
         defaultMenuItems = new LinkedHashMap<String, MenuItemConfig>();
 
         // Activities
-        addMenuConfigItem(VIEW_ACTIVITIES, ActivityFeedFragment.Builder.LABEL_ID, ConfigurationConstant.KEY_ACTIVITIES,
-                R.drawable.ic_activities_light, null);
+        addMenuConfigItem(VIEW_ACTIVITIES, ActivitiesConfigModel.LABEL_ID, ActivitiesConfigModel.TYPE_ID,
+                ActivitiesConfigModel.MODEL_ICON_ID, null);
 
         // Repository
-        addMenuConfigItem(VIEW_REPOSITORY, DocumentFolderBrowserFragment.Builder.LABEL_ID_REPOSITORY,
-                ConfigurationConstant.KEY_REPOSITORY, R.drawable.ic_companyhome_light, null);
+        addMenuConfigItem(VIEW_REPOSITORY, RepositoryConfigModel.LABEL_ID_REPOSITORY, RepositoryConfigModel.TYPE_ID,
+                RepositoryConfigModel.MODEL_ICON_ID_REPOSITORY, null);
 
         // Shared Files
         HashMap<String, Object> sharedProperties = new HashMap<String, Object>();
-        sharedProperties.put(NodeBrowserTemplate.ARGUMENT_FOLDER_TYPE_ID, NodeBrowserTemplate.FOLDER_TYPE_SHARED);
-        addMenuConfigItem(VIEW_REPOSITORY_SHARED, DocumentFolderBrowserFragment.Builder.LABEL_ID_SHARED,
-                ConfigurationConstant.KEY_REPOSITORY, R.drawable.ic_shared_light, sharedProperties);
+        sharedProperties.put(NodeBrowserTemplate.ARGUMENT_FOLDER_TYPE_ID, RepositoryConfigModel.FOLDER_TYPE_SHARED);
+        addMenuConfigItem(VIEW_REPOSITORY_SHARED, RepositoryConfigModel.LABEL_ID_SHARED, RepositoryConfigModel.TYPE_ID,
+                RepositoryConfigModel.MODEL_ICON_ID_SHARED, sharedProperties);
 
         // Sites
-        addMenuConfigItem(VIEW_SITES, BrowserSitesPagerFragment.Builder.LABEL_ID, ConfigurationConstant.KEY_SITES,
-                R.drawable.ic_site_light, null);
+        addMenuConfigItem(VIEW_SITES, SiteBrowserConfigModel.MENU_LABEL_ID, SiteBrowserConfigModel.TYPE_ID,
+                SiteBrowserConfigModel.MODEL_ICON_ID, null);
 
         // Userhome
         HashMap<String, Object> userHomeProperties = new HashMap<String, Object>();
-        userHomeProperties.put(NodeBrowserTemplate.ARGUMENT_FOLDER_TYPE_ID, NodeBrowserTemplate.FOLDER_TYPE_USERHOME);
-        addMenuConfigItem(VIEW_REPOSITORY_USERHOME, DocumentFolderBrowserFragment.Builder.LABEL_ID_USERHOME,
-                ConfigurationConstant.KEY_REPOSITORY, R.drawable.ic_myfiles_light, userHomeProperties);
+        userHomeProperties.put(NodeBrowserTemplate.ARGUMENT_FOLDER_TYPE_ID, RepositoryConfigModel.FOLDER_TYPE_USERHOME);
+        addMenuConfigItem(VIEW_REPOSITORY_USERHOME, RepositoryConfigModel.LABEL_ID_USERHOME,
+                RepositoryConfigModel.TYPE_ID, RepositoryConfigModel.MODEL_ICON_ID_USERHOME, userHomeProperties);
 
         // Tasks & Workflow
-        addMenuConfigItem(VIEW_TASKS, TasksFragment.Builder.LABEL_ID, ConfigurationConstant.KEY_TASKS,
-                R.drawable.ic_task_light, null);
+        addMenuConfigItem(VIEW_TASKS, TasksConfigModel.MENU_LABEL_ID, TasksConfigModel.TYPE_ID,
+                TasksConfigModel.MODEL_ICON_ID, null);
 
         // Favorites
-        addMenuConfigItem(VIEW_FAVORITES, FavoritesFragment.Builder.LABEL_ID, ConfigurationConstant.KEY_FAVORITES,
-                R.drawable.ic_favorite_light, null);
+        addMenuConfigItem(VIEW_FAVORITES, FavoritesConfigModel.MENU_LABEL_ID, FavoritesConfigModel.TYPE_ID,
+                FavoritesConfigModel.MODEL_ICON_ID, null);
 
         // Sync
-        addMenuConfigItem(VIEW_SYNC, SyncFragment.Builder.LABEL_ID, ConfigurationConstant.KEY_SYNC,
-                R.drawable.ic_sync_light, null);
-        originalSyncState = true;
+        addMenuConfigItem(VIEW_SYNC, SyncConfigModel.MENU_LABEL_ID, SyncConfigModel.TYPE_ID,
+                SyncConfigModel.MODEL_ICON_ID, null);
 
         // Search
-        addMenuConfigItem(VIEW_SEARCH, SearchFragment.Builder.LABEL_ID, ConfigurationConstant.KEY_SEARCH,
-                R.drawable.ic_search_light, null);
+        addMenuConfigItem(VIEW_SEARCH, SearchConfigModel.MENU_LABEL_ID, SearchConfigModel.TYPE_ID,
+                SearchConfigModel.MODEL_ICON_ID, null);
 
         // Local Files
-        addMenuConfigItem(VIEW_LOCAL_FILE, FileExplorerFragment.Builder.LABEL_ID, ConfigurationConstant.KEY_LOCALFILES,
-                R.drawable.ic_local_files_light, null);
+        addMenuConfigItem(VIEW_LOCAL_FILE, LocalConfigModel.MENU_LABEL_ID, LocalConfigModel.TYPE_ID,
+                LocalConfigModel.MODEL_ICON_ID, null);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -453,14 +443,22 @@ public class MenuConfigFragment extends AlfrescoFragment
     {
         final ViewConfig config;
 
-        final int iconId;
+        final Integer iconId;
 
         private boolean isEnable = true;
 
-        MenuItemConfig(ViewConfig config, int iconId)
+        MenuItemConfig(ViewConfig config, Integer iconId)
         {
             this.config = config;
-            this.iconId = iconId;
+            if (iconId != null)
+            {
+                this.iconId = iconId;
+            }
+            else
+            {
+                this.iconId = DevConfigModelHelper.getLightIconId(config.getType(), config.getIconIdentifier(),
+                        config.getIdentifier());
+            }
         }
 
         public void setEnable(boolean enable)

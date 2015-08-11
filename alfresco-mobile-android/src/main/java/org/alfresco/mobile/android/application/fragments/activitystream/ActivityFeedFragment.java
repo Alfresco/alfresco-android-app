@@ -24,6 +24,7 @@ import org.alfresco.mobile.android.api.constants.CloudConstant;
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.model.ActivityEntry;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.configuration.model.view.ActivitiesConfigModel;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.MenuFragmentHelper;
@@ -60,7 +61,7 @@ public class ActivityFeedFragment extends ActivityStreamFragment
         super();
         displayAsList = true;
         setHasOptionsMenu(true);
-        titleId = Builder.LABEL_ID;
+
     }
 
     public static ActivityFeedFragment newInstanceByTemplate(Bundle b)
@@ -83,6 +84,12 @@ public class ActivityFeedFragment extends ActivityStreamFragment
         firstEmptyMessage.setText(R.string.activities_list_empty_title);
         secondEmptyMessage.setVisibility(View.VISIBLE);
         secondEmptyMessage.setText(R.string.activities_list_empty_description);
+    }
+
+    @Override
+    public String onPrepareTitle()
+    {
+        return getString(ActivitiesConfigModel.LABEL_ID);
     }
 
     // /////////////////////////////////////////////////////////////
@@ -170,18 +177,13 @@ public class ActivityFeedFragment extends ActivityStreamFragment
     // ///////////////////////////////////////////////////////////////////////////
     public static class Builder extends AlfrescoFragmentBuilder
     {
-        public static final int ICON_ID = R.drawable.ic_activities_dark;
-
-        public static final int LABEL_ID = R.string.menu_browse_activities;
-
         // ///////////////////////////////////////////////////////////////////////////
         // CONSTRUCTORS
         // ///////////////////////////////////////////////////////////////////////////
         public Builder(FragmentActivity appActivity, Map<String, Object> configuration)
         {
             super(appActivity, configuration);
-            menuIconId = ICON_ID;
-            menuTitleId = LABEL_ID;
+            viewConfigModel = new ActivitiesConfigModel();
             templateArguments = new String[] { ARGUMENT_SITE_SHORTNAME, ARGUMENT_USERNAME };
         }
 

@@ -22,4 +22,11 @@ import org.alfresco.mobile.android.ui.template.ListingTemplate;
 public interface FileExplorerFragmentTemplate extends ListingTemplate
 {
     String ARGUMENT_PATH = "path";
+
+    String ARGUMENT_MENU_ID = "menuId";
+
+    String ARGUMENT_SHORTCUT = "shortcut";
+
+    String ARGUMENT_FILE = "file";
+
 }

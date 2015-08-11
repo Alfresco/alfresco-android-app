@@ -34,7 +34,7 @@
 
         <com.rengwuxian.materialedittext.MaterialAutoCompleteTextView
             android:id="@+id/search_query"
-            style="@style/AlfrescoMaterialTheme.AutoCompleteText"
+            style="@style/AlfrescoMaterialTheme.EditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:completionThreshold="1"

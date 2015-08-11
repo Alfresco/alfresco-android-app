@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- =============================================================== -->
+    <!-- THEME -->
+    <!-- =============================================================== -->
+    <style name="AlfrescoAppcompatLight" parent="@style/_AlfrescoAppcompatLight" />
+
+    <style name="_AlfrescoAppcompatLight" parent="Theme.AppCompat.Light">
+        <item name="android:editTextBackground">@drawable/alfrescohololight_edit_text_holo_light
+        </item>
+        <item name="android:textColorHighlight">#9933b5e5</item>
+        <item name="android:autoCompleteTextViewStyle">
+            @style/AutoCompleteTextViewAlfrescoAppcompatLight
+        </item>
+        <item name="android:listChoiceIndicatorMultiple">
+            @drawable/alfrescohololight_btn_check_holo_light
+        </item>
+        <item name="android:listChoiceIndicatorSingle">
+            @drawable/alfrescohololight_btn_radio_holo_light
+        </item>
+        <item name="android:buttonStyle">@style/ButtonAlfrescoAppcompatLight</item>
+        <item name="android:imageButtonStyle">@style/ImageButtonAlfrescoAppcompatLight</item>
+        <item name="android:dropDownSpinnerStyle">@style/SpinnerAlfrescoAppcompatLight</item>
+        <item name="android:progressBarStyleHorizontal">@style/ProgressBarAlfrescoAppcompatLight
+        </item>
+        <item name="android:seekBarStyle">@style/SeekBarAlfrescoAppcompatLight</item>
+        <item name="android:buttonStyleToggle">@style/ToggleAlfrescoAppcompatLight</item>
+        <item name="android:listChoiceBackgroundIndicator">
+            @drawable/alfrescohololight_list_selector_holo_light
+        </item>
+        <item name="android:activatedBackgroundIndicator">
+            @drawable/alfrescohololight_activated_background_holo_light
+        </item>
+        <item name="android:fastScrollThumbDrawable">
+            @drawable/alfrescohololight_fastscroll_thumb_holo
+        </item>
+        <!-- ACTION BAR -->
+        <item name="android:actionBarItemBackground">
+            @drawable/selectable_background_alfrescohololight
+        </item>
+        <item name="android:popupMenuStyle">@style/PopupMenu.AlfrescoAppcompatLight</item>
+        <item name="android:dropDownListViewStyle">@style/DropDownListView.AlfrescoAppcompatLight
+        </item>
+        <item name="android:actionBarTabStyle">@style/ActionBarTabStyle.AlfrescoAppcompatLight
+        </item>
+        <item name="android:actionDropDownStyle">@style/DropDownNav.AlfrescoAppcompatLight</item>
+        <item name="actionBarStyle">@style/ActionBar.Solid.AlfrescoAppcompatLight</item>
+        <item name="android:actionBarStyle">@style/ActionBar.Solid.AlfrescoAppcompatLight</item>
+        <item name="android:actionModeBackground">@drawable/cab_background_top_alfrescohololight
+        </item>
+        <item name="android:actionModeSplitBackground">
+            @drawable/cab_background_bottom_alfrescohololight
+        </item>
+        <item name="android:actionModeCloseButtonStyle">
+            @style/ActionButton.CloseMode.AlfrescoAppcompatLight
+        </item>
+    </style>
+
+    <!-- =============================================================== -->
+    <!-- COLORS -->
+    <!-- =============================================================== -->
+    <color name="alfrescoAppcompatLight_color">#33b5e5</color>
+
+    <!-- =============================================================== -->
+    <!-- DIMENSION -->
+    <!-- =============================================================== -->
+    <dimen name="tab_host_default_height">48dp</dimen>
+
+    <!-- =============================================================== -->
+    <!-- STYLEs -->
+    <!-- =============================================================== -->
+    <style name="AutoCompleteTextViewAlfrescoAppcompatLight" parent="android:Widget.Holo.Light.AutoCompleteTextView">
+        <item name="android:dropDownSelector">@drawable/alfrescohololight_list_selector_holo_light
+        </item>
+        <item name="android:background">@drawable/alfrescohololight_edit_text_holo_light</item>
+    </style>
+
+    <style name="ButtonAlfrescoAppcompatLight" parent="android:Widget.Holo.Light.Button">
+        <item name="android:background">@drawable/alfrescohololight_btn_default_holo_light</item>
+    </style>
+
+    <style name="ImageButtonAlfrescoAppcompatLight" parent="android:Widget.Holo.Light.ImageButton">
+        <item name="android:background">@drawable/alfrescohololight_btn_default_holo_light</item>
+    </style>
+
+    <style name="SpinnerAlfrescoAppcompatLight" parent="android:Widget.Holo.Light.Spinner">
+        <item name="android:background">@drawable/alfrescohololight_spinner_background_holo_light
+        </item>
+        <item name="android:dropDownSelector">@drawable/alfrescohololight_list_selector_holo_light
+        </item>
+    </style>
+
+    <style name="TabAlfrescoAppcompatLight">
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:paddingLeft">16dip</item>
+        <item name="android:paddingRight">16dip</item>
+        <item name="android:background">@drawable/alfrescohololight_tab_indicator_holo</item>
+        <item name="android:layout_width">0dip</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:minWidth">80dip</item>
+    </style>
+
+    <style name="TabTextAlfrescoAppcompatLight">
+        <item name="android:textColor">#000000</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:maxLines">2</item>
+        <item name="android:maxWidth">180dip</item>
+    </style>
+
+    <style name="ProgressBarAlfrescoAppcompatLight" parent="android:Widget.Holo.Light.ProgressBar.Horizontal">
+        <item name="android:progressDrawable">
+            @drawable/alfrescohololight_progress_horizontal_holo_light
+        </item>
+        <item name="android:indeterminateDrawable">
+            @drawable/alfrescohololight_progress_indeterminate_horizontal_holo_light
+        </item>
+    </style>
+
+    <style name="SeekBarAlfrescoAppcompatLight" parent="android:Widget.Holo.Light.SeekBar">
+        <item name="android:progressDrawable">
+            @drawable/alfrescohololight_scrubber_progress_horizontal_holo_light
+        </item>
+        <item name="android:indeterminateDrawable">
+            @drawable/alfrescohololight_scrubber_progress_horizontal_holo_light
+        </item>
+        <item name="android:thumb">
+            @drawable/alfrescohololight_scrubber_control_selector_holo_light
+        </item>
+    </style>
+
+    <style name="ToggleAlfrescoAppcompatLight" parent="android:Widget.Holo.Light.Button.Toggle">
+        <item name="android:background">@drawable/alfrescohololight_btn_toggle_holo_light</item>
+    </style>
+
+    <!-- =============================================================== -->
+    <!-- ACTION BAR -->
+    <!-- =============================================================== -->
+    <style name="ActionBar.Solid.AlfrescoAppcompatLight" parent="@style/Widget.AppCompat.Light.ActionBar.Solid">
+        <item name="background">@drawable/ab_solid_alfrescohololight</item>
+        <item name="android:background">@drawable/ab_solid_alfrescohololight</item>
+        <item name="android:backgroundStacked">@drawable/ab_stacked_solid_alfrescohololight</item>
+        <item name="backgroundStacked">@drawable/ab_stacked_solid_alfrescohololight</item>
+        <item name="android:backgroundSplit">@drawable/ab_bottom_solid_alfrescohololight</item>
+        <item name="backgroundSplit">@drawable/ab_bottom_solid_alfrescohololight</item>
+        <item name="android:progressBarStyle">@style/ProgressBar.AlfrescoAppcompatLight</item>
+        <item name="progressBarStyle">@style/ProgressBar.AlfrescoAppcompatLight</item>
+    </style>
+
+    <style name="ActionBar.Transparent.AlfrescoAppcompatLight" parent="@android:style/Widget.Holo.Light.ActionBar">
+        <item name="android:background">@drawable/ab_transparent_alfrescohololight</item>
+        <item name="android:progressBarStyle">@style/ProgressBar.AlfrescoAppcompatLight</item>
+    </style>
+
+    <style name="PopupMenu.AlfrescoAppcompatLight" parent="@android:style/Widget.Holo.Light.ListPopupWindow">
+        <item name="android:popupBackground">@drawable/menu_dropdown_panel_alfrescohololight</item>
+    </style>
+
+    <style name="DropDownListView.AlfrescoAppcompatLight" parent="@android:style/Widget.Holo.Light.ListView.DropDown">
+        <item name="android:listSelector">@drawable/selectable_background_alfrescohololight</item>
+    </style>
+
+    <style name="ActionBarTabStyle.AlfrescoAppcompatLight" parent="@android:style/Widget.Holo.Light.ActionBar.TabView">
+        <item name="android:background">@drawable/tab_indicator_ab_alfrescohololight</item>
+    </style>
+
+    <style name="DropDownNav.AlfrescoAppcompatLight" parent="@android:style/Widget.Holo.Light.Spinner">
+        <item name="android:background">@drawable/spinner_background_ab_alfrescohololight</item>
+        <item name="android:popupBackground">@drawable/menu_dropdown_panel_alfrescohololight</item>
+        <item name="android:dropDownSelector">@drawable/selectable_background_alfrescohololight
+        </item>
+    </style>
+
+    <style name="ProgressBar.AlfrescoAppcompatLight" parent="@android:style/Widget.Holo.Light.ProgressBar.Horizontal">
+        <item name="android:progressDrawable">@drawable/progress_horizontal_alfrescohololight</item>
+    </style>
+
+    <style name="ActionButton.CloseMode.AlfrescoAppcompatLight" parent="@android:style/Widget.Holo.Light.ActionButton.CloseMode">
+        <item name="android:background">@drawable/btn_cab_done_alfrescohololight</item>
+    </style>
+
+    <!-- this style is only referenced in a Light.DarkActionBar based theme -->
+    <style name="Theme.AlfrescoAppcompatLight.Widget" parent="@android:style/Theme.Holo">
+        <item name="android:popupMenuStyle">@style/PopupMenu.AlfrescoAppcompatLight</item>
+        <item name="android:dropDownListViewStyle">@style/DropDownListView.AlfrescoAppcompatLight
+        </item>
+    </style>
+
+</resources>

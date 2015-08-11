@@ -23,6 +23,7 @@ import java.util.Map;
 import org.alfresco.mobile.android.api.model.Task;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.PrivateDialogActivity;
+import org.alfresco.mobile.android.application.configuration.model.view.TasksConfigModel;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.MenuFragmentHelper;
@@ -37,7 +38,6 @@ import org.alfresco.mobile.android.ui.template.ListingTemplate;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 import org.alfresco.mobile.android.ui.workflow.task.TasksFoundationAdapter;
 import org.alfresco.mobile.android.ui.workflow.task.TasksFoundationFragment;
-import org.alfresco.mobile.android.ui.workflow.task.TasksTemplate;
 
 import android.content.Context;
 import android.content.Intent;
@@ -69,7 +69,6 @@ public class TasksFragment extends TasksFoundationFragment
     public TasksFragment()
     {
         emptyListMessageId = R.string.empty_tasks;
-        enableTitle = false;
         loadState = LOAD_VISIBLE;
         setHasOptionsMenu(true);
     }
@@ -87,11 +86,12 @@ public class TasksFragment extends TasksFoundationFragment
     // LIFECYCLE
     // ///////////////////////////////////////////////////////////////////////////
     @Override
-    public void onResume()
+    public void displayTitle()
     {
         if (getArguments().containsKey(ARGUMENT_MENU_ID))
         {
             TasksHelper.displayNavigationMode(getActivity(), false, getArguments().getInt(ARGUMENT_MENU_ID));
+            getActionBar().setDisplayUseLogoEnabled(false);
             getActionBar().setDisplayShowTitleEnabled(false);
             getActionBar().setDisplayShowCustomEnabled(true);
             getActionBar().setCustomView(null);
@@ -101,7 +101,6 @@ public class TasksFragment extends TasksFoundationFragment
             UIUtils.displayTitle(getActivity(), getString(R.string.my_tasks));
         }
         getActivity().invalidateOptionsMenu();
-        super.onResume();
     }
 
     @Override
@@ -256,10 +255,6 @@ public class TasksFragment extends TasksFoundationFragment
 
     public static class Builder extends ListingFragmentBuilder
     {
-        public static final int ICON_ID = R.drawable.ic_task_dark;
-
-        public static final int LABEL_ID = R.string.my_tasks;
-
         // ///////////////////////////////////////////////////////////////////////////
         // CONSTRUCTORS
         // ///////////////////////////////////////////////////////////////////////////
@@ -272,11 +267,10 @@ public class TasksFragment extends TasksFoundationFragment
         public Builder(FragmentActivity appActivity, Map<String, Object> configuration)
         {
             super(appActivity, configuration);
-            menuIconId = R.drawable.ic_task_dark;
-            menuTitleId = R.string.my_tasks;
-            templateArguments = new String[] { ListingTemplate.ARGUMENT_HAS_FILTER, TasksTemplate.FILTER_KEY_STATUS,
-                    TasksTemplate.FILTER_KEY_DUE, TasksTemplate.FILTER_KEY_PRIORITY,
-                    TasksTemplate.FILTER_KEY_ASSIGNEE };
+            viewConfigModel = new TasksConfigModel(configuration);
+            templateArguments = new String[] { ListingTemplate.ARGUMENT_HAS_FILTER, TasksConfigModel.FILTER_KEY_STATUS,
+                    TasksConfigModel.FILTER_KEY_DUE, TasksConfigModel.FILTER_KEY_PRIORITY,
+                    TasksConfigModel.FILTER_KEY_ASSIGNEE };
         }
 
         protected void retrieveCustomArgument(Map<String, Object> properties, Bundle b)

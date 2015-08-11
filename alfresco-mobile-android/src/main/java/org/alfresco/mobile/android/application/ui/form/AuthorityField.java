@@ -47,7 +47,7 @@ public class AuthorityField extends BaseField
 {
     public static final String OUTPUT_OBJECT = "object";
 
-    public static final String OUTPUT_ID = "id";
+    public static final String OUTPUT_ID = "type";
 
     public static final String OUTPUT_FULLNAME = "fullName";
 
