@@ -85,6 +85,7 @@ import org.alfresco.mobile.android.platform.utils.BundleUtils;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.sync.SyncContentManager;
 import org.alfresco.mobile.android.sync.SyncContentScanEvent;
+import org.alfresco.mobile.android.ui.SelectableFragment;
 import org.alfresco.mobile.android.ui.activity.AlfrescoActivity;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 import org.alfresco.mobile.android.ui.node.browse.NodeBrowserFragment;
@@ -124,7 +125,7 @@ import com.squareup.otto.Subscribe;
  * 
  * @author Jean Marie Pascal
  */
-public class DocumentFolderBrowserFragment extends NodeBrowserFragment
+public class DocumentFolderBrowserFragment extends NodeBrowserFragment implements SelectableFragment
 {
     public static final String TAG = DocumentFolderBrowserFragment.class.getName();
 
@@ -649,11 +650,28 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
             @Override
             public void onFinish()
             {
+                if (fab != null)
+                {
+                    fab.hide(true);
+                    if (permission.canAddChildren())
+                    {
+                        fab.setImageResource(R.drawable.ic_content_add);
+                        fab.setOnClickListener(onPrepareFabClickListener());
+                        fab.show(true);
+                    }
+                }
                 nActions = null;
                 unselect();
                 refreshListView();
             }
         });
+        if (fab != null)
+        {
+            fab.hide(true);
+            fab.setImageResource(R.drawable.ic_done_all_white);
+            fab.setOnClickListener(onMultiSelectionFabClickListener());
+            fab.show(true);
+        }
         getActivity().startActionMode(nActions);
         return true;
     }
@@ -915,6 +933,33 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
         };
     }
 
+    protected OnClickListener onMultiSelectionFabClickListener()
+    {
+        return new OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                selectAll();
+            }
+        };
+    }
+
+    protected OnClickListener onCancelMultiSelectionFabClickListener()
+    {
+        return new OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                if (nActions != null)
+                {
+                    nActions.finish();
+                }
+            }
+        };
+    }
+
     private void displayFab()
     {
         if (fab != null && fab.getVisibility() == View.GONE)
@@ -995,12 +1040,21 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
         }
     }
 
+    @Override
     public void selectAll()
     {
         if (nActions != null && adapter != null)
         {
             nActions.selectNodes(((ProgressNodeAdapter) adapter).getNodes());
             adapter.notifyDataSetChanged();
+        }
+
+        if (fab != null)
+        {
+            fab.toggle(true);
+            fab.setImageResource(R.drawable.ic_close_dark);
+            fab.setOnClickListener(onCancelMultiSelectionFabClickListener());
+            fab.toggle(true);
         }
     }
 

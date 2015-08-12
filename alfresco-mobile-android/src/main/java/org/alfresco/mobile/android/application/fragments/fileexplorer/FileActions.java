@@ -32,15 +32,16 @@ import org.alfresco.mobile.android.async.file.delete.DeleteFileRequest;
 import org.alfresco.mobile.android.ui.ListingModeFragment;
 import org.alfresco.mobile.android.ui.operation.OperationWaitingDialogFragment;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.text.Html;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 
 /**
  * Manage all local file actions like a sdcard file manager.
@@ -165,14 +166,12 @@ public class FileActions implements ActionMode.Callback
                         mi.setIcon(R.drawable.ic_upload);
                         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
-                        mi = menu.add(Menu.NONE, R.id.menu_action_share, Menu.FIRST + 100,
-                                R.string.share);
+                        mi = menu.add(Menu.NONE, R.id.menu_action_share, Menu.FIRST + 100, R.string.share);
                         mi.setIcon(R.drawable.ic_share);
                         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
                     }
 
-                    mi = menu.add(Menu.NONE, R.id.menu_action_delete, Menu.FIRST + 1000,
-                            R.string.delete);
+                    mi = menu.add(Menu.NONE, R.id.menu_action_delete, Menu.FIRST + 1000, R.string.delete);
                     mi.setIcon(R.drawable.ic_delete);
                     mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
                     break;
@@ -237,8 +236,8 @@ public class FileActions implements ActionMode.Callback
             int size = selectedFile.size();
             if (size > 0)
             {
-                title += String.format(getFragment().getResources()
-                        .getQuantityString(R.plurals.selected_document, size), size);
+                title += String.format(
+                        getFragment().getResources().getQuantityString(R.plurals.selected_document, size), size);
             }
             size = selectedFolder.size();
             if (size > 0)
@@ -247,8 +246,8 @@ public class FileActions implements ActionMode.Callback
                 {
                     title += " | ";
                 }
-                title += String.format(
-                        getFragment().getResources().getQuantityString(R.plurals.selected_folders, size), size);
+                title += String.format(getFragment().getResources().getQuantityString(R.plurals.selected_folders, size),
+                        size);
             }
         }
 
@@ -352,65 +351,64 @@ public class FileActions implements ActionMode.Callback
         FragmentDisplayer.with(f.getActivity()).remove(FileNameDialogFragment.TAG);
 
         // Create and show the dialog.
-        FileNameDialogFragment.newInstance(file.getParentFile(), file).show(
-                f.getActivity().getSupportFragmentManager().beginTransaction(), FileNameDialogFragment.TAG);
+        FileNameDialogFragment.newInstance(file.getParentFile(), file)
+                .show(f.getActivity().getSupportFragmentManager().beginTransaction(), FileNameDialogFragment.TAG);
     }
 
     public static void delete(final Fragment f, final List<File> files)
     {
-        AlertDialog.Builder builder = new AlertDialog.Builder(f.getActivity());
-        builder.setTitle(R.string.delete);
         String nodeDescription = files.size() + "";
         if (files.size() == 1)
         {
             nodeDescription = files.get(0).getName();
         }
-        String description = String
-                .format(f.getActivity().getResources().getQuantityString(R.plurals.delete_items, files.size()),
-                        nodeDescription);
-        builder.setMessage(description);
+        String description = String.format(
+                f.getActivity().getResources().getQuantityString(R.plurals.delete_items, files.size()),
+                nodeDescription);
 
-        builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener()
-        {
-            public void onClick(DialogInterface dialog, int item)
-            {
-                String operationId;
-
-                if (files.size() == 1)
+        new MaterialDialog.Builder(f.getActivity()).iconRes(R.drawable.ic_application_logo).title(R.string.delete)
+                .content(Html.fromHtml(description)).positiveText(R.string.confirm).negativeText(R.string.cancel)
+                .callback(new MaterialDialog.ButtonCallback()
                 {
-                    operationId = Operator.with(f.getActivity()).load(
-                            new DeleteFileRequest.Builder(files.get(0))
-                                    .setNotificationVisibility(OperationRequest.VISIBILITY_TOAST));
-                }
-                else
-                {
-                    List<OperationBuilder> requestsBuilder = new ArrayList<OperationBuilder>(files.size());
-                    for (File file : files)
+                    @Override
+                    public void onPositive(MaterialDialog dialog)
                     {
-                        requestsBuilder.add(new DeleteFileRequest.Builder(file)
-                                .setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG));
-                    }
-                    operationId = Operator.with(f.getActivity()).load(requestsBuilder);
+                        String operationId;
 
-                    if (f instanceof FileExplorerFragment)
-                    {
-                        OperationWaitingDialogFragment.newInstance(DeleteFileRequest.TYPE_ID, R.drawable.ic_delete,
-                                f.getString(R.string.delete), null, null, files.size(), operationId).show(
-                                f.getActivity().getSupportFragmentManager(), OperationWaitingDialogFragment.TAG);
+                        if (files.size() == 1)
+                        {
+                            operationId = Operator.with(f.getActivity())
+                                    .load(new DeleteFileRequest.Builder(files.get(0))
+                                            .setNotificationVisibility(OperationRequest.VISIBILITY_TOAST));
+                        }
+                        else
+                        {
+                            List<OperationBuilder> requestsBuilder = new ArrayList<OperationBuilder>(files.size());
+                            for (File file : files)
+                            {
+                                requestsBuilder.add(new DeleteFileRequest.Builder(file)
+                                        .setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG));
+                            }
+                            operationId = Operator.with(f.getActivity()).load(requestsBuilder);
+
+                            if (f instanceof FileExplorerFragment)
+                            {
+                                OperationWaitingDialogFragment
+                                        .newInstance(DeleteFileRequest.TYPE_ID, R.drawable.ic_delete,
+                                                f.getString(R.string.delete), null, null, files.size(), operationId)
+                                        .show(f.getActivity().getSupportFragmentManager(),
+                                                OperationWaitingDialogFragment.TAG);
+                            }
+                        }
+                        dialog.dismiss();
                     }
-                }
-                dialog.dismiss();
-            }
-        });
-        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
-        {
-            public void onClick(DialogInterface dialog, int item)
-            {
-                dialog.dismiss();
-            }
-        });
-        AlertDialog alert = builder.create();
-        alert.show();
+
+                    @Override
+                    public void onNegative(MaterialDialog dialog)
+                    {
+                        dialog.dismiss();
+                    }
+                }).show();
     }
 
     // /////////////////////////////////////////////////////////////

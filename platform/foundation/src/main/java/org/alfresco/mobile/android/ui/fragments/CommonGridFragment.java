@@ -423,6 +423,7 @@ public abstract class CommonGridFragment extends AlfrescoFragment
         {
             setListShown(true);
             gv.setAdapter(adapter);
+            gv.setSelection(selectedPosition);
         }
     }
 
@@ -581,6 +582,7 @@ public abstract class CommonGridFragment extends AlfrescoFragment
     public void refreshListView()
     {
         gv.setAdapter(adapter);
+        gv.setSelection(selectedPosition);
     }
 
     // /////////////////////////////////////////////////////////////

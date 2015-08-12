@@ -25,16 +25,13 @@ import org.alfresco.mobile.android.platform.data.DocumentTypeRecord;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 import org.alfresco.mobile.android.ui.holder.SingleLineViewHolder;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ListView;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 
 /**
  * This Fragment is responsible to display the list of File that can be created
@@ -64,6 +61,11 @@ public class DocumentTypesDialogFragment extends DialogFragment
      */
     public static final String ARGUMENT_DOCUMENT_TYPE = "documentType";
 
+    private List<DocumentTypeRecord> fileTypes;
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // CONSTRUCTOR
+    // ///////////////////////////////////////////////////////////////////////////
     /**
      * Static constructor.
      * 
@@ -80,34 +82,34 @@ public class DocumentTypesDialogFragment extends DialogFragment
         return fragment;
     }
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // LIFECYCLE
+    // ///////////////////////////////////////////////////////////////////////////
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
-        LayoutInflater inflater = LayoutInflater.from(getActivity());
-        final View v = inflater.inflate(R.layout.sdk_list, null);
-
-        ListView lv = (ListView) v.findViewById(R.id.listView);
-
-        lv.setOnItemClickListener(new OnItemClickListener()
-        {
-            @Override
-            public void onItemClick(AdapterView<?> l, View v, int position, long id)
-            {
-                Bundle b = getArguments();
-                b.putSerializable(ARGUMENT_DOCUMENT_TYPE, (DocumentTypeRecord) l.getItemAtPosition(position));
-                EditorsDialogFragment dialogft = EditorsDialogFragment.newInstance(b);
-                dialogft.show(getFragmentManager(), EditorsDialogFragment.TAG);
-
-                dismiss();
-            }
-        });
-
-        List<DocumentTypeRecord> fileTypes = DocumentTypeRecordHelper.getCreationDocumentTypeList(getActivity());
+        fileTypes = DocumentTypeRecordHelper.getCreationDocumentTypeList(getActivity());
         FileTypeAdapter adapter = new FileTypeAdapter(getActivity(), R.layout.row_single_line, fileTypes);
-        lv.setAdapter(adapter);
 
-        return new AlertDialog.Builder(getActivity()).setTitle(R.string.create_document_title).setView(v).create();
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity())
+                .iconRes(R.drawable.ic_application_logo).title(R.string.create_document_title)
+                .adapter(adapter, new MaterialDialog.ListCallback() {
+                    @Override
+                    public void onSelection(MaterialDialog materialDialog, View view, int position,
+                                            CharSequence charSequence) {
+                        Bundle b = getArguments();
+                        b.putSerializable(ARGUMENT_DOCUMENT_TYPE, fileTypes.get(position));
+                        EditorsDialogFragment dialogft = EditorsDialogFragment.newInstance(b);
+                        dialogft.show(getFragmentManager(), EditorsDialogFragment.TAG);
+                        materialDialog.dismiss();
+                    }
+                });
+
+        return builder.show();
     }
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // INNER CLASS
+    // ///////////////////////////////////////////////////////////////////////////
     /**
      * Inner class responsible to manage the list of File Types available.
      */

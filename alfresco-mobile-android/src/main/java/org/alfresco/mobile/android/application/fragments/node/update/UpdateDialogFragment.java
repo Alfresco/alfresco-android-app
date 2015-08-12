@@ -33,7 +33,6 @@ import org.alfresco.mobile.android.ui.node.update.UpdateNodeDialogFragment;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.widget.Button;
 import android.widget.EditText;
 
 public class UpdateDialogFragment extends UpdateNodeDialogFragment
@@ -67,10 +66,8 @@ public class UpdateDialogFragment extends UpdateNodeDialogFragment
     // //////////////////////////////////////////////////////////////////////
     // INTERNALS
     // //////////////////////////////////////////////////////////////////////
-    protected void updateNode(EditText tv, EditText desc, Button bcreate)
+    protected void updateNode(EditText tv, EditText desc)
     {
-        bcreate.setEnabled(false);
-
         Map<String, Serializable> props = new HashMap<>(2);
         props.put(ContentModel.PROP_NAME, tv.getText().toString().trim());
         if (desc.getText() != null && desc.getText().length() > 0)
@@ -130,5 +127,4 @@ public class UpdateDialogFragment extends UpdateNodeDialogFragment
             return newInstanceByTemplate(b);
         }
     }
-
 }

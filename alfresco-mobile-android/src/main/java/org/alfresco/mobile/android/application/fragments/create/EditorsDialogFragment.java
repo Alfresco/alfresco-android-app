@@ -32,11 +32,8 @@ import org.alfresco.mobile.android.platform.data.DocumentTypeRecord;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 import org.alfresco.mobile.android.ui.holder.SingleLineViewHolder;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -46,10 +43,9 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
-import android.widget.TextView;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 
 /**
  * This Fragment is responsible to display the list of editors able to create
@@ -69,6 +65,11 @@ public class EditorsDialogFragment extends DialogFragment
      */
     public static final String ARGUMENT_EDITOR = "editor";
 
+    private List<ResolveInfo> list;
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // CONSTRUCTOR
+    // ///////////////////////////////////////////////////////////////////////////
     /**
      * @param b : must contains ARGUMENT_DOCUMENT_TYPE key/value
      * @return Dialog fragment that lists application able to create the
@@ -81,6 +82,9 @@ public class EditorsDialogFragment extends DialogFragment
         return fr;
     }
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // LIFECYCLE
+    // ///////////////////////////////////////////////////////////////////////////
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
         int title = R.string.create_document_editor_title;
@@ -97,51 +101,48 @@ public class EditorsDialogFragment extends DialogFragment
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setDataAndType(Uri.fromFile(new File("/sdcard/test" + documentType.extension)), documentType.mimetype);
         final PackageManager mgr = getActivity().getPackageManager();
-        List<ResolveInfo> list = mgr.queryIntentActivities(intent, 0);
+        list = mgr.queryIntentActivities(intent, 0);
         Collections.sort(list, new EditorComparator(getActivity(), true));
+
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity())
+                .iconRes(R.drawable.ic_application_logo);
 
         if (list.isEmpty())
         {
             // If there's no 3rd party application able to create, we display a
             // warning message.
-            lv.setVisibility(View.GONE);
-            v.findViewById(R.id.empty).setVisibility(View.VISIBLE);
-            ((TextView) v.findViewById(R.id.empty_text))
-                    .setText(R.string.create_document_editor_not_available_description);
-            title = R.string.create_document_editor_not_available;
-
-            return new AlertDialog.Builder(getActivity()).setTitle(title).setView(v)
-                    .setPositiveButton(R.string.open_play_store, new OnClickListener()
+            return builder.title(R.string.create_document_editor_not_available)
+                    .content(R.string.create_document_editor_not_available_description)
+                    .positiveText(R.string.open_play_store).callback(new MaterialDialog.ButtonCallback()
                     {
                         @Override
-                        public void onClick(DialogInterface dialog, int which)
+                        public void onPositive(MaterialDialog dialog)
                         {
                             ActionUtils.actionDisplayPlayStore(getActivity());
                         }
-                    }).create();
+                    }).show();
         }
         else
         {
-            lv.setAdapter(new EditorAdapter(getActivity(), R.layout.row_single_line, list));
+            return builder.title(title).adapter(new EditorAdapter(getActivity(), R.layout.row_single_line, list),
+                    new MaterialDialog.ListCallback() {
+                        @Override
+                        public void onSelection(MaterialDialog materialDialog, View view, int position,
+                                                CharSequence charSequence) {
+                            Bundle b = getArguments();
+                            b.putParcelable(ARGUMENT_EDITOR, list.get(position));
+                            DocumentPropertiesDialogFragment dialogft = DocumentPropertiesDialogFragment.newInstance(b);
+                            dialogft.show(getFragmentManager(), DocumentPropertiesDialogFragment.TAG);
 
-            lv.setOnItemClickListener(new OnItemClickListener()
-            {
-                @Override
-                public void onItemClick(AdapterView<?> l, View v, int position, long id)
-                {
-                    Bundle b = getArguments();
-                    b.putParcelable(ARGUMENT_EDITOR, (ResolveInfo) l.getItemAtPosition(position));
-                    DocumentPropertiesDialogFragment dialogft = DocumentPropertiesDialogFragment.newInstance(b);
-                    dialogft.show(getFragmentManager(), DocumentPropertiesDialogFragment.TAG);
-
-                    dismiss();
-                }
-            });
-            return new AlertDialog.Builder(getActivity()).setTitle(title).setView(v).create();
+                            materialDialog.dismiss();
+                        }
+                    }).show();
         }
-
     }
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // TOOLS
+    // ///////////////////////////////////////////////////////////////////////////
     private static String getLabelString(Context context, ResolveInfo item)
     {
         if (item.activityInfo.labelRes != 0)
@@ -154,6 +155,9 @@ public class EditorsDialogFragment extends DialogFragment
         }
     }
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // INNER CLASS
+    // ///////////////////////////////////////////////////////////////////////////
     /**
      * Inner class responsible to manage the list of Editors.
      */

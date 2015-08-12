@@ -24,7 +24,6 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.builder.LeafFragmentBuilder;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -36,6 +35,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 
 public class AboutFragment extends AlfrescoFragment
 {
@@ -65,7 +66,8 @@ public class AboutFragment extends AlfrescoFragment
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
         LayoutInflater inflater = LayoutInflater.from(getActivity());
-        return new AlertDialog.Builder(getActivity()).setView(createView(inflater, null)).create();
+        return new MaterialDialog.Builder(getActivity()).backgroundColorRes(R.color.secondary_background)
+                .customView(createView(inflater, null), true).show();
     }
 
     @Override
@@ -100,8 +102,7 @@ public class AboutFragment extends AlfrescoFragment
         String versionNumber;
         try
         {
-            StringBuilder sb = new StringBuilder(context.getString(R.string.buildnumber_version))
-                    .append(" ")
+            StringBuilder sb = new StringBuilder(context.getString(R.string.buildnumber_version)).append(" ")
                     .append(context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName)
                     .append(".").append(context.getString(R.string.bamboo_buildnumber));
             versionNumber = sb.toString();

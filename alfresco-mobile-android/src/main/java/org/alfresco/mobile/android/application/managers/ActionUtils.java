@@ -91,6 +91,7 @@ public class ActionUtils extends BaseActionUtils
         {
             if (intent.resolveActivity(context.getPackageManager()) == null)
             {
+                if (listener != null) { throw new ActivityNotFoundException(); }
                 AlfrescoNotificationManager.getInstance(context).showAlertCrouton(context,
                         context.getString(R.string.feature_disable));
                 return;

@@ -46,6 +46,7 @@ import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
 import org.alfresco.mobile.android.platform.utils.AndroidVersion;
 import org.alfresco.mobile.android.ui.activity.AlfrescoActivity;
+import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.annotation.TargetApi;
@@ -55,7 +56,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -73,18 +73,15 @@ import android.widget.Spinner;
  * 
  * @author Jean Marie Pascal
  */
-public class UploadFormFragment extends Fragment
+public class UploadFormFragment extends AlfrescoFragment
 {
-
     public static final String TAG = "ImportFormFragment";
-
-    private AlfrescoAccount selectedAccount;
 
     private String fileName;
 
     private File file;
 
-    private View rootView;
+    private AlfrescoAccount selectedAccount;
 
     private Integer folderImportId;
 
@@ -103,6 +100,15 @@ public class UploadFormFragment extends Fragment
 
     private Spinner spinnerAccount;
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // CONSTUCTORS
+    // ///////////////////////////////////////////////////////////////////////////
+    public UploadFormFragment()
+    {
+        requiredSession = false;
+        checkSession = false;
+    }
+
     public static UploadFormFragment newInstance(Bundle b)
     {
         UploadFormFragment fr = new UploadFormFragment();
@@ -119,17 +125,17 @@ public class UploadFormFragment extends Fragment
     {
         UIUtils.displayTitle(getActivity(), R.string.import_document_title);
 
-        rootView = inflater.inflate(R.layout.app_import, container, false);
-        if (rootView.findViewById(R.id.listView) != null)
+        setRootView(inflater.inflate(R.layout.app_import, container, false));
+        if (viewById(R.id.listView) != null)
         {
-            initDocumentList(rootView);
+            initDocumentList(getRootView());
         }
         else
         {
-            initiDocumentSpinner(rootView);
+            initiDocumentSpinner(getRootView());
         }
 
-        spinnerAccount = (Spinner) rootView.findViewById(R.id.accounts_spinner);
+        spinnerAccount = (Spinner) viewById(R.id.accounts_spinner);
         spinnerAccount.setOnItemSelectedListener(new OnItemSelectedListener()
         {
 
@@ -145,7 +151,7 @@ public class UploadFormFragment extends Fragment
                 // Do nothing
             }
         });
-        return rootView;
+        return getRootView();
     }
 
     @Override
@@ -309,7 +315,7 @@ public class UploadFormFragment extends Fragment
             }
         }
 
-        Button b = UIUtils.initCancel(rootView, R.string.cancel);
+        Button b = UIUtils.initCancel(getRootView(), R.string.cancel);
         b.setOnClickListener(new OnClickListener()
         {
             @Override
@@ -319,7 +325,7 @@ public class UploadFormFragment extends Fragment
             }
         });
 
-        b = UIUtils.initValidation(rootView, R.string.next);
+        b = UIUtils.initValidation(getRootView(), R.string.next);
         b.setOnClickListener(new OnClickListener()
         {
             @Override
@@ -385,7 +391,7 @@ public class UploadFormFragment extends Fragment
 
     private void refreshImportFolder()
     {
-        Spinner spinner = (Spinner) rootView.findViewById(R.id.import_folder_spinner);
+        Spinner spinner = (Spinner) viewById(R.id.import_folder_spinner);
         UploadFolderAdapter upLoadadapter = new UploadFolderAdapter(getActivity(), R.layout.row_single_line,
                 IMPORT_FOLDER_LIST);
         spinner.setAdapter(upLoadadapter);

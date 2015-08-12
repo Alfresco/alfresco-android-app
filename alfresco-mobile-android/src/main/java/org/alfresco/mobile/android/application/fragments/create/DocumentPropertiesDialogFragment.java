@@ -35,7 +35,6 @@ import org.alfresco.mobile.android.platform.data.DocumentTypeRecord;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
@@ -52,12 +51,13 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
+
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.rengwuxian.materialedittext.MaterialEditText;
 
 /**
  * This Fragment is responsible to prompt user for property (limited at the
@@ -71,6 +71,9 @@ public class DocumentPropertiesDialogFragment extends DialogFragment
     /** Public Fragment TAG. */
     public static final String TAG = DocumentPropertiesDialogFragment.class.getName();
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // CONSTRUCTOR
+    // ///////////////////////////////////////////////////////////////////////////
     public static DocumentPropertiesDialogFragment newInstance(Bundle bundle)
     {
         DocumentPropertiesDialogFragment fragment = new DocumentPropertiesDialogFragment();
@@ -78,6 +81,9 @@ public class DocumentPropertiesDialogFragment extends DialogFragment
         return fragment;
     }
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // LIFECYCLE
+    // ///////////////////////////////////////////////////////////////////////////
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
         final String fragmentTag = (String) getArguments().get(ARGUMENT_FRAGMENT_TAG);
@@ -106,11 +112,7 @@ public class DocumentPropertiesDialogFragment extends DialogFragment
 
         ((TextView) v.findViewById(R.id.document_extension)).setText(documentType.extension);
 
-        final EditText textName = ((EditText) v.findViewById(R.id.document_name));
-        final Button validate = UIUtils.initValidation(v, R.string.create);
-        validate.setEnabled(false);
-        final Button cancel = UIUtils.initCancel(v, R.string.cancel);
-
+        final MaterialEditText textName = ((MaterialEditText) v.findViewById(R.id.document_name));
         // This Listener is responsible to enable or not the validate button and
         // error message.
         textName.addTextChangedListener(new TextWatcher()
@@ -119,11 +121,12 @@ public class DocumentPropertiesDialogFragment extends DialogFragment
             {
                 if (s.length() > 0)
                 {
-                    validate.setEnabled(true);
+                    textName.setFloatingLabelText(getString(R.string.content_name));
+                    ((MaterialDialog) getDialog()).getActionButton(DialogAction.POSITIVE).setEnabled(true);
                     if (UIUtils.hasInvalidName(s.toString().trim()))
                     {
                         textName.setError(getString(R.string.filename_error_character));
-                        validate.setEnabled(false);
+                        ((MaterialDialog) getDialog()).getActionButton(DialogAction.POSITIVE).setEnabled(false);
                     }
                     else
                     {
@@ -132,7 +135,8 @@ public class DocumentPropertiesDialogFragment extends DialogFragment
                 }
                 else
                 {
-                    validate.setEnabled(false);
+                    textName.setHint(R.string.create_document_name_hint);
+                    ((MaterialDialog) getDialog()).getActionButton(DialogAction.POSITIVE).setEnabled(false);
                     textName.setError(null);
                 }
             }
@@ -146,87 +150,92 @@ public class DocumentPropertiesDialogFragment extends DialogFragment
             }
         });
 
-        cancel.setOnClickListener(new OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                dismiss();
-            }
-        });
-
-        validate.setOnClickListener(new OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                String fileName = textName.getText().toString().trim().concat(documentType.extension);
-
-                File newFile = new File(folderStorage, fileName);
-
-                if (newFile.exists() && FileExplorerFragment.TAG.equals(fragmentTag))
+        MaterialDialog dialog = new MaterialDialog.Builder(getActivity()).iconRes(R.drawable.ic_application_logo)
+                .title(R.string.create_document_title).customView(v, true).positiveText(R.string.create)
+                .negativeText(R.string.cancel).callback(new MaterialDialog.ButtonCallback()
                 {
-                    // If the file already exist, we prompt a warning message.
-                    textName.setError(getString(R.string.create_document_filename_error));
-                    return;
-                }
-                else
-                {
-                    try
+                    @Override
+                    public void onNegative(MaterialDialog dialog)
                     {
-                        // If there's a template we create the file based on
-                        // this template.
-                        if (documentType.templatePath != null)
+                        dialog.dismiss();
+                    }
+
+                    @Override
+                    public void onPositive(MaterialDialog dialog)
+                    {
+                        String fileName = textName.getText().toString().trim().concat(documentType.extension);
+
+                        File newFile = new File(folderStorage, fileName);
+
+                        if (newFile.exists() && FileExplorerFragment.TAG.equals(fragmentTag))
                         {
-                            AssetManager assetManager = getActivity().getAssets();
-                            IOUtils.copyFile(assetManager.open(documentType.templatePath), newFile);
+                            // If the file already exist, we prompt a warning
+                            // message.
+                            textName.setError(getString(R.string.create_document_filename_error));
+                            return;
                         }
                         else
                         {
-                            newFile.createNewFile();
+                            try
+                            {
+                                // If there's a template we create the file
+                                // based on
+                                // this template.
+                                if (documentType.templatePath != null)
+                                {
+                                    AssetManager assetManager = getActivity().getAssets();
+                                    IOUtils.copyFile(assetManager.open(documentType.templatePath), newFile);
+                                }
+                                else
+                                {
+                                    newFile.createNewFile();
+                                }
+                            }
+                            catch (IOException e1)
+                            {
+                                Log.e(TAG, Log.getStackTraceString(e1));
+                            }
                         }
-                    }
-                    catch (IOException e1)
-                    {
-                        Log.e(TAG, Log.getStackTraceString(e1));
-                    }
-                }
 
-                // We create the Intent based on informations we grab
-                // previously.
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                Uri data = Uri.fromFile(newFile);
-                intent.setDataAndType(data, documentType.mimetype);
-                intent.setComponent(new ComponentName(editor.activityInfo.applicationInfo.packageName,
-                        editor.activityInfo.name));
+                        // We create the Intent based on informations we grab
+                        // previously.
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        Uri data = Uri.fromFile(newFile);
+                        intent.setDataAndType(data, documentType.mimetype);
+                        intent.setComponent(new ComponentName(editor.activityInfo.applicationInfo.packageName,
+                                editor.activityInfo.name));
 
-                try
-                {
-                    Fragment fr = getFragmentManager().findFragmentByTag(fragmentTag);
-                    if (fr != null && fr.isVisible())
-                    {
-                        if (fr instanceof DocumentFolderBrowserFragment)
+                        try
                         {
-                            // During Creation on a specific folder.
-                            ((DocumentFolderBrowserFragment) fr).setCreateFile(newFile);
+                            Fragment fr = getFragmentManager().findFragmentByTag(fragmentTag);
+                            if (fr != null && fr.isVisible())
+                            {
+                                if (fr instanceof DocumentFolderBrowserFragment)
+                                {
+                                    // During Creation on a specific folder.
+                                    ((DocumentFolderBrowserFragment) fr).setCreateFile(newFile);
+                                }
+                                else if (fr instanceof FileExplorerFragment)
+                                {
+                                    // During Creation inside the download
+                                    // folder.
+                                    ((FileExplorerFragment) fr).setCreateFile(newFile);
+                                }
+                                fr.startActivity(intent);
+                            }
                         }
-                        else if (fr instanceof FileExplorerFragment)
+                        catch (ActivityNotFoundException e)
                         {
-                            // During Creation inside the download folder.
-                            ((FileExplorerFragment) fr).setCreateFile(newFile);
+                            AlfrescoNotificationManager.getInstance(getActivity())
+                                    .showToast(R.string.error_unable_open_file);
                         }
-                        fr.startActivity(intent);
+                        dismiss();
                     }
-                }
-                catch (ActivityNotFoundException e)
-                {
-                    AlfrescoNotificationManager.getInstance(getActivity()).showToast(R.string.error_unable_open_file);
-                }
-                dismiss();
-            }
-        });
+                }).build();
 
-        return new AlertDialog.Builder(getActivity()).setTitle(R.string.create_document_title).setView(v).create();
+        dialog.getActionButton(DialogAction.POSITIVE).setEnabled(false);
+
+        return dialog;
     }
 
     @Override

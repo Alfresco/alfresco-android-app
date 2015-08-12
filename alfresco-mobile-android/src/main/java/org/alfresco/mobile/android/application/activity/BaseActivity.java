@@ -94,6 +94,7 @@ public abstract class BaseActivity extends AlfrescoActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PassCodeActivity.REQUEST_CODE_PASSCODE)
         {
             if (resultCode == RESULT_CANCELED)
@@ -132,7 +133,7 @@ public abstract class BaseActivity extends AlfrescoActivity
     // ///////////////////////////////////////////////////////////////////////////
     protected void displayAsDialogActivity(double defaultCoefficient, double heightCoefficient)
     {
-        requestWindowFeature(Window.FEATURE_ACTION_BAR);
+        supportRequestWindowFeature(Window.FEATURE_ACTION_BAR);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND, WindowManager.LayoutParams.FLAG_DIM_BEHIND);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 

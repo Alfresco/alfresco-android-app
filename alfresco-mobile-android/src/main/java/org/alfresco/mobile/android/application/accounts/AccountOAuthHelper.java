@@ -29,6 +29,7 @@ import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
+import org.alfresco.mobile.android.ui.activity.AlfrescoActivity;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -70,7 +71,7 @@ public class AccountOAuthHelper
     {
         AlfrescoAccount acc = SessionUtils.getAccount(activity);
         AccountOAuthHelper.saveLastCloudLoadingTime(activity);
-        activity.setProgressBarIndeterminateVisibility(false);
+        ((AlfrescoActivity) activity).setSupportProgressBarIndeterminateVisibility(false);
         if (!event.hasException)
         {
             saveNewOauthData(activity, acc, event.data);

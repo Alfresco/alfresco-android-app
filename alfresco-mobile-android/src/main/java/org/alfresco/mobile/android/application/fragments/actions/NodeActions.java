@@ -50,16 +50,12 @@ import org.alfresco.mobile.android.async.node.favorite.FavoriteNodeRequest;
 import org.alfresco.mobile.android.async.node.like.LikeNodeRequest;
 import org.alfresco.mobile.android.async.node.sync.SyncNodeRequest;
 import org.alfresco.mobile.android.async.utils.NodePlaceHolder;
-import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.sync.SyncContentManager;
 import org.alfresco.mobile.android.ui.operation.OperationWaitingDialogFragment;
 
-import android.app.AlertDialog;
-import android.content.ActivityNotFoundException;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
@@ -68,6 +64,8 @@ import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 
 public class NodeActions extends AbstractActions<Node>
 {
@@ -110,8 +108,8 @@ public class NodeActions extends AbstractActions<Node>
             int size = selectedDocument.size();
             if (size > 0)
             {
-                title += String.format(getFragment().getResources()
-                        .getQuantityString(R.plurals.selected_document, size), size);
+                title += String.format(
+                        getFragment().getResources().getQuantityString(R.plurals.selected_document, size), size);
             }
             size = selectedFolder.size();
             if (size > 0)
@@ -120,8 +118,8 @@ public class NodeActions extends AbstractActions<Node>
                 {
                     title += " | ";
                 }
-                title += String.format(
-                        getFragment().getResources().getQuantityString(R.plurals.selected_folders, size), size);
+                title += String.format(getFragment().getResources().getQuantityString(R.plurals.selected_folders, size),
+                        size);
             }
         }
 
@@ -164,18 +162,6 @@ public class NodeActions extends AbstractActions<Node>
         else
         {
             selectedFolder.remove(n);
-        }
-    }
-
-    private void selectAll()
-    {
-        if (getFragment() instanceof DocumentFolderBrowserFragment)
-        {
-            ((DocumentFolderBrowserFragment) getFragment()).selectAll();
-        }
-        else if (getFragment() instanceof DocumentFolderSearchFragment)
-        {
-            ((DocumentFolderSearchFragment) getFragment()).selectAll();
         }
     }
 
@@ -243,9 +229,6 @@ public class NodeActions extends AbstractActions<Node>
             mi.setIcon(R.drawable.ic_delete);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         }
-
-        mi = menu.add(Menu.NONE, R.id.menu_select_all, Menu.FIRST + 2000, R.string.select_all);
-        mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
     }
 
     @Override
@@ -298,10 +281,6 @@ public class NodeActions extends AbstractActions<Node>
             case R.id.menu_action_delete_folder:
                 delete(getActivity(), getFragment(), new ArrayList<Node>(selectedItems));
                 b = true;
-                break;
-            case R.id.menu_select_all:
-                selectAll();
-                b = false;
                 break;
             case R.id.menu_workflow_review_attachments:
                 startReview();
@@ -374,22 +353,20 @@ public class NodeActions extends AbstractActions<Node>
                 requestsBuilder.add(new LikeNodeRequest.Builder(node, false, doLike)
                         .setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG));
             }
-            String operationId = Operator.with(getActivity(), SessionUtils.getAccount(getActivity())).load(
-                    requestsBuilder);
+            String operationId = Operator.with(getActivity(), SessionUtils.getAccount(getActivity()))
+                    .load(requestsBuilder);
 
-            if (getFragment() instanceof DocumentFolderBrowserFragment)
+            int titleId = R.string.unlike;
+            int iconId = R.drawable.ic_unlike;
+            if (doLike)
             {
-                int titleId = R.string.unlike;
-                int iconId = R.drawable.ic_unlike;
-                if (doLike)
-                {
-                    titleId = R.string.like;
-                    iconId = R.drawable.ic_like;
-                }
-                OperationWaitingDialogFragment.newInstance(LikeNodeRequest.TYPE_ID, iconId,
-                        getFragment().getString(titleId), null, null, selectedItems.size(), operationId).show(
-                        getActivity().getSupportFragmentManager(), OperationWaitingDialogFragment.TAG);
+                titleId = R.string.like;
+                iconId = R.drawable.ic_like;
             }
+            OperationWaitingDialogFragment
+                    .newInstance(LikeNodeRequest.TYPE_ID, iconId, getFragment().getString(titleId), null, null,
+                            selectedItems.size(), operationId)
+                    .show(getActivity().getSupportFragmentManager(), OperationWaitingDialogFragment.TAG);
         }
         else
         {
@@ -413,9 +390,8 @@ public class NodeActions extends AbstractActions<Node>
         }
         else
         {
-            Operator.with(activity).load(
-                    new DownloadRequest.Builder(parentFolder, doc, false)
-                            .setNotificationVisibility(OperationRequest.VISIBILITY_NOTIFICATIONS));
+            Operator.with(activity).load(new DownloadRequest.Builder(parentFolder, doc, false)
+                    .setNotificationVisibility(OperationRequest.VISIBILITY_NOTIFICATIONS));
         }
     }
 
@@ -433,29 +409,23 @@ public class NodeActions extends AbstractActions<Node>
     public static void edit(final FragmentActivity activity, final Folder folder, final Node node)
     {
         ConfigManager configurationManager = ConfigManager.getInstance(activity);
-        if (configurationManager != null && configurationManager.hasConfig(SessionUtils.getAccount(activity).getId()))
-        {
-            try
-            {
-                Intent i = new Intent(activity, PrivateDialogActivity.class);
-                i.setAction(PrivateDialogActivity.ACTION_EDIT_NODE);
-                i.putExtra(PrivateIntent.EXTRA_FOLDER, (Parcelable) folder);
-                i.putExtra(PrivateIntent.EXTRA_NODE, (Parcelable) node);
-                activity.startActivity(i);
-            }
-            catch (ActivityNotFoundException e)
-            {
-                AlfrescoNotificationManager.getInstance(activity).showAlertCrouton(activity,
-                        R.string.error_unable_share_content);
-            }
-        }
-        else
-        {
-            FragmentDisplayer.with(activity).remove(UpdateDialogFragment.TAG);
+        /*
+         * if (configurationManager != null &&
+         * configurationManager.hasConfig(SessionUtils.getAccount(activity).
+         * getId())) { try { Intent i = new Intent(activity,
+         * PrivateDialogActivity.class);
+         * i.setAction(PrivateDialogActivity.ACTION_EDIT_NODE);
+         * i.putExtra(PrivateIntent.EXTRA_FOLDER, (Parcelable) folder);
+         * i.putExtra(PrivateIntent.EXTRA_NODE, (Parcelable) node);
+         * activity.startActivity(i); } catch (ActivityNotFoundException e) {
+         * AlfrescoNotificationManager.getInstance(activity).showAlertCrouton(
+         * activity, R.string.error_unable_share_content); } } else {
+         */
+        FragmentDisplayer.with(activity).remove(UpdateDialogFragment.TAG);
 
-            // Create and show the dialog.
-            UpdateDialogFragment.with(activity).parentFolder(folder).node(node).displayAsDialog();
-        }
+        // Create and show the dialog.
+        UpdateDialogFragment.with(activity).parentFolder(folder).node(node).displayAsDialog();
+        // }
     }
 
     public static void update(Fragment f)
@@ -473,11 +443,17 @@ public class NodeActions extends AbstractActions<Node>
     public static void delete(final FragmentActivity activity, final Fragment f, final List<Node> nodes)
     {
         Folder tmpParent = null;
+        if (f instanceof DocumentFolderBrowserFragment)
+        {
             tmpParent = ((DocumentFolderBrowserFragment) f).getParent();
+        }
+        else if (f instanceof PagerNodeDetailsFragment)
+        {
+            tmpParent = ((PagerNodeDetailsFragment) f).getParentNode();
+        }
         final Folder parent = tmpParent;
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setTitle(R.string.delete);
+        // Prepare Message
         String nodeDescription = nodes.size() + "";
         if (nodes.size() == 1)
         {
@@ -485,44 +461,49 @@ public class NodeActions extends AbstractActions<Node>
         }
         String description = String.format(
                 activity.getResources().getQuantityString(R.plurals.delete_items, nodes.size()), nodeDescription);
-        builder.setMessage(description);
-        builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener()
-        {
-            public void onClick(DialogInterface dialog, int item)
-            {
-                String operationId = null;
-                if (nodes.size() == 1)
-                {
-                    operationId = Operator.with(activity).load(
-                            new DeleteNodeRequest.Builder(parent, nodes.get(0))
-                                    .setNotificationVisibility(OperationRequest.VISIBILITY_TOAST));
-                }
-                else
-                {
-                    List<OperationBuilder> requestsBuilder = new ArrayList<OperationBuilder>(nodes.size());
-                    for (Node node : nodes)
-                    {
-                        requestsBuilder.add(new DeleteNodeRequest.Builder(parent, node)
-                                .setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG));
-                    }
-                    operationId = Operator.with(activity, SessionUtils.getAccount(activity)).load(requestsBuilder);
 
-                    OperationWaitingDialogFragment.newInstance(DeleteNodeRequest.TYPE_ID, R.drawable.ic_delete,
-                            f.getString(R.string.delete), null, parent, nodes.size(), operationId).show(
-                            f.getActivity().getSupportFragmentManager(), OperationWaitingDialogFragment.TAG);
-                }
-                dialog.dismiss();
-            }
-        });
-        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
-        {
-            public void onClick(DialogInterface dialog, int item)
-            {
-                dialog.dismiss();
-            }
-        });
-        AlertDialog alert = builder.create();
-        alert.show();
+        // Display Dialog
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(activity).title(R.string.delete)
+                .iconRes(R.drawable.ic_application_logo).content(description)
+                .callback(new MaterialDialog.ButtonCallback()
+                {
+                    @Override
+                    public void onPositive(MaterialDialog dialog)
+                    {
+                        String operationId;
+                        if (nodes.size() == 1)
+                        {
+                            operationId = Operator.with(activity)
+                                    .load(new DeleteNodeRequest.Builder(parent, nodes.get(0))
+                                            .setNotificationVisibility(OperationRequest.VISIBILITY_TOAST));
+                        }
+                        else
+                        {
+                            List<OperationBuilder> requestsBuilder = new ArrayList<OperationBuilder>(nodes.size());
+                            for (Node node : nodes)
+                            {
+                                requestsBuilder.add(new DeleteNodeRequest.Builder(parent, node)
+                                        .setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG));
+                            }
+                            operationId = Operator.with(activity, SessionUtils.getAccount(activity))
+                                    .load(requestsBuilder);
+
+                            OperationWaitingDialogFragment
+                                    .newInstance(DeleteNodeRequest.TYPE_ID, R.drawable.ic_delete,
+                                            f.getString(R.string.delete), null, parent, nodes.size(), operationId)
+                                    .show(f.getActivity().getSupportFragmentManager(),
+                                            OperationWaitingDialogFragment.TAG);
+                        }
+                        dialog.dismiss();
+                    }
+
+                    @Override
+                    public void onNegative(MaterialDialog dialog)
+                    {
+                        dialog.dismiss();
+                    }
+                }).positiveText(R.string.confirm).negativeText(R.string.cancel);
+        builder.show();
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -536,8 +517,8 @@ public class NodeActions extends AbstractActions<Node>
             requestsBuilder.add(new FavoriteNodeRequest.Builder(nodeId, doFavorite, true)
                     .setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG));
         }
-        String operationId = Operator.with(fr.getActivity(), SessionUtils.getAccount(fr.getActivity())).load(
-                requestsBuilder);
+        String operationId = Operator.with(fr.getActivity(), SessionUtils.getAccount(fr.getActivity()))
+                .load(requestsBuilder);
 
         if (fr instanceof DocumentFolderBrowserFragment || fr instanceof SyncFragment
                 || fr instanceof DocumentFolderSearchFragment || fr instanceof FavoritesFragment)
@@ -549,9 +530,10 @@ public class NodeActions extends AbstractActions<Node>
                 titleId = R.string.favorite;
                 iconId = R.drawable.ic_favorite_light;
             }
-            OperationWaitingDialogFragment.newInstance(FavoriteNodeRequest.TYPE_ID, iconId, fr.getString(titleId),
-                    null, null, selectedItems.size(), operationId).show(fr.getActivity().getSupportFragmentManager(),
-                    OperationWaitingDialogFragment.TAG);
+            OperationWaitingDialogFragment
+                    .newInstance(FavoriteNodeRequest.TYPE_ID, iconId, fr.getString(titleId), null, null,
+                            selectedItems.size(), operationId)
+                    .show(fr.getActivity().getSupportFragmentManager(), OperationWaitingDialogFragment.TAG);
         }
     }
 
@@ -563,8 +545,8 @@ public class NodeActions extends AbstractActions<Node>
             requestsBuilder.add(new SyncNodeRequest.Builder(nodeId, doFavorite, true)
                     .setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG));
         }
-        String operationId = Operator.with(fr.getActivity(), SessionUtils.getAccount(fr.getActivity())).load(
-                requestsBuilder);
+        String operationId = Operator.with(fr.getActivity(), SessionUtils.getAccount(fr.getActivity()))
+                .load(requestsBuilder);
 
         if (fr instanceof DocumentFolderBrowserFragment || fr instanceof SyncFragment
                 || fr instanceof DocumentFolderSearchFragment || fr instanceof FavoritesFragment)
@@ -576,9 +558,10 @@ public class NodeActions extends AbstractActions<Node>
                 titleId = R.string.sync;
                 iconId = R.drawable.ic_sync_light;
             }
-            OperationWaitingDialogFragment.newInstance(SyncNodeRequest.TYPE_ID, iconId, fr.getString(titleId), null,
-                    null, selectedItems.size(), operationId).show(fr.getActivity().getSupportFragmentManager(),
-                    OperationWaitingDialogFragment.TAG);
+            OperationWaitingDialogFragment
+                    .newInstance(SyncNodeRequest.TYPE_ID, iconId, fr.getString(titleId), null, null,
+                            selectedItems.size(), operationId)
+                    .show(fr.getActivity().getSupportFragmentManager(), OperationWaitingDialogFragment.TAG);
         }
     }
 
@@ -590,7 +573,8 @@ public class NodeActions extends AbstractActions<Node>
             requestsBuilder.add(new LikeNodeRequest.Builder(node, false, doLike)
                     .setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG));
         }
-        String operationId = Operator.with(fr.getActivity(), SessionUtils.getAccount(fr.getActivity())).load(requestsBuilder);
+        String operationId = Operator.with(fr.getActivity(), SessionUtils.getAccount(fr.getActivity()))
+                .load(requestsBuilder);
 
         if (fr instanceof DocumentFolderBrowserFragment || fr instanceof SyncFragment
                 || fr instanceof DocumentFolderSearchFragment || fr instanceof FavoritesFragment)
@@ -602,9 +586,10 @@ public class NodeActions extends AbstractActions<Node>
                 titleId = R.string.like;
                 iconId = R.drawable.ic_like;
             }
-            OperationWaitingDialogFragment.newInstance(LikeNodeRequest.TYPE_ID, iconId,
-                    fr.getActivity().getString(titleId), null, null, selectedItems.size(), operationId).show(
-                    fr.getActivity().getSupportFragmentManager(), OperationWaitingDialogFragment.TAG);
+            OperationWaitingDialogFragment
+                    .newInstance(LikeNodeRequest.TYPE_ID, iconId, fr.getActivity().getString(titleId), null, null,
+                            selectedItems.size(), operationId)
+                    .show(fr.getActivity().getSupportFragmentManager(), OperationWaitingDialogFragment.TAG);
         }
     }
 }

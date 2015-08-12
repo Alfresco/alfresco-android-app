@@ -28,16 +28,16 @@ import org.alfresco.mobile.android.async.session.oauth.RetrieveOAuthDataRequest;
 import org.alfresco.mobile.android.foundation.R;
 import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
-import org.alfresco.mobile.android.platform.intent.BaseActionUtils;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
-import org.alfresco.mobile.android.ui.fragments.SimpleAlertDialogFragment;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisConnectionException;
 import org.apache.http.HttpStatus;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.text.Html;
 import android.util.Log;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 
 public final class CloudExceptionUtils
 {
@@ -82,13 +82,11 @@ public final class CloudExceptionUtils
             }
             else
             {
-                Bundle b = new Bundle();
-                b.putInt(SimpleAlertDialogFragment.ARGUMENT_ICON, R.drawable.ic_application_logo);
-                b.putInt(SimpleAlertDialogFragment.ARGUMENT_TITLE, R.string.error_general_title);
-                b.putInt(SimpleAlertDialogFragment.ARGUMENT_POSITIVE_BUTTON, android.R.string.ok);
-                b.putInt(SimpleAlertDialogFragment.ARGUMENT_MESSAGE,
-                        AlfrescoExceptionHelper.getMessageId(context, exception));
-                BaseActionUtils.actionDisplayDialog(context, b);
+                new MaterialDialog.Builder(context).iconRes(R.drawable.ic_application_logo)
+                        .title(R.string.error_general_title)
+                        .content(Html
+                                .fromHtml(context.getString(AlfrescoExceptionHelper.getMessageId(context, exception))))
+                        .positiveText(android.R.string.ok).show();
                 return;
             }
         }

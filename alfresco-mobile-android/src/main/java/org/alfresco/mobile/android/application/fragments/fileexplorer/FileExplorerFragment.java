@@ -102,6 +102,16 @@ public class FileExplorerFragment extends FileExplorerFoundationFragment
     // ///////////////////////////////////////////////////////////////////////////
     // LIFECYCLE
     // ///////////////////////////////////////////////////////////////////////////
+    @Override
+    public void displayTitle()
+    {
+        if (isShortCut)
+        {
+            FileExplorerHelper.displayNavigationMode(getActivity(), getMode(), false, menuId);
+            getActionBar().setDisplayShowTitleEnabled(false);
+        }
+    }
+
     protected void onRetrieveParameters(Bundle bundle)
     {
         super.onRetrieveParameters(bundle);
@@ -142,13 +152,7 @@ public class FileExplorerFragment extends FileExplorerFoundationFragment
             }
         }
         privateFolder = AlfrescoStorageManager.getInstance(getActivity()).getRootPrivateFolder().getParentFile();
-
-        getActionBar().show();
-        if (isShortCut)
-        {
-            FileExplorerHelper.displayNavigationMode(getActivity(), getMode(), false, menuId);
-            getActionBar().setDisplayShowTitleEnabled(false);
-        }
+        displayTitle();
     }
 
     @Override

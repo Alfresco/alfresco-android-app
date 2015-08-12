@@ -39,6 +39,7 @@ import org.alfresco.mobile.android.application.fragments.node.details.NodeDetail
 import org.alfresco.mobile.android.async.node.favorite.FavoriteNodeEvent;
 import org.alfresco.mobile.android.async.node.favorite.FavoriteNodesEvent;
 import org.alfresco.mobile.android.ui.ListingModeFragment;
+import org.alfresco.mobile.android.ui.SelectableFragment;
 import org.alfresco.mobile.android.ui.node.favorite.FavoritesNodeFragment;
 import org.alfresco.mobile.android.ui.template.ListingTemplate;
 
@@ -53,7 +54,7 @@ import android.widget.TextView;
 
 import com.squareup.otto.Subscribe;
 
-public class FavoritesFragment extends FavoritesNodeFragment
+public class FavoritesFragment extends FavoritesNodeFragment implements SelectableFragment
 {
     public static final String TAG = FavoritesFragment.class.getName();
 
@@ -224,8 +225,11 @@ public class FavoritesFragment extends FavoritesNodeFragment
                 nActions = null;
                 unselect();
                 refreshListView();
+                displayFab(-1, null);
             }
         });
+
+        displayFab(R.drawable.ic_done_all_white, onMultiSelectionFabClickListener());
         getActivity().startActionMode(nActions);
         adapter.notifyDataSetChanged();
         return true;
@@ -236,12 +240,56 @@ public class FavoritesFragment extends FavoritesNodeFragment
         selectedItems.clear();
     }
 
+    @Override
     public void selectAll()
     {
         if (nActions != null && adapter != null)
         {
+            displayFab(R.drawable.ic_close_dark, onCancelMultiSelectionFabClickListener());
             nActions.selectNodes(((NodeAdapter) adapter).getNodes());
             adapter.notifyDataSetChanged();
+        }
+    }
+
+    protected View.OnClickListener onMultiSelectionFabClickListener()
+    {
+        return new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                selectAll();
+            }
+        };
+    }
+
+    protected View.OnClickListener onCancelMultiSelectionFabClickListener()
+    {
+        return new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                if (nActions != null)
+                {
+                    nActions.finish();
+                }
+            }
+        };
+    }
+
+    private void displayFab(int iconId, View.OnClickListener listener)
+    {
+        if (listener != null)
+        {
+            fab.setVisibility(View.VISIBLE);
+            fab.setImageResource(iconId);
+            fab.setOnClickListener(listener);
+            fab.show(true);
+        }
+        else
+        {
+            fab.setVisibility(View.GONE);
         }
     }
 

@@ -31,7 +31,6 @@ import org.alfresco.mobile.android.platform.exception.AlfrescoAppException;
 import org.alfresco.mobile.android.platform.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.platform.extensions.HockeyAppManager;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
-import org.alfresco.mobile.android.ui.fragments.SimpleAlertDialogFragment;
 import org.alfresco.mobile.android.ui.fragments.WaitingDialogFragment;
 import org.alfresco.mobile.android.ui.operation.OperationWaitingDialogFragment;
 import org.alfresco.mobile.android.ui.rendition.RenditionManager;
@@ -83,7 +82,6 @@ public abstract class AlfrescoAppCompatActivity extends AppCompatActivity
         sessionManager = SessionManager.getInstance(this);
 
         IntentFilter filters = new IntentFilter();
-        filters.addAction(PrivateIntent.ACTION_DISPLAY_DIALOG);
         filters.addAction(PrivateIntent.ACTION_DISPLAY_ERROR);
         utilsReceiver = new UtilsReceiver();
         receivers.add(utilsReceiver);
@@ -317,16 +315,6 @@ public abstract class AlfrescoAppCompatActivity extends AppCompatActivity
             FragmentActivity activity = AlfrescoAppCompatActivity.this;
 
             if (activity.isFinishing() || activity.isChangingConfigurations()) { return; }
-
-            //
-            if (PrivateIntent.ACTION_DISPLAY_DIALOG.equals(intent.getAction()))
-            {
-                removeWaitingDialog();
-
-                SimpleAlertDialogFragment.newInstance(intent.getExtras()).show(activity.getSupportFragmentManager(),
-                        SimpleAlertDialogFragment.TAG);
-                return;
-            }
 
             // Intent for Display Errors
             if (PrivateIntent.ACTION_DISPLAY_ERROR.equals(intent.getAction()))

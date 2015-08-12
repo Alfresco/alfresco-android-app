@@ -43,6 +43,7 @@ import org.alfresco.mobile.android.async.OperationRequest.OperationBuilder;
 import org.alfresco.mobile.android.async.node.search.SearchEvent;
 import org.alfresco.mobile.android.async.node.search.SearchRequest;
 import org.alfresco.mobile.android.ui.ListingModeFragment;
+import org.alfresco.mobile.android.ui.SelectableFragment;
 import org.alfresco.mobile.android.ui.node.search.SearchNodesFragment;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 
@@ -62,7 +63,7 @@ import com.squareup.otto.Subscribe;
  * @since 1.3
  * @author Jean Marie Pascal
  */
-public class DocumentFolderSearchFragment extends SearchNodesFragment
+public class DocumentFolderSearchFragment extends SearchNodesFragment implements SelectableFragment
 {
 
     public static final String TAG = DocumentFolderSearchFragment.class.getName();
@@ -244,8 +245,11 @@ public class DocumentFolderSearchFragment extends SearchNodesFragment
                 nActions = null;
                 unselect();
                 refreshListView();
+                displayFab(-1, null);
             }
         });
+
+        displayFab(R.drawable.ic_done_all_white, onMultiSelectionFabClickListener());
         getActivity().startActionMode(nActions);
         adapter.notifyDataSetChanged();
         return true;
@@ -256,12 +260,56 @@ public class DocumentFolderSearchFragment extends SearchNodesFragment
         selectedItems.clear();
     }
 
+    @Override
     public void selectAll()
     {
         if (nActions != null && adapter != null)
         {
+            displayFab(R.drawable.ic_close_dark, onCancelMultiSelectionFabClickListener());
             nActions.selectNodes(((NodeAdapter) adapter).getNodes());
             adapter.notifyDataSetChanged();
+        }
+    }
+
+    protected View.OnClickListener onMultiSelectionFabClickListener()
+    {
+        return new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                selectAll();
+            }
+        };
+    }
+
+    protected View.OnClickListener onCancelMultiSelectionFabClickListener()
+    {
+        return new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                if (nActions != null)
+                {
+                    nActions.finish();
+                }
+            }
+        };
+    }
+
+    private void displayFab(int iconId, View.OnClickListener listener)
+    {
+        if (listener != null)
+        {
+            fab.setVisibility(View.VISIBLE);
+            fab.setImageResource(iconId);
+            fab.setOnClickListener(listener);
+            fab.show(true);
+        }
+        else
+        {
+            fab.setVisibility(View.GONE);
         }
     }
 

@@ -32,13 +32,13 @@ import org.alfresco.mobile.android.async.node.download.DownloadTask.DownloadTask
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 
 public class DownloadDialogFragment extends DialogFragment implements DownloadTaskListener
 {
@@ -58,7 +58,7 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
 
     public static final String ARGUMENT_TEMPFILE = "TempFile";
 
-    private Dialog dialog;
+    private MaterialDialog dialog;
 
     private Document doc;
 
@@ -97,15 +97,9 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
             action = getArguments().getInt(ARGUMENT_ACTION);
         }
 
-        ProgressDialog progress = new ProgressDialog(getActivity());
-        progress.setTitle(getString(R.string.download) + " : " + doc.getName());
-        progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        progress.setMessage(getString(R.string.download_progress));
-        progress.setIndeterminate(false);
-        progress.setCancelable(true);
-        progress.setProgress(0);
-        progress.setMax(100);
-        dialog = progress;
+        boolean showMinMax = true;
+        dialog = new MaterialDialog.Builder(getActivity()).title(getString(R.string.download) + " : " + doc.getName())
+                .content(R.string.download_progress).progress(false, 100, showMinMax).show();
 
         if (dlt == null)
         {
@@ -119,16 +113,10 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
             }
             else
             {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setTitle(R.string.app_name);
-                builder.setMessage(R.string.sdinaccessible);
-                builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener()
-                {
-                    public void onClick(DialogInterface dialog, int item)
-                    {
-                    }
-                });
-                dialog = builder.create();
+                MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity())
+                        .iconRes(R.drawable.ic_application_logo).title(R.string.app_name)
+                        .content(R.string.sdinaccessible).positiveText(android.R.string.ok);
+                dialog = builder.build();
             }
         }
         else
@@ -160,7 +148,7 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
     public void onProgressUpdate(Integer... values)
     {
         int percent = Math.round(((float) values[0] / totalSize) * 100);
-        ((ProgressDialog) dialog).setProgress(percent);
+        dialog.incrementProgress(percent);
     }
 
     @Override
@@ -183,8 +171,8 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
                     AlfrescoNotificationManager.getInstance(getActivity()).showToast(
                             getActivity().getText(R.string.download_complete) + " " + contentFile.getFileName());
 
-                    NodeDetailsFragment detailsFragment = (NodeDetailsFragment) getFragmentManager().findFragmentByTag(
-                            NodeDetailsFragment.getDetailsTag());
+                    NodeDetailsFragment detailsFragment = (NodeDetailsFragment) getFragmentManager()
+                            .findFragmentByTag(NodeDetailsFragment.getDetailsTag());
                     if (detailsFragment != null)
                     {
                         long datetime = contentFile.getFile().lastModified();
@@ -206,8 +194,8 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
         }
         else
         {
-            AlfrescoNotificationManager.getInstance(getActivity()).showToast(
-                    getActivity().getText(R.string.download_error).toString());
+            AlfrescoNotificationManager.getInstance(getActivity())
+                    .showToast(getActivity().getText(R.string.download_error).toString());
         }
         dismiss();
     }

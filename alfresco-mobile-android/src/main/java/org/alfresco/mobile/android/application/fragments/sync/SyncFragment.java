@@ -60,6 +60,7 @@ import org.alfresco.mobile.android.sync.utils.NodeSyncPlaceHolder;
 import org.alfresco.mobile.android.ui.GridFragment;
 import org.alfresco.mobile.android.ui.ListingModeFragment;
 import org.alfresco.mobile.android.ui.RefreshFragment;
+import org.alfresco.mobile.android.ui.SelectableFragment;
 import org.alfresco.mobile.android.ui.fragments.BaseCursorGridFragment;
 
 import android.content.ContentResolver;
@@ -86,7 +87,7 @@ import android.widget.TextView;
 import com.squareup.otto.Subscribe;
 
 public class SyncFragment extends BaseCursorGridFragment
-        implements RefreshFragment, ListingModeFragment, GridFragment, SyncStatusObserver
+        implements RefreshFragment, ListingModeFragment, GridFragment, SyncStatusObserver, SelectableFragment
 {
     public static final String TAG = SyncFragment.class.getName();
 
@@ -505,12 +506,68 @@ public class SyncFragment extends BaseCursorGridFragment
                 adapter.notifyDataSetChanged();
                 ((SyncCursorAdapter) adapter).refresh();
                 gv.setAdapter(adapter);
+                displayFab(-1, null);
             }
         });
+
+        displayFab(R.drawable.ic_done_all_white, onMultiSelectionFabClickListener());
         getActivity().startActionMode(nActions);
         adapter.notifyDataSetChanged();
 
         return true;
+    }
+
+    @Override
+    public void selectAll()
+    {
+        if (nActions != null && adapter != null)
+        {
+            displayFab(R.drawable.ic_close_dark, onCancelMultiSelectionFabClickListener());
+            nActions.selectNodes(((SyncCursorAdapter) adapter).getNodes());
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    protected View.OnClickListener onMultiSelectionFabClickListener()
+    {
+        return new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                selectAll();
+            }
+        };
+    }
+
+    protected View.OnClickListener onCancelMultiSelectionFabClickListener()
+    {
+        return new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                if (nActions != null)
+                {
+                    nActions.finish();
+                }
+            }
+        };
+    }
+
+    private void displayFab(int iconId, View.OnClickListener listener)
+    {
+        if (listener != null)
+        {
+            fab.setVisibility(View.VISIBLE);
+            fab.setImageResource(iconId);
+            fab.setOnClickListener(listener);
+            fab.show(true);
+        }
+        else
+        {
+            fab.setVisibility(View.GONE);
+        }
     }
 
     public int getMode()

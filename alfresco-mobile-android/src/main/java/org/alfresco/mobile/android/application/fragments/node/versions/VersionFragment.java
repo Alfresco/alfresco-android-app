@@ -22,7 +22,6 @@ import java.util.Map;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
-import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsFragment;
 import org.alfresco.mobile.android.async.node.version.DocumentVersionsEvent;
@@ -61,12 +60,6 @@ public class VersionFragment extends VersionsNodeFragment
     // ///////////////////////////////////////////////////////////////////////////
     // LIFECYCLE
     // ///////////////////////////////////////////////////////////////////////////
-    @Override
-    public String onPrepareTitle()
-    {
-        return getString(R.string.document_version_header);
-    }
-
     @Override
     protected void onRetrieveParameters(Bundle bundle)
     {

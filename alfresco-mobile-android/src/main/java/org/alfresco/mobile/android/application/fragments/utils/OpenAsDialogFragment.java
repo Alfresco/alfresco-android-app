@@ -26,20 +26,19 @@ import org.alfresco.mobile.android.application.managers.ActionUtils;
 import org.alfresco.mobile.android.platform.data.DocumentTypeRecord;
 import org.alfresco.mobile.android.platform.intent.BaseActionUtils.ActionManagerListener;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
-import org.alfresco.mobile.android.ui.fragments.SimpleAlertDialogFragment;
 import org.alfresco.mobile.android.ui.holder.SingleLineViewHolder;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
-import android.view.LayoutInflater;
+import android.text.Html;
+import android.text.TextUtils;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 
 /**
  * @author Jean Marie Pascal
@@ -54,6 +53,10 @@ public class OpenAsDialogFragment extends DialogFragment
      * must be a DocumentTypeRecord object.
      */
     private static final String ARGUMENT_FILE = "documentType";
+
+    private ListView lv;
+
+    private List<DocumentTypeRecord> fileTypes;
 
     /**
      * Static constructor.
@@ -72,41 +75,39 @@ public class OpenAsDialogFragment extends DialogFragment
 
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
-        LayoutInflater inflater = LayoutInflater.from(getActivity());
-        final View v = inflater.inflate(R.layout.sdk_list, null);
+        fileTypes = DocumentTypeRecordHelper.getOpenAsDocumentTypeList(getActivity());
+        FileTypeAdapter adapter = new FileTypeAdapter(getActivity(), R.layout.row_single_line, fileTypes);
 
-        ListView lv = (ListView) v.findViewById(R.id.listView);
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity())
+                .iconRes(R.drawable.ic_application_logo).title(R.string.open_as_title)
+                .adapter(adapter, new MaterialDialog.ListCallback()
+                {
+                    @Override
+                    public void onSelection(MaterialDialog materialDialog, View view, int position,
+                            CharSequence charSequence)
+                    {
 
-        lv.setOnItemClickListener(new OnItemClickListener()
-        {
-            @Override
-            public void onItemClick(AdapterView<?> l, View v, int position, long id)
-            {
-                DocumentTypeRecord record = (DocumentTypeRecord) l.getItemAtPosition(position);
-                // Show properties
-                ActionUtils.actionView(getActivity(), (File) getArguments().get(ARGUMENT_FILE), record.mimetype,
-                        new ActionManagerListener()
+                        DocumentTypeRecord record = (DocumentTypeRecord) fileTypes.get(position);
+                        // Show properties
+                        ActionUtils.actionView(getActivity(), (File) getArguments().get(ARGUMENT_FILE), record.mimetype,
+                                new ActionManagerListener()
                         {
                             @Override
                             public void onActivityNotFoundException(ActivityNotFoundException e)
                             {
-                                Bundle b = new Bundle();
-                                b.putInt(SimpleAlertDialogFragment.ARGUMENT_TITLE,
-                                        R.string.error_unable_open_file_title);
-                                b.putInt(SimpleAlertDialogFragment.ARGUMENT_MESSAGE, R.string.error_unable_open_file);
-                                b.putInt(SimpleAlertDialogFragment.ARGUMENT_POSITIVE_BUTTON, android.R.string.ok);
-                                ActionUtils.actionDisplayDialog(getActivity(), b);
+                                new MaterialDialog.Builder(getActivity()).iconRes(R.drawable.ic_application_logo)
+                                        .title(R.string.error_unable_open_file_title)
+                                        .content(Html.fromHtml(getString(R.string.error_unable_open_file)))
+                                        .positiveText(android.R.string.ok).show();
                             }
                         });
-                dismiss();
-            }
-        });
+                        dismiss();
 
-        List<DocumentTypeRecord> fileTypes = DocumentTypeRecordHelper.getOpenAsDocumentTypeList(getActivity());
-        FileTypeAdapter adapter = new FileTypeAdapter(getActivity(), R.layout.row_single_line, fileTypes);
-        lv.setAdapter(adapter);
+                        materialDialog.dismiss();
+                    }
+                });
 
-        return new AlertDialog.Builder(getActivity()).setTitle(R.string.open_as_title).setView(v).create();
+        return builder.show();
     }
 
     /**
@@ -126,7 +127,14 @@ public class OpenAsDialogFragment extends DialogFragment
         {
             if (item != null)
             {
-                vh.topText.setText(item.nameString);
+                if (TextUtils.isEmpty(item.nameString))
+                {
+                    vh.topText.setText(item.nameId);
+                }
+                else
+                {
+                    vh.topText.setText(item.nameString);
+                }
             }
         }
 
