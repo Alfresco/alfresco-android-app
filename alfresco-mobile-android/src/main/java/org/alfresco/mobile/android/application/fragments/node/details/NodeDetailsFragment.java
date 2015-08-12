@@ -101,10 +101,8 @@ import org.alfresco.mobile.android.ui.utils.Formatter;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.enums.Action;
 
-import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -123,6 +121,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.squareup.otto.Subscribe;
 
 import it.sephiroth.android.library.imagezoom.ImageViewTouch;
@@ -264,7 +263,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
 
         switch (requestCode)
         {
-        // Save Back : When a file has been opened by 3rd party app.
+            // Save Back : When a file has been opened by 3rd party app.
             case RequestCode.SAVE_BACK:
             case RequestCode.DECRYPTED:
                 // File opened when user tap the preview
@@ -278,8 +277,8 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
                 if (isSynced)
                 {
                     // We use the sync file stored locally
-                    tmpFile = SyncContentManager.getInstance(getActivity()).getSyncFile(
-                            SessionUtils.getAccount(getActivity()), node);
+                    tmpFile = SyncContentManager.getInstance(getActivity())
+                            .getSyncFile(SessionUtils.getAccount(getActivity()), node);
                 }
                 else
                 {
@@ -310,10 +309,10 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
                         }
 
                         cValues.put(SyncContentSchema.COLUMN_STATUS, operationStatut);
-                        getActivity().getContentResolver().update(
-                                SyncContentManager.getInstance(getActivity()).getUri(
-                                        SessionUtils.getAccount(getActivity()), node.getIdentifier()), cValues, null,
-                                null);
+                        getActivity().getContentResolver()
+                                .update(SyncContentManager.getInstance(getActivity())
+                                        .getUri(SessionUtils.getAccount(getActivity()), node.getIdentifier()), cValues,
+                                null, null);
                     }
 
                     // Encrypt sync file if necessary
@@ -336,14 +335,14 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
                         }
 
                         cValues.put(SyncContentSchema.COLUMN_STATUS, operationStatut);
-                        getActivity().getContentResolver().update(
-                                SyncContentManager.getInstance(getActivity()).getUri(
-                                        SessionUtils.getAccount(getActivity()), node.getIdentifier()), cValues, null,
-                                null);
+                        getActivity().getContentResolver()
+                                .update(SyncContentManager.getInstance(getActivity())
+                                        .getUri(SessionUtils.getAccount(getActivity()), node.getIdentifier()), cValues,
+                                null, null);
 
                         // Sync if it's possible.
-                        if (SyncContentManager.getInstance(getActivity()).canSync(
-                                SessionUtils.getAccount(getActivity())))
+                        if (SyncContentManager.getInstance(getActivity())
+                                .canSync(SessionUtils.getAccount(getActivity())))
                         {
                             SyncContentManager.getInstance(getActivity()).sync(SessionUtils.getAccount(getActivity()),
                                     node.getIdentifier());
@@ -353,45 +352,44 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
                     {
                         // File is temporary (after dl from server)
                         // We request the user if he wants to save back
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                        builder.setTitle(R.string.save_back);
-                        builder.setMessage(String.format(getResources().getString(R.string.save_back_description),
-                                node.getName()));
-                        builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener()
-                        {
-                            public void onClick(DialogInterface dialog, int item)
-                            {
-                                update(dlFile);
-                                dialog.dismiss();
-                            }
-                        });
-                        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
-                        {
-                            public void onClick(DialogInterface dialog, int item)
-                            {
-                                DataProtectionManager.getInstance(getActivity()).checkEncrypt(
-                                        SessionUtils.getAccount(getActivity()), dlFile);
-                                dialog.dismiss();
-                            }
-                        });
-                        AlertDialog alert = builder.create();
-                        alert.show();
+                        new MaterialDialog.Builder(getActivity()).iconRes(R.drawable.ic_application_logo)
+                                .title(R.string.save_back)
+                                .content(String.format(getResources().getString(R.string.save_back_description),
+                                        node.getName()))
+                                .positiveText(R.string.confirm).negativeText(R.string.cancel)
+                                .callback(new MaterialDialog.ButtonCallback()
+                                {
+                                    @Override
+                                    public void onPositive(MaterialDialog dialog)
+                                    {
+                                        update(dlFile);
+                                        dialog.dismiss();
+                                    }
+
+                                    @Override
+                                    public void onNegative(MaterialDialog dialog)
+                                    {
+                                        DataProtectionManager.getInstance(getActivity())
+                                                .checkEncrypt(SessionUtils.getAccount(getActivity()), dlFile);
+                                        dialog.dismiss();
+                                    }
+                                }).show();
                     }
                 }
                 else
                 {
-                    DataProtectionManager.getInstance(getActivity()).checkEncrypt(
-                            SessionUtils.getAccount(getActivity()), dlFile);
+                    DataProtectionManager.getInstance(getActivity())
+                            .checkEncrypt(SessionUtils.getAccount(getActivity()), dlFile);
 
                     if (isSynced)
                     {
                         // Update statut of the sync reference
                         ContentValues cValues = new ContentValues();
                         cValues.put(SyncContentSchema.COLUMN_LOCAL_MODIFICATION_TIMESTAMP, dlFile.lastModified());
-                        getActivity().getContentResolver().update(
-                                SyncContentManager.getInstance(getActivity()).getUri(
-                                        SessionUtils.getAccount(getActivity()), node.getIdentifier()), cValues, null,
-                                null);
+                        getActivity().getContentResolver()
+                                .update(SyncContentManager.getInstance(getActivity())
+                                        .getUri(SessionUtils.getAccount(getActivity()), node.getIdentifier()), cValues,
+                                null, null);
                     }
 
                     // File with no modification
@@ -403,8 +401,8 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
             case RequestCode.FILEPICKER:
                 if (data != null && PrivateIntent.ACTION_PICK_FILE.equals(data.getAction()))
                 {
-                    ActionUtils
-                            .actionPickFile(getFragmentManager().findFragmentByTag(getTag()), RequestCode.FILEPICKER);
+                    ActionUtils.actionPickFile(getFragmentManager().findFragmentByTag(getTag()),
+                            RequestCode.FILEPICKER);
                 }
                 else if (data != null && data.getData() != null)
                 {
@@ -419,8 +417,8 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
                         // Error case : Unable to find the file path associated
                         // to user pick.
                         // Sample : Picasa image case
-                        ActionUtils.actionDisplayError(NodeDetailsFragment.this, new AlfrescoAppException(
-                                getString(R.string.error_unknown_filepath), true));
+                        ActionUtils.actionDisplayError(NodeDetailsFragment.this,
+                                new AlfrescoAppException(getString(R.string.error_unknown_filepath), true));
                     }
                 }
                 break;
@@ -721,8 +719,8 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
                 }
             }
 
-            AccessibilityUtils.addContentDescription(iv, mime != null ? mime.getDescription() : (String) node
-                    .getProperty(PropertyIds.CONTENT_STREAM_MIME_TYPE).getValue());
+            AccessibilityUtils.addContentDescription(iv, mime != null ? mime.getDescription()
+                    : (String) node.getProperty(PropertyIds.CONTENT_STREAM_MIME_TYPE).getValue());
 
             if (!isRestrictable && !AccessibilityUtils.isEnabled(getActivity()) && iv instanceof ImageViewTouch)
             {
@@ -758,8 +756,8 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
             final File syncFile = syncManager.getSyncFile(acc, node);
             if (syncFile == null || !syncFile.exists())
             {
-                AlfrescoNotificationManager.getInstance(getActivity()).showLongToast(
-                        getString(R.string.sync_document_not_available));
+                AlfrescoNotificationManager.getInstance(getActivity())
+                        .showLongToast(getString(R.string.sync_document_not_available));
                 return;
             }
             long datetime = syncFile.lastModified();
@@ -817,76 +815,75 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         }
         else
         {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setTitle(R.string.app_name);
-            builder.setMessage(R.string.link_or_attach);
-
-            builder.setPositiveButton(R.string.full_attachment, new DialogInterface.OnClickListener()
-            {
-                public void onClick(DialogInterface dialog, int item)
-                {
-                    Bundle b = new Bundle();
-                    b.putParcelable(DownloadDialogFragment.ARGUMENT_DOCUMENT, node);
-                    b.putInt(DownloadDialogFragment.ARGUMENT_ACTION, DownloadDialogFragment.ACTION_EMAIL);
-                    DialogFragment frag = new DownloadDialogFragment();
-                    frag.setArguments(b);
-                    frag.show(getActivity().getSupportFragmentManager(), DownloadDialogFragment.TAG);
-                }
-            });
-            builder.setNegativeButton(R.string.link_to_repo, new DialogInterface.OnClickListener()
-            {
-                public void onClick(DialogInterface dialog, int item)
-                {
-                    if (parentNode != null)
+            new MaterialDialog.Builder(getActivity()).iconRes(R.drawable.ic_application_logo).title(R.string.app_name)
+                    .content(R.string.link_or_attach).positiveText(R.string.full_attachment)
+                    .negativeText(R.string.link_to_repo).callback(new MaterialDialog.ButtonCallback()
                     {
-                        String path = parentNode.getPropertyValue(PropertyIds.PATH);
-                        if (path.length() > 0)
+                        @Override
+                        public void onPositive(MaterialDialog dialog)
                         {
-                            String fullPath = null;
-                            if (getSession() instanceof RepositorySession)
-                            {
-                                fullPath = shareUrl.concat(String.format(getString(R.string.onpremise_share_url),
-                                        NodeRefUtils.getCleanIdentifier(NodeRefUtils.getNodeIdentifier(node
-                                                .getIdentifier()))));
-                                ActionUtils.actionShareLink(NodeDetailsFragment.this, fullPath);
-                            }
-                            else if (path.startsWith("/Sites/"))
-                            {
-                                // Get past the '/Sites/'
-                                String sub1 = path.substring(7);
-                                // Find end of site name
-                                int idx = sub1.indexOf('/');
-                                if (idx == -1)
-                                {
-                                    idx = sub1.length();
-                                }
-                                String siteName = sub1.substring(0, idx);
-                                String nodeID = NodeRefUtils.getCleanIdentifier(node.getIdentifier());
-                                fullPath = String.format(getString(R.string.cloud_share_url),
-                                        ((CloudSession) getSession()).getNetwork().getIdentifier(), siteName, nodeID);
+                            Bundle b = new Bundle();
+                            b.putParcelable(DownloadDialogFragment.ARGUMENT_DOCUMENT, node);
+                            b.putInt(DownloadDialogFragment.ARGUMENT_ACTION, DownloadDialogFragment.ACTION_EMAIL);
+                            DialogFragment frag = new DownloadDialogFragment();
+                            frag.setArguments(b);
+                            frag.show(getActivity().getSupportFragmentManager(), DownloadDialogFragment.TAG);
+                            dialog.dismiss();
+                        }
 
-                                ActionUtils.actionShareLink(NodeDetailsFragment.this, fullPath);
+                        @Override
+                        public void onNegative(MaterialDialog dialog)
+                        {
+                            if (parentNode != null)
+                            {
+                                String path = parentNode.getPropertyValue(PropertyIds.PATH);
+                                if (path.length() > 0)
+                                {
+                                    String fullPath = null;
+                                    if (getSession() instanceof RepositorySession)
+                                    {
+                                        fullPath = shareUrl
+                                                .concat(String.format(getString(R.string.onpremise_share_url),
+                                                        NodeRefUtils.getCleanIdentifier(
+                                                                NodeRefUtils.getNodeIdentifier(node.getIdentifier()))));
+                                        ActionUtils.actionShareLink(NodeDetailsFragment.this, fullPath);
+                                    }
+                                    else if (path.startsWith("/Sites/"))
+                                    {
+                                        // Get past the '/Sites/'
+                                        String sub1 = path.substring(7);
+                                        // Find end of site name
+                                        int idx = sub1.indexOf('/');
+                                        if (idx == -1)
+                                        {
+                                            idx = sub1.length();
+                                        }
+                                        String siteName = sub1.substring(0, idx);
+                                        String nodeID = NodeRefUtils.getCleanIdentifier(node.getIdentifier());
+                                        fullPath = String.format(getString(R.string.cloud_share_url),
+                                                ((CloudSession) getSession()).getNetwork().getIdentifier(), siteName,
+                                                nodeID);
+
+                                        ActionUtils.actionShareLink(NodeDetailsFragment.this, fullPath);
+                                    }
+                                    else
+                                    {
+                                        Log.i(getString(R.string.app_name), "Site path not as expected: no /sites/");
+                                    }
+                                }
+                                else
+                                {
+                                    Log.i(getString(R.string.app_name), "Site path not as expected: no parent path");
+                                }
                             }
                             else
                             {
-                                Log.i(getString(R.string.app_name), "Site path not as expected: no /sites/");
+                                Log.i(getString(R.string.app_name), "Site path not as expected: No parent folder");
                             }
-                        }
-                        else
-                        {
-                            Log.i(getString(R.string.app_name), "Site path not as expected: no parent path");
-                        }
-                    }
-                    else
-                    {
-                        Log.i(getString(R.string.app_name), "Site path not as expected: No parent folder");
-                    }
 
-                    dialog.dismiss();
-                }
-            });
-            AlertDialog alert = builder.create();
-            alert.show();
+                            dialog.dismiss();
+                        }
+                    }).show();
         }
     }
 
@@ -966,8 +963,8 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
 
     public void update(File f)
     {
-        Operator.with(getActivity(), getAccount()).load(
-                new UpdateContentRequest.Builder(parentNode, (Document) node, new ContentFileProgressImpl(f))
+        Operator.with(getActivity(), getAccount())
+                .load(new UpdateContentRequest.Builder(parentNode, (Document) node, new ContentFileProgressImpl(f))
                         .setNotificationVisibility(OperationRequest.VISIBILITY_NOTIFICATIONS));
     }
 
@@ -984,23 +981,23 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
     public void like(View v)
     {
         viewById(R.id.like_progress).setVisibility(View.VISIBLE);
-        Operator.with(getActivity(), SessionUtils.getAccount(getActivity())).load(
-                new LikeNodeRequest.Builder(node, false));
+        Operator.with(getActivity(), SessionUtils.getAccount(getActivity()))
+                .load(new LikeNodeRequest.Builder(node, false));
 
     }
 
     public void isLiked(View v)
     {
         viewById(R.id.like_progress).setVisibility(View.VISIBLE);
-        Operator.with(getActivity(), SessionUtils.getAccount(getActivity())).load(
-                new LikeNodeRequest.Builder(node, true));
+        Operator.with(getActivity(), SessionUtils.getAccount(getActivity()))
+                .load(new LikeNodeRequest.Builder(node, true));
     }
 
     public void isFavorite(View v)
     {
         viewById(R.id.favorite_progress).setVisibility(View.VISIBLE);
-        Operator.with(getActivity(), SessionUtils.getAccount(getActivity())).load(
-                new FavoritedNodeRequest.Builder(node));
+        Operator.with(getActivity(), SessionUtils.getAccount(getActivity()))
+                .load(new FavoritedNodeRequest.Builder(node));
     }
 
     public void favorite(View v)
@@ -1130,8 +1127,8 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
             case R.id.menu_action_update:
                 Intent i = new Intent(PrivateIntent.ACTION_PICK_FILE, null, getActivity(),
                         PublicDispatcherActivity.class);
-                i.putExtra(PrivateIntent.EXTRA_FOLDER, AlfrescoStorageManager.getInstance(getActivity())
-                        .getDownloadFolder(getAccount()));
+                i.putExtra(PrivateIntent.EXTRA_FOLDER,
+                        AlfrescoStorageManager.getInstance(getActivity()).getDownloadFolder(getAccount()));
                 i.putExtra(PrivateIntent.EXTRA_ACCOUNT_ID, getAccount().getId());
                 startActivityForResult(i, RequestCode.FILEPICKER);
                 return true;
@@ -1142,8 +1139,9 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
                 delete();
                 return true;
             case R.id.menu_action_location:
-                ActionUtils.actionShowMap(this, node.getName(), node.getProperty(ContentModel.PROP_LATITUDE).getValue()
-                        .toString(), node.getProperty(ContentModel.PROP_LONGITUDE).getValue().toString());
+                ActionUtils.actionShowMap(this, node.getName(),
+                        node.getProperty(ContentModel.PROP_LATITUDE).getValue().toString(),
+                        node.getProperty(ContentModel.PROP_LONGITUDE).getValue().toString());
                 return true;
             case R.id.menu_workflow_add:
                 Intent in = new Intent(PrivateIntent.ACTION_START_PROCESS, null, getActivity(),
@@ -1354,8 +1352,8 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         }
         else if (getActivity().getSupportFragmentManager().findFragmentByTag(DocumentFolderBrowserFragment.TAG) != null)
         {
-            ((DocumentFolderBrowserFragment) getActivity().getSupportFragmentManager().findFragmentByTag(
-                    DocumentFolderBrowserFragment.TAG)).select(updatedNode);
+            ((DocumentFolderBrowserFragment) getActivity().getSupportFragmentManager()
+                    .findFragmentByTag(DocumentFolderBrowserFragment.TAG)).select(updatedNode);
         }
         NodeDetailsFragment.with(getActivity()).node(updatedNode).parentFolder(event.parentFolder).display();
 
@@ -1377,8 +1375,8 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         }
         else if (getActivity().getSupportFragmentManager().findFragmentByTag(DocumentFolderBrowserFragment.TAG) != null)
         {
-            ((DocumentFolderBrowserFragment) getActivity().getSupportFragmentManager().findFragmentByTag(
-                    DocumentFolderBrowserFragment.TAG)).select(updatedNode);
+            ((DocumentFolderBrowserFragment) getActivity().getSupportFragmentManager()
+                    .findFragmentByTag(DocumentFolderBrowserFragment.TAG)).select(updatedNode);
         }
         NodeDetailsFragment.with(getActivity()).node(updatedNode).parentFolder(event.parentFolder).display();
 
@@ -1438,7 +1436,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
     // ///////////////////////////////////////////////////////////////////////////
     public static String getDetailsTag()
     {
-            return PagerNodeDetailsFragment.TAG;
+        return PagerNodeDetailsFragment.TAG;
     }
 
     public static Builder with(FragmentActivity activity)

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~  Copyright (C) 2005-2015 Alfresco Software Limited.
   ~
   ~  This file is part of Alfresco Mobile for Android.
@@ -32,53 +31,53 @@
         android:layout_height="match_parent"
         android:gravity="center">
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center">
-
-            <GridView
-                android:id="@+id/gridview"
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:columnWidth="320dip"
-                android:gravity="center"
-                android:horizontalSpacing="0dp"
-                android:importantForAccessibility="yes"
-                android:numColumns="auto_fit"
-                android:stretchMode="columnWidth"
-                android:verticalSpacing="0dp"
-                android:paddingBottom="@dimen/two_list_minHeight"
-                android:clipToPadding="false"/>
+                android:gravity="center">
 
-            <include
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                layout="@layout/app_progress_emtpy" />
+                <GridView
+                    android:id="@+id/gridview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:clipToPadding="false"
+                    android:columnWidth="320dip"
+                    android:gravity="center"
+                    android:horizontalSpacing="0dp"
+                    android:importantForAccessibility="yes"
+                    android:numColumns="auto_fit"
+                    android:paddingBottom="@dimen/two_list_minHeight"
+                    android:stretchMode="columnWidth"
+                    android:verticalSpacing="0dp" />
 
-            <com.github.clans.fab.FloatingActionButton
-                android:id="@+id/fab"
-                fab:fab_size="mini"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|right"
-                android:layout_margin="@dimen/d_8"
-                android:src="@drawable/ic_content_add"
-                android:visibility="visible"
-                fab:fab_colorNormal="@color/accent"
-                fab:fab_colorPressed="@color/accent_pressed"
-                fab:fab_colorRipple="@color/accent_text" />
+                <include
+                    layout="@layout/app_progress_emtpy"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
 
-        </FrameLayout>
+                <com.github.clans.fab.FloatingActionButton
+                    android:id="@+id/fab"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|right"
+                    android:layout_margin="@dimen/d_8"
+                    android:src="@drawable/ic_content_add"
+                    android:visibility="visible"
+                    fab:fab_colorNormal="@color/accent"
+                    fab:fab_colorPressed="@color/accent_pressed"
+                    fab:fab_colorRipple="@color/accent_text"
+                    fab:fab_size="mini" />
+
+            </FrameLayout>
     </android.support.v4.widget.SwipeRefreshLayout>
 
     <LinearLayout
-        android:orientation="horizontal"
         android:id="@+id/load_more"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="visible"
         android:layout_gravity="bottom|center"
-        android:gravity="center_horizontal" />
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:visibility="visible" />
 </FrameLayout>

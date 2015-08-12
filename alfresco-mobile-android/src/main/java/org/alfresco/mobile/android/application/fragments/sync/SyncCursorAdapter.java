@@ -431,4 +431,17 @@ public class SyncCursorAdapter extends BaseCursorLoader<TwoLinesProgressViewHold
     {
         hasSynchroActive = SyncContentManager.getInstance(context).hasActivateSync(SessionUtils.getAccount(context));
     }
+
+    public List<String> getNodes()
+    {
+        ArrayList<String> nodes = new ArrayList<>(getCount());
+        getCursor().moveToFirst();
+        getCursor().moveToPrevious();
+        while (getCursor().moveToNext())
+        {
+            String nodeId = getCursor().getString(SyncContentSchema.COLUMN_NODE_ID_ID);
+            nodes.add(nodeId);
+        }
+        return nodes;
+    }
 }

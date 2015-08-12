@@ -17,14 +17,14 @@
  */
 package org.alfresco.mobile.android.ui.fragments;
 
-import android.app.AlertDialog.Builder;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.text.Html;
 import android.view.Gravity;
 import android.widget.TextView;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 
 public class SimpleAlertDialogFragment extends DialogFragment
 {
@@ -74,16 +74,8 @@ public class SimpleAlertDialogFragment extends DialogFragment
             message = getArguments().getString(ARGUMENT_MESSAGE_STRING);
         }
 
-        Builder builder = new Builder(getActivity()).setIcon(iconId).setTitle(titleId)
-                .setMessage(Html.fromHtml(message)).setPositiveButton(positiveId, new DialogInterface.OnClickListener()
-                {
-                    public void onClick(DialogInterface dialog, int whichButton)
-                    {
-                        dialog.dismiss();
-                    }
-                });
-
-        return builder.create();
+        return new MaterialDialog.Builder(getActivity()).iconRes(iconId).title(titleId).content(Html.fromHtml(message))
+                .positiveText(positiveId).show();
     }
 
     @Override
@@ -91,9 +83,11 @@ public class SimpleAlertDialogFragment extends DialogFragment
     {
         if (getDialog() != null)
         {
-            TextView messageText = (TextView) getDialog().findViewById(android.R.id.message);
-            messageText.setGravity(Gravity.CENTER);
-            getDialog().show();
+            TextView messageText = ((MaterialDialog) getDialog()).getContentView();
+            if (messageText != null)
+            {
+                messageText.setGravity(Gravity.CENTER);
+            }
         }
         super.onResume();
     }

@@ -113,7 +113,7 @@ public class BaseShortcutActivity extends BaseActivity
         if (requestedAccountId != -1 && requestedAccountId != event.account.getId()) { return; }
         requestedAccountId = -1;
 
-        setProgressBarIndeterminateVisibility(false);
+        setSupportProgressBarIndeterminate(false);
 
         // Remove OAuthFragment if one
         if (getFragment(AccountOAuthFragment.TAG) != null)

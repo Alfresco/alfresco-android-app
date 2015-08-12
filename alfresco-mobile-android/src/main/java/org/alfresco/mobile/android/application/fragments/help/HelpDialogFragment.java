@@ -24,6 +24,8 @@ import org.alfresco.mobile.android.application.fragments.MenuFragmentHelper;
 import org.alfresco.mobile.android.application.fragments.builder.LeafFragmentBuilder;
 import org.alfresco.mobile.android.platform.utils.ConnectivityUtils;
 import org.alfresco.mobile.android.ui.RefreshFragment;
+import org.alfresco.mobile.android.ui.activity.AlfrescoActivity;
+import org.alfresco.mobile.android.ui.activity.AlfrescoAppCompatActivity;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -31,6 +33,7 @@ import android.os.Message;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -104,7 +107,7 @@ public class HelpDialogFragment extends DialogFragment implements RefreshFragmen
             {
                 super.onPageStarted(view, url, favicon);
                 hasError = false;
-                getActivity().setProgressBarIndeterminateVisibility(true);
+                displayProgress(true);
                 if (refreshIcon != null)
                 {
                     refreshIcon.setVisible(false);
@@ -146,7 +149,7 @@ public class HelpDialogFragment extends DialogFragment implements RefreshFragmen
                 {
                     view.setVisibility(View.VISIBLE);
                 }
-                getActivity().setProgressBarIndeterminateVisibility(false);
+                displayProgress(false);
                 if (refreshIcon != null)
                 {
                     refreshIcon.setVisible(true);
@@ -249,6 +252,18 @@ public class HelpDialogFragment extends DialogFragment implements RefreshFragmen
                 return true;
         }
         return false;
+    }
+
+    private void displayProgress(boolean show)
+    {
+        if (getActivity() instanceof AppCompatActivity)
+        {
+            ((AlfrescoAppCompatActivity) getActivity()).setSupportProgressBarIndeterminate(show);
+        }
+        else if (getActivity() instanceof AlfrescoActivity)
+        {
+            ((AlfrescoActivity) getActivity()).setSupportProgressBarIndeterminate(show);
+        }
     }
 
     // ///////////////////////////////////////////////////////////////////////////

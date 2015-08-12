@@ -43,13 +43,13 @@ import org.alfresco.mobile.android.async.node.create.CreateDocumentRequest;
 import org.alfresco.mobile.android.async.node.create.RetrieveDocumentNameEvent;
 import org.alfresco.mobile.android.async.node.create.RetrieveDocumentNameRequest;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
-import org.alfresco.mobile.android.platform.mimetype.MimeTypeManager;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 import org.alfresco.mobile.android.ui.holder.SingleLineViewHolder;
 import org.alfresco.mobile.android.ui.utils.Formatter;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.text.Editable;
@@ -57,17 +57,18 @@ import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
+
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.rengwuxian.materialedittext.MaterialEditText;
 
 /**
  * Specific override for Uploading content. This fragment is responsible to
@@ -87,8 +88,6 @@ public abstract class CreateDocumentDialogFragment extends AlfrescoFragment
 
     private static final String ARGUMENT_IS_CREATION = "isCreation";
 
-    private EditText editTags;
-
     private List<Tag> selectedTags = new ArrayList<Tag>();
 
     private String recommandedName = null;
@@ -97,13 +96,11 @@ public abstract class CreateDocumentDialogFragment extends AlfrescoFragment
 
     private ContentFile contentFile;
 
-    private EditText tv;
+    private MaterialEditText tv, desc, tags;
 
     private CreateConfigManager createConfigManager;
 
     private ItemConfig type;
-
-    private Button bcreate;
 
     private boolean requestCheck = true;
 
@@ -134,11 +131,39 @@ public abstract class CreateDocumentDialogFragment extends AlfrescoFragment
     // LIFE CYCLE
     // //////////////////////////////////////////////////////////////////////
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    public Dialog onCreateDialog(Bundle savedInstanceState)
     {
-        getDialog().setTitle(R.string.content_upload);
-        getDialog().requestWindowFeature(Window.FEATURE_LEFT_ICON);
+        return new MaterialDialog.Builder(getActivity()).iconRes(R.drawable.ic_application_logo)
+                .title(R.string.content_upload).customView(createView(LayoutInflater.from(getActivity()), null), true)
+                .positiveText(R.string.create).negativeText(R.string.cancel)
+                .callback(new MaterialDialog.ButtonCallback()
+                {
+                    @Override
+                    public void onPositive(MaterialDialog dialog)
+                    {
 
+                        createDocument(tv, desc);
+                    }
+
+                    @Override
+                    public void onNegative(MaterialDialog dialog)
+                    {
+                        File uploadFile = ((ContentFile) getArguments().getSerializable(ARGUMENT_CONTENT_FILE))
+                                .getFile();
+                        // If the file is a temporary file, remove it on
+                        // cancellation of
+                        // dialog.
+                        if (AlfrescoStorageManager.getInstance(getActivity()).isTempFile(uploadFile))
+                        {
+                            uploadFile.delete();
+                        }
+                        dialog.dismiss();
+                    }
+                }).show();
+    }
+
+    private View createView(LayoutInflater inflater, ViewGroup container)
+    {
         // Configuration available ?
         ConfigService configService = ConfigManager.getInstance(getActivity()).getConfig(getAccount().getId(),
                 ConfigTypeIds.CREATION);
@@ -148,39 +173,10 @@ public abstract class CreateDocumentDialogFragment extends AlfrescoFragment
         }
 
         View rootView = inflater.inflate(R.layout.sdk_create_content_props, container, false);
-        tv = (EditText) rootView.findViewById(R.id.content_name);
-        final EditText desc = (EditText) rootView.findViewById(R.id.content_description);
+        tv = (MaterialEditText) rootView.findViewById(R.id.content_name);
+        desc = (MaterialEditText) rootView.findViewById(R.id.content_description);
+        tags = (MaterialEditText) rootView.findViewById(R.id.content_tags);
         TextView tsize = (TextView) rootView.findViewById(R.id.content_size);
-
-        editTags = (EditText) rootView.findViewById(R.id.content_tags);
-
-        Button button = (Button) rootView.findViewById(R.id.cancel);
-        button.setOnClickListener(new OnClickListener()
-        {
-            public void onClick(View v)
-            {
-                File uploadFile = ((ContentFile) getArguments().getSerializable(ARGUMENT_CONTENT_FILE)).getFile();
-
-                // If the file is a temporary file, remove it on cancellation of
-                // dialog.
-                if (AlfrescoStorageManager.getInstance(getActivity()).isTempFile(uploadFile))
-                {
-                    uploadFile.delete();
-                }
-
-                CreateDocumentDialogFragment.this.dismiss();
-            }
-        });
-
-        bcreate = UIUtils.initValidation(rootView, R.string.confirm);
-        bcreate.setEnabled(false);
-        bcreate.setOnClickListener(new OnClickListener()
-        {
-            public void onClick(View v)
-            {
-                createDocument(tv, desc, bcreate);
-            }
-        });
 
         if (getArguments().getSerializable(ARGUMENT_CONTENT_FILE) != null)
         {
@@ -202,7 +198,7 @@ public abstract class CreateDocumentDialogFragment extends AlfrescoFragment
                 tempName = tv.getText().toString();
                 if (tv.getText().length() == 0)
                 {
-                    bcreate.setEnabled(false);
+                    ((MaterialDialog) getDialog()).getActionButton(DialogAction.POSITIVE).setEnabled(false);
                     tv.setError(null);
                 }
                 else
@@ -210,12 +206,12 @@ public abstract class CreateDocumentDialogFragment extends AlfrescoFragment
                     if (UIUtils.hasInvalidName(tv.getText().toString().trim()))
                     {
                         tv.setError(getString(R.string.filename_error_character));
-                        bcreate.setEnabled(false);
+                        ((MaterialDialog) getDialog()).getActionButton(DialogAction.POSITIVE).setEnabled(false);
                     }
                     else
                     {
                         tv.setError(null);
-                        bcreate.setEnabled(false);
+                        ((MaterialDialog) getDialog()).getActionButton(DialogAction.POSITIVE).setEnabled(false);
                         if (!requestInProgress)
                         {
                             Operator.with(getActivity(), getAccount()).load(
@@ -241,16 +237,17 @@ public abstract class CreateDocumentDialogFragment extends AlfrescoFragment
             }
         });
 
-        editTags.setOnEditorActionListener(new OnEditorActionListener()
+        tags.setOnEditorActionListener(new OnEditorActionListener()
         {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
             {
-                if (!bcreate.isEnabled()) { return false; }
+                if (!((MaterialDialog) getDialog()).getActionButton(DialogAction.POSITIVE)
+                        .isEnabled()) { return false; }
                 boolean handled = false;
                 if (actionId == EditorInfo.IME_ACTION_DONE)
                 {
-                    createDocument(tv, desc, bcreate);
+                    createDocument(tv, desc);
                     handled = true;
                 }
                 return handled;
@@ -259,8 +256,8 @@ public abstract class CreateDocumentDialogFragment extends AlfrescoFragment
 
         Folder parentFolder = getParent();
 
-        Operator.with(getActivity(), getAccount()).load(
-                new RetrieveDocumentNameRequest.Builder(parentFolder, contentFile.getFileName()));
+        Operator.with(getActivity(), getAccount())
+                .load(new RetrieveDocumentNameRequest.Builder(parentFolder, contentFile.getFileName()));
 
         // Custom type
         if (createConfigManager != null)
@@ -297,27 +294,10 @@ public abstract class CreateDocumentDialogFragment extends AlfrescoFragment
         return rootView;
     }
 
-    @Override
-    public void onStart()
-    {
-
-        if (getArguments().getSerializable(ARGUMENT_CONTENT_FILE) != null)
-        {
-            ContentFile f = (ContentFile) getArguments().getSerializable(ARGUMENT_CONTENT_FILE);
-            getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON,
-                    MimeTypeManager.getInstance(getActivity()).getIcon(f.getFileName()));
-        }
-        else
-        {
-            getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.mime_256_generic);
-        }
-        super.onStart();
-    }
-
     // //////////////////////////////////////////////////////////////////////
     // ACTIONS
     // //////////////////////////////////////////////////////////////////////
-    private void createDocument(EditText tv, EditText desc, Button bcreate)
+    private void createDocument(EditText tv, EditText desc)
     {
         Map<String, Serializable> props = new HashMap<String, Serializable>();
         String documentName = tv.getText().toString().trim();
@@ -337,13 +317,13 @@ public abstract class CreateDocumentDialogFragment extends AlfrescoFragment
             }
         }
         ContentFile f = (ContentFile) getArguments().getSerializable(ARGUMENT_CONTENT_FILE);
-        bcreate.setEnabled(false);
+        ((MaterialDialog) getDialog()).getActionButton(DialogAction.POSITIVE).setEnabled(false);
         Folder parentFolder = (Folder) getArguments().get(ARGUMENT_FOLDER);
         Boolean isCreation = getArguments().getBoolean(ARGUMENT_IS_CREATION);
 
-        Operator.with(getActivity(), getAccount()).load(
-                new CreateDocumentRequest.Builder(parentFolder, documentName, (type != null) ? type.getIdentifier()
-                        : null, f, props, listTagValue, isCreation)
+        Operator.with(getActivity(), getAccount())
+                .load(new CreateDocumentRequest.Builder(parentFolder, documentName,
+                        (type != null) ? type.getIdentifier() : null, f, props, listTagValue, isCreation)
                         .setNotificationVisibility(OperationRequest.VISIBILITY_NOTIFICATIONS));
 
         if (getActivity() instanceof PublicDispatcherActivity)
@@ -357,7 +337,7 @@ public abstract class CreateDocumentDialogFragment extends AlfrescoFragment
 
     private void onValidateTags()
     {
-        String s = editTags.getText().toString();
+        String s = tags.getText().toString();
         String[] listValues = s.split(",");
         for (int i = 0; i < listValues.length; i++)
         {
@@ -386,19 +366,19 @@ public abstract class CreateDocumentDialogFragment extends AlfrescoFragment
         if (!recommandedName.equals(event.originalName))
         {
             tv.setError(getString(R.string.create_document_filename_error));
-            bcreate.setEnabled(false);
+            ((MaterialDialog) getDialog()).getActionButton(DialogAction.POSITIVE).setEnabled(false);
         }
         else
         {
             tv.setError(null);
-            bcreate.setEnabled(true);
+            ((MaterialDialog) getDialog()).getActionButton(DialogAction.POSITIVE).setEnabled(true);
         }
 
         if (requestCheck)
         {
-            bcreate.setEnabled(false);
-            Operator.with(getActivity(), getAccount()).load(
-                    new RetrieveDocumentNameRequest.Builder(getParent(), tv.getText().toString()));
+            ((MaterialDialog) getDialog()).getActionButton(DialogAction.POSITIVE).setEnabled(false);
+            Operator.with(getActivity(), getAccount())
+                    .load(new RetrieveDocumentNameRequest.Builder(getParent(), tv.getText().toString()));
             requestCheck = false;
             requestInProgress = true;
         }

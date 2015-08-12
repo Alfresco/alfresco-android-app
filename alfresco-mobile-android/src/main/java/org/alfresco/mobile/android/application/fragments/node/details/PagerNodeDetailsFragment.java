@@ -42,6 +42,7 @@ import org.alfresco.mobile.android.sync.utils.NodeSyncPlaceHolder;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -109,6 +110,12 @@ public class PagerNodeDetailsFragment extends NodeDetailsFragment
         viewPager.setCurrentItem(0);
         tabs.setViewPager(viewPager);
         tabs.setTextColor(getResources().getColor(android.R.color.black));
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     // ///////////////////////////////////////////////////////////////////////////

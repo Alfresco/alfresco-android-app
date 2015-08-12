@@ -20,6 +20,8 @@ package org.alfresco.mobile.android.application.activity;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.preferences.PasscodePreferences;
 import org.alfresco.mobile.android.application.security.PassCodeActivity;
+import org.alfresco.mobile.android.platform.SessionManager;
+import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.intent.AlfrescoIntentAPI;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.ui.activity.AlfrescoAppCompatActivity;
@@ -29,7 +31,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.ActionMode;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.ProgressBar;
 
 /**
  * Base class for all activities.
@@ -58,15 +62,32 @@ public abstract class BaseAppCompatActivity extends AlfrescoAppCompatActivity
         if (getIntent().hasExtra(PrivateIntent.EXTRA_ACCOUNT_ID))
         {
             long accountId = getIntent().getExtras().getLong(PrivateIntent.EXTRA_ACCOUNT_ID);
-            // currentAccount =
-            // AlfrescoAccountManager.getInstance(this).retrieveAccount(accountId);
+            SessionManager.getInstance(this)
+                    .saveAccount(AlfrescoAccountManager.getInstance(this).retrieveAccount(accountId));
         }
 
         if (getIntent().hasExtra(AlfrescoIntentAPI.EXTRA_ACCOUNT_ID))
         {
             long accountId = getIntent().getExtras().getLong(AlfrescoIntentAPI.EXTRA_ACCOUNT_ID);
-            // currentAccount =
-            // AlfrescoAccountManager.getInstance(this).retrieveAccount(accountId);
+            SessionManager.getInstance(this)
+                    .saveAccount(AlfrescoAccountManager.getInstance(this).retrieveAccount(accountId));
+        }
+    }
+
+    @Override
+    public void setSupportProgressBarIndeterminate(boolean indeterminate)
+    {
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.progress_spinner);
+
+        if (progressBar == null) { return; }
+
+        if (indeterminate)
+        {
+            progressBar.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            progressBar.setVisibility(View.GONE);
         }
     }
 
@@ -91,6 +112,7 @@ public abstract class BaseAppCompatActivity extends AlfrescoAppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PassCodeActivity.REQUEST_CODE_PASSCODE)
         {
             if (resultCode == RESULT_CANCELED)

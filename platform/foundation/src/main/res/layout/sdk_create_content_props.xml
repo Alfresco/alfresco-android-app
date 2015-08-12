@@ -16,118 +16,68 @@
    limitations under the License.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/picker"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minWidth="@dimen/width_dialog"
-    android:orientation="vertical"
-    android:visibility="visible">
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/content_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="3dip"
+        android:hint="@string/content_name_hint"
+        android:singleLine="true"
+        app:met_floatingLabel="highlight"
+        app:met_floatingLabelText="@string/content_name"
+        app:met_primaryColor="@color/accent" />
+
+    <TextView
+        android:id="@+id/content_size"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:gravity="right"
+        android:text="@string/content_name" />
 
     <LinearLayout
-        android:id="@+id/picker"
-        android:layout_width="match_parent"
+        android:id="@+id/types_group"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:orientation="vertical">
+        android:visibility="gone">
 
-        <TableLayout
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="@string/metadata_prop_type" />
+
+        <Spinner
+            android:id="@+id/types_spinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/padding_dialog"
-            android:shrinkColumns="1"
-            android:stretchColumns="1">
-
-            <TableRow
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/content_name" />
-
-                <EditText
-                    android:id="@+id/content_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/content_name_hint"
-                    android:imeOptions="actionNext"
-                    android:inputType="text"/>
-            </TableRow>
-
-            <TextView
-                android:id="@+id/content_size"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:gravity="right"
-                android:text="@string/content_name" />
-
-            <TableRow
-                android:id="@+id/types_group"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="gone">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:text="@string/metadata_prop_type" />
-
-                <Spinner
-                    android:id="@+id/types_spinner"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/hint_foreground_holo_light" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/content_description" />
-
-                <EditText
-                    android:id="@+id/content_description"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/content_description_hint"
-                    android:imeOptions="actionNext"
-                    android:inputType="text"/>
-            </TableRow>
-
-            <TableRow
-                android:id="@+id/tags_line"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/content_tags" />
-
-                <EditText
-                    android:id="@+id/content_tags"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/content_tags_hint"
-                    android:imeOptions="actionDone"
-                    android:inputType="text" />
-            </TableRow>
-        </TableLayout>
+            android:textColor="@color/hint_foreground_holo_light" />
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dip"
-        android:background="?android:attr/dividerVertical" />
-
-    <include
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/content_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        layout="@layout/app_validation_button" />
+        android:layout_margin="3dip"
+        android:hint="@string/content_description_hint"
+        app:met_floatingLabel="highlight"
+        app:met_floatingLabelText="@string/content_description"
+        app:met_primaryColor="@color/accent" />
 
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/content_tags"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="3dip"
+        android:hint="@string/content_tags_hint"
+        app:met_floatingLabel="highlight"
+        app:met_floatingLabelText="@string/content_tags"
+        app:met_primaryColor="@color/accent" />
 </LinearLayout>

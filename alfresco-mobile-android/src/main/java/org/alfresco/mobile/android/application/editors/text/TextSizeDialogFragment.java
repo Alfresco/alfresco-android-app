@@ -26,18 +26,15 @@ import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 import org.alfresco.mobile.android.ui.holder.SingleLineViewHolder;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
+import android.text.Html;
 import android.util.SparseArray;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ListView;
-import android.widget.TextView;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 
 /**
  * @author Jean Marie Pascal
@@ -90,6 +87,11 @@ public class TextSizeDialogFragment extends DialogFragment
 
     private int textSize = DEFAULT_TEXT_SIZE;
 
+    private ArrayList<Integer> list;
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // CONSTRUCTOR
+    // ///////////////////////////////////////////////////////////////////////////
     public TextSizeDialogFragment()
     {
     }
@@ -103,6 +105,9 @@ public class TextSizeDialogFragment extends DialogFragment
         return fr;
     }
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // LIFECYCLE
+    // ///////////////////////////////////////////////////////////////////////////
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
         int title = R.string.file_editor_text_size;
@@ -112,41 +117,35 @@ public class TextSizeDialogFragment extends DialogFragment
             textSize = getArguments().getInt(ARGUMENT_DEFAULT_SIZE, DEFAULT_TEXT_SIZE);
         }
 
-        LayoutInflater inflater = LayoutInflater.from(getActivity());
-        final View v = inflater.inflate(R.layout.sdk_list, null);
-        ListView lv = (ListView) v.findViewById(R.id.listView);
+        list = new ArrayList<>(SIZE_MAP.values());
 
-        ArrayList<Integer> list = new ArrayList<>(SIZE_MAP.values());
-
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity())
+                .iconRes(R.drawable.ic_application_logo);
         if (list.isEmpty())
         {
             // If there's no 3rd party application able to create, we display a
             // warning message.
-            lv.setVisibility(View.GONE);
-            v.findViewById(R.id.empty).setVisibility(View.VISIBLE);
-            ((TextView) v.findViewById(R.id.empty_text))
-                    .setText(R.string.create_document_editor_not_available_description);
-            title = R.string.create_document_editor_not_available;
-
-            return new AlertDialog.Builder(getActivity()).setTitle(title).setView(v).create();
+            builder.title(title)
+                    .content(Html.fromHtml(getString(R.string.create_document_editor_not_available_description)));
+            return builder.show();
         }
         else
         {
-            lv.setAdapter(new TextSizeAdapter(getActivity(), R.layout.row_single_line, list, textSize));
-
-            lv.setOnItemClickListener(new OnItemClickListener()
-            {
-                @Override
-                public void onItemClick(AdapterView<?> l, View v, int position, long id)
-                {
-                    if (getActivity() instanceof TextEditorActivity)
+            builder.title(title).adapter(new TextSizeAdapter(getActivity(), R.layout.row_single_line, list, textSize),
+                    new MaterialDialog.ListCallback()
                     {
-                        ((TextEditorActivity) getActivity()).setTextSize((Integer) l.getItemAtPosition(position));
+                @Override
+                        public void onSelection(MaterialDialog materialDialog, View view, int i,
+                                CharSequence charSequence)
+                        {
+                            if (getActivity() instanceof TextEditorActivity)
+                            {
+                                ((TextEditorActivity) getActivity()).setTextSize((Integer) list.get(i));
                     }
-                    dismiss();
+                            materialDialog.dismiss();
                 }
             });
-            return new AlertDialog.Builder(getActivity()).setTitle(title).setView(v).create();
+            return builder.show();
         }
 
     }

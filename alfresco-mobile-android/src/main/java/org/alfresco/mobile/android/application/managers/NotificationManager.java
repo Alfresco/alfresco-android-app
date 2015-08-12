@@ -54,6 +54,8 @@ public class NotificationManager extends AlfrescoNotificationManager
     // //////////////////////////////////////////////////////////////////////
     public void showInfoCrouton(FragmentActivity activity, String text)
     {
+        // Snackbar.make(activity.findViewById(R.id.left_pane_body),
+        // Html.fromHtml(text), Snackbar.LENGTH_SHORT).show();
         Crouton.cancelAllCroutons();
         Crouton.showText(activity, Html.fromHtml(text), Style.INFO);
     }
@@ -66,6 +68,8 @@ public class NotificationManager extends AlfrescoNotificationManager
 
     public void showInfoCrouton(FragmentActivity activity, int text)
     {
+        // Snackbar.make(activity.findViewById(R.id.left_pane_body), text,
+        // Snackbar.LENGTH_SHORT).show();
         Crouton.cancelAllCroutons();
         Crouton.showText(activity, text, Style.INFO);
     }

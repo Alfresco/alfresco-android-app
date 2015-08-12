@@ -322,7 +322,15 @@ public class ProgressNodeAdapter extends NodeAdapter
             super.updateIcon(vh, item);
         }
 
-        if (item.isFolder())
+        if (selectedItems.contains(item))
+        {
+            vh.choose.setVisibility(View.VISIBLE);
+            vh.choose.setImageResource(R.drawable.ic_done_single_white);
+            int d_16 = DisplayUtils.getPixels(getContext(), R.dimen.d_16);
+            vh.choose.setPadding(d_16, d_16, d_16, d_16);
+            UIUtils.setBackground(vh.choose, null);
+        }
+        else if (item.isFolder())
         {
             vh.icon.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.mime_256_folder));
 
@@ -367,6 +375,8 @@ public class ProgressNodeAdapter extends NodeAdapter
         else
         {
             UIUtils.setBackground(vh.choose, null);
+            vh.choose.setPadding(0, 0, 0, 0);
+            vh.choose.setVisibility(View.GONE);
         }
     }
 

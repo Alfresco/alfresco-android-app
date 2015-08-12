@@ -31,6 +31,7 @@ import org.alfresco.mobile.android.application.fragments.node.favorite.Favorites
 import org.alfresco.mobile.android.application.fragments.node.upload.UploadFormFragment;
 import org.alfresco.mobile.android.application.fragments.preferences.PasscodePreferences;
 import org.alfresco.mobile.android.application.fragments.signin.AccountOAuthFragment;
+import org.alfresco.mobile.android.application.fragments.site.browser.BrowserSitesPagerFragment;
 import org.alfresco.mobile.android.application.fragments.sync.SyncFragment;
 import org.alfresco.mobile.android.application.security.PassCodeActivity;
 import org.alfresco.mobile.android.async.node.favorite.FavoriteNodesRequest;
@@ -41,7 +42,6 @@ import org.alfresco.mobile.android.ui.ListingModeFragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v4.app.FragmentManager;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -94,12 +94,14 @@ public class PublicDispatcherActivity extends BaseActivity
 
         if (PrivateIntent.ACTION_PICK_FILE.equals(action))
         {
-            File f = Environment.getExternalStorageDirectory();
+            File f;
             if (getIntent().hasExtra(PrivateIntent.EXTRA_FOLDER))
             {
                 f = (File) getIntent().getExtras().getSerializable(PrivateIntent.EXTRA_FOLDER);
-                FileExplorerFragment.with(this).menuId(1).file(f).isShortCut(true).mode(ListingModeFragment.MODE_PICK)
-                        .display();
+                FragmentDisplayer.with(this)
+                        .load(FileExplorerFragment.with(this).menuId(1).file(f).isShortCut(true)
+                                .mode(ListingModeFragment.MODE_PICK).createFragment())
+                        .back(false).into(FragmentDisplayer.PANEL_LEFT);
             }
         }
     }
@@ -212,13 +214,13 @@ public class PublicDispatcherActivity extends BaseActivity
         if (requestedAccountId != -1 && requestedAccountId != event.account.getId()) { return; }
         requestedAccountId = -1;
 
-        setProgressBarIndeterminateVisibility(false);
+        setSupportProgressBarIndeterminateVisibility(false);
 
         // Remove OAuthFragment if one
         if (getFragment(AccountOAuthFragment.TAG) != null)
         {
-            getSupportFragmentManager()
-                    .popBackStack(AccountOAuthFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            getSupportFragmentManager().popBackStack(AccountOAuthFragment.TAG,
+                    FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
 
         removeWaitingDialog();
@@ -232,11 +234,11 @@ public class PublicDispatcherActivity extends BaseActivity
         {
             case R.string.menu_browse_sites:
                 type = ConfigurationConstant.KEY_SITES;
-                // BrowserSitesFragment.with(this).display();
+                BrowserSitesPagerFragment.with(this).display();
                 break;
             case R.string.menu_browse_root:
                 type = ConfigurationConstant.KEY_REPOSITORY;
-                // DocumentFolderBrowserFragment.with(this).folder(getCurrentSession().getRootFolder()).display();
+                DocumentFolderBrowserFragment.with(this).folder(getCurrentSession().getRootFolder()).display();
                 break;
             case R.string.menu_favorites_folder:
                 FavoritesFragment.with(this).setMode(FavoriteNodesRequest.MODE_FOLDERS).display();

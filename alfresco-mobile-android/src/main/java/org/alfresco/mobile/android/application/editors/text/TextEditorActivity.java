@@ -40,9 +40,7 @@ import org.alfresco.mobile.android.platform.intent.AlfrescoIntentAPI;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
-import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
@@ -51,7 +49,6 @@ import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -59,6 +56,7 @@ import android.view.Window;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.squareup.otto.Subscribe;
 
 public class TextEditorActivity extends BaseActivity
@@ -102,12 +100,13 @@ public class TextEditorActivity extends BaseActivity
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
+        supportRequestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+
         super.onCreate(savedInstanceState);
 
-        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.app_text_editor);
 
-        setProgressBarIndeterminateVisibility(true);
+        setSupportProgressBarIndeterminateVisibility(true);
 
         if (savedInstanceState != null)
         {
@@ -150,7 +149,7 @@ public class TextEditorActivity extends BaseActivity
                     if (savedInstanceState != null)
                     {
                         displayText(savedInstanceState.getString(ARGUMENT_TEXT));
-                        setProgressBarIndeterminateVisibility(false);
+                        setSupportProgressBarIndeterminateVisibility(false);
                     }
                     else
                     {
@@ -477,46 +476,42 @@ public class TextEditorActivity extends BaseActivity
 
     public void requestSave()
     {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.file_editor_save_request);
-        builder.setMessage(Html.fromHtml(getString(R.string.file_editor_save_description)));
-        builder.setIcon(R.drawable.ic_save);
-        builder.setPositiveButton(R.string.file_editor_save, new DialogInterface.OnClickListener()
-        {
-            public void onClick(DialogInterface dialog, int item)
-            {
-                save(true);
-                exit();
-                dialog.dismiss();
-            }
-        });
-        builder.setNegativeButton(R.string.file_editor_discard, new DialogInterface.OnClickListener()
-        {
-            public void onClick(DialogInterface dialog, int item)
-            {
-                if (isCreation)
+        // Display Dialog
+        new MaterialDialog.Builder(this).title(R.string.file_editor_save_request)
+                .iconRes(R.drawable.ic_application_logo)
+                .content(Html.fromHtml(getString(R.string.file_editor_save_description)))
+                .positiveText(R.string.file_editor_save).negativeText(R.string.file_editor_discard)
+                .neutralText(R.string.cancel).callback(new MaterialDialog.ButtonCallback()
                 {
-                    file.delete();
-                }
-                dialog.dismiss();
-                finish();
-            }
-        });
-        builder.setNeutralButton(R.string.cancel, new DialogInterface.OnClickListener()
-        {
-            public void onClick(DialogInterface dialog, int item)
-            {
-                if (isCreation)
-                {
-                    file.delete();
-                }
-                dialog.dismiss();
-            }
-        });
-        AlertDialog alert = builder.create();
-        alert.show();
-        TextView messageText = (TextView) alert.findViewById(android.R.id.message);
-        messageText.setGravity(Gravity.CENTER);
+                    @Override
+                    public void onPositive(MaterialDialog dialog)
+                    {
+                        save(true);
+                        exit();
+                        dialog.dismiss();
+                    }
+
+                    @Override
+                    public void onNegative(MaterialDialog dialog)
+                    {
+                        if (isCreation)
+                        {
+                            file.delete();
+                        }
+                        dialog.dismiss();
+                        finish();
+                    }
+
+                    @Override
+                    public void onNeutral(MaterialDialog dialog)
+                    {
+                        if (isCreation)
+                        {
+                            file.delete();
+                        }
+                        dialog.dismiss();
+                    }
+                }).show();
     }
 
     protected String createFilename(String extension)
@@ -545,7 +540,7 @@ public class TextEditorActivity extends BaseActivity
             }
         }
         // Display progress
-        setProgressBarIndeterminateVisibility(false);
+        setSupportProgressBarIndeterminateVisibility(false);
 
         if (isCreation)
         {

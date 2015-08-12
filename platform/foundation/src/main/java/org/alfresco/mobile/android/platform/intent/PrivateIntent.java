@@ -75,8 +75,6 @@ public interface PrivateIntent
     // ///////////////////////////////////////////////////////////////////////////
     // ACTION
     /** Display dialog with extra bundle */
-    String ACTION_DISPLAY_DIALOG = "org.alfresco.mobile.android.intent.ACTION_DISPLAY_DIALOG";
-
     String ACTION_DISPLAY_ERROR = "org.alfresco.mobile.android.intent.DISPLAY_ERROR";
 
     String EXTRA_ERROR_DATA = "org.alfresco.mobile.android.intent.EXTRA_ERROR_DATA";

@@ -28,7 +28,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
@@ -186,17 +185,6 @@ public class BaseActionUtils
     // ///////////////////////////////////////////////////////////////////////////
     // ERRORS & DIALOG
     // ///////////////////////////////////////////////////////////////////////////
-    public static void actionDisplayDialog(Context context, Bundle bundle)
-    {
-        String intentId = PrivateIntent.ACTION_DISPLAY_DIALOG;
-        Intent i = new Intent(intentId);
-        if (bundle != null)
-        {
-            i.putExtras(bundle);
-        }
-        LocalBroadcastManager.getInstance(context).sendBroadcast(i);
-    }
-
     public static void actionDisplayError(Fragment f, Exception e)
     {
         Intent i = new Intent(PrivateIntent.ACTION_DISPLAY_ERROR);

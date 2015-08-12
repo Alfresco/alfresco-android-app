@@ -24,5 +24,7 @@
     <item name="app_task_complete" type="layout">@layout/app_task_complete_button</item>
     <item name="app_task_header" type="layout">@layout/app_task_header_column</item>
     <item name="app_passcode" type="layout">@layout/app_passcode_tab</item>
+    <item type="dimen" name="dialog_min_width_major">65%</item>
+
 
 </resources>

@@ -31,7 +31,17 @@
         app:contentInsetEnd="0dp"
         app:contentInsetStart="0dp"
         app:popupTheme="@style/AlfrescoMaterialTheme.Toolbar"
-        app:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
+        app:theme="@style/ThemeOverlay.AppCompat.ActionBar">
+
+        <ProgressBar
+            android:id="@+id/progress_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:indeterminate="true"
+            android:visibility="visible" />
+
+    </android.support.v7.widget.Toolbar>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/left_pane"

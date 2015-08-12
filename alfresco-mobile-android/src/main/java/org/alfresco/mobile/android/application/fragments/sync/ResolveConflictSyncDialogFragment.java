@@ -29,10 +29,8 @@ import org.alfresco.mobile.android.sync.SyncContentManager;
 import org.alfresco.mobile.android.sync.SyncContentSchema;
 import org.alfresco.mobile.android.sync.operations.SyncContentStatus;
 
-import android.app.AlertDialog.Builder;
 import android.app.Dialog;
 import android.content.ContentValues;
-import android.content.DialogInterface;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -40,6 +38,8 @@ import android.support.v4.app.DialogFragment;
 import android.text.Html;
 import android.view.Gravity;
 import android.widget.TextView;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 
 public class ResolveConflictSyncDialogFragment extends DialogFragment
 {
@@ -127,25 +127,15 @@ public class ResolveConflictSyncDialogFragment extends DialogFragment
 
         String message = String.format(getString(messageId), syncCursor.getString(SyncContentSchema.COLUMN_TITLE_ID));
 
-        Builder builder = new Builder(getActivity()).setIcon(iconId).setTitle(titleId)
-                .setMessage(Html.fromHtml(message)).setCancelable(false)
-                .setPositiveButton(positiveId, new DialogInterface.OnClickListener()
-                {
-                    public void onClick(DialogInterface dialog, int whichButton)
-                    {
-                        if (onFavoriteChangeListener != null)
-                        {
-                            onFavoriteChangeListener.onPositive(syncCursor);
-                        }
-                        dialog.dismiss();
-                    }
-                });
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity()).iconRes(iconId).title(titleId)
+                .cancelable(false).content(Html.fromHtml(message)).positiveText(positiveId);
 
         if (negativeId != -1)
         {
-            builder.setNegativeButton(negativeId, new DialogInterface.OnClickListener()
+            builder.negativeText(negativeId).callback(new MaterialDialog.ButtonCallback()
             {
-                public void onClick(DialogInterface dialog, int whichButton)
+                @Override
+                public void onNegative(MaterialDialog dialog)
                 {
                     if (onFavoriteChangeListener != null)
                     {
@@ -153,10 +143,35 @@ public class ResolveConflictSyncDialogFragment extends DialogFragment
                     }
                     dialog.dismiss();
                 }
+
+                @Override
+                public void onPositive(MaterialDialog dialog)
+                {
+                    if (onFavoriteChangeListener != null)
+                    {
+                        onFavoriteChangeListener.onPositive(syncCursor);
+                    }
+                    dialog.dismiss();
+                }
+            });
+        }
+        else
+        {
+            builder.callback(new MaterialDialog.ButtonCallback()
+            {
+                @Override
+                public void onPositive(MaterialDialog dialog)
+                {
+                    if (onFavoriteChangeListener != null)
+                    {
+                        onFavoriteChangeListener.onPositive(syncCursor);
+                    }
+                    dialog.dismiss();
+                }
             });
         }
 
-        return builder.create();
+        return builder.show();
     }
 
     @Override
@@ -164,8 +179,11 @@ public class ResolveConflictSyncDialogFragment extends DialogFragment
     {
         if (getDialog() != null)
         {
-            TextView messageText = (TextView) getDialog().findViewById(android.R.id.message);
-            messageText.setGravity(Gravity.CENTER);
+            TextView messageText = ((MaterialDialog) getDialog()).getContentView();
+            if (messageText != null)
+            {
+                messageText.setGravity(Gravity.CENTER);
+            }
             getDialog().show();
         }
         super.onResume();
@@ -315,8 +333,9 @@ public class ResolveConflictSyncDialogFragment extends DialogFragment
     private Dialog createErrorDialog()
     {
         // Error !
-        Builder builder = new Builder(getActivity()).setIcon(R.drawable.ic_application_logo)
-                .setTitle(R.string.sync_error_title).setMessage(R.string.error_general);
-        return builder.create();
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity())
+                .iconRes(R.drawable.ic_application_logo).title(R.string.sync_error_title)
+                .content(R.string.error_general).positiveText(android.R.string.ok);
+        return builder.show();
     }
 }

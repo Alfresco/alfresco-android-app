@@ -47,7 +47,6 @@ import org.alfresco.mobile.android.application.fragments.signin.AccountOAuthFrag
 import org.alfresco.mobile.android.application.fragments.sync.SyncFragment;
 import org.alfresco.mobile.android.application.fragments.sync.SyncMigrationFragment;
 import org.alfresco.mobile.android.application.intent.RequestCode;
-import org.alfresco.mobile.android.application.managers.ActionUtils;
 import org.alfresco.mobile.android.application.managers.ConfigManager;
 import org.alfresco.mobile.android.application.managers.RenditionManagerImpl;
 import org.alfresco.mobile.android.application.security.DataProtectionUserDialogFragment;
@@ -79,7 +78,6 @@ import org.alfresco.mobile.android.platform.utils.ConnectivityUtils;
 import org.alfresco.mobile.android.sync.SyncContentManager;
 import org.alfresco.mobile.android.ui.RefreshFragment;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
-import org.alfresco.mobile.android.ui.fragments.SimpleAlertDialogFragment;
 import org.alfresco.mobile.android.ui.node.browse.NodeBrowserTemplate;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
@@ -94,10 +92,12 @@ import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -105,6 +105,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.squareup.otto.Subscribe;
 
 /**
@@ -595,11 +596,10 @@ public class MainActivity extends BaseActivity
         {
             case SESSION_ERROR:
                 Bundle b = new Bundle();
-                b.putInt(SimpleAlertDialogFragment.ARGUMENT_ICON, R.drawable.ic_application_logo);
-                b.putInt(SimpleAlertDialogFragment.ARGUMENT_TITLE, R.string.error_session_creation_message);
-                b.putInt(SimpleAlertDialogFragment.ARGUMENT_MESSAGE, sessionStateErrorMessageId);
-                b.putInt(SimpleAlertDialogFragment.ARGUMENT_POSITIVE_BUTTON, android.R.string.ok);
-                ActionUtils.actionDisplayDialog(this, b);
+                new MaterialDialog.Builder(this).iconRes(R.drawable.ic_application_logo)
+                        .title(R.string.error_session_creation_message)
+                        .content(Html.fromHtml(getString(sessionStateErrorMessageId))).positiveText(android.R.string.ok)
+                        .show();
                 return false;
             case SESSION_LOADING:
                 displayWaitingDialog();
@@ -608,12 +608,10 @@ public class MainActivity extends BaseActivity
             default:
                 if (!ConnectivityUtils.hasNetwork(this))
                 {
-                    Bundle ba = new Bundle();
-                    ba.putInt(SimpleAlertDialogFragment.ARGUMENT_ICON, R.drawable.ic_application_logo);
-                    ba.putInt(SimpleAlertDialogFragment.ARGUMENT_TITLE, R.string.error_session_creation_message);
-                    ba.putInt(SimpleAlertDialogFragment.ARGUMENT_MESSAGE, R.string.error_session_nodata);
-                    ba.putInt(SimpleAlertDialogFragment.ARGUMENT_POSITIVE_BUTTON, android.R.string.ok);
-                    ActionUtils.actionDisplayDialog(this, ba);
+                    new MaterialDialog.Builder(this).iconRes(R.drawable.ic_application_logo)
+                            .title(R.string.error_session_creation_message)
+                            .content(Html.fromHtml(getString(R.string.error_session_nodata)))
+                            .positiveText(android.R.string.ok).show();
                     return false;
                 }
                 else if (getCurrentAccount() != null && getCurrentAccount().getActivation() != null)
@@ -796,7 +794,7 @@ public class MainActivity extends BaseActivity
         getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
         // Display progress
-        setProgressBarIndeterminateVisibility(true);
+        setSupportProgressBarIndeterminateVisibility(true);
 
         // Add accountName in actionBar
         UIUtils.displayTitle(R.string.app_name, MainActivity.this);
@@ -819,12 +817,12 @@ public class MainActivity extends BaseActivity
             ((MainMenuFragment) getFragment(MainMenuFragment.TAG)).refreshData();
         }
         setSessionState(SESSION_LOADING);
-        setProgressBarIndeterminateVisibility(true);
+        setSupportProgressBarIndeterminateVisibility(true);
         invalidateOptionsMenu();
         setCurrentAccount(event.account);
         if (event != null)
         {
-            AlfrescoNotificationManager.getInstance(this).showLongToast(event.account.getTitle());
+            Snackbar.make(findViewById(R.id.left_pane_body), event.account.getTitle(), Snackbar.LENGTH_LONG).show();
         }
     }
 
@@ -874,7 +872,7 @@ public class MainActivity extends BaseActivity
         if (!isCurrentAccountToLoad(event)) { return; }
 
         setSessionState(SESSION_ACTIVE);
-        setProgressBarIndeterminateVisibility(false);
+        setSupportProgressBarIndeterminateVisibility(false);
         UIUtils.displayTitle(R.string.app_name, this, false);
 
         // Retrieve Rendition Manager associated to this account
@@ -974,7 +972,7 @@ public class MainActivity extends BaseActivity
         AccountOAuthFragment.with(MainActivity.this).account(event.account).isCreation(false).display();
 
         // Stop progress indication
-        setProgressBarIndeterminateVisibility(false);
+        setSupportProgressBarIndeterminateVisibility(false);
 
         invalidateOptionsMenu();
     }
@@ -983,12 +981,9 @@ public class MainActivity extends BaseActivity
     public void onAccountErrorEvent(LoadAccountErrorEvent event)
     {
         // Display error dialog message
-        Bundle b = new Bundle();
-        b.putInt(SimpleAlertDialogFragment.ARGUMENT_ICON, R.drawable.ic_application_logo);
-        b.putInt(SimpleAlertDialogFragment.ARGUMENT_TITLE, R.string.error_session_creation_message);
-        b.putInt(SimpleAlertDialogFragment.ARGUMENT_MESSAGE, event.messageId);
-        b.putInt(SimpleAlertDialogFragment.ARGUMENT_POSITIVE_BUTTON, android.R.string.ok);
-        ActionUtils.actionDisplayDialog(this, b);
+        new MaterialDialog.Builder(this).iconRes(R.drawable.ic_application_logo)
+                .title(R.string.error_session_creation_message).content(Html.fromHtml(getString(event.messageId)))
+                .positiveText(android.R.string.ok).show();
 
         // Change status
         setSessionErrorMessageId(event.messageId);
@@ -997,7 +992,7 @@ public class MainActivity extends BaseActivity
         setCurrentAccount(AlfrescoAccountManager.getInstance(this).retrieveAccount(event.data));
 
         // Stop progress indication
-        setProgressBarIndeterminateVisibility(false);
+        setSupportProgressBarIndeterminateVisibility(false);
 
         invalidateOptionsMenu();
     }
@@ -1008,7 +1003,7 @@ public class MainActivity extends BaseActivity
         if (getCurrentAccount().getId() != event.account.getId()) { return; }
 
         setSessionState(SESSION_INACTIVE);
-        setProgressBarIndeterminateVisibility(false);
+        setSupportProgressBarIndeterminateVisibility(false);
         invalidateOptionsMenu();
         AlfrescoNotificationManager.getInstance(this).showLongToast(getString(R.string.account_not_activated));
     }

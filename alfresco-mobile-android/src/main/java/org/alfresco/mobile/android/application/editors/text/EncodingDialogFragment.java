@@ -27,17 +27,14 @@ import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 import org.alfresco.mobile.android.ui.holder.SingleLineViewHolder;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
-import android.view.LayoutInflater;
+import android.text.Html;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ListView;
-import android.widget.TextView;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 
 /**
  * @author Jean Marie Pascal
@@ -53,6 +50,9 @@ public class EncodingDialogFragment extends DialogFragment
 
     private String defaultCharset = "UTF-8";
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // CONSTRUCTOR
+    // ///////////////////////////////////////////////////////////////////////////
     public EncodingDialogFragment()
     {
     }
@@ -66,6 +66,9 @@ public class EncodingDialogFragment extends DialogFragment
         return fr;
     }
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // LIFECYCLE
+    // ///////////////////////////////////////////////////////////////////////////
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
         if (getArguments() != null && getArguments().containsKey(ARGUMENT_DEFAULT_CHARSET))
@@ -73,45 +76,44 @@ public class EncodingDialogFragment extends DialogFragment
             defaultCharset = getArguments().getString(ARGUMENT_DEFAULT_CHARSET, "UTF-8");
         }
 
-        int title = R.string.file_editor_encoding;
-
-        LayoutInflater inflater = LayoutInflater.from(getActivity());
-        final View v = inflater.inflate(R.layout.sdk_list, null);
-        ListView lv = (ListView) v.findViewById(R.id.listView);
-
         SortedMap<String, Charset> map = Charset.availableCharsets();
         list = new ArrayList<String>(map.keySet());
+        EncodingAdapter adapter = new EncodingAdapter(getActivity(), R.layout.row_single_line, list, defaultCharset);
 
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity())
+                .iconRes(R.drawable.ic_application_logo);
         if (list.isEmpty())
         {
-            lv.setVisibility(View.GONE);
-            v.findViewById(R.id.empty).setVisibility(View.VISIBLE);
-            ((TextView) v.findViewById(R.id.empty_text))
-                    .setText(R.string.create_document_editor_not_available_description);
-            title = R.string.create_document_editor_not_available;
-
-            return new AlertDialog.Builder(getActivity()).setTitle(title).setView(v).create();
+            builder.title(R.string.create_document_editor_not_available)
+                    .content(Html.fromHtml(getString(R.string.create_document_editor_not_available_description)));
+            return builder.show();
         }
         else
         {
-            lv.setAdapter(new EncodingAdapter(getActivity(), R.layout.row_single_line, list, defaultCharset));
-            lv.setSelection(list.indexOf(defaultCharset));
-
-            lv.setOnItemClickListener(new OnItemClickListener()
+            builder.title(R.string.file_editor_encoding).adapter(adapter, new MaterialDialog.ListCallback()
             {
                 @Override
-                public void onItemClick(AdapterView<?> l, View v, int position, long id)
+                public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence)
                 {
                     if (getActivity() instanceof TextEditorActivity)
                     {
-                        ((TextEditorActivity) getActivity()).reload(list.get(position));
+                        ((TextEditorActivity) getActivity()).reload(list.get(i));
                     }
-                    dismiss();
+                    materialDialog.dismiss();
                 }
             });
-            return new AlertDialog.Builder(getActivity()).setTitle(title).setView(v).create();
         }
+        return builder.show();
+    }
 
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        if (list.indexOf(defaultCharset) != -1)
+        {
+            ((MaterialDialog) getDialog()).getListView().setSelection(list.indexOf(defaultCharset));
+        }
     }
 
     private static class EncodingAdapter extends BaseListAdapter<String, SingleLineViewHolder>
@@ -132,8 +134,8 @@ public class EncodingDialogFragment extends DialogFragment
             vh.topText.setText(item);
             if (defaultCharSet.equals(item))
             {
-                UIUtils.setBackground(((View) vh.icon.getParent()), getContext().getResources()
-                        .getDrawable(R.drawable.list_longpressed_holo));
+                UIUtils.setBackground(((View) vh.icon.getParent()),
+                        getContext().getResources().getDrawable(R.drawable.list_longpressed_holo));
             }
             else
             {

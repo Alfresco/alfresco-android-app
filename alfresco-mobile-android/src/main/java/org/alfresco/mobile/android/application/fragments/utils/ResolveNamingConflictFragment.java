@@ -24,14 +24,14 @@ import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.node.download.DownloadRequest;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 
-import android.app.AlertDialog.Builder;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.text.Html;
 import android.view.Gravity;
 import android.widget.TextView;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 
 public class ResolveNamingConflictFragment extends DialogFragment
 {
@@ -64,7 +64,6 @@ public class ResolveNamingConflictFragment extends DialogFragment
     {
         // Messages informations
         int titleId = R.string.error_duplicate_title;
-        int iconId = R.drawable.ic_download_dark;
         int messageId = R.string.error_duplicate_description;
         int positiveId = android.R.string.yes;
         int negativeId = android.R.string.no;
@@ -72,11 +71,12 @@ public class ResolveNamingConflictFragment extends DialogFragment
 
         String message = getString(messageId);
 
-        Builder builder = new Builder(getActivity()).setIcon(iconId).setTitle(titleId)
-                .setMessage(Html.fromHtml(message)).setCancelable(false)
-                .setPositiveButton(positiveId, new DialogInterface.OnClickListener()
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity())
+                .iconRes(R.drawable.ic_application_logo).title(titleId).content(Html.fromHtml(message))
+                .positiveText(positiveId).negativeText(negativeId).callback(new MaterialDialog.ButtonCallback()
                 {
-                    public void onClick(DialogInterface dialog, int whichButton)
+                    @Override
+                    public void onPositive(MaterialDialog dialog)
                     {
                         if (onFavoriteChangeListener != null)
                         {
@@ -84,24 +84,19 @@ public class ResolveNamingConflictFragment extends DialogFragment
                         }
                         dialog.dismiss();
                     }
+
+                    @Override
+                    public void onNegative(MaterialDialog dialog)
+                    {
+                        if (onFavoriteChangeListener != null)
+                        {
+                            onFavoriteChangeListener.onNegative();
+                        }
+                        dialog.dismiss();
+                    }
                 });
 
-        if (negativeId != -1)
-        {
-            builder.setNegativeButton(negativeId, new DialogInterface.OnClickListener()
-            {
-                public void onClick(DialogInterface dialog, int whichButton)
-                {
-                    if (onFavoriteChangeListener != null)
-                    {
-                        onFavoriteChangeListener.onNegative();
-                    }
-                    dialog.dismiss();
-                }
-            });
-        }
-
-        return builder.create();
+        return builder.show();
     }
 
     @Override
@@ -109,8 +104,11 @@ public class ResolveNamingConflictFragment extends DialogFragment
     {
         if (getDialog() != null)
         {
-            TextView messageText = (TextView) getDialog().findViewById(android.R.id.message);
-            messageText.setGravity(Gravity.CENTER);
+            TextView messageText = ((MaterialDialog) getDialog()).getContentView();
+            if (messageText != null)
+            {
+                messageText.setGravity(Gravity.CENTER);
+            }
             getDialog().show();
         }
         super.onResume();
@@ -148,8 +146,8 @@ public class ResolveNamingConflictFragment extends DialogFragment
         if (getArguments() != null && getArguments().containsKey(PrivateIntent.EXTRA_DOCUMENT)
                 && getArguments().containsKey(PrivateIntent.EXTRA_FOLDER))
         {
-            Operator.with(getActivity()).load(
-                    new DownloadRequest.Builder((Folder) getArguments().getParcelable(PrivateIntent.EXTRA_FOLDER),
+            Operator.with(getActivity())
+                    .load(new DownloadRequest.Builder((Folder) getArguments().getParcelable(PrivateIntent.EXTRA_FOLDER),
                             (Document) getArguments().getParcelable(PrivateIntent.EXTRA_DOCUMENT), true));
         }
     }
