@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.providers.storage;
 
 import java.io.BufferedOutputStream;
@@ -61,6 +61,12 @@ import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.mimetype.MimeTypeManager;
 import org.alfresco.mobile.android.platform.provider.AlfrescoContentProvider;
+import org.alfresco.mobile.android.platform.provider.CursorUtils;
+import org.alfresco.mobile.android.platform.utils.ConnectivityUtils;
+import org.alfresco.mobile.android.sync.SyncContentManager;
+import org.alfresco.mobile.android.sync.SyncContentProvider;
+import org.alfresco.mobile.android.sync.SyncContentSchema;
+import org.alfresco.mobile.android.sync.operations.SyncContentStatus;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 
 import android.annotation.TargetApi;
@@ -99,6 +105,8 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
 
     private static final int PREFIX_DOC = 8;
 
+    private static final int PREFIX_SYNC = 16;
+
     private static final String QUERY_RECENT = "SELECT * FROM cmis:document WHERE cmis:lastModificationDate > TIMESTAMP '%s' ORDER BY cmis:lastModificationDate DESC";
 
     private static final String[] DEFAULT_ROOT_PROJECTION = AlfrescoContract.DEFAULT_ROOT_PROJECTION;
@@ -106,11 +114,12 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
     private static final String[] DEFAULT_DOCUMENT_PROJECTION = AlfrescoContract.DEFAULT_DOCUMENT_PROJECTION;
 
     @SuppressWarnings("serial")
-    private static final List<String> IMPORT_FOLDER_LIST = new ArrayList<String>(4)
+    private static final List<String> IMPORT_FOLDER_LIST = new ArrayList<String>(3)
     {
         {
             add(String.valueOf(R.string.menu_browse_sites));
             add(String.valueOf(R.string.menu_browse_favorites_folder));
+            add(String.valueOf(R.string.menu_browse_sync_content_folder));
         }
     };
 
@@ -129,6 +138,8 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
 
     protected Map<String, Site> siteIndex = new HashMap<String, Site>();
 
+    protected Map<String, Long> syncIndex = new HashMap<String, Long>();
+
     protected Folder parentFolder;
 
     private LongSparseArray<AlfrescoAccount> accountsIndex;
@@ -136,6 +147,8 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
     private Map<Long, AlfrescoSession> sessionIndex;
 
     private AlfrescoAccount selectedAccount;
+
+    private Long selectedAccountId;
 
     private String selectedUrl;
 
@@ -249,6 +262,18 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
                             }
                             break;
 
+                        case R.string.menu_browse_sync_content_folder:
+                            // List sync content folders
+                            if (active != null && !active)
+                            {
+                                fillSyncContentChildren(uri, active, docsCursor);
+                            }
+                            else
+                            {
+                                retrieveSyncContentFoldersChildren(uri, cUri, docsCursor);
+                            }
+                            break;
+
                         default:
                             break;
                     }
@@ -279,6 +304,17 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
                         retrieveFolderChildren(uri, cUri, docsCursor);
                     }
                     break;
+                case PREFIX_SYNC:
+                    // Children browsing
+                    if (active != null && !active)
+                    {
+                        fillSyncContentChildren(uri, active, docsCursor);
+                    }
+                    else
+                    {
+                        retrieveSyncContentFoldersChildren(uri, cUri, docsCursor);
+                    }
+                    break;
 
                 default:
                     break;
@@ -289,7 +325,7 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
             docsCursor.setErrorInformation("Error : " + e.getMessage());
             docsCursor.setNotificationUri(getContext().getContentResolver(), uri);
             getContext().getContentResolver().notifyChange(uri, null);
-            // Log.w(TAG, Log.getStackTraceString(e));
+            Log.w(TAG, Log.getStackTraceString(e));
         }
 
         return docsCursor;
@@ -305,7 +341,6 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
         try
         {
             EncodedQueryUri cUri = new EncodedQueryUri(documentId);
-            // checkSession(cUri);
 
             if (cUri.id != null)
             {
@@ -364,8 +399,7 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
             try
             {
                 // DocumentId can be an old one stored as "recent doc"
-                // This type might have been updated/changed until the last
-                // access
+                // This id might have been updated/changed until the last access
                 // That's why We ALWAYS request the latest version
                 // Log.d(TAG, "retrieve latest version");
                 currentNode = session.getServiceRegistry().getVersionService()
@@ -711,6 +745,7 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
     // //////////////////////////////////////////////////////////////////////
     // PROJECTION
     // //////////////////////////////////////////////////////////////////////
+
     /**
      * @param projection the requested root column projection
      * @return either the requested root column projection, or the default
@@ -785,18 +820,19 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
     {
         // Retrieve and init accounts
         selectedAccount = accountsIndex.get(row.accountId);
+        selectedAccountId = selectedAccount.getId();
         accountType = selectedAccount.getTypeId();
         selectedUrl = selectedAccount.getUrl();
 
         Boolean isLoading = mLoadingUris.get(uri);
-        Boolean available = (sessionIndex.containsKey(selectedAccount.getId()) && sessionIndex.get(selectedAccount
-                .getId()) != null);
+        Boolean available = (sessionIndex.containsKey(selectedAccountId)
+                && sessionIndex.get(selectedAccountId) != null);
 
         // Log.v(TAG, "isLoading " + isLoading + " available " + available);
 
         if (isLoading != null && !isLoading && !available)
         {
-            session = sessionIndex.get(selectedAccount.getId());
+            session = sessionIndex.get(selectedAccountId);
             isLoading = null;
         }
 
@@ -813,6 +849,7 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
                 @Override
                 protected Void doInBackground(Void... params)
                 {
+                    if (!ConnectivityUtils.hasInternetAvailable(getContext())) { return null; }
                     try
                     {
                         switch (accountType)
@@ -830,7 +867,7 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
                             default:
                                 break;
                         }
-                        sessionIndex.put(selectedAccount.getId(), session);
+                        sessionIndex.put(selectedAccountId, session);
                     }
                     catch (AlfrescoException e)
                     {
@@ -848,14 +885,25 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
         if (hasError(uri, active, rootMenuCursor)) { return; }
 
         int id = -1;
-        for (String idValue : IMPORT_FOLDER_LIST)
+
+        if (ConnectivityUtils.hasInternetAvailable(getContext()))
         {
-            id = Integer.parseInt(idValue);
-            addRootMenuRow(rootMenuCursor, id);
+            // ONLINE
+            for (String idValue : IMPORT_FOLDER_LIST)
+            {
+                id = Integer.parseInt(idValue);
+                addRootMenuRow(rootMenuCursor, id);
+            }
+            if (session.getRootFolder() != null)
+            {
+                currentFolder = session.getRootFolder();
+                addNodeRow(rootMenuCursor, session.getRootFolder(), true);
+            }
         }
-        if (session.getRootFolder() != null)
+        else
         {
-            addNodeRow(rootMenuCursor, session.getRootFolder(), true);
+            // OFFLINE
+            addRootMenuRow(rootMenuCursor, R.string.menu_browse_sync_content_folder);
         }
         removeUri(uri, active);
     }
@@ -864,7 +912,7 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
     {
         DocumentFolderCursor.RowBuilder row = rootMenuCursor.newRow();
         row.add(Document.COLUMN_DOCUMENT_ID,
-                EncodedQueryUri.encodeItem(PREFIX_ROOT_MENU, selectedAccount.getId(), Integer.toString(id)));
+                EncodedQueryUri.encodeItem(PREFIX_ROOT_MENU, selectedAccountId, Integer.toString(id)));
         row.add(Document.COLUMN_DISPLAY_NAME, getContext().getString(id));
         row.add(Document.COLUMN_SIZE, 0);
         row.add(Document.COLUMN_MIME_TYPE, Document.MIME_TYPE_DIR);
@@ -907,7 +955,7 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
     {
         DocumentFolderCursor.RowBuilder row = sitesCursor.newRow();
         row.add(Document.COLUMN_DOCUMENT_ID,
-                EncodedQueryUri.encodeItem(PREFIX_SITE, selectedAccount.getId(), site.getIdentifier()));
+                EncodedQueryUri.encodeItem(PREFIX_SITE, selectedAccountId, site.getIdentifier()));
         row.add(Document.COLUMN_DISPLAY_NAME, site.getTitle());
         row.add(Document.COLUMN_SIZE, null);
         row.add(Document.COLUMN_MIME_TYPE, Document.MIME_TYPE_DIR);
@@ -933,7 +981,8 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
 
         retrieveFolderChildren(
                 uri,
-                new EncodedQueryUri(PREFIX_DOC, selectedAccount.getId(), NodeRefUtils
+ new EncodedQueryUri(PREFIX_DOC, selectedAccountId,
+                NodeRefUtils
                         .getVersionIdentifier(documentLibraryFolder.getIdentifier())), sitesCursor);
     }
 
@@ -957,6 +1006,127 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
                 return null;
             }
         }.execute();
+    }
+
+    // //////////////////////////////////////////////////////////////////////
+    // Sync Content FOLDER
+    // //////////////////////////////////////////////////////////////////////
+    private void retrieveSyncContentFoldersChildren(Uri uri, final EncodedQueryUri row,
+            final DocumentFolderCursor syncContentCursor)
+    {
+        Log.v(TAG, "retrieveSyncContentFoldersChildren :" + row.toString());
+
+        new StorageProviderAsyncTask(uri, syncContentCursor, true)
+        {
+            @Override
+            protected Void doInBackground(Void... params)
+            {
+                StringBuilder selection = new StringBuilder();
+                if (selectedAccount != null)
+                {
+                    selection.append(SyncContentProvider.getAccountFilter(selectedAccount));
+                }
+
+                if (selection.length() > 0)
+                {
+                    selection.append(" AND ");
+                }
+
+                if (row.type == PREFIX_SYNC && !TextUtils.isEmpty(row.id))
+                {
+                    selection.append(SyncContentSchema.COLUMN_PARENT_ID).append(" == '").append(row.id).append("'");
+                }
+                else
+                {
+                    selection.append(
+                            SyncContentSchema.COLUMN_IS_SYNC_ROOT + " == '" + SyncContentProvider.FLAG_SYNC_SET + "'");
+                    selection.append(" OR ");
+                    selection.append(
+                            SyncContentSchema.COLUMN_STATUS + " == '" + SyncContentStatus.STATUS_REQUEST_USER + "'");
+                }
+
+                if (selection.length() > 0)
+                {
+                    selection.append(" AND ");
+                }
+
+                selection.append(SyncContentSchema.COLUMN_STATUS + " NOT IN (" + SyncContentStatus.STATUS_HIDDEN + ")");
+
+                Log.v(TAG, "retrieveSyncContentFoldersChildren :" + selection);
+
+                Cursor syncCursor = null;
+                try
+                {
+                    syncCursor = getContext().getContentResolver().query(SyncContentProvider.CONTENT_URI,
+                            SyncContentSchema.COLUMN_ALL, selection.toString(), null, null);
+
+                    Log.v(TAG, "retrieveSyncContentFoldersChildren Count:" + syncCursor.getCount());
+
+                    while (syncCursor.moveToNext())
+                    {
+                        syncIndex.put(syncCursor.getString(SyncContentSchema.COLUMN_NODE_ID_ID),
+                                syncCursor.getLong(SyncContentSchema.COLUMN_ID_ID));
+                    }
+                }
+                catch (Exception e)
+                {
+
+                }
+                finally
+                {
+                    CursorUtils.closeCursor(syncCursor);
+                }
+                return null;
+            }
+        }.execute();
+    }
+
+    private void fillSyncContentChildren(Uri uri, Boolean active, DocumentFolderCursor syncContentCursor)
+    {
+        if (hasError(uri, active, syncContentCursor)) { return; }
+        for (Entry<String, Long> syncEntry : syncIndex.entrySet())
+        {
+            addSyncContentRow(syncContentCursor, syncEntry.getValue());
+        }
+        removeUri(uri, active);
+    }
+
+    private void addSyncContentRow(DocumentFolderCursor sitesCursor, Long id)
+    {
+        Cursor syncCursor = null;
+        try
+        {
+            Log.v(TAG, "addSyncContentRow " + SyncContentManager.getUri(id));
+            Cursor itemCursor = getContext().getContentResolver().query(SyncContentManager.getUri(id),
+                    SyncContentSchema.COLUMN_ALL, null, null, null);
+
+            if (itemCursor.getCount() == 1 && itemCursor.moveToNext())
+            {
+                String mime = itemCursor.getString(SyncContentSchema.COLUMN_MIMETYPE_ID);
+                if ("cm:folder".equals(mime))
+                {
+                    mime = null;
+                }
+
+                DocumentFolderCursor.RowBuilder row = sitesCursor.newRow();
+                row.add(Document.COLUMN_DOCUMENT_ID, EncodedQueryUri.encodeItem(PREFIX_SYNC, selectedAccountId,
+                        NodeRefUtils.getVersionIdentifier(itemCursor.getString(SyncContentSchema.COLUMN_NODE_ID_ID))));
+                row.add(Document.COLUMN_DISPLAY_NAME, itemCursor.getString(SyncContentSchema.COLUMN_TITLE_ID));
+                row.add(Document.COLUMN_SIZE, itemCursor.getLong(SyncContentSchema.COLUMN_TOTAL_SIZE_BYTES_ID));
+                row.add(Document.COLUMN_MIME_TYPE, mime == null ? Document.MIME_TYPE_DIR : mime);
+                row.add(Document.COLUMN_LAST_MODIFIED,
+                        itemCursor.getLong(SyncContentSchema.COLUMN_SERVER_MODIFICATION_TIMESTAMP_ID));
+                row.add(Document.COLUMN_FLAGS, 0);
+            }
+        }
+        catch (Exception e)
+        {
+            Log.e(TAG, Log.getStackTraceString(e));
+        }
+        finally
+        {
+            CursorUtils.closeCursor(syncCursor);
+        }
     }
 
     // //////////////////////////////////////////////////////////////////////
@@ -1016,12 +1186,20 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
     {
         int flags = 0;
 
-        Permissions permission = session.getServiceRegistry().getDocumentFolderService().getPermissions(node);
+        Permissions permission = null;
+        try
+        {
+            permission = session.getServiceRegistry().getDocumentFolderService().getPermissions(node);
+        }
+        catch (Exception e)
+        {
+
+        }
 
         DocumentFolderCursor.RowBuilder row = result.newRow();
 
         row.add(Document.COLUMN_DOCUMENT_ID,
-                EncodedQueryUri.encodeItem(PREFIX_DOC, selectedAccount.getId(),
+ EncodedQueryUri.encodeItem(PREFIX_DOC, selectedAccountId,
                         NodeRefUtils.getVersionIdentifier(node.getIdentifier())));
         row.add(Document.COLUMN_DISPLAY_NAME,
                 isRoot ? getContext().getString(R.string.menu_browse_root) : node.getName());
@@ -1029,7 +1207,7 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
         {
             row.add(Document.COLUMN_SIZE, null);
             row.add(Document.COLUMN_MIME_TYPE, Document.MIME_TYPE_DIR);
-            if (permission.canAddChildren())
+            if (permission != null && permission.canAddChildren())
             {
                 flags |= Document.FLAG_DIR_SUPPORTS_CREATE;
             }
@@ -1041,12 +1219,12 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
             flags |= Document.FLAG_SUPPORTS_THUMBNAIL;
             row.add(Document.COLUMN_MIME_TYPE,
                     ((org.alfresco.mobile.android.api.model.Document) node).getContentStreamMimeType());
-            if (permission.canEdit())
+            if (permission != null && permission.canEdit())
             {
                 flags |= Document.FLAG_SUPPORTS_WRITE;
             }
 
-            if (permission.canDelete())
+            if (permission != null && permission.canDelete())
             {
                 flags |= Document.FLAG_SUPPORTS_DELETE;
             }
@@ -1056,8 +1234,9 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
         row.add(Document.COLUMN_FLAGS, flags);
         row.add(Document.COLUMN_ICON, R.drawable.ic_person_light);
         row.add(AlfrescoContract.Document.COLUMN_TYPE, node.getType());
-        row.add(AlfrescoContract.Document.COLUMN_ACCOUNT_ID, selectedAccount.getId());
-        row.add(AlfrescoContract.Document.COLUMN_PATH, currentFolder.getPropertyValue(PropertyIds.PATH));
+        row.add(AlfrescoContract.Document.COLUMN_ACCOUNT_ID, selectedAccountId);
+        row.add(AlfrescoContract.Document.COLUMN_PATH, currentFolder.getPropertyValue(PropertyIds.PATH) != null
+                ? currentFolder.getPropertyValue(PropertyIds.PATH) != null : "/");
     }
 
     // //////////////////////////////////////////////////////////////////////
@@ -1209,7 +1388,7 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
                     default:
                         break;
                 }
-                sessionIndex.put(selectedAccount.getId(), session);
+                sessionIndex.put(selectedAccountId, session);
             }
             catch (AlfrescoException e)
             {
@@ -1249,6 +1428,10 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
             if (clearNodes && nodesIndex != null)
             {
                 nodesIndex.clear();
+            }
+            if (clearNodes && syncIndex != null)
+            {
+                syncIndex.clear();
             }
             startLoadingUri(uri, docsCursor);
         }
@@ -1292,7 +1475,7 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
     private Node retrieveNode(String docId)
     {
         Node currentNode = null;
-        // Retrieve node by its type
+        // Retrieve node by its id
         if (nodesIndex.containsKey(docId))
         {
             currentNode = nodesIndex.get(docId);

@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.sync;
 
 import java.io.File;
@@ -287,12 +287,12 @@ public class SyncContentManager extends Manager
     {
         if (account == null) { return false; }
 
-        Cursor favoriteCursor = appContext.getContentResolver().query(
-                SyncContentProvider.CONTENT_URI,
+        Cursor favoriteCursor = appContext.getContentResolver().query(SyncContentProvider.CONTENT_URI,
                 SyncContentSchema.COLUMN_ALL,
                 SyncContentProvider.getAccountFilter(account) + " AND " + SyncContentSchema.COLUMN_NODE_ID + " LIKE '"
                         + NodeRefUtils.getCleanIdentifier(nodeIdentifier) + "%' AND " + SyncContentSchema.COLUMN_STATUS
-                        + " NOT IN ( " + SyncContentStatus.STATUS_HIDDEN + ")", null, null);
+                        + " NOT IN ( " + SyncContentStatus.STATUS_HIDDEN + ")",
+                null, null);
         boolean b = (favoriteCursor.getCount() == 1) && hasActivateSync(account);
         CursorUtils.closeCursor(favoriteCursor);
         return b;
@@ -302,13 +302,13 @@ public class SyncContentManager extends Manager
     {
         if (account == null) { return false; }
 
-        Cursor favoriteCursor = appContext.getContentResolver().query(
-                SyncContentProvider.CONTENT_URI,
+        Cursor favoriteCursor = appContext.getContentResolver().query(SyncContentProvider.CONTENT_URI,
                 SyncContentSchema.COLUMN_ALL,
                 SyncContentProvider.getAccountFilter(account) + " AND " + SyncContentSchema.COLUMN_NODE_ID + " LIKE '"
                         + NodeRefUtils.getCleanIdentifier(nodeIdentifier) + "%' AND " + SyncContentSchema.COLUMN_STATUS
                         + " NOT IN ( " + SyncContentStatus.STATUS_HIDDEN + ")" + " AND "
-                        + SyncContentSchema.COLUMN_IS_SYNC_ROOT + " == 1", null, null);
+                        + SyncContentSchema.COLUMN_IS_SYNC_ROOT + " == 1",
+                null, null);
         boolean b = (favoriteCursor.getCount() == 1) && hasActivateSync(account);
         CursorUtils.closeCursor(favoriteCursor);
         return b;
@@ -328,7 +328,8 @@ public class SyncContentManager extends Manager
     {
         if (account == null || node == null) { return null; }
         if (node.isFolder()) { return null; }
-        if (node instanceof NodeSyncPlaceHolder) { return getSynchroFile(account, node.getName(), node.getIdentifier()); }
+        if (node instanceof NodeSyncPlaceHolder) { return getSynchroFile(account, node.getName(),
+                node.getIdentifier()); }
         return getSynchroFile(account, (Document) node);
     }
 
@@ -336,11 +337,10 @@ public class SyncContentManager extends Manager
     {
         if (acc == null) { return null; }
 
-        return context.getContentResolver().query(
-                SyncContentProvider.CONTENT_URI,
-                SyncContentSchema.COLUMN_ALL,
+        return context.getContentResolver().query(SyncContentProvider.CONTENT_URI, SyncContentSchema.COLUMN_ALL,
                 SyncContentProvider.getAccountFilter(acc) + " AND " + SyncContentSchema.COLUMN_NODE_ID + " LIKE '"
-                        + NodeRefUtils.getCleanIdentifier(identifier) + "%'", null, null);
+                        + NodeRefUtils.getCleanIdentifier(identifier) + "%'",
+                null, null);
     }
 
     public Uri getUri(AlfrescoAccount account, String nodeIdentifier)
@@ -351,8 +351,8 @@ public class SyncContentManager extends Manager
         Cursor favoriteCursor = getCursorForId(appContext, account, nodeIdentifier);
         if (favoriteCursor.getCount() == 1 && favoriteCursor.moveToFirst())
         {
-            b = Uri.parse(SyncContentProvider.CONTENT_URI + "/"
-                    + favoriteCursor.getLong(SyncContentSchema.COLUMN_ID_ID));
+            b = Uri.parse(
+                    SyncContentProvider.CONTENT_URI + "/" + favoriteCursor.getLong(SyncContentSchema.COLUMN_ID_ID));
         }
         CursorUtils.closeCursor(favoriteCursor);
         return b;
@@ -360,13 +360,14 @@ public class SyncContentManager extends Manager
 
     public boolean canSync(AlfrescoAccount account)
     {
-        return hasActivateSync(account)
-                && ((hasWifiOnlySync(account) && ConnectivityUtils.isWifiAvailable(appContext)) || !hasWifiOnlySync(account));
+        return hasActivateSync(account) && ((hasWifiOnlySync(account) && ConnectivityUtils.isWifiAvailable(appContext))
+                || !hasWifiOnlySync(account));
     }
 
     public boolean hasConnectivityToSync(AlfrescoAccount account)
     {
-        return ((hasWifiOnlySync(account) && ConnectivityUtils.isWifiAvailable(appContext)) || !hasWifiOnlySync(account));
+        return ((hasWifiOnlySync(account) && ConnectivityUtils.isWifiAvailable(appContext))
+                || !hasWifiOnlySync(account));
     }
 
     /**
@@ -457,8 +458,8 @@ public class SyncContentManager extends Manager
         File tempFolder = appContext.getExternalFilesDir(null);
         String path = file.getPath();
         String[] pathS = path.split("/");
-        return (tempFolder != null && file.getPath().startsWith(tempFolder.getPath()) && pathS[pathS.length - 3]
-                .contains(SYNCHRO_DIRECTORY));
+        return (tempFolder != null && file.getPath().startsWith(tempFolder.getPath())
+                && pathS[pathS.length - 3].contains(SYNCHRO_DIRECTORY));
     }
 
     public File getSynchroFile(AlfrescoAccount acc, Document doc)
@@ -483,8 +484,8 @@ public class SyncContentManager extends Manager
     // ////////////////////////////////////////////////////
     // STORAGE MANAGEMENT
     // ////////////////////////////////////////////////////
-    private static final String QUERY_SUM = "SELECT SUM(" + SyncContentSchema.COLUMN_BYTES_DOWNLOADED_SO_FAR
-            + ") FROM " + SyncContentSchema.TABLENAME + " WHERE " + SyncContentSchema.COLUMN_PARENT_ID + " = '%s';";
+    private static final String QUERY_SUM = "SELECT SUM(" + SyncContentSchema.COLUMN_BYTES_DOWNLOADED_SO_FAR + ") FROM "
+            + SyncContentSchema.TABLENAME + " WHERE " + SyncContentSchema.COLUMN_PARENT_ID + " = '%s';";
 
     private static final String QUERY_SUM_IN_PENDING = "SELECT SUM(" + SyncContentSchema.COLUMN_DOC_SIZE_BYTES
             + ") FROM " + SyncContentSchema.TABLENAME + " WHERE " + SyncContentSchema.COLUMN_ACCOUNT_ID + " == %s AND "
@@ -496,8 +497,8 @@ public class SyncContentManager extends Manager
             + SyncContentSchema.COLUMN_STATUS + " = " + SyncContentStatus.STATUS_PENDING + " AND "
             + SyncContentSchema.COLUMN_MIMETYPE + " NOT IN ('" + ContentModel.TYPE_FOLDER + "');";
 
-    private static final String QUERY_TOTAL_STORED = "SELECT SUM(" + SyncContentSchema.COLUMN_DOC_SIZE_BYTES
-            + ") FROM " + SyncContentSchema.TABLENAME + " WHERE " + SyncContentSchema.COLUMN_ACCOUNT_ID + " == %s AND "
+    private static final String QUERY_TOTAL_STORED = "SELECT SUM(" + SyncContentSchema.COLUMN_DOC_SIZE_BYTES + ") FROM "
+            + SyncContentSchema.TABLENAME + " WHERE " + SyncContentSchema.COLUMN_ACCOUNT_ID + " == %s AND "
             + SyncContentSchema.COLUMN_STATUS + " IN (" + SyncContentStatus.STATUS_PENDING + ", "
             + SyncContentStatus.STATUS_SUCCESSFUL + ");";
 
@@ -509,28 +510,29 @@ public class SyncContentManager extends Manager
         Long currentValue = null;
         Long totalSize = null;
         String parentFolderId = null;
-        Cursor favoriteCursor = null, parentCursor = null, cursorTotal = null, cursor = null;
+        Cursor syncCursor = null, parentCursor = null, cursorTotal = null, cursor = null;
 
         try
         {
             // Retrieve Uri & ParentFolder
             Uri uri = null;
-            favoriteCursor = appContext.getContentResolver().query(
-                    SyncContentProvider.CONTENT_URI,
+            syncCursor = appContext.getContentResolver().query(SyncContentProvider.CONTENT_URI,
                     SyncContentSchema.COLUMN_ALL,
-                    SyncContentProvider.getAccountFilter(account) + " AND " + SyncContentSchema.COLUMN_NODE_ID
-                            + " == '" + NodeRefUtils.getCleanIdentifier(identifier) + "'", null, null);
-            if (favoriteCursor.getCount() == 1 && favoriteCursor.moveToFirst())
+                    SyncContentProvider.getAccountFilter(account) + " AND " + SyncContentSchema.COLUMN_NODE_ID + " == '"
+                            + NodeRefUtils.getCleanIdentifier(identifier) + "'",
+                    null, null);
+            if (syncCursor.getCount() == 1 && syncCursor.moveToFirst())
             {
-                parentFolderId = favoriteCursor.getString(SyncContentSchema.COLUMN_PARENT_ID_ID);
-                uri = Uri.parse(SyncContentProvider.CONTENT_URI + "/"
-                        + favoriteCursor.getLong(SyncContentSchema.COLUMN_ID_ID));
+                parentFolderId = syncCursor.getString(SyncContentSchema.COLUMN_PARENT_ID_ID);
+                uri = Uri.parse(
+                        SyncContentProvider.CONTENT_URI + "/" + syncCursor.getLong(SyncContentSchema.COLUMN_ID_ID));
 
-                parentCursor = appContext.getContentResolver().query(
-                        SyncContentProvider.CONTENT_URI,
-                        SyncContentSchema.COLUMN_ALL,
-                        SyncContentProvider.getAccountFilter(account) + " AND " + SyncContentSchema.COLUMN_NODE_ID
-                                + " == '" + NodeRefUtils.getCleanIdentifier(parentFolderId) + "'", null, null);
+                parentCursor = appContext.getContentResolver()
+                        .query(SyncContentProvider.CONTENT_URI, SyncContentSchema.COLUMN_ALL,
+                                SyncContentProvider.getAccountFilter(account) + " AND "
+                                        + SyncContentSchema.COLUMN_NODE_ID + " == '"
+                                        + NodeRefUtils.getCleanIdentifier(parentFolderId) + "'",
+                                null, null);
             }
             else
             {
@@ -572,7 +574,7 @@ public class SyncContentManager extends Manager
         {
             CursorUtils.closeCursor(parentCursor);
             CursorUtils.closeCursor(cursorTotal);
-            CursorUtils.closeCursor(favoriteCursor);
+            CursorUtils.closeCursor(syncCursor);
             CursorUtils.closeCursor(cursor);
         }
 
@@ -735,8 +737,9 @@ public class SyncContentManager extends Manager
     {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(appContext);
         sharedPref.edit().putBoolean(SYNCHRO_PREFIX + accountId, isActive).commit();
-        ContentResolver.setSyncAutomatically(AlfrescoAccountManager.getInstance(appContext)
-                .getAndroidAccount(accountId), SyncContentProvider.AUTHORITY, isActive);
+        ContentResolver.setSyncAutomatically(
+                AlfrescoAccountManager.getInstance(appContext).getAndroidAccount(accountId),
+                SyncContentProvider.AUTHORITY, isActive);
     }
 
     public void setActivateSync(AlfrescoAccount account, boolean isActive)
