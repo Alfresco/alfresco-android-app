@@ -27,6 +27,8 @@ public interface SitesTemplate extends ListingTemplate
     String SHOW_MY_SITES = "my";
     String SHOW_FAVORITE_SITES = "favorites";
 
+    String SHOW_FINDER = "finder";
+
     String ARGUMENT_KEYWORDS = "keywords";
 
 }

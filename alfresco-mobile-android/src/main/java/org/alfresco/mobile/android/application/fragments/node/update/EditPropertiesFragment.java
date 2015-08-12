@@ -19,7 +19,6 @@ package org.alfresco.mobile.android.application.fragments.node.update;
 
 import java.io.Serializable;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.model.Folder;
@@ -27,7 +26,7 @@ import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.builder.LeafFragmentBuilder;
-import org.alfresco.mobile.android.application.ui.form.BaseField;
+import org.alfresco.mobile.android.application.ui.form.fields.BaseField;
 import org.alfresco.mobile.android.application.ui.form.picker.AllowablePickerFragment.onPickAllowableValuesFragment;
 import org.alfresco.mobile.android.application.ui.form.picker.DatePickerFragment.onPickDateFragment;
 import org.alfresco.mobile.android.application.ui.form.picker.DocumentPickerFragment;
@@ -41,6 +40,7 @@ import org.alfresco.mobile.android.platform.utils.BundleUtils;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -65,6 +65,11 @@ public class EditPropertiesFragment extends EditNodePropertiesFragment implement
     // //////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // //////////////////////////////////////////////////////////////////////
+    public EditPropertiesFragment()
+    {
+        setRetainInstance(true);
+    }
+
     public static EditPropertiesFragment newInstanceByTemplate(Bundle b)
     {
         EditPropertiesFragment adf = new EditPropertiesFragment();
@@ -109,14 +114,6 @@ public class EditPropertiesFragment extends EditNodePropertiesFragment implement
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState)
-    {
-        HashMap<String, Serializable> props = formManager.prepareProperties();
-        outState.putSerializable("props", props);
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
     public void onConfigurationChanged(Configuration newConfig)
     {
         super.onConfigurationChanged(newConfig);
@@ -135,8 +132,15 @@ public class EditPropertiesFragment extends EditNodePropertiesFragment implement
     // //////////////////////////////////////////////////////////////////////
     protected void updateNode()
     {
+        if (!formManager.checkValidation())
+        {
+            Snackbar.make(getActivity().findViewById(R.id.left_pane_body), R.string.form_message_validation,
+                    Snackbar.LENGTH_LONG).show();
+            return;
+        }
+
         bcreate.setEnabled(false);
-        Map<String, Serializable> props = formManager.prepareProperties();
+        Map<String, Serializable> props = formManager.getValues();
         Operator.with(getActivity()).load(new UpdateNodeRequest.Builder(folder, node, props));
 
         if (getDialog() != null)
@@ -165,7 +169,7 @@ public class EditPropertiesFragment extends EditNodePropertiesFragment implement
     @Override
     public void onDatePicked(String fieldId, GregorianCalendar gregorianCalendar)
     {
-        formManager.setPropertyValue(fieldId, gregorianCalendar);
+        formManager.setPropertyValue(fieldId, gregorianCalendar.getTime());
     }
 
     @Override

@@ -226,11 +226,11 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment implement
         if (getActivity() instanceof PublicDispatcherActivity || getActivity() instanceof PrivateDialogActivity
                 || getActivity() instanceof BaseShortcutActivity)
         {
-            v = inflater.inflate(R.layout.app_browser_import, container, false);
-            init(v, emptyListMessageId);
+            setRootView(inflater.inflate(R.layout.app_browser_import, container, false));
+            init(getRootView(), emptyListMessageId);
 
-            validationButton = (Button) v.findViewById(R.id.action_validation);
-            GridView gridView = (GridView) v.findViewById(R.id.gridview);
+            validationButton = (Button) viewById(R.id.action_validation);
+            GridView gridView = (GridView) viewById(R.id.gridview);
             if (getActivity() instanceof PrivateDialogActivity)
             {
                 validationButton.setText(R.string.done);
@@ -246,6 +246,8 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment implement
                 gridView.setChoiceMode(GridView.CHOICE_MODE_SINGLE);
             }
             gridView.setClickable(true);
+
+            v = getRootView();
         }
         else
         {
@@ -1447,8 +1449,9 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment implement
                 }
             }
             else if (configuration != null
-                    && (configuration.containsKey(NodeBrowserTemplate.ARGUMENT_LABEL) && configuration.size() > 1)
-                    || (!configuration.containsKey(NodeBrowserTemplate.ARGUMENT_LABEL) && configuration.size() > 0))
+ && ((configuration.containsKey(NodeBrowserTemplate.ARGUMENT_LABEL)
+                    && configuration.size() > 1)
+                    || (!configuration.containsKey(NodeBrowserTemplate.ARGUMENT_LABEL) && configuration.size() > 0)))
             {
                 shortcut(true);
             }

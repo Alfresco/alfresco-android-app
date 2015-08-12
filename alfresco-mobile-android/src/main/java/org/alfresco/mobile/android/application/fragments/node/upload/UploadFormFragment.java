@@ -159,7 +159,7 @@ public class UploadFormFragment extends AlfrescoFragment
     {
         super.onActivityCreated(savedInstanceState);
         List<AlfrescoAccount> list = AlfrescoAccountManager.retrieveAccounts(getActivity());
-        spinnerAccount.setAdapter(new AccountsAdapter(getActivity(), list, R.layout.app_account_list_row, null));
+        spinnerAccount.setAdapter(new AccountsAdapter(getActivity(), list, R.layout.row_two_lines, null));
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)

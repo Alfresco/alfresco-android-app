@@ -98,8 +98,8 @@ public class RepositoryConfigModel extends ViewConfigModel implements NodeBrowse
             }
         }
 
-        if (configuration != null && configuration.containsKey(NodeBrowserTemplate.ARGUMENT_FOLDER_NODEREF)
-                || configuration.containsKey(NodeBrowserTemplate.ARGUMENT_PATH))
+        if (configuration != null && (configuration.containsKey(NodeBrowserTemplate.ARGUMENT_FOLDER_NODEREF)
+                || configuration.containsKey(NodeBrowserTemplate.ARGUMENT_PATH)))
         {
             iconResId = MENU_ICON_ID;
             iconId = ConfigIconIds.ICON_FOLDER;

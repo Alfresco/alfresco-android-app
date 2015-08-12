@@ -1,68 +1,87 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
- *
- * This file is part of Alfresco Mobile for Android.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+
 package org.alfresco.mobile.android.application.ui.form;
 
-import java.lang.reflect.Constructor;
-
+import org.alfresco.mobile.android.api.model.ModelDefinition;
 import org.alfresco.mobile.android.api.model.Property;
+import org.alfresco.mobile.android.api.model.PropertyDefinition;
+import org.alfresco.mobile.android.api.model.config.ConfigConstants;
 import org.alfresco.mobile.android.api.model.config.FieldConfig;
-import org.alfresco.mobile.android.platform.configuration.ConfigUtils;
+import org.alfresco.mobile.android.application.ui.form.fields.BaseField;
+import org.alfresco.mobile.android.application.ui.form.fields.BooleanField;
+import org.alfresco.mobile.android.application.ui.form.fields.DateField;
+import org.alfresco.mobile.android.application.ui.form.fields.DecimalField;
+import org.alfresco.mobile.android.application.ui.form.fields.FileSizeField;
+import org.alfresco.mobile.android.application.ui.form.fields.FolderPathField;
+import org.alfresco.mobile.android.application.ui.form.fields.MultiLineTextField;
+import org.alfresco.mobile.android.application.ui.form.fields.NumberField;
+import org.alfresco.mobile.android.application.ui.form.fields.PathField;
+import org.alfresco.mobile.android.application.ui.form.fields.TagsField;
+import org.alfresco.mobile.android.application.ui.form.fields.TextField;
 
 import android.content.Context;
-import android.util.Log;
 
+/**
+ * Created by jpascal on 28/03/2015.
+ */
 public class FieldTypeFactory
 {
-    private static final String TAG = FieldTypeFactory.class.getName();
-
-    // ///////////////////////////////////////////////////////////////////////////
-    // FACTORY
-    // ///////////////////////////////////////////////////////////////////////////
-    public static BaseField createFieldControlType(Context context, Property property, FieldConfig fieldConfig)
+    public static BaseField createField(Context context, FormManager manager, String dataType, Property property,
+            FieldConfig fieldConfig, ModelDefinition typeDefinition, boolean isReadMode)
     {
-        String className = ConfigUtils.getString(context, ConfigUtils.FAMILY_FORM, fieldConfig.getType());
-        if (className == null) { return null; }
-        return createFieldControlType(className, context, property, fieldConfig);
-    }
-    
-    public static BaseField createFieldControlType(Context context, String fieldType, Property property, FieldConfig fieldConfig)
-    {
-        String className = ConfigUtils.getString(context, ConfigUtils.FAMILY_FORM, fieldType);
-        if (className == null) { return null; }
-        return createFieldControlType(className, context, property, fieldConfig);
-    }
-
-    // ////////////////////////////////////////////////////
-    // CREATION
-    // ////////////////////////////////////////////////////
-    private static BaseField createFieldControlType(String className, Context context, Property property, FieldConfig fieldConfig)
-    {
-        BaseField s = null;
+        FieldTypeRegistry type = null;
         try
         {
-            Constructor<?> t = Class.forName(className).getDeclaredConstructor(Context.class, Property.class, FieldConfig.class);
-            s = (BaseField) t.newInstance(context, property, fieldConfig);
+            type = FieldTypeRegistry.fromValue(dataType);
         }
-        catch (Exception e)
+        catch (IllegalArgumentException e)
         {
-            Log.e(TAG, Log.getStackTraceString(e));
-            Log.e(TAG, "Error during FieldControlTypeBuilder creation : " + className);
+            // Unsupported field
+            return null;
         }
-        return s;
+
+        PropertyDefinition propertyDefinition = null;
+        if (typeDefinition != null && typeDefinition.getPropertyDefinition(fieldConfig.getModelIdentifier()) != null)
+        {
+            propertyDefinition = typeDefinition.getPropertyDefinition(fieldConfig.getModelIdentifier());
+        }
+
+        switch (type)
+        {
+            case TAG:
+                return new TagsField(context, manager, property, fieldConfig, propertyDefinition, isReadMode);
+            case FILESIZE:
+                return new FileSizeField(context, manager, property, fieldConfig, propertyDefinition, isReadMode);
+            case FIELD_PATH:
+                return new PathField(context, manager, property, fieldConfig, propertyDefinition, isReadMode);
+            case FIELD_FOLDER_PATH:
+                return new FolderPathField(context, manager, property, fieldConfig, propertyDefinition, isReadMode);
+            case BOOLEAN:
+                return new BooleanField(context, manager, property, fieldConfig, propertyDefinition, isReadMode);
+            case DECIMAL:
+                return new DecimalField(context, manager, property, fieldConfig, propertyDefinition, isReadMode);
+            case NUMBER:
+                return new NumberField(context, manager, property, fieldConfig, propertyDefinition, isReadMode);
+            case DATETIME:
+                return new DateField(context, manager, property, fieldConfig, propertyDefinition, isReadMode);
+            case TEXT:
+                // Specialize type depending on parameters
+                if (fieldConfig.getParameter(ConfigConstants.SHOW_MULTIPLE_LINES_VALUE) != null)
+                {
+                    Boolean hasMultipleLines = (Boolean) fieldConfig
+                            .getParameter(ConfigConstants.SHOW_MULTIPLE_LINES_VALUE);
+                    if (hasMultipleLines)
+                    {
+                        return new MultiLineTextField(context, manager, property, fieldConfig, propertyDefinition,
+                                isReadMode);
+                    }
+                    else
+                    {
+                        return new TextField(context, manager, property, fieldConfig, propertyDefinition, isReadMode);
+                    }
+                }
+            default:
+                return new TextField(context, manager, property, fieldConfig, propertyDefinition, isReadMode);
+        }
+
     }
 }

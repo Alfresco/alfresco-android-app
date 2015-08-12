@@ -45,6 +45,7 @@ import org.alfresco.mobile.android.application.configuration.model.view.SiteBrow
 import org.alfresco.mobile.android.application.configuration.model.view.SyncConfigModel;
 import org.alfresco.mobile.android.application.configuration.model.view.TasksConfigModel;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
+import org.alfresco.mobile.android.application.managers.ActionUtils;
 import org.alfresco.mobile.android.application.managers.ConfigManager;
 import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
@@ -282,8 +283,9 @@ public class ConfigMenuEditorFragment extends AlfrescoFragment implements DevMen
     {
         menu.clear();
         menu.add(Menu.NONE, R.id.config_menu_save, Menu.FIRST, "Save");
-        menu.add(Menu.NONE, R.id.config_menu_clear, Menu.FIRST, "Clear");
+        menu.add(Menu.NONE, R.id.config_menu_send, Menu.FIRST, "Send");
         menu.add(Menu.NONE, R.id.config_menu_reset, Menu.FIRST, "Reset");
+        menu.add(Menu.NONE, R.id.config_menu_clear, Menu.FIRST, "Clear");
     }
 
     @Override
@@ -291,6 +293,9 @@ public class ConfigMenuEditorFragment extends AlfrescoFragment implements DevMen
     {
         switch (item.getItemId())
         {
+            case R.id.config_menu_send:
+                send();
+                return true;
             case R.id.config_menu_save:
                 saveConfiguration();
                 return true;
@@ -317,6 +322,13 @@ public class ConfigMenuEditorFragment extends AlfrescoFragment implements DevMen
 
         saveConfiguration();
         updateMenu();
+    }
+
+    private void send()
+    {
+        File configFolder = AlfrescoStorageManager.getInstance(getActivity()).getCustomFolder(account);
+        File configFile = new File(configFolder, ConfigConstants.CONFIG_FILENAME);
+        ActionUtils.actionSend(getActivity(), configFile, "text/plain");
     }
 
     private void clear()

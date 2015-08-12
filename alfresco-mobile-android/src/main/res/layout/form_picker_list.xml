@@ -17,7 +17,8 @@
         android:gravity="right"
         android:orientation="horizontal">
 
-        <Button
+
+    <Button
             android:id="@+id/action_select"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

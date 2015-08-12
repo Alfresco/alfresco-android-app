@@ -19,6 +19,7 @@
 
     <!-- CUSTOM DIMENS -->
     <dimen name="list_margin_top_middle">3dp</dimen>
+    <dimen name="property_height">40dp</dimen>
     <dimen name="one_list_minHeight">56dp</dimen>
     <dimen name="two_list_minHeight">72dp</dimen>
     <dimen name="three_list_minHeight">88dp</dimen>

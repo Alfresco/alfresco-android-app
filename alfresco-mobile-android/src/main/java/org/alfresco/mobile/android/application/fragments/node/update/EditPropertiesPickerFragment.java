@@ -21,9 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.ui.form.BaseField;
-import org.alfresco.mobile.android.application.ui.form.TextField;
-import org.alfresco.mobile.android.application.ui.form.views.AlfrescoFieldView;
+import org.alfresco.mobile.android.application.ui.form.fields.BaseField;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
@@ -48,7 +46,7 @@ public class EditPropertiesPickerFragment extends AlfrescoFragment
 
     private ListView lv;
 
-    private AlfrescoFieldView fieldView;
+    private View fieldView;
 
     protected View pb;
 
@@ -88,6 +86,7 @@ public class EditPropertiesPickerFragment extends AlfrescoFragment
         // Retrieve parameters
         EditPropertiesFragment editProperties = ((EditPropertiesFragment) getFragmentManager().findFragmentByTag(
                 EditPropertiesFragment.TAG));
+        // TODO
         field = editProperties.getField(fieldId);
         String titleId = field.getLabel();
 
@@ -124,12 +123,12 @@ public class EditPropertiesPickerFragment extends AlfrescoFragment
         titleId = String.format(getString(R.string.picker_select_value), field.getLabel());
 
         Button b = (Button) viewById(R.id.action_select);
-        if (field.isMultiValued() && field instanceof TextField)
+        if (field.isMultiValued())
         {
             // Field
             ViewGroup hookView = (ViewGroup) viewById(R.id.picker_group);
-            fieldView = (AlfrescoFieldView) field.getEditView(null, hookView, true);
-            hookView.addView(fieldView, 0);
+            // fieldView = (View) field.getEditionView();
+            // hookView.addView(fieldView, 0);
 
             // Add button action
             b.setText(R.string.add);
@@ -139,9 +138,9 @@ public class EditPropertiesPickerFragment extends AlfrescoFragment
                 public void onClick(View v)
                 {
                     // field.add(fieldView.getValue());
-                    adapter.add(fieldView.getValue());
-                    objectsAdded.add(fieldView.getValue());
-                    fieldView.clear();
+                    // adapter.add(fieldView.getValue());
+                    // objectsAdded.add(fieldView.getValue());
+                    // fieldView.clear();
                     refresh();
                 }
             });

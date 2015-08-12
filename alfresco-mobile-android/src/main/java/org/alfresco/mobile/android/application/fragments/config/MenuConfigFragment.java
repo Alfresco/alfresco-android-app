@@ -129,7 +129,7 @@ public class MenuConfigFragment extends AlfrescoFragment implements DefaultMenuC
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        setRootView(inflater.inflate(R.layout.config_default_menu, container, false));
+        setRootView(inflater.inflate(R.layout.fr_config_default_menu, container, false));
 
         account = null;
         if (getArguments() != null)

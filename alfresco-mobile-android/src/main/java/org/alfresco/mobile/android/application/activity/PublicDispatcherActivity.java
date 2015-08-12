@@ -31,7 +31,6 @@ import org.alfresco.mobile.android.application.fragments.node.favorite.Favorites
 import org.alfresco.mobile.android.application.fragments.node.upload.UploadFormFragment;
 import org.alfresco.mobile.android.application.fragments.preferences.PasscodePreferences;
 import org.alfresco.mobile.android.application.fragments.signin.AccountOAuthFragment;
-import org.alfresco.mobile.android.application.fragments.site.browser.BrowserSitesPagerFragment;
 import org.alfresco.mobile.android.application.fragments.sync.SyncFragment;
 import org.alfresco.mobile.android.application.security.PassCodeActivity;
 import org.alfresco.mobile.android.async.node.favorite.FavoriteNodesRequest;
@@ -233,12 +232,10 @@ public class PublicDispatcherActivity extends BaseActivity
         switch (uploadFolder)
         {
             case R.string.menu_browse_sites:
-                type = ConfigurationConstant.KEY_SITES;
-                BrowserSitesPagerFragment.with(this).display();
+                type = ConfigurationConstant.KEY_SITE_BROWSER;
                 break;
             case R.string.menu_browse_root:
                 type = ConfigurationConstant.KEY_REPOSITORY;
-                DocumentFolderBrowserFragment.with(this).folder(getCurrentSession().getRootFolder()).display();
                 break;
             case R.string.menu_favorites_folder:
                 FavoritesFragment.with(this).setMode(FavoriteNodesRequest.MODE_FOLDERS).display();

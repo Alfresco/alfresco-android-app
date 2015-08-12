@@ -14,6 +14,7 @@ import org.alfresco.mobile.android.application.configuration.model.view.Activiti
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.holder.TwoLinesViewHolder;
+import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -125,7 +126,7 @@ public class CreateConfigMenuItemFragment extends AlfrescoFragment
                 String id = idField.getText().toString().trim();
                 if (TextUtils.isEmpty(id))
                 {
-                    id = selectedConfigType.getType();
+                    id = selectedConfigType.getType() + "-" + UIUtils.generateViewId();
                 }
 
                 String name = nameField.getText().toString().trim();

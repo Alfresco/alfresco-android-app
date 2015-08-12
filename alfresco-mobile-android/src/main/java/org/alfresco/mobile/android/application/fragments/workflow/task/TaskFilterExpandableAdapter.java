@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.ui.utils.CheckBoxViewHolder;
+import org.alfresco.mobile.android.ui.holder.TwoLinesCheckboxViewHolder;
 import org.alfresco.mobile.android.ui.holder.TwoLinesViewHolder;
 
 import android.support.v4.app.FragmentActivity;
@@ -134,24 +134,24 @@ public class TaskFilterExpandableAdapter extends BaseExpandableListAdapter
     {
         final Integer item = (Integer) getChild(groupPosition, childPosition);
 
-        CheckBoxViewHolder vh = null;
+        TwoLinesCheckboxViewHolder vh = null;
         if (convertView == null)
         {
-            convertView = inflater.inflate(R.layout.app_list_checkbox_row, null);
-            vh = new CheckBoxViewHolder(convertView);
+            convertView = inflater.inflate(R.layout.row_two_lines_checkbox, null);
+            vh = new TwoLinesCheckboxViewHolder(convertView);
             convertView.setTag(vh);
         }
 
-        vh = (CheckBoxViewHolder) convertView.getTag();
+        vh = (TwoLinesCheckboxViewHolder) convertView.getTag();
         vh.topText.setText(item);
         vh.bottomText.setVisibility(View.GONE);
         if (selectedItems.get(FAMILY.get(groupPosition)) == item)
         {
-            vh.checkBox.setChecked(true);
+            vh.choose.setChecked(true);
         }
         else
         {
-            vh.checkBox.setChecked(false);
+            vh.choose.setChecked(false);
         }
 
         return convertView;
@@ -178,16 +178,16 @@ public class TaskFilterExpandableAdapter extends BaseExpandableListAdapter
     public void select(View v, int groupPosition, int childPosition)
     {
         Integer selected = (Integer) getChild(groupPosition, childPosition);
-        CheckBoxViewHolder vh = (CheckBoxViewHolder) v.getTag();
-        if (!vh.checkBox.isChecked())
+        TwoLinesCheckboxViewHolder vh = (TwoLinesCheckboxViewHolder) v.getTag();
+        if (!vh.choose.isChecked())
         {
-            vh.checkBox.setChecked(true);
+            vh.choose.setChecked(true);
             // Check if other selected item of the same family
             selectedItems.put(FAMILY.get(groupPosition), selected);
         }
         else
         {
-            vh.checkBox.setChecked(false);
+            vh.choose.setChecked(false);
             selectedItems.remove(FAMILY.get(groupPosition));
         }
         notifyDataSetChanged();

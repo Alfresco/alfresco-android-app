@@ -22,12 +22,12 @@ import java.lang.ref.WeakReference;
 import java.util.List;
 
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.activity.PublicDispatcherActivity;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
-import org.alfresco.mobile.android.ui.holder.TwoLinesCaptionViewHolder;
 import org.alfresco.mobile.android.ui.holder.TwoLinesViewHolder;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
@@ -59,7 +59,7 @@ public class AccountsAdapter extends BaseListAdapter<AlfrescoAccount, TwoLinesVi
             List<AlfrescoAccount> selectedItems)
     {
         super(activity, layoutId, items);
-        this.vhClassName = TwoLinesCaptionViewHolder.class.getCanonicalName();
+        this.vhClassName = TwoLinesViewHolder.class.getCanonicalName();
         this.selectedItems = selectedItems;
         this.layoutId = layoutId;
         this.activityRef = new WeakReference<>(activity);
@@ -78,9 +78,9 @@ public class AccountsAdapter extends BaseListAdapter<AlfrescoAccount, TwoLinesVi
     protected void updateTopText(TwoLinesViewHolder vh, AlfrescoAccount acc)
     {
         vh.topText.setText(acc.getTitle());
-        if (activityRef.get() instanceof PublicDispatcherActivity)
+        if (activityRef.get() instanceof MainActivity)
         {
-            vh.topText.setTextColor(Color.BLACK);
+            vh.topText.setTextColor(getContext().getResources().getColor(R.color.secondary_background));
         }
     }
 
@@ -89,7 +89,7 @@ public class AccountsAdapter extends BaseListAdapter<AlfrescoAccount, TwoLinesVi
     {
         switch (layoutId)
         {
-            case R.layout.app_account_list_row:
+            case R.layout.row_single_line:
                 // Do nothing
                 break;
             default:
@@ -124,7 +124,7 @@ public class AccountsAdapter extends BaseListAdapter<AlfrescoAccount, TwoLinesVi
     {
         switch (layoutId)
         {
-            case R.layout.app_account_list_row:
+            case R.layout.row_single_line:
                 int itemName = (int) acc.getId();
                 int defaultIcon = R.drawable.ic_account_light;
                 switch (itemName)

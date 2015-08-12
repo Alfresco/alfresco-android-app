@@ -26,7 +26,7 @@ import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.node.update.EditPropertiesPickerFragment;
 import org.alfresco.mobile.android.application.fragments.workflow.CreateTaskPickerFragment;
 import org.alfresco.mobile.android.application.managers.RenditionManagerImpl;
-import org.alfresco.mobile.android.application.ui.form.AuthorityField;
+import org.alfresco.mobile.android.application.ui.form.fields.AuthorityField;
 import org.alfresco.mobile.android.ui.holder.TwoLinesViewHolder;
 import org.alfresco.mobile.android.ui.person.PeopleAdapter;
 
