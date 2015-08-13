@@ -107,6 +107,11 @@ public class PrivateDialogActivity extends BaseAppCompatActivity
 
         if (ACTION_EDIT_NODE.equals(action))
         {
+            if (getSupportActionBar() != null)
+            {
+                getSupportActionBar().hide();
+            }
+
             Folder folder = (Folder) getIntent().getExtras().get(PrivateIntent.EXTRA_FOLDER);
             Node node = (Node) getIntent().getExtras().get(PrivateIntent.EXTRA_NODE);
 
@@ -126,12 +131,13 @@ public class PrivateDialogActivity extends BaseAppCompatActivity
             else if (getIntent().getExtras() != null
                     && getIntent().getExtras().containsKey(PrivateIntent.EXTRA_DOCUMENTS))
             {
-                docs.addAll((Collection<? extends Document>) getIntent().getExtras().get(PrivateIntent.EXTRA_DOCUMENTS));
+                docs.addAll(
+                        (Collection<? extends Document>) getIntent().getExtras().get(PrivateIntent.EXTRA_DOCUMENTS));
                 getIntent().removeExtra(PrivateIntent.EXTRA_DOCUMENTS);
             }
 
-            Fragment f = docs.isEmpty() ? new CreateTaskTypePickerFragment() : CreateTaskTypePickerFragment
-                    .newInstance(docs);
+            Fragment f = docs.isEmpty() ? new CreateTaskTypePickerFragment()
+                    : CreateTaskTypePickerFragment.newInstance(docs);
             FragmentDisplayer.with(this).load(f).back(false).animate(null).into(FragmentDisplayer.PANEL_LEFT);
         }
 

@@ -1,7 +1,7 @@
 package org.alfresco.mobile.android.application.configuration.model;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.model.config.ViewConfig;
@@ -170,25 +170,25 @@ public class ConfigModelHelper implements ConfigIconIds
     // ///////////////////////////////////////////////////////////////////////////
     // PARAMETERS
     // ///////////////////////////////////////////////////////////////////////////
-    public static final ArrayList<ViewConfigModel> CONFIG_MODELS = new ArrayList<ViewConfigModel>(16)
+    public static final Map<String, ViewConfigModel> CONFIG_MODELS = new LinkedHashMap<String, ViewConfigModel>(16)
     {
         {
-            add(new ActivitiesConfigModel());
-            add(new RepositoryConfigModel());
-            add(new RepositorySearchConfigModel());
-            add(new DocumentDetailsConfigModel());
-            add(new FolderDetailsConfigModel());
-            add(new SitesConfigModel());
-            add(new SiteBrowserConfigModel());
-            add(new FavoritesConfigModel());
-            add(new LocalConfigModel());
-            add(new LocalFilesConfigModel());
-            add(new UserProfileConfigModel());
-            add(new PeopleConfigModel());
-            add(new SearchConfigModel());
-            add(new AdvancedSearchConfigModel());
-            add(new TasksConfigModel());
-            add(new SyncConfigModel());
+            put(ActivitiesConfigModel.TYPE_ID, new ActivitiesConfigModel());
+            put(RepositoryConfigModel.TYPE_ID, new RepositoryConfigModel());
+            put(RepositorySearchConfigModel.TYPE_ID, new RepositorySearchConfigModel());
+            put(DocumentDetailsConfigModel.TYPE_ID, new DocumentDetailsConfigModel());
+            put(FolderDetailsConfigModel.TYPE_ID, new FolderDetailsConfigModel());
+            put(SitesConfigModel.TYPE_ID, new SitesConfigModel());
+            put(SiteBrowserConfigModel.TYPE_ID, new SiteBrowserConfigModel());
+            put(FavoritesConfigModel.TYPE_ID, new FavoritesConfigModel());
+            put(LocalConfigModel.TYPE_ID, new LocalConfigModel());
+            put(LocalFilesConfigModel.TYPE_ID, new LocalFilesConfigModel());
+            put(UserProfileConfigModel.TYPE_ID, new UserProfileConfigModel());
+            put(PeopleConfigModel.TYPE_ID, new PeopleConfigModel());
+            put(SearchConfigModel.TYPE_ID, new SearchConfigModel());
+            put(AdvancedSearchConfigModel.TYPE_ID, new AdvancedSearchConfigModel());
+            put(TasksConfigModel.TYPE_ID, new TasksConfigModel());
+            put(SyncConfigModel.TYPE_ID, new SyncConfigModel());
         }
     };
 

@@ -61,6 +61,7 @@ public class UIUtils
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public static void setBackground(View v, Drawable background)
     {
+        if (v == null) { return; }
         if (AndroidVersion.isJBOrAbove())
         {
             v.setBackground(background);

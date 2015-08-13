@@ -1,6 +1,6 @@
 {
   "info": {
-    "schema-version": 0.1
+    "schema-version": 0.2
   },
   "profiles": {
     "default": {
@@ -513,11 +513,11 @@
       "type": "org.alfresco.client.form.field.folder-path",
       "label-id": "cm_contentmodel.property.cm_path.title"
     },
-     "path_document": {
-          "model-id": "path",
-          "type": "org.alfresco.client.form.field.path",
-          "label-id": "cm_contentmodel.property.cm_path.title"
-        },
+    "path_document": {
+      "model-id": "path",
+      "type": "org.alfresco.client.form.field.path",
+      "label-id": "cm_contentmodel.property.cm_path.title"
+    },
     "cm:author": {
       "model-id": "cm:author",
       "type": "org.alfresco.client.form.field.text",

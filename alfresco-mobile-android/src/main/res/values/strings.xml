@@ -730,6 +730,7 @@
 
 
     <!-- Storage Access Framework -->
+    <string name="menu_browse_sync_content_folder">Synced Content</string>
     <string name="menu_browse_favorites_folder">Favorites Folder</string>
     <string name="account_alfresco">Alfresco</string>
     <string name="account_alfresco_cloud">Alfresco Cloud</string>
@@ -886,6 +887,21 @@
     <string name="config_view_repository_search_fullText">Requires : keywords</string>
     <string name="config_view_repository_search_searchFolderOnly">Requires : keywords</string>
     <string name="config_view_repository_search_statement">CMIS query</string>
+
+    <!-- FORM -->
+    <!-- ################################################################################## -->
+    <string name="form_message_title">Form</string>
+    <string name="form_default_outcome_complete">Complete</string>
+    <string name="form_default_outcome_start_process">Start process</string>
+    <string name="form_message_empty">(None)</string>
+    <string name="form_error_message_required">%s is required</string>
+    <string name="form_message_validation">Some fields are required.</string>
+    <string name="form_message_unsupported_field_summary">Rendition Unsupported</string>
+    <string name="form_message_unsupported_field">This type of entry field is not supported on mobile</string>
+    <string name="form_message_unsupported_title">Unsupported Form</string>
+    <string name="form_message_unsupported_description"><![CDATA[<p>This form contains one or more required fields that are not currently supported on mobile devices.</p> Please use the web app to action this step.]]></string>
+    <string name="form_message_link_error_title">Link unsupported</string>
+    <string name="form_message_link_error"><![CDATA[<p>This content is not from a supported source of content.</p> Please select another one.]]></string>
 
 
 </resources>

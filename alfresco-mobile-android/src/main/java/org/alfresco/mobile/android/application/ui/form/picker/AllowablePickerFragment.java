@@ -17,28 +17,25 @@
  */
 package org.alfresco.mobile.android.application.ui.form.picker;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.alfresco.mobile.android.api.model.PropertyDefinition;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.user.UserPickerCallback;
-import org.alfresco.mobile.android.application.ui.form.adapter.AllowableAdapter;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 
 /**
  * @author jpascal
@@ -109,51 +106,68 @@ public class AllowablePickerFragment extends DialogFragment
             }
         }
 
-        LayoutInflater inflater = LayoutInflater.from(getActivity());
-        final View v = inflater.inflate(R.layout.sdk_list, null);
-        lv = (ListView) v.findViewById(R.id.listView);
-        if (allowableValues != null)
-        {
-            lv.setAdapter(new AllowableAdapter(getActivity(), R.layout.app_list_checkbox_row, allowableValues,
-                    selectedItems));
-        }
-
-        lv.setOnItemClickListener(new OnItemClickListener()
-        {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-            {
-                String selected = (String) parent.getItemAtPosition(position);
-                if (singleSelection)
-                {
-                    selectedItems.clear();
-                }
-                else if (selectedItems.containsKey(selected))
-                {
-                    selectedItems.remove(selected);
-                }
-                selectedItems.put(selected, allowableValues.get(selected));
-                ((AllowableAdapter) lv.getAdapter()).notifyDataSetChanged();
-            }
-        });
-
-        return new AlertDialog.Builder(getActivity()).setTitle(title).setView(v)
-                .setPositiveButton(android.R.string.ok, new OnClickListener()
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity()).title(title)
+                .positiveText(android.R.string.ok).negativeText(android.R.string.cancel)
+                .callback(new MaterialDialog.ButtonCallback()
                 {
                     @Override
-                    public void onClick(DialogInterface dialog, int which)
+                    public void onPositive(MaterialDialog dialog)
                     {
-                        onValueSet();
+                        dialog.dismiss();
                     }
-                }).setNegativeButton(android.R.string.cancel, new OnClickListener()
-                {
+
                     @Override
-                    public void onClick(DialogInterface dialog, int which)
+                    public void onNegative(MaterialDialog dialog)
                     {
                         isCancelled = true;
-                        dismiss();
+                        dialog.dismiss();
                     }
-                }).create();
+                });
+
+        final Set<String> valueSet = allowableValues.keySet();
+        final String[] valueArray = valueSet.toArray(new String[valueSet.size()]);
+        if (singleSelection)
+        {
+            String[] selectedArray = selectedItems.keySet().toArray(new String[selectedItems.keySet().size()]);
+            int index = selectedArray.length == 0 ? -1 : Arrays.asList(valueArray).indexOf(selectedArray[0]);
+            builder.items(valueArray).itemsCallbackSingleChoice(index, new MaterialDialog.ListCallbackSingleChoice()
+            {
+                @Override
+                public boolean onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence)
+                {
+                    selectedItems.clear();
+                    selectedItems.put(valueArray[i], allowableValues.get(valueArray[i]));
+                    onValueSet();
+                    return false;
+                }
+            });
+        }
+        else
+        {
+            final Integer[] index = new Integer[selectedItems.size()];
+            int i = 0;
+            for (String selected : selectedItems.keySet())
+            {
+                index[i] = Arrays.asList(valueArray).indexOf(selected);
+            }
+
+            builder.items(valueArray).itemsCallbackMultiChoice(index, new MaterialDialog.ListCallbackMultiChoice()
+            {
+                @Override
+                public boolean onSelection(MaterialDialog materialDialog, Integer[] integers,
+                        CharSequence[] charSequences)
+                {
+                    for (Integer index : integers)
+                    {
+                        selectedItems.put(valueArray[index], allowableValues.get(valueArray[index]));
+                    }
+                    onValueSet();
+                    return false;
+                }
+            });
+        }
+
+        return builder.show();
     }
 
     public void setPropertyDefinition(Object value, PropertyDefinition definition)
@@ -187,12 +201,6 @@ public class AllowablePickerFragment extends DialogFragment
                     allowableValues.put(entry.getKey(), entryValue);
                 }
             }
-
-        }
-        if (lv != null && getActivity() != null)
-        {
-            lv.setAdapter(new AllowableAdapter(getActivity(), R.layout.app_list_checkbox_row, allowableValues,
-                    selectedItems));
         }
     }
 

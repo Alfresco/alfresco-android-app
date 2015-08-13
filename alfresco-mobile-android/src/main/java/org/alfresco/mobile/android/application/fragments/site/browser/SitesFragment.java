@@ -24,6 +24,7 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.configuration.model.view.SitesConfigModel;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.builder.ListingFragmentBuilder;
+import org.alfresco.mobile.android.application.fragments.site.search.SearchSitesFragment;
 import org.alfresco.mobile.android.async.OperationRequest;
 import org.alfresco.mobile.android.async.site.SiteFavoriteEvent;
 import org.alfresco.mobile.android.async.site.SitesEvent;
@@ -133,10 +134,7 @@ public class SitesFragment extends CommonBrowserSitesFragment
     @Override
     public String onPrepareTitle()
     {
-        if (keywords != null)
-        {
- return String.format(getString(R.string.search_title), keywords);
-        }
+        if (keywords != null) { return String.format(getString(R.string.search_title), keywords); }
         return super.onPrepareTitle();
     }
 
@@ -197,6 +195,8 @@ public class SitesFragment extends CommonBrowserSitesFragment
 
     public static class Builder extends ListingFragmentBuilder
     {
+        boolean showFinder = false;
+
         // ///////////////////////////////////////////////////////////////////////////
         // CONSTRUCTORS & HELPERS
         // ///////////////////////////////////////////////////////////////////////////
@@ -226,6 +226,10 @@ public class SitesFragment extends CommonBrowserSitesFragment
                 {
                     b.putBoolean(ARGUMENT_SHOW, true);
                 }
+                else if (SHOW_FINDER.equals(show))
+                {
+                    showFinder = true;
+                }
             }
         }
 
@@ -249,7 +253,14 @@ public class SitesFragment extends CommonBrowserSitesFragment
         // ///////////////////////////////////////////////////////////////////////////
         protected Fragment createFragment(Bundle b)
         {
-            return SitesFragment.newInstanceByTemplate(b);
+            if (showFinder)
+            {
+                return SearchSitesFragment.newInstanceByTemplate(b);
+            }
+            else
+            {
+                return SitesFragment.newInstanceByTemplate(b);
+            }
         }
     }
 }

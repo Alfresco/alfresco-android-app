@@ -477,7 +477,7 @@ public class MainMenuFragment extends AlfrescoFragment implements AdapterView.On
         // Init the adapter and create the menu
         if (accountsAdapter == null)
         {
-            accountsAdapter = new AccountsAdapter(getActivity(), list, R.layout.app_account_list_row, null);
+            accountsAdapter = new AccountsAdapter(getActivity(), list, R.layout.row_single_line, null);
         }
         else
         {

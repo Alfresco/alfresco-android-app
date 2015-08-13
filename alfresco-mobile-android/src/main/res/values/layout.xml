@@ -26,5 +26,7 @@
     <item name="app_passcode" type="layout">@layout/app_passcode_simple</item>
 
     <item name="dialog_min_width_minor" format="float" type="dimen">0.95</item>
+    <item name="form_read_row" type="layout">@layout/row_single_line_inverse</item>
+
 
 </resources>

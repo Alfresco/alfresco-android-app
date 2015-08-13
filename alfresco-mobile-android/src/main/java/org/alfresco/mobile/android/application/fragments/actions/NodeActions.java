@@ -50,12 +50,14 @@ import org.alfresco.mobile.android.async.node.favorite.FavoriteNodeRequest;
 import org.alfresco.mobile.android.async.node.like.LikeNodeRequest;
 import org.alfresco.mobile.android.async.node.sync.SyncNodeRequest;
 import org.alfresco.mobile.android.async.utils.NodePlaceHolder;
+import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.sync.SyncContentManager;
 import org.alfresco.mobile.android.ui.operation.OperationWaitingDialogFragment;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
@@ -409,23 +411,29 @@ public class NodeActions extends AbstractActions<Node>
     public static void edit(final FragmentActivity activity, final Folder folder, final Node node)
     {
         ConfigManager configurationManager = ConfigManager.getInstance(activity);
-        /*
-         * if (configurationManager != null &&
-         * configurationManager.hasConfig(SessionUtils.getAccount(activity).
-         * getId())) { try { Intent i = new Intent(activity,
-         * PrivateDialogActivity.class);
-         * i.setAction(PrivateDialogActivity.ACTION_EDIT_NODE);
-         * i.putExtra(PrivateIntent.EXTRA_FOLDER, (Parcelable) folder);
-         * i.putExtra(PrivateIntent.EXTRA_NODE, (Parcelable) node);
-         * activity.startActivity(i); } catch (ActivityNotFoundException e) {
-         * AlfrescoNotificationManager.getInstance(activity).showAlertCrouton(
-         * activity, R.string.error_unable_share_content); } } else {
-         */
-        FragmentDisplayer.with(activity).remove(UpdateDialogFragment.TAG);
 
-        // Create and show the dialog.
-        UpdateDialogFragment.with(activity).parentFolder(folder).node(node).displayAsDialog();
-        // }
+        if (configurationManager != null && configurationManager.hasConfig(SessionUtils.getAccount(activity).getId()))
+        {
+            try
+            {
+                Intent i = new Intent(activity, PrivateDialogActivity.class);
+                i.setAction(PrivateDialogActivity.ACTION_EDIT_NODE);
+                i.putExtra(PrivateIntent.EXTRA_FOLDER, (Parcelable) folder);
+                i.putExtra(PrivateIntent.EXTRA_NODE, (Parcelable) node);
+                activity.startActivity(i);
+            }
+            catch (ActivityNotFoundException e)
+            {
+                AlfrescoNotificationManager.getInstance(activity).showAlertCrouton(activity,
+                        R.string.error_unable_share_content);
+            }
+        }
+        else
+        {
+            FragmentDisplayer.with(activity).remove(UpdateDialogFragment.TAG);
+            // Create and show the dialog.
+            UpdateDialogFragment.with(activity).parentFolder(folder).node(node).displayAsDialog();
+        }
     }
 
     public static void update(Fragment f)

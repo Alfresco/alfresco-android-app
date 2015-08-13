@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/date_picker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        android:lines="1"
+        android:maxLines="1"
+        android:paddingBottom="@dimen/d_8"
+        android:singleLine="true"
+        android:textCursorDrawable="@drawable/accent_cursor"
+        app:met_floatingLabel="highlight"
+        app:met_primaryColor="@color/accent" />
+
+    <LinearLayout
+        android:id="@+id/button_container"
+        style="@style/AlfrescoMaterialTheme.Button.BorderLess"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:orientation="vertical" />
+</FrameLayout>
+

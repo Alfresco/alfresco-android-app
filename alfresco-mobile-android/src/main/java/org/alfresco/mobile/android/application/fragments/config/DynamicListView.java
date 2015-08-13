@@ -70,7 +70,7 @@ public class DynamicListView<T> extends ListView
 
     private final int LINE_THICKNESS = 15;
 
-    public ArrayList<ViewConfig> mCheeseList;
+    public ArrayList<ViewConfig> itemList;
 
     private int mLastEventY = -1;
 
@@ -369,7 +369,7 @@ public class DynamicListView<T> extends ListView
                 return;
             }
 
-            swapElements(mCheeseList, originalItem, getPositionForView(switchView));
+            swapElements(itemList, originalItem, getPositionForView(switchView));
 
             ((BaseAdapter) getAdapter()).notifyDataSetChanged();
 
@@ -558,9 +558,9 @@ public class DynamicListView<T> extends ListView
         return false;
     }
 
-    public void setCheeseList(ArrayList<ViewConfig> cheeseList)
+    public void setItemList(ArrayList<ViewConfig> itemList)
     {
-        mCheeseList = cheeseList;
+        this.itemList = itemList;
     }
 
     /**

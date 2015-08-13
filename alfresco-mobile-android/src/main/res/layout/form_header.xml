@@ -19,16 +19,23 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/title"
-        style="?MainTheme.TextView.SectionHeader.Primary"
-        android:paddingLeft="0dip"
-        android:layout_marginBottom="4dip" />
-
     <LinearLayout
-        android:id="@+id/group_panel"
+        android:id="@+id/group_aspect"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical" />
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/title"
+            style="?MainTheme.TextView.SectionHeader.Primary"
+            android:layout_marginBottom="4dip"
+            android:paddingLeft="0dip" />
+
+        <LinearLayout
+            android:id="@+id/group_panel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+    </LinearLayout>
 
 </LinearLayout>

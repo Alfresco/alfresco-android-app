@@ -39,7 +39,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:indeterminate="true"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
     </android.support.v7.widget.Toolbar>
 

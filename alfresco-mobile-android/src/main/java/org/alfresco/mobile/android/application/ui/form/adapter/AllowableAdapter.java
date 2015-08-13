@@ -3,55 +3,37 @@ package org.alfresco.mobile.android.application.ui.form.adapter;
 import java.util.ArrayList;
 import java.util.Map;
 
-import org.alfresco.mobile.android.application.ui.utils.CheckBoxViewHolder;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
+import org.alfresco.mobile.android.ui.holder.SingleLineViewHolder;
 
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class AllowableAdapter extends BaseListAdapter<String, CheckBoxViewHolder>
+public class AllowableAdapter extends BaseListAdapter<String, SingleLineViewHolder>
 {
-    private Map<String, Object> selectedItems;
-
     /**
      * For cardinality == single
-     * 
-     * @param context
-     * @param textViewResourceId
-     * @param objects
-     * @param selectedItems
      */
-    public AllowableAdapter(Context context, int textViewResourceId, Map<String, Object> objects,
-            Map<String, Object> selectedItems)
+    public AllowableAdapter(Context context, int textViewResourceId, Map<String, Object> objects)
     {
-        super(context, textViewResourceId, new ArrayList<String>(objects.keySet()));
-        this.vhClassName = CheckBoxViewHolder.class.getCanonicalName();
-        this.selectedItems = selectedItems;
+        super(context, textViewResourceId, new ArrayList<>(objects.keySet()));
+        this.vhClassName = SingleLineViewHolder.class.getCanonicalName();
     }
 
     @Override
-    protected void updateTopText(CheckBoxViewHolder vh, String item)
+    protected void updateTopText(SingleLineViewHolder vh, String item)
     {
         vh.topText.setText(item);
     }
 
     @Override
-    protected void updateBottomText(CheckBoxViewHolder vh, String map)
+    protected void updateBottomText(SingleLineViewHolder vh, String map)
     {
-        vh.bottomText.setVisibility(View.GONE);
-        if (selectedItems.containsKey(map))
-        {
-            vh.checkBox.setChecked(true);
-        }
-        else
-        {
-            vh.checkBox.setChecked(false);
-        }
     }
 
     @Override
-    protected void updateIcon(CheckBoxViewHolder vh, String map)
+    protected void updateIcon(SingleLineViewHolder vh, String map)
     {
     }
 
@@ -60,5 +42,4 @@ public class AllowableAdapter extends BaseListAdapter<String, CheckBoxViewHolder
     {
         return getView(position, convertView, parent);
     }
-
 }

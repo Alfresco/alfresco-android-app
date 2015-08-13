@@ -1,5 +1,6 @@
 package org.alfresco.mobile.android.application.fragments.config;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,7 @@ import org.alfresco.mobile.android.application.configuration.model.view.Activiti
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.holder.TwoLinesViewHolder;
+import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -50,6 +52,8 @@ public class CreateConfigMenuItemFragment extends AlfrescoFragment
 
     private HashMap<ConfigParameterModel, MaterialEditText> fieldIndex;
 
+    private boolean override = false;
+
     // //////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // //////////////////////////////////////////////////////////////////////
@@ -83,7 +87,7 @@ public class CreateConfigMenuItemFragment extends AlfrescoFragment
         nameField = (MaterialEditText) viewById(R.id.config_menu_name);
 
         // Prepare infos
-        typeItems = ConfigModelHelper.CONFIG_MODELS;
+        typeItems = new ArrayList<>(ConfigModelHelper.CONFIG_MODELS.values());
 
         // Account Name
         typeField = new TwoLinesViewHolder(viewById(R.id.config_menu_type));
@@ -122,26 +126,14 @@ public class CreateConfigMenuItemFragment extends AlfrescoFragment
             @Override
             public void onClick(View v)
             {
-                String id = idField.getText().toString().trim();
-                if (TextUtils.isEmpty(id))
-                {
-                    id = selectedConfigType.getType();
-                }
-
-                String name = nameField.getText().toString().trim();
-                if (TextUtils.isEmpty(name))
-                {
-                    name = selectedConfigType.getLabel(getActivity());
-                }
-
-                HashMap<String, Object> properties = getParameters();
-
-                ViewConfig menuItem = selectedConfigType.createViewConfig(id, name, properties);
-
-                ((ConfigMenuEditorFragment) getFragmentByTag(ConfigMenuEditorFragment.TAG)).addMenuConfigItem(menuItem);
-                getActivity().onBackPressed();
+                validate();
             }
         });
+
+        if (viewConfig != null)
+        {
+            displayInformations();
+        }
 
         return getRootView();
     }
@@ -173,6 +165,12 @@ public class CreateConfigMenuItemFragment extends AlfrescoFragment
                             displayParameters();
                         }
                         show(R.id.validation_panel);
+
+                        if (viewConfig != null)
+                        {
+                            override = true;
+                        }
+
                         dialog.dismiss();
                     }
                 }).show();
@@ -181,6 +179,37 @@ public class CreateConfigMenuItemFragment extends AlfrescoFragment
     private void displayInformations()
     {
         show(R.id.config_menu_info_container);
+
+        if (viewConfig != null && !override)
+        {
+            selectedConfigType = ConfigModelHelper.CONFIG_MODELS.get(viewConfig.getType());
+            typeField.topText.setText(getString(selectedConfigType.getLabelId()));
+            typeField.bottomText.setText(getString(selectedConfigType.getDescriptionId()));
+            typeField.icon.setImageResource(selectedConfigType.getIconModelResId());
+            typeField.icon.setVisibility(View.VISIBLE);
+
+            idField.setText(viewConfig.getIdentifier());
+            idField.setEnabled(false);
+            nameField.setText(viewConfig.getLabel());
+
+            if (selectedConfigType.hasParameters())
+            {
+                displayParameters();
+            }
+            show(R.id.validation_panel);
+        }
+
+        if (idField.getText().length() == 0)
+        {
+            idField.setText(selectedConfigType.getType() + "-" + UIUtils.generateViewId());
+            idField.setShowClearButton(true);
+        }
+
+        if (nameField.getText().length() == 0)
+        {
+            nameField.setText(selectedConfigType.getLabel(getActivity()));
+            nameField.setShowClearButton(true);
+        }
     }
 
     private void displayParameters()
@@ -220,7 +249,6 @@ public class CreateConfigMenuItemFragment extends AlfrescoFragment
         HashMap<String, Object> properties = new HashMap<>(fieldIndex.size());
         for (Map.Entry<ConfigParameterModel, MaterialEditText> entry : fieldIndex.entrySet())
         {
-
             if (entry.getValue().getText().length() > 0)
             {
                 switch (entry.getKey().type)
@@ -237,6 +265,36 @@ public class CreateConfigMenuItemFragment extends AlfrescoFragment
         }
 
         return properties.isEmpty() ? null : properties;
+    }
+
+    private void validate()
+    {
+        String id = idField.getText().toString().trim();
+        if (TextUtils.isEmpty(id))
+        {
+            id = selectedConfigType.getType() + "-" + UIUtils.generateViewId();
+        }
+
+        String name = nameField.getText().toString().trim();
+        if (TextUtils.isEmpty(name))
+        {
+            name = selectedConfigType.getLabel(getActivity());
+        }
+
+        HashMap<String, Object> properties = getParameters();
+
+        ViewConfig menuItem = selectedConfigType.createViewConfig(id, name, properties);
+
+        if (viewConfig != null)
+        {
+            ((ConfigMenuEditorFragment) getFragmentByTag(ConfigMenuEditorFragment.TAG)).update(menuItem);
+        }
+        else
+        {
+            ((ConfigMenuEditorFragment) getFragmentByTag(ConfigMenuEditorFragment.TAG)).addMenuConfigItem(menuItem);
+        }
+
+        getActivity().onBackPressed();
     }
 
     // ///////////////////////////////////////////////////////////////////////////

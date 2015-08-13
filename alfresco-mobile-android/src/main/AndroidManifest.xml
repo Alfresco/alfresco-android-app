@@ -317,7 +317,7 @@
         <provider
             android:name=".providers.SyncProviderImpl"
             android:authorities="${PROVIDER_AUTHORITY}.sync"
-            android:exported="false"
+            android:exported="true"
             android:label="@string/sync_title"
             android:syncable="true" />
         <provider
