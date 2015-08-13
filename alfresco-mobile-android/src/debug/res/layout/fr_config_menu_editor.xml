@@ -32,25 +32,11 @@
 
         <org.alfresco.mobile.android.application.fragments.config.DynamicListView
             android:id="@+id/listview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:clipToPadding="false"
-            android:columnWidth="320dip"
-            android:gravity="center"
-            android:horizontalSpacing="0dp"
-            android:importantForAccessibility="yes"
-            android:numColumns="auto_fit"
-            android:paddingBottom="@dimen/two_list_minHeight"
-            android:stretchMode="columnWidth"
-            android:verticalSpacing="0dp" />
-
-        <include
-            layout="@layout/app_progress_emtpy"
+            android:background="#0000"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-        <com.github.clans.fab.FloatingActionButton
+        <com.github.clans.fab.FloatingActionMenu
             android:id="@+id/fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -58,19 +44,31 @@
             android:layout_margin="@dimen/d_8"
             android:src="@drawable/ic_content_add"
             android:visibility="visible"
-            fab:fab_colorNormal="@color/accent"
-            fab:fab_colorPressed="@color/accent_pressed"
-            fab:fab_colorRipple="@color/accent_text"
-            fab:fab_size="mini" />
+            fab:menu_colorNormal="@color/accent"
+            fab:menu_colorPressed="@color/accent_pressed"
+            fab:menu_colorRipple="@color/accent_text">
+
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/fab_create_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_content_add"
+                fab:fab_label="Add view"
+                fab:fab_colorNormal="@color/accent"
+                fab:fab_colorPressed="@color/accent_pressed"
+                fab:fab_colorRipple="@color/accent_text" />
+
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/fab_create_viewgroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_content_add"
+                fab:fab_label="Add View Group"
+                fab:fab_colorNormal="@color/accent"
+                fab:fab_colorPressed="@color/accent_pressed"
+                fab:fab_colorRipple="@color/accent_text" />
+        </com.github.clans.fab.FloatingActionMenu>
 
     </FrameLayout>
 
-    <LinearLayout
-        android:id="@+id/load_more"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center"
-        android:gravity="center_horizontal"
-        android:orientation="horizontal"
-        android:visibility="visible" />
 </FrameLayout>

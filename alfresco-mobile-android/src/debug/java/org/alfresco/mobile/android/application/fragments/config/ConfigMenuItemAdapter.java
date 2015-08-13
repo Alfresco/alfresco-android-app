@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.alfresco.mobile.android.api.model.config.ViewConfig;
+import org.alfresco.mobile.android.api.model.config.impl.ViewConfigImpl;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.configuration.model.DevConfigModelHelper;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
@@ -54,6 +55,16 @@ public class ConfigMenuItemAdapter extends BaseListAdapter<ViewConfig, TwoLinesV
         super(fragment.getActivity(), textViewResourceId, objects);
         this.vhClassName = TwoLinesViewHolder.class.getCanonicalName();
         fragmentRef = new WeakReference<>(fragment);
+
+        for (int i = 0; i < objects.size(); ++i)
+        {
+            if (objects.get(i) == null)
+            {
+                continue;
+            }
+            mIdMap.put(objects.get(i), i);
+        }
+
     }
 
     @Override
@@ -111,7 +122,8 @@ public class ConfigMenuItemAdapter extends BaseListAdapter<ViewConfig, TwoLinesV
     {
         switch (item.getItemId())
         {
-            case R.id.config_menu_id:
+            case R.id.menu_action_edit:
+                edit();
                 return true;
             case R.id.menu_action_delete:
                 delete();
@@ -126,6 +138,14 @@ public class ConfigMenuItemAdapter extends BaseListAdapter<ViewConfig, TwoLinesV
         if (selectedItem != null)
         {
             fragmentRef.get().delete(selectedItem);
+        }
+    }
+
+    private void edit()
+    {
+        if (selectedItem != null)
+        {
+            fragmentRef.get().edit((ViewConfigImpl) selectedItem);
         }
     }
 

@@ -100,6 +100,8 @@ public class ConfigMenuEditorFragment extends AlfrescoFragment implements DevMen
 
     private Long accountId = null;
 
+    private int selectedPosition = -1;
+
     // //////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // //////////////////////////////////////////////////////////////////////
@@ -173,7 +175,7 @@ public class ConfigMenuEditorFragment extends AlfrescoFragment implements DevMen
 
         // List Items
         adapter = new ConfigMenuItemAdapter(this, R.layout.row_two_lines, menuConfigItems);
-        listView.setCheeseList(menuConfigItems != null ? menuConfigItems : new ArrayList<ViewConfig>(0));
+        listView.setItemList(menuConfigItems != null ? menuConfigItems : new ArrayList<ViewConfig>(0));
         listView.setAdapter(adapter);
         listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
@@ -188,8 +190,18 @@ public class ConfigMenuEditorFragment extends AlfrescoFragment implements DevMen
         });
 
         // Add Items
-        FloatingActionButton button = (FloatingActionButton) viewById(R.id.fab);
+        FloatingActionButton button = (FloatingActionButton) viewById(R.id.fab_create_view);
         button.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                CreateConfigMenuItemFragment.with(getActivity()).display();
+            }
+        });
+
+        FloatingActionButton button2 = (FloatingActionButton) viewById(R.id.fab_create_viewgroup);
+        button2.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
@@ -317,7 +329,7 @@ public class ConfigMenuEditorFragment extends AlfrescoFragment implements DevMen
 
         menuConfigItems = new ArrayList<>(defaultMenuItems.values());
         adapter = new ConfigMenuItemAdapter(this, R.layout.row_two_lines, menuConfigItems);
-        listView.setCheeseList(menuConfigItems != null ? menuConfigItems : new ArrayList<ViewConfig>(0));
+        listView.setItemList(menuConfigItems != null ? menuConfigItems : new ArrayList<ViewConfig>(0));
         listView.setAdapter(adapter);
 
         saveConfiguration();
@@ -335,7 +347,7 @@ public class ConfigMenuEditorFragment extends AlfrescoFragment implements DevMen
     {
         menuConfigItems.clear();
         adapter = new ConfigMenuItemAdapter(this, R.layout.row_two_lines, menuConfigItems);
-        listView.setCheeseList(menuConfigItems != null ? menuConfigItems : new ArrayList<ViewConfig>(0));
+        listView.setItemList(menuConfigItems != null ? menuConfigItems : new ArrayList<ViewConfig>(0));
         listView.setAdapter(adapter);
         saveConfiguration();
     }
@@ -347,7 +359,7 @@ public class ConfigMenuEditorFragment extends AlfrescoFragment implements DevMen
         {
             // INFO
             JSONObject info = new JSONObject();
-            info.put(ConfigConstants.SCHEMA_VERSION_VALUE, 0.1);
+            info.put(ConfigConstants.SCHEMA_VERSION_VALUE, 0.2);
             info.putOpt(ConfigConstants.CONFIG_VERSION_VALUE, 0.1);
             configuration.put(ConfigTypeIds.INFO.value(), info);
 
@@ -368,8 +380,6 @@ public class ConfigMenuEditorFragment extends AlfrescoFragment implements DevMen
 
             // Items
             JSONArray items = new JSONArray();
-            JSONObject item = null;
-            ViewConfig itemConfig = null;
             for (int i = 0; i < adapter.getCount(); i++)
             {
                 items.put(((ViewConfigImpl) menuConfigItems.get(i)).toJson());
@@ -417,6 +427,18 @@ public class ConfigMenuEditorFragment extends AlfrescoFragment implements DevMen
     public void delete(ViewConfig item)
     {
         adapter.remove(item);
+    }
+
+    public void edit(ViewConfigImpl item)
+    {
+        selectedPosition = adapter.getPosition(item);
+        CreateConfigMenuItemFragment.with(getActivity()).viewConfig(item).display();
+    }
+
+    public void update(ViewConfig item)
+    {
+        adapter.remove(adapter.getItem(selectedPosition));
+        adapter.add(item);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
