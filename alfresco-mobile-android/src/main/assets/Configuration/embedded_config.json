@@ -1,51 +1,19 @@
 {
   "info": {
-    "schema-version": 0.1,
-    "config-version": 0.1
-  },
-  "repository": {
-    "share-url": "http://ec2-176-34-173-67.eu-west-1.compute.amazonaws.com/share",
-    "cmis-url": "http://ec2-176-34-173-67.eu-west-1.compute.amazonaws.com/alfresco/cmisatom"
+    "schema-version": 0.2
   },
   "profiles": {
     "default": {
       "default": true,
-      "label-id": "Default Profile",
-      "description-id": "Description of the Default Profile",
+      "label-id": "profile.default.title",
+      "description-id": "profile.default.summary",
       "root-view-id": "views-menu-default"
-    },
-    "sample": {
-      "label-id": "Sample Profile",
-      "description-id": "Web Site Design Project",
-      "root-view-id": "views-sample"
-    },
-    "business": {
-      "label-id": "Business Profile",
-      "description-id": "My Business Profile",
-      "root-view-id": "views-business"
-    },
-    "another": {
-      "label-id": "Another Profile",
-      "description-id": "Another profile to do other things",
-      "root-view-id": "views-sample-members"
     }
   },
-  "features": [
-    {
-      "id": "org.alfresco.client.feature.dataprotection",
-      "label-id": "Data Protection",
-      "description-id": "Enable data protection by default for all account"
-    },
-    {
-      "id": "org.alfresco.client.feature.storage",
-      "label-id": "Storage",
-      "description-id": "Define where to store the information in general"
-    }
-  ],
   "view-groups": [
     {
       "id": "views-menu-default",
-      "label-id": "Default Menu",
+      "label-id": "home.menu.header",
       "items": [
         {
           "item-type": "view-id",
@@ -77,161 +45,15 @@
         },
         {
           "item-type": "view-id",
+          "view-id": "view-sync-default"
+        },
+        {
+          "item-type": "view-id",
           "view-id": "view-search-default"
         },
         {
           "item-type": "view-id",
           "view-id": "view-local-default"
-        }
-      ]
-    },
-    {
-      "id": "views-sample",
-      "items": [
-        {
-          "item-type": "view-group-id",
-          "view-group-id": "views-sample-project"
-        },
-        {
-          "item-type": "view-group-id",
-          "view-group-id": "views-sample-default"
-        },
-        {
-          "item-type": "view-group-id",
-          "view-group-id": "views-sample-members"
-        }
-      ]
-    },
-    {
-      "id": "views-sample-project",
-      "label-id": "Sample Project",
-      "items": [
-        {
-          "item-type": "view",
-          "view": {
-            "id": "activities",
-            "type": "org.alfresco.client.view.activities",
-            "label-id": "Project Activities",
-            "params": {
-              "siteShortName": "swsdp"
-            }
-          }
-        },
-        {
-          "item-type": "view",
-          "view": {
-            "id": "site",
-            "type": "org.alfresco.client.view.repository",
-            "label-id": "Sample Site",
-            "params": {
-              "path": "/sites/swsdp/documentLibrary"
-            }
-          }
-        }
-      ]
-    },
-    {
-      "id": "views-sample-default",
-      "label-id": "Sample Images",
-      "items": [
-        {
-          "item-type": "view",
-          "view": {
-            "id": "project-images",
-            "type": "org.alfresco.client.view.repository",
-            "label-id": "Project Images",
-            "params": {
-              "path": "/sites/swsdp/documentLibrary/Agency Files/Images"
-            }
-          }
-        },
-        {
-          "item-type": "view",
-          "view": {
-            "id": "project-notes",
-            "type": "org.alfresco.client.view.repository",
-            "label-id": "Project Meeting Notes",
-            "params": {
-              "path": "/sites/swsdp/documentLibrary/Meeting Notes"
-            }
-          }
-        }
-      ]
-    },
-    {
-      "id": "views-sample-members",
-      "label-id": "Members",
-      "items": [
-        {
-          "item-type": "view",
-          "view": {
-            "id": "project-members",
-            "type": "org.alfresco.client.view.people",
-            "label-id": "Project Members",
-            "params": {
-              "siteShortName": "swsdp"
-            }
-          }
-        },
-        {
-          "item-type": "view",
-          "view": {
-            "id": "project-profile",
-            "type": "org.alfresco.client.view.person.profile",
-            "icon-id": "org.alfresco.client.icon.sync",
-            "label-id": "Jackson Profile",
-            "params": {
-              "userName": "mjackson"
-            }
-          }
-        }
-      ]
-    },
-    {
-      "id": "views-business",
-      "label-id": "Business Tasks",
-      "items": [
-        {
-          "item-type": "view",
-          "view": {
-            "id": "business-task",
-            "type": "org.alfresco.client.view.tasks",
-            "label-id": "High Priority Overdue",
-            "hasFilter": true,
-            "params": {
-              "filters": {
-                "priority": "high",
-                "due": "overdue"
-              }
-            }
-          }
-        },
-        {
-          "item-type": "view",
-          "view": {
-            "id": "business-task1",
-            "type": "org.alfresco.client.view.tasks",
-            "label-id": "Overdue",
-            "params": {
-              "filters": {
-                "due": "overdue"
-              }
-            }
-          }
-        },
-        {
-          "item-type": "view",
-          "view": {
-            "id": "business-task2",
-            "type": "org.alfresco.client.view.tasks",
-            "label-id": "Initiated High Priority",
-            "params": {
-              "filters": {
-                "iniator": "me",
-                "priority": "high"
-              }
-            }
-          }
         }
       ]
     }
@@ -251,7 +73,7 @@
       "evaluator": "isAlfrescoV42"
     },
     "view-sites-default": {
-      "type": "org.alfresco.client.view.sites"
+      "type": "org.alfresco.client.view.site-browser"
     },
     "view-repository-userhome-default": {
       "type": "org.alfresco.client.view.repository",
@@ -261,7 +83,11 @@
       "evaluator": "isAlfrescoV42"
     },
     "view-task-default": {
-      "type": "org.alfresco.client.view.tasks"
+      "type": "org.alfresco.client.view.tasks",
+      "evaluator": "isOnPremise"
+    },
+    "view-sync-default": {
+      "type": "org.alfresco.client.view.sync"
     },
     "view-favorite-default": {
       "type": "org.alfresco.client.view.favorites"
@@ -271,52 +97,48 @@
     },
     "view-local-default": {
       "type": "org.alfresco.client.view.local"
-    },
-    "view-settings-default": {
-      "type": "org.alfresco.client.view.settings"
-    },
-    "view-help-default": {
-      "type": "org.alfresco.client.view.help"
-    },
-    "view-about-default": {
-      "type": "org.alfresco.client.view.about"
     }
   },
   "creation": {
     "mime-types": [
       {
         "id": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-        "label-id": "Word Document",
+        "label-id": "creation.mime_types.word.title",
         "icon-id": "t.docx",
-        "description-id": "Microsoft Office 2007 Word Document",
+        "description-id": "creation.mime_types.word.description",
         "params": {
+          "templatePath": "FilesTemplates/Template.docx",
           "extension": ".docx"
         }
-      }
-    ],
-    "document-types": [
-      {
-        "id": "cm:content",
-        "label-id": "cm_contentmodel.type.cm_content.title",
-        "icon-id": "t"
       },
       {
-        "id": "fdk:company",
-        "label-id": "fdk_contentmodel.type.fdk_company.title",
-        "icon-id": "t.docx"
+        "id": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+        "label-id": "creation.mime_types.powerpoint.title",
+        "icon-id": "t.pptx",
+        "description-id": "creation.mime_types.powerpoint.description",
+        "params": {
+          "templatePath": "FilesTemplates/Template.pptx",
+          "extension": ".pptx"
+        }
       },
       {
-        "id": "fdk:everything",
-        "label-id": "fdk_contentmodel.type.fdk_everything.title",
-        "icon-id": "t.docx"
-      }
-    ],
-    "folder-types": [
+        "id": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "label-id": "creation.mime_types.excel.title",
+        "icon-id": "t.xlsx",
+        "description-id": "creation.mime_types.excel.descriptiont",
+        "params": {
+          "templatePath": "FilesTemplates/Template.xlsx",
+          "extension": ".xlsx"
+        }
+      },
       {
-        "id": "cm:folder",
-        "label-id": "Default Folder",
-        "icon-id": "Default Folder Icon",
-        "description-id": "Default Description Folder"
+        "id": "text/plain",
+        "label-id": "creation.mime_types.text.title",
+        "icon-id": "t.txt",
+        "description-id": "creation.mime_types.text.description",
+        "params": {
+          "extension": ".txt"
+        }
       }
     ]
   },
@@ -346,11 +168,6 @@
         },
         {
           "item-type": "field-group-id",
-          "field-group-id": "fdk:everything",
-          "evaluator": "isfdkEverythingType"
-        },
-        {
-          "item-type": "field-group-id",
           "field-group-id": "${aspects}"
         }
       ]
@@ -366,115 +183,15 @@
         },
         {
           "item-type": "field-id",
-          "field-id": "cm:title",
-          "evaluator": "hasTitledAspect"
+          "field-id": "cm:title"
         },
         {
           "item-type": "field-id",
-          "field-id": "cm:description",
-          "evaluator": "hasTitledAspect"
+          "field-id": "cm:description"
         },
         {
           "item-type": "field-id",
-          "field-id": "cm:author",
-          "evaluator": "hasAuthorAspect"
-        },
-        {
-          "item-type": "field-id",
-          "field-id": "cm:created"
-        }
-      ]
-    },
-    "type:fdk:everything": {
-      "items": [
-        {
-          "item-type": "field-group-id",
-          "field-group-id": "type:cm:content"
-        },
-        {
-          "item-type": "field-group-id",
-          "field-group-id": "fdk:everything"
-        }
-      ]
-    },
-    "fdk:everything": {
-      "label-id": "fdk_contentmodel.type.fdk_everything.title",
-      "items": [
-        {
-          "item-type": "field-id",
-          "field-id": "fdk:text"
-        },
-        {
-          "item-type": "field-id",
-          "field-id": "fdk:textMultiple"
-        },
-        {
-          "item-type": "field-id",
-          "field-id": "fdk:mltext"
-        },
-        {
-          "item-type": "field-id",
-          "field-id": "fdk:date"
-        },
-        {
-          "item-type": "field-id",
-          "field-id": "fdk:dateTime"
-        },
-        {
-          "item-type": "field-id",
-          "field-id": "fdk:int"
-        },
-        {
-          "item-type": "field-id",
-          "field-id": "fdk:long"
-        },
-        {
-          "item-type": "field-id",
-          "field-id": "fdk:double"
-        },
-        {
-          "item-type": "field-id",
-          "field-id": "fdk:float"
-        },
-        {
-          "item-type": "field-id",
-          "field-id": "fdk:boolean"
-        },
-        {
-          "item-type": "field-id",
-          "field-id": "fdk:noderef"
-        },
-        {
-          "item-type": "field-id",
-          "field-id": "fdk:category"
-        },
-        {
-          "item-type": "field-id",
-          "field-id": "fdk:duplicate"
-        },
-        {
-          "item-type": "field-id",
-          "field-id": "fdk:mandatory"
-        },
-        {
-          "item-type": "field-id",
-          "field-id": "fdk:listConstraint"
-        },
-        {
-          "item-type": "field-id",
-          "field-id": "fdk:lengthConstraint"
-        },
-        {
-          "item-type": "field-id",
-          "field-id": "fdk:minmaxConstraint"
-        },
-        {
-          "item-type": "field-id",
-          "field-id": "fdk:regexConstraint"
-        },
-        {
-          "item-type": "field-id",
-          "field-id": "fdk:capitalCity"
+          "field-id": "cm:author"
         }
       ]
     },
@@ -519,6 +236,10 @@
         {
           "item-type": "field-id",
           "field-id": "cm:modified"
+        },
+        {
+          "item-type": "field-id",
+          "field-id": "path_document"
         }
       ]
     },
@@ -535,6 +256,34 @@
         {
           "item-type": "field-id",
           "field-id": "cm:description"
+        },
+        {
+          "item-type": "field-id",
+          "field-id": "cm:author"
+        },
+        {
+          "item-type": "field-id",
+          "field-id": "size"
+        },
+        {
+          "item-type": "field-id",
+          "field-id": "cm:creator"
+        },
+        {
+          "item-type": "field-id",
+          "field-id": "cm:created"
+        },
+        {
+          "item-type": "field-id",
+          "field-id": "cm:modifier"
+        },
+        {
+          "item-type": "field-id",
+          "field-id": "cm:modified"
+        },
+        {
+          "item-type": "field-id",
+          "field-id": "path"
         }
       ]
     },
@@ -624,6 +373,27 @@
         }
       ]
     },
+    "aspect:cm:geographic": {
+      "label-id": "cm_contentmodel.aspect.cm_geographic.title",
+      "items": [
+        {
+          "item-type": "field",
+          "field": {
+            "id": "cm:latitude",
+            "model-id": "cm:latitude",
+            "label-id": "cm_contentmodel.property.cm_latitude.title"
+          }
+        },
+        {
+          "item-type": "field",
+          "field": {
+            "id": "cm:longitude",
+            "model-id": "cm:longitude",
+            "label-id": "cm_contentmodel.property.cm_longitude.title"
+          }
+        }
+      ]
+    },
     "aspect:exif:exif": {
       "label-id": "cm_contentmodel.aspect.exif_exif.title",
       "items": [
@@ -689,23 +459,16 @@
         }
       ]
     },
-    "aspect:cm:geographic": {
-      "label-id": "cm_contentmodel.aspect.cm_geographic.title",
+    "aspect:cm:taggable": {
+      "label-id": "cm_contentmodel.aspect.taggable.title",
       "items": [
         {
           "item-type": "field",
           "field": {
-            "id": "cm:latitude",
-            "model-id": "cm:latitude",
-            "label-id": "cm_contentmodel.property.cm_latitude.title"
-          }
-        },
-        {
-          "item-type": "field",
-          "field": {
-            "id": "cm:longitude",
-            "model-id": "cm:longitude",
-            "label-id": "cm_contentmodel.property.cm_longitude.title"
+            "id": "d:category",
+            "model-id": "d:category",
+            "type": "org.alfresco.client.form.field.tags",
+            "label-id": "cm_contentmodel.property.cm_tags.title"
           }
         }
       ]
@@ -714,10 +477,22 @@
   "fields": {
     "cm:name": {
       "model-id": "cm:name",
-      "label-id": "cm_contentmodel.property.cm_name.title"
+      "type": "org.alfresco.client.form.field.text",
+      "label-id": "cm_contentmodel.property.cm_name.title",
+      "validation": [
+        {
+          "item-type": "validation-rule-id",
+          "validation-rule-id": "validation-mandatory"
+        },
+        {
+          "item-type": "validation-rule-id",
+          "validation-rule-id": "validation-nodeName"
+        }
+      ]
     },
     "cm:title": {
       "model-id": "cm:title",
+      "type": "org.alfresco.client.form.field.text",
       "label-id": "cm_contentmodel.property.cm_title.title"
     },
     "cm:description": {
@@ -730,10 +505,22 @@
     },
     "mimetype": {
       "model-id": "mimetype",
+      "type": "org.alfresco.client.form.field.text",
       "label-id": "cm_contentmodel.property.cm_mimetype.title"
+    },
+    "path": {
+      "model-id": "path",
+      "type": "org.alfresco.client.form.field.folder-path",
+      "label-id": "cm_contentmodel.property.cm_path.title"
+    },
+    "path_document": {
+      "model-id": "path",
+      "type": "org.alfresco.client.form.field.path",
+      "label-id": "cm_contentmodel.property.cm_path.title"
     },
     "cm:author": {
       "model-id": "cm:author",
+      "type": "org.alfresco.client.form.field.text",
       "label-id": "cm_contentmodel.property.cm_author.title"
     },
     "size": {
@@ -743,280 +530,193 @@
     },
     "cm:creator": {
       "model-id": "cm:creator",
+      "type": "org.alfresco.client.form.field.text",
       "label-id": "cm_contentmodel.property.cm_creator.title"
     },
     "cm:created": {
       "model-id": "cm:created",
+      "type": "org.alfresco.client.form.field.dateTime",
       "label-id": "cm_contentmodel.property.cm_created.title"
     },
     "cm:modifier": {
       "model-id": "cm:modifier",
+      "type": "org.alfresco.client.form.field.text",
       "label-id": "cm_contentmodel.property.cm_modifier.title"
     },
     "cm:modified": {
       "model-id": "cm:modified",
+      "type": "org.alfresco.client.form.field.dateTime",
       "label-id": "cm_contentmodel.property.cm_modified.title"
     },
     "cm:publisher": {
       "model-id": "cm:publisher",
+      "type": "org.alfresco.client.form.field.text",
       "label-id": "cm_contentmodel.property.cm_publisher.title"
     },
     "cm:contributor": {
       "model-id": "cm:contributor",
+      "type": "org.alfresco.client.form.field.text",
       "label-id": "cm_contentmodel.property.cm_contributor.title"
     },
     "cm:type": {
       "model-id": "cm:type",
+      "type": "org.alfresco.client.form.field.text",
       "label-id": "cm_contentmodel.property.cm_type.title"
     },
     "cm:identifier": {
       "model-id": "cm:identifier",
+      "type": "org.alfresco.client.form.field.text",
       "label-id": "cm_contentmodel.property.cm_identifier.title"
     },
     "cm:dcsource": {
       "model-id": "cm:dcsource",
+      "type": "org.alfresco.client.form.field.text",
       "label-id": "cm_contentmodel.property.cm_dcsource.title"
     },
     "cm:coverage": {
       "model-id": "cm:coverage",
+      "type": "org.alfresco.client.form.field.text",
       "label-id": "cm_contentmodel.property.cm_coverage.title"
     },
     "cm:rights": {
       "model-id": "cm:rights",
+      "type": "org.alfresco.client.form.field.text",
       "label-id": "cm_contentmodel.property.cm_rights.title"
     },
     "cm:subject": {
       "model-id": "cm:subject",
+      "type": "org.alfresco.client.form.field.text",
       "label-id": "cm_contentmodel.property.cm_subject.title"
     },
     "audio:album": {
       "model-id": "audio:album",
+      "type": "org.alfresco.client.form.field.text",
       "label-id": "cm_contentmodel.property.audio_album.title"
     },
     "audio:artist": {
       "model-id": "audio:artist",
+      "type": "org.alfresco.client.form.field.text",
       "label-id": "cm_contentmodel.property.audio_artist.title"
     },
     "audio:composer": {
       "model-id": "audio:composer",
+      "type": "org.alfresco.client.form.field.text",
       "label-id": "cm_contentmodel.property.audio_composer.title"
     },
     "audio:engineer": {
       "model-id": "audio:engineer",
+      "type": "org.alfresco.client.form.field.text",
       "label-id": "cm_contentmodel.property.audio_engineer.title"
     },
     "audio:genre": {
       "model-id": "audio:genre",
+      "type": "org.alfresco.client.form.field.text",
       "label-id": "cm_contentmodel.property.audio_genre.title"
     },
     "audio:trackNumber": {
       "model-id": "audio:trackNumber",
+      "type": "org.alfresco.client.form.field.number",
       "label-id": "cm_contentmodel.property.audio_trackNumber.title"
     },
     "audio:releaseDate": {
       "model-id": "audio:releaseDate",
+      "type": "org.alfresco.client.form.field.dateTime",
       "label-id": "cm_contentmodel.property.audio_releaseDate.title"
     },
     "audio:sampleRate": {
       "model-id": "audio:sampleRate",
+      "type": "org.alfresco.client.form.field.text",
       "label-id": "cm_contentmodel.property.audio_sampleRate.title"
     },
     "audio:sampleType": {
       "model-id": "audio:sampleType",
+      "type": "org.alfresco.client.form.field.text",
       "label-id": "cm_contentmodel.property.audio_sampleType.title"
     },
     "audio:channelType": {
       "model-id": "audio:channelType",
+      "type": "org.alfresco.client.form.field.text",
       "label-id": "cm_contentmodel.property.audio_channelType.title"
     },
     "audio:compressor": {
       "model-id": "audio:compressor",
+      "type": "org.alfresco.client.form.field.text",
       "label-id": "cm_contentmodel.property.audio_compressor.title"
     },
     "exif:dateTimeOriginal": {
       "model-id": "exif:dateTimeOriginal",
+      "type": "org.alfresco.client.form.field.dateTime",
       "label-id": "cm_contentmodel.property.exif_dateTimeOriginal.title"
     },
     "exif:pixelXDimension": {
       "model-id": "exif:pixelXDimension",
+      "type": "org.alfresco.client.form.field.number",
       "label-id": "cm_contentmodel.property.exif_pixelXDimension.title"
     },
     "exif:pixelYDimension": {
       "model-id": "exif:pixelYDimension",
+      "type": "org.alfresco.client.form.field.number",
       "label-id": "cm_contentmodel.property.exif_pixelYDimension.title"
     },
     "exif:exposureTime": {
       "model-id": "exif:exposureTime",
+      "type": "org.alfresco.client.form.field.decimal",
       "label-id": "cm_contentmodel.property.exif_exposureTime.title"
     },
     "exif:fNumber": {
       "model-id": "exif:fNumber",
+      "type": "org.alfresco.client.form.field.decimal",
       "label-id": "cm_contentmodel.property.exif_fNumber.title"
     },
     "exif:flash": {
       "model-id": "exif:flash",
+      "type": "org.alfresco.client.form.field.boolean",
       "label-id": "cm_contentmodel.property.exif_flash.title"
     },
     "exif:focalLength": {
       "model-id": "exif:focalLength",
+      "type": "org.alfresco.client.form.field.decimal",
       "label-id": "cm_contentmodel.property.exif_focalLength.title"
     },
     "exif:isoSpeedRatings": {
       "model-id": "exif:isoSpeedRatings",
+      "type": "org.alfresco.client.form.field.text",
       "label-id": "cm_contentmodel.property.exif_isoSpeedRatings.title"
     },
     "exif:manufacturer": {
       "model-id": "exif:manufacturer",
+      "type": "org.alfresco.client.form.field.text",
       "label-id": "cm_contentmodel.property.exif_manufacturer.title"
     },
     "exif:model": {
       "model-id": "exif:model",
+      "type": "org.alfresco.client.form.field.text",
       "label-id": "cm_contentmodel.property.exif_model.title"
     },
     "exif:software": {
       "model-id": "exif:software",
+      "type": "org.alfresco.client.form.field.text",
       "label-id": "cm_contentmodel.property.exif_software.title"
     },
     "exif:orientation": {
       "model-id": "exif:orientation",
+      "type": "org.alfresco.client.form.field.number",
       "label-id": "cm_contentmodel.property.exif_orientation.title"
     },
     "exif:xResolution": {
       "model-id": "exif:xResolution",
+      "type": "org.alfresco.client.form.field.decimal",
       "label-id": "cm_contentmodel.property.exif_xResolution.title"
     },
     "exif:yResolution": {
       "model-id": "exif:yResolution",
+      "type": "org.alfresco.client.form.field.decimal",
       "label-id": "cm_contentmodel.property.exif_yResolution.title"
     },
     "exif:resolutionUnit": {
       "model-id": "exif:resolutionUnit",
+      "type": "org.alfresco.client.form.field.text",
       "label-id": "cm_contentmodel.property.exif_resolutionUnit.title"
-    },
-    "fdk:text": {
-      "model-id": "fdk:text",
-      "label-id": "fdk_contentmodel.property.fdk_text.title"
-    },
-    "fdk:textMultiple": {
-      "model-id": "fdk:textMultiple",
-      "label-id": "fdk_contentmodel.property.fdk_textMultiple.title"
-    },
-    "fdk:mltext": {
-      "model-id": "fdk:mltext",
-      "params": {
-        "readOnly": true
-      },
-      "label-id": "fdk_contentmodel.property.fdk_mltext.title"
-    },
-    "fdk:date": {
-      "model-id": "fdk:date",
-      "label-id": "fdk_contentmodel.property.fdk_date.title",
-      "params": {
-        "showTime": false,
-        "minDate": "2012-07-11T00:00:00.000Z",
-        "maxDate": "2013-07-11T23:59:59.999Z"
-      }
-    },
-    "fdk:dateTime": {
-      "model-id": "fdk:dateTime",
-      "label-id": "fdk_contentmodel.property.fdk_dateTime.title",
-      "params": {
-        "showTime": true
-      }
-    },
-    "fdk:int": {
-      "model-id": "fdk:int",
-      "label-id": "fdk_contentmodel.property.fdk_int.title"
-    },
-    "fdk:long": {
-      "model-id": "fdk:long",
-      "label-id": "fdk_contentmodel.property.fdk_long.title"
-    },
-    "fdk:double": {
-      "model-id": "fdk:double",
-      "label-id": "fdk_contentmodel.property.fdk_double.title",
-      "validation": [
-        {
-          "item-type": "validation-rule-id",
-          "validation-rule-id": "validation-mandatory"
-        }
-      ]
-    },
-    "fdk:float": {
-      "model-id": "fdk:float",
-      "label-id": "fdk_contentmodel.property.fdk_float.title"
-    },
-    "fdk:boolean": {
-      "model-id": "fdk:boolean",
-      "label-id": "fdk_contentmodel.property.fdk_boolean.title"
-    },
-    "fdk:noderef": {
-      "model-id": "fdk:noderef",
-      "type": "org.alfresco.client.form.field.node",
-      "label-id": "fdk_contentmodel.property.fdk_noderef.title",
-      "params": {
-        "outputValue": "id",
-        "allowMultipleSelection": false
-      }
-    },
-    "fdk:category": {
-      "model-id": "fdk:category",
-      "label-id": "fdk_contentmodel.property.fdk_category.title",
-      "params": {
-        "secret": true
-      }
-    },
-    "fdk:duplicate": {
-      "model-id": "fdk:duplicate",
-      "type": "org.alfresco.client.form.field.authority",
-      "label-id": "fdk_contentmodel.property.fdk_duplicate.title",
-      "params": {
-        "authority": "person",
-        "outputValue": "id",
-        "allowMultipleSelection": true
-      }
-    },
-    "fdk:mandatory": {
-      "model-id": "fdk:mandatory",
-      "label-id": "fdk_contentmodel.property.fdk_mandatory.title"
-    },
-    "fdk:listConstraint": {
-      "model-id": "fdk:listConstraint",
-      "label-id": "fdk_contentmodel.property.fdk_listConstraint.title"
-    },
-    "fdk:lengthConstraint": {
-      "model-id": "fdk:lengthConstraint",
-      "label-id": "fdk_contentmodel.property.fdk_lengthConstraint.title",
-      "validation": [
-        {
-          "item-type": "validation-rule-id",
-          "validation-rule-id": "validation-stringLength"
-        }
-      ]
-    },
-    "fdk:minmaxConstraint": {
-      "model-id": "fdk:minmaxConstraint",
-      "label-id": "fdk_contentmodel.property.fdk_minmaxConstraint.title",
-      "validation": [
-        {
-          "item-type": "validation-rule-id",
-          "validation-rule-id": "validation-numberRange"
-        }
-      ]
-    },
-    "fdk:regexConstraint": {
-      "model-id": "fdk:regexConstraint",
-      "label-id": "fdk_contentmodel.property.fdk_regexConstraint.title",
-      "validation": [
-        {
-          "item-type": "validation-rule-id",
-          "validation-rule-id": "validation-regex-email"
-        }
-      ]
-    },
-    "fdk:capitalCity": {
-      "model-id": "fdk:capitalCity",
-      "label-id": "fdk_contentmodel.property.fdk_capitalCity.title"
     }
   },
   "validation-rules": {
@@ -1024,39 +724,9 @@
       "type": "org.alfresco.client.validation.mandatory",
       "error-id": "org.alfresco.client.validation.mandatory.error"
     },
-    "validation-stringLength": {
-      "type": "org.alfresco.client.validation.stringLength",
-      "error-id": "The value must be between %s and %s characters long.",
-      "params": {
-        "min": 5,
-        "max": 10
-      }
-    },
-    "validation-numberRange": {
-      "type": "org.alfresco.client.validation.numberRange",
-      "error-id": "org.alfresco.client.validation.numberRange.error",
-      "params": {
-        "min": -100,
-        "max": 250
-      }
-    },
     "validation-nodeName": {
       "type": "org.alfresco.client.validation.nodeName",
       "error-id": "org.alfresco.client.validation.nodeName.error"
-    },
-    "validation-regex-number": {
-      "type": "org.alfresco.client.validation.regex",
-      "error-id": "The value doesnt respect the pattern.",
-      "params": {
-        "pattern": "4{3}"
-      }
-    },
-    "validation-regex-email": {
-      "type": "org.alfresco.client.validation.regex",
-      "error-id": "The value doesnt respect the pattern.",
-      "params": {
-        "pattern": "[A-Za-z0-9._]*+@[A-Za-z0-9.]*"
-      }
     }
   },
   "evaluators": {
@@ -1066,8 +736,14 @@
         "isAlfrescoV42-CE"
       ]
     },
+    "isOnPremise": {
+      "type": "org.alfresco.client.evaluator.hasRepositoryCapability",
+      "params": {
+        "session": "onpremise"
+      }
+    },
     "isAlfrescoV42-EE": {
-      "type": "org.alfresco.client.evaluator.isRepositoryVersion",
+      "type": "org.alfresco.client.evaluator.hasRepositoryCapability",
       "params": {
         "operator": ">=",
         "edition": "Enterprise",
@@ -1076,19 +752,13 @@
       }
     },
     "isAlfrescoV42-CE": {
-      "type": "org.alfresco.client.evaluator.isRepositoryVersion",
+      "type": "org.alfresco.client.evaluator.hasRepositoryCapability",
       "params": {
         "operator": ">=",
         "edition": "Community",
         "majorVersion": 4,
         "minorVersion": 2,
         "maintenanceVersion": "e"
-      }
-    },
-    "isfdkEverythingType": {
-      "type": "org.alfresco.client.evaluator.nodeType",
-      "params": {
-        "typeName": "fdk:everything"
       }
     },
     "hasAuthorAspect": {
