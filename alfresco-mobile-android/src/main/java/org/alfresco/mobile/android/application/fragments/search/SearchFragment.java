@@ -324,6 +324,9 @@ public class SearchFragment extends BaseCursorGridFragment
         {
             getActionBar().setNavigationMode(android.support.v7.app.ActionBar.NAVIGATION_MODE_LIST);
             getActionBar().setDisplayUseLogoEnabled(false);
+            getActionBar().setDisplayUseLogoEnabled(false);
+            getActionBar().setDisplayShowTitleEnabled(false);
+            getActionBar().setDisplayShowCustomEnabled(false);
 
             optionAdapter = new SearchOptionAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item,
                     SearchOptionAdapter.getSearchOptions(getSession(), (tmpParentFolder != null)));

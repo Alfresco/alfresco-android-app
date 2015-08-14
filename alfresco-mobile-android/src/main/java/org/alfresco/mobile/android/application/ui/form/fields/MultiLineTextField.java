@@ -7,6 +7,7 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.ui.form.FormManager;
 import org.alfresco.mobile.android.ui.holder.HolderUtils;
 import org.alfresco.mobile.android.ui.holder.TwoLinesViewHolder;
+import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.content.Context;
 import android.text.InputType;
@@ -26,8 +27,6 @@ public class MultiLineTextField extends TextField
             PropertyDefinition propertyDefinition, boolean isReadMode)
     {
         super(context, manager, property, configuration, propertyDefinition, isReadMode);
-        editLayoutId = R.layout.form_edit_multilines;
-        readLayoutId = R.layout.form_edit_multilines;
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -35,10 +34,13 @@ public class MultiLineTextField extends TextField
     // ///////////////////////////////////////////////////////////////////////////
     public View setupdReadView()
     {
-        View vr = inflater.inflate(R.layout.form_read_row, null);
+        if (originalValue == null) { return null; }
+        View vr = inflater.inflate(R.layout.row_two_line_inverse, null);
         TwoLinesViewHolder tvh = HolderUtils.configure(vr, fieldConfig.getLabel(), getHumanReadableReadValue(), -1);
         tvh.bottomText.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
         tvh.bottomText.setSingleLine(false);
+        tvh.bottomText.setId(UIUtils.generateViewId());
+        tvh.topText.setId(UIUtils.generateViewId());
         if (hideLabel)
         {
             tvh.topText.setVisibility(View.GONE);

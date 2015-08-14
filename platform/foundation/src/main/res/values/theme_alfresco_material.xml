@@ -65,7 +65,6 @@
         <item name="MainTheme.TextView.SecondaryBold">
             @style/AlfrescoHoloTheme.TextView.SecondaryBold
         </item>
-        <item name="MainTheme.TextView.MenuItem">@style/AlfrescoHoloTheme.TextView.MenuItem</item>
         <item name="MainTheme.TextView.ListItem">@style/AlfrescoHoloTheme.TextView.ListItem</item>
         <item name="MainTheme.TextView.ListItem.Primary">
             @style/AlfrescoHoloTheme.TextView.ListItem.Primary
@@ -112,6 +111,7 @@
         <item name="MainTheme.Progress.Horizontal">@style/AlfrescoHoloTheme.Progress.Horizontal
         </item>
         <item name="MainTheme.Dialog">@style/AlfrescoHoloTheme.Dialog</item>
+        <item name="windowActionModeOverlay">true</item>
     </style>
 
 
@@ -129,6 +129,32 @@
     <style name="AlfrescoMaterialTheme.Toolbar" parent="Base.ThemeOverlay.AppCompat.ActionBar">
         <item name="android:textColorPrimary">@color/primary_text</item>
         <item name="android:background">@color/background_material_light</item>
+    </style>
+
+    <!--MAIN MENU -->
+    <style name="AlfrescoMaterialTheme.MainMenu">
+        <item name="android:paddingLeft">@dimen/d_16</item>
+        <item name="android:paddingRight">@dimen/d_16</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <style name="AlfrescoMaterialTheme.MainMenu.Item">
+        <item name="android:minHeight">@dimen/menu_list_item_height</item>
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Subhead</item>
+        <item name="android:drawablePadding">@dimen/d_16</item>
+        <item name="android:gravity">left|center_vertical</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:background">@drawable/alfrescohololight_list_selector_holo_light</item>
+    </style>
+
+    <style name="AlfrescoMaterialTheme.MainMenu.SubTitle">
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Subhead</item>
+        <item name="android:drawableBottom">@drawable/grey_section_header</item>
+        <item name="android:minHeight">30dp</item>
+        <item name="android:gravity">center|left</item>
+        <item name="android:textColor">@color/subtitle</item>
     </style>
 
     <!--BUTTON -->

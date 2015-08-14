@@ -22,7 +22,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -35,15 +34,6 @@ import org.alfresco.mobile.android.api.services.ConfigService;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.configuration.model.DevConfigModelHelper;
 import org.alfresco.mobile.android.application.configuration.model.DevMenuConfigIds;
-import org.alfresco.mobile.android.application.configuration.model.view.ActivitiesConfigModel;
-import org.alfresco.mobile.android.application.configuration.model.view.FavoritesConfigModel;
-import org.alfresco.mobile.android.application.configuration.model.view.LocalConfigModel;
-import org.alfresco.mobile.android.application.configuration.model.view.MenuEditorConfigModel;
-import org.alfresco.mobile.android.application.configuration.model.view.RepositoryConfigModel;
-import org.alfresco.mobile.android.application.configuration.model.view.SearchConfigModel;
-import org.alfresco.mobile.android.application.configuration.model.view.SiteBrowserConfigModel;
-import org.alfresco.mobile.android.application.configuration.model.view.SyncConfigModel;
-import org.alfresco.mobile.android.application.configuration.model.view.TasksConfigModel;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 import org.alfresco.mobile.android.application.managers.ActionUtils;
 import org.alfresco.mobile.android.application.managers.ConfigManager;
@@ -53,7 +43,6 @@ import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.utils.BundleUtils;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
-import org.alfresco.mobile.android.ui.node.browse.NodeBrowserTemplate;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -161,7 +150,7 @@ public class ConfigMenuEditorFragment extends AlfrescoFragment implements DevMen
             }
             else
             {
-                createDefaultMenu();
+                defaultMenuItems = DevConfigModelHelper.createDefaultMenu(getActivity());
             }
             if (defaultMenuItems != null)
             {
@@ -240,53 +229,6 @@ public class ConfigMenuEditorFragment extends AlfrescoFragment implements DevMen
         }
     }
 
-    private void createDefaultMenu()
-    {
-        defaultMenuItems = new LinkedHashMap<>();
-        // Activities
-        defaultMenuItems.put(VIEW_ACTIVITIES,
-                new ActivitiesConfigModel().createViewConfig(VIEW_ACTIVITIES, getActivity()));
-
-        // Company Home - Repository
-        defaultMenuItems.put(VIEW_REPOSITORY,
-                new RepositoryConfigModel().createViewConfig(VIEW_REPOSITORY, getActivity()));
-
-        // Shared Files
-        HashMap<String, Object> sharedProperties = new HashMap<String, Object>();
-        sharedProperties.put(NodeBrowserTemplate.ARGUMENT_FOLDER_TYPE_ID, RepositoryConfigModel.FOLDER_TYPE_SHARED);
-        defaultMenuItems.put(VIEW_REPOSITORY_SHARED,
-                new RepositoryConfigModel(sharedProperties).createViewConfig(VIEW_REPOSITORY_SHARED, getActivity()));
-
-        // Sites
-        defaultMenuItems.put(VIEW_SITES, new SiteBrowserConfigModel().createViewConfig(VIEW_SITES, getActivity()));
-
-        // Userhome
-        HashMap<String, Object> userHomeProperties = new HashMap<String, Object>();
-        userHomeProperties.put(NodeBrowserTemplate.ARGUMENT_FOLDER_TYPE_ID, RepositoryConfigModel.FOLDER_TYPE_USERHOME);
-        defaultMenuItems.put(VIEW_REPOSITORY_USERHOME, new RepositoryConfigModel(userHomeProperties)
-                .createViewConfig(VIEW_REPOSITORY_USERHOME, getActivity()));
-
-        // Tasks & Workflow
-        defaultMenuItems.put(VIEW_TASKS, new TasksConfigModel().createViewConfig(VIEW_TASKS, getActivity()));
-
-        // Favorites
-        defaultMenuItems.put(VIEW_FAVORITES,
-                new FavoritesConfigModel().createViewConfig(VIEW_FAVORITES, getActivity()));
-
-        // Sync
-        defaultMenuItems.put(VIEW_SYNC, new SyncConfigModel().createViewConfig(VIEW_SYNC, getActivity()));
-
-        // Search
-        defaultMenuItems.put(VIEW_SEARCH, new SearchConfigModel().createViewConfig(VIEW_SEARCH, getActivity()));
-
-        // Local Files
-        defaultMenuItems.put(VIEW_LOCAL_FILE, new LocalConfigModel().createViewConfig(VIEW_LOCAL_FILE, getActivity()));
-
-        // Local Files
-        defaultMenuItems.put(VIEW_CONFIG_EDITOR,
-                new MenuEditorConfigModel().createViewConfig(VIEW_CONFIG_EDITOR, getActivity()));
-    }
-
     // //////////////////////////////////////////////////////////////////////
     // MENU
     // //////////////////////////////////////////////////////////////////////
@@ -325,7 +267,7 @@ public class ConfigMenuEditorFragment extends AlfrescoFragment implements DevMen
     private void reset()
     {
         menuConfigItems.clear();
-        createDefaultMenu();
+        defaultMenuItems = DevConfigModelHelper.createDefaultMenu(getActivity());
 
         menuConfigItems = new ArrayList<>(defaultMenuItems.values());
         adapter = new ConfigMenuItemAdapter(this, R.layout.row_two_lines, menuConfigItems);

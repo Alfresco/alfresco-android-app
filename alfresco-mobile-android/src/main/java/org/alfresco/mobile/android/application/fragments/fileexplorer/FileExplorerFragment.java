@@ -42,6 +42,7 @@ import org.alfresco.mobile.android.platform.extensions.ScanSnapManager;
 import org.alfresco.mobile.android.platform.intent.BaseActionUtils.ActionManagerListener;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
+import org.alfresco.mobile.android.ui.activity.AlfrescoActivity;
 import org.alfresco.mobile.android.ui.fragments.WaitingDialogFragment;
 
 import android.content.ActivityNotFoundException;
@@ -107,8 +108,14 @@ public class FileExplorerFragment extends FileExplorerFoundationFragment
     {
         if (isShortCut)
         {
-            FileExplorerHelper.displayNavigationMode(getActivity(), getMode(), false, menuId);
+            FileExplorerHelper.displayNavigationMode((AlfrescoActivity) getActivity(), getMode(), false, menuId);
+            getActionBar().setDisplayUseLogoEnabled(false);
             getActionBar().setDisplayShowTitleEnabled(false);
+            getActionBar().setDisplayShowCustomEnabled(false);
+        }
+        else
+        {
+            super.displayTitle();
         }
     }
 

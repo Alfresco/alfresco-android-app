@@ -25,11 +25,10 @@ import org.alfresco.mobile.android.api.services.WorkflowService;
 import org.alfresco.mobile.android.api.services.impl.publicapi.PublicAPIWorkflowServiceImpl;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.workflow.process.ProcessesFragment;
+import org.alfresco.mobile.android.ui.activity.AlfrescoActivity;
 
 import android.content.SharedPreferences;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 
 public final class TasksHelper
 {
@@ -44,16 +43,16 @@ public final class TasksHelper
     {
     }
 
-    public static void displayNavigationMode(final FragmentActivity activity)
+    public static void displayNavigationMode(final AlfrescoActivity activity)
     {
         SharedPreferences prefs = activity.getSharedPreferences(TASK_FILTER_PREFS, 0);
         int currentSelection = prefs.getInt(TASK_FILTER_DEFAULT, 0);
         displayNavigationMode(activity, true, currentSelection);
     }
 
-    public static void displayNavigationMode(final FragmentActivity activity, final boolean backStack, int menuId)
+    public static void displayNavigationMode(final AlfrescoActivity activity, final boolean backStack, int menuId)
     {
-        ActionBar bar = ((ActionBarActivity) activity).getSupportActionBar();
+        ActionBar bar = activity.getAppActionBar();
         bar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
         TasksShortCutAdapter adapter = new TasksShortCutAdapter(activity);
 

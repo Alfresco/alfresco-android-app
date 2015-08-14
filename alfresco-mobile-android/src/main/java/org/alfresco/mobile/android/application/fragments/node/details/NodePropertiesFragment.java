@@ -33,8 +33,6 @@ import org.alfresco.mobile.android.async.tag.TagsEvent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import com.squareup.otto.Subscribe;
@@ -48,8 +46,6 @@ public class NodePropertiesFragment extends NodeDetailsFragment
 {
     public static final String TAG = NodePropertiesFragment.class.getName();
 
-    private String descriptionLabel;
-
     private FormManager formManager;
 
     // //////////////////////////////////////////////////////////////////////
@@ -57,7 +53,7 @@ public class NodePropertiesFragment extends NodeDetailsFragment
     // //////////////////////////////////////////////////////////////////////
     public NodePropertiesFragment()
     {
-        layoutId = R.layout.app_properties;
+        layoutId = R.layout.fr_node_properties;
     }
 
     protected static NodePropertiesFragment newInstanceByTemplate(Bundle b)
@@ -70,14 +66,6 @@ public class NodePropertiesFragment extends NodeDetailsFragment
     // //////////////////////////////////////////////////////////////////////
     // LIFE CYCLE
     // //////////////////////////////////////////////////////////////////////
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
-        descriptionLabel = getResources().getString(R.string.metadata_prop_description);
-        setRootView(super.onCreateView(inflater, container, savedInstanceState));
-        return getRootView();
-    }
-
     @Override
     public void onResume()
     {

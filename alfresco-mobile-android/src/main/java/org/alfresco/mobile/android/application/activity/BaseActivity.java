@@ -31,8 +31,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.ActionMode;
-import android.view.Window;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.ProgressBar;
 
 /**
  * Base class for all activities.
@@ -70,6 +71,23 @@ public abstract class BaseActivity extends AlfrescoActivity
             long accountId = getIntent().getExtras().getLong(AlfrescoIntentAPI.EXTRA_ACCOUNT_ID);
             SessionManager.getInstance(this)
                     .saveAccount(AlfrescoAccountManager.getInstance(this).retrieveAccount(accountId));
+        }
+    }
+
+    @Override
+    public void setSupportProgressBarIndeterminate(boolean indeterminate)
+    {
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.progress_spinner);
+
+        if (progressBar == null) { return; }
+
+        if (indeterminate)
+        {
+            progressBar.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            progressBar.setVisibility(View.GONE);
         }
     }
 
@@ -133,7 +151,7 @@ public abstract class BaseActivity extends AlfrescoActivity
     // ///////////////////////////////////////////////////////////////////////////
     protected void displayAsDialogActivity(double defaultCoefficient, double heightCoefficient)
     {
-        supportRequestWindowFeature(Window.FEATURE_ACTION_BAR);
+        // supportRequestWindowFeature(Window.FEATURE_ACTION_BAR);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND, WindowManager.LayoutParams.FLAG_DIM_BEHIND);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 

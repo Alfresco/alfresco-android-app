@@ -42,6 +42,7 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:clipToPadding="false"
+                    android:scrollbarStyle="outsideOverlay"
                     android:columnWidth="320dip"
                     android:gravity="center"
                     android:horizontalSpacing="0dp"

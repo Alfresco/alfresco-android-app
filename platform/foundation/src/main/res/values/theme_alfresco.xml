@@ -50,7 +50,6 @@
         <item name="MainTheme.TextView.SecondaryBold">
             @style/AlfrescoHoloTheme.TextView.SecondaryBold
         </item>
-        <item name="MainTheme.TextView.MenuItem">@style/AlfrescoHoloTheme.TextView.MenuItem</item>
         <item name="MainTheme.TextView.ListItem">@style/AlfrescoHoloTheme.TextView.ListItem</item>
         <item name="MainTheme.TextView.ListItem.Primary">
             @style/AlfrescoHoloTheme.TextView.ListItem.Primary

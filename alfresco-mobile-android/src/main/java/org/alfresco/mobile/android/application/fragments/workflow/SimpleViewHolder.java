@@ -18,12 +18,12 @@
 package org.alfresco.mobile.android.application.fragments.workflow;
 
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.ui.utils.ViewHolder;
+import org.alfresco.mobile.android.ui.holder.SingleLineCaptionViewHolder;
 
 import android.view.View;
 import android.widget.TextView;
 
-public final class SimpleViewHolder extends ViewHolder
+public final class SimpleViewHolder extends SingleLineCaptionViewHolder
 {
     public TextView topText;
 

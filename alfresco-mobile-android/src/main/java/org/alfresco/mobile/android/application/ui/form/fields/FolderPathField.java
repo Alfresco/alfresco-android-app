@@ -32,11 +32,12 @@ public class FolderPathField extends BaseField
     public View setupdReadView()
     {
         if (originalValue == null) { return null; }
-        View vr = inflater.inflate(R.layout.form_read_row, null);
+        View vr = inflater.inflate(R.layout.row_two_line_inverse, null);
         vr.setFocusable(false);
         TwoLinesViewHolder vh = HolderUtils.configure(vr, fieldConfig.getLabel(), getHumanReadableReadValue(), -1);
         vh.bottomText.setClickable(true);
         vh.bottomText.setFocusable(true);
+        vh.bottomText.setMaxLines(10);
         vh.bottomText.setPaintFlags(vh.bottomText.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         vh.bottomText.setOnClickListener(new View.OnClickListener()
         {

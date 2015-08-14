@@ -70,28 +70,28 @@ public class HolderUtils
     public static TwoLinesViewHolder configure(View v, String topText, String bottomText, int imageId)
     {
         TwoLinesViewHolder vh = new TwoLinesViewHolder(v);
-        org.alfresco.mobile.android.ui.holder.HolderUtils.configure(vh, topText, bottomText, imageId);
+        configure(vh, topText, bottomText, imageId);
         return vh;
     }
 
     public static TwoLinesCheckboxViewHolder configure(View v, String topText, String bottomText, boolean checked)
     {
         TwoLinesCheckboxViewHolder vh = new TwoLinesCheckboxViewHolder(v);
-        org.alfresco.mobile.android.ui.holder.HolderUtils.configure(vh, topText, bottomText, -1, checked);
+        configure(vh, topText, bottomText, -1, checked);
         return vh;
     }
 
     public static SingleLineViewHolder configure(View v, String topText, int imageId)
     {
         SingleLineViewHolder vh = new SingleLineViewHolder(v);
-        org.alfresco.mobile.android.ui.holder.HolderUtils.configure(vh, topText, imageId);
+        configure(vh, topText, imageId);
         return vh;
     }
 
     public static SingleLineSwitchViewHolder configure(View v, String topText, int imageId, boolean checked)
     {
         SingleLineSwitchViewHolder vh = new SingleLineSwitchViewHolder(v);
-        org.alfresco.mobile.android.ui.holder.HolderUtils.configure(vh, topText, imageId, checked);
+        configure(vh, topText, imageId, checked);
         return vh;
     }
 

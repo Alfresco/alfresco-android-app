@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/secondary_background"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/details_header"
+        layout="@layout/row_two_lines"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:id="@+id/tools_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/action_openin"
+            style="?MainTheme.ImageView.ActionIcon"
+            android:contentDescription="@string/open_in"
+            android:src="@drawable/ic_open_dark" />
+
+        <ImageView
+            android:id="@+id/action_sync"
+            style="?MainTheme.ImageView.ActionIcon"
+            android:contentDescription="@string/sync_mark"
+            android:src="@drawable/ic_sync_light" />
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/action_favorite"
+                style="?MainTheme.ImageView.ActionIcon"
+                android:contentDescription="@string/favorites_document"
+                android:src="@drawable/ic_unfavorite_dark" />
+
+            <ProgressBar
+                android:id="@+id/favorite_progress"
+                style="?android:attr/progressBarStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </FrameLayout>
+
+        <ImageView
+            android:id="@+id/action_share"
+            style="?MainTheme.ImageView.ActionIcon"
+            android:contentDescription="@string/share"
+            android:src="@drawable/ic_share" />
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/action_like"
+                style="?MainTheme.ImageView.ActionIcon"
+                android:contentDescription="@string/like"
+                android:src="@drawable/ic_unlike" />
+
+            <ProgressBar
+                android:id="@+id/like_progress"
+                style="?android:attr/progressBarStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </FrameLayout>
+    </LinearLayout>
+</LinearLayout>

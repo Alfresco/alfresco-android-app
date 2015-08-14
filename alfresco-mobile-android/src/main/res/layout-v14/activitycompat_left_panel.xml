@@ -29,7 +29,7 @@
         android:background="@drawable/ab_solid_alfrescohololight"
         android:minHeight="?attr/actionBarSize"
         app:contentInsetEnd="0dp"
-        app:contentInsetStart="0dp"
+        app:contentInsetStart="@dimen/d_16"
         app:popupTheme="@style/AlfrescoMaterialTheme.Toolbar"
         app:theme="@style/ThemeOverlay.AppCompat.ActionBar">
 

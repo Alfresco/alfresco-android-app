@@ -8,6 +8,7 @@
     <style name="AlfrescoAppcompatLight" parent="@style/_AlfrescoAppcompatLight" />
 
     <style name="_AlfrescoAppcompatLight" parent="Theme.AppCompat.Light">
+        <item name="windowActionModeOverlay">true</item>
         <item name="android:editTextBackground">@drawable/alfrescohololight_edit_text_holo_light
         </item>
         <item name="android:textColorHighlight">#9933b5e5</item>

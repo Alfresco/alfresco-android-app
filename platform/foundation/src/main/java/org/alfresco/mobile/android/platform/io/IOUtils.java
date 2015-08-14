@@ -91,6 +91,27 @@ public final class IOUtils
         }
     }
 
+    public static void deleteQuietly(File dir)
+    {
+        try
+        {
+            File[] files = dir.listFiles();
+            if (files == null) { throw new IllegalArgumentException("not a directory: " + dir); }
+            for (File file : files)
+            {
+                if (file.isDirectory())
+                {
+                    deleteContents(file);
+                }
+                if (!file.delete()) { throw new IOException("failed to delete file: " + file); }
+            }
+        }
+        catch (IOException e)
+        {
+            // DO Nothing;
+        }
+    }
+
     private static File createUniqueName(File file)
     {
         String fileNameWithoutExtension = file.getName().replaceFirst("[.][^.]+$", "");

@@ -19,7 +19,7 @@ package org.alfresco.mobile.android.ui.fragments;
 
 import java.lang.reflect.Constructor;
 
-import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
+import org.alfresco.mobile.android.ui.holder.TwoLinesViewHolder;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -43,7 +43,7 @@ public abstract class BaseCursorLoader<VH> extends CursorAdapter
     {
         super(context, c, FLAG_REGISTER_CONTENT_OBSERVER);
         this.layoutResourceId = layoutId;
-        this.vhClassName = GenericViewHolder.class.getCanonicalName();
+        this.vhClassName = TwoLinesViewHolder.class.getCanonicalName();
         this.context = context;
     }
 

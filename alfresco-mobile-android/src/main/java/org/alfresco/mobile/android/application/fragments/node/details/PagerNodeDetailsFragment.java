@@ -39,7 +39,6 @@ import org.alfresco.mobile.android.async.node.sync.SyncNodeEvent;
 import org.alfresco.mobile.android.async.node.update.UpdateContentEvent;
 import org.alfresco.mobile.android.async.node.update.UpdateNodeEvent;
 import org.alfresco.mobile.android.sync.utils.NodeSyncPlaceHolder;
-import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
@@ -82,14 +81,16 @@ public class PagerNodeDetailsFragment extends NodeDetailsFragment
     // LIFE CYCLE
     // //////////////////////////////////////////////////////////////////////
     @Override
+    public String onPrepareTitle()
+    {
+        return getString(R.string.details);
+    }
+
+    @Override
     public void onResume()
     {
         ((MainActivity) getActivity()).setCurrentNode(node);
         getActivity().invalidateOptionsMenu();
-        if (!DisplayUtils.hasCentralPane(getActivity()))
-        {
-            UIUtils.displayTitle(getActivity(), R.string.details);
-        }
         super.onResume();
     }
 
@@ -263,7 +264,7 @@ class NodeDetailsPagerAdapter extends FragmentStatePagerAdapter
             // Summary (without preview) / Comments
             numberOfFragment = 2;
         }
-        else if (DisplayUtils.hasCentralPane(activity))
+        else if (!activity.getResources().getBoolean(R.bool.fr_details_summary))
         {
             // Preview / Properties / Comments / Versions
             isTabletLayout = true;
@@ -283,7 +284,7 @@ class NodeDetailsPagerAdapter extends FragmentStatePagerAdapter
         Fragment fr = null;
         if (node instanceof NodeSyncPlaceHolder)
         {
-            if (DisplayUtils.hasCentralPane(activity.get()))
+            if (!activity.get().getResources().getBoolean(R.bool.fr_details_summary))
             {
                 fr = new NodePropertiesFragment.Builder(activity.get()).node(node).parentFolder(parentFolder)
                         .isFavorite(true).createFragment();
@@ -299,8 +300,16 @@ class NodeDetailsPagerAdapter extends FragmentStatePagerAdapter
             switch (position + 1)
             {
                 case TAB_METADATA:
-                    fr = new NodePropertiesFragment.Builder(activity.get()).node(node).parentFolder(parentFolder)
-                            .createFragment();
+                    if (activity.get().getResources().getBoolean(R.bool.fr_details_summary))
+                    {
+                        fr = new NodeSummaryFragment.Builder(activity.get()).node(node).parentFolder(parentFolder)
+                                .createFragment();
+                    }
+                    else
+                    {
+                        fr = new NodePropertiesFragment.Builder(activity.get()).node(node).parentFolder(parentFolder)
+                                .createFragment();
+                    }
                     break;
                 case TAB_COMMENTS:
                     fr = CommentsFragment.with(activity.get()).node(node).createFragment();
@@ -323,14 +332,14 @@ class NodeDetailsPagerAdapter extends FragmentStatePagerAdapter
                             .touchEnable(DisplayUtils.hasCentralPane(activity.get())).createFragment();
                     break;
                 case TAB_METADATA:
-                    if (DisplayUtils.hasCentralPane(activity.get()))
+                    if (activity.get().getResources().getBoolean(R.bool.fr_details_summary))
                     {
-                        fr = new NodePropertiesFragment.Builder(activity.get()).node(node).parentFolder(parentFolder)
+                        fr = new NodeSummaryFragment.Builder(activity.get()).node(node).parentFolder(parentFolder)
                                 .createFragment();
                     }
                     else
                     {
-                        fr = new NodeSummaryFragment.Builder(activity.get()).node(node).parentFolder(parentFolder)
+                        fr = new NodePropertiesFragment.Builder(activity.get()).node(node).parentFolder(parentFolder)
                                 .createFragment();
                     }
                     break;

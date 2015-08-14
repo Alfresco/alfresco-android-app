@@ -24,4 +24,6 @@ public interface PrivateRequestCode
 
     int SETTINGS = 911;
 
+    int RESULT_REFRESH_SESSION = 921;
+
 }
