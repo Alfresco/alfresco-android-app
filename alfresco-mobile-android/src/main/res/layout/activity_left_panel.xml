@@ -24,10 +24,10 @@
     android:visibility="visible">
 
     <LinearLayout
-        android:background="@color/primary_background"
         android:id="@+id/left_pane_body"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/primary_background"
         android:gravity="center"
         android:orientation="vertical" />
 

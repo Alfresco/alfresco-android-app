@@ -44,6 +44,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 
 import com.mattprecious.telescope.EmailDeviceInfoLens;
@@ -241,6 +242,11 @@ public abstract class AlfrescoAppCompatActivity extends AppCompatActivity
     public void setRenditionManager(RenditionManager renditionManager)
     {
         this.renditionManager = renditionManager;
+    }
+
+    public ActionBar getAppActionBar()
+    {
+        return getSupportActionBar();
     }
 
     // ////////////////////////////////////////////////////////

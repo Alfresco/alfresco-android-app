@@ -26,7 +26,7 @@ import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.site.member.CancelPendingMembershipRequest;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
-import org.alfresco.mobile.android.ui.utils.ViewHolder;
+import org.alfresco.mobile.android.ui.holder.ViewHolder;
 
 import android.support.v4.app.Fragment;
 import android.view.View;

@@ -381,6 +381,7 @@
           "field": {
             "id": "cm:latitude",
             "model-id": "cm:latitude",
+            "type": "org.alfresco.client.form.field.decimal",
             "label-id": "cm_contentmodel.property.cm_latitude.title"
           }
         },
@@ -389,6 +390,7 @@
           "field": {
             "id": "cm:longitude",
             "model-id": "cm:longitude",
+            "type": "org.alfresco.client.form.field.decimal",
             "label-id": "cm_contentmodel.property.cm_longitude.title"
           }
         }

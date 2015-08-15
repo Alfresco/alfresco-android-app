@@ -34,6 +34,7 @@ import org.alfresco.mobile.android.async.workflow.task.complete.CompleteTaskEven
 import org.alfresco.mobile.android.async.workflow.task.delegate.ReassignTaskEvent;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.utils.BundleUtils;
+import org.alfresco.mobile.android.ui.activity.AlfrescoActivity;
 import org.alfresco.mobile.android.ui.template.ListingTemplate;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 import org.alfresco.mobile.android.ui.workflow.task.TasksFoundationAdapter;
@@ -90,11 +91,11 @@ public class TasksFragment extends TasksFoundationFragment
     {
         if (getArguments().containsKey(ARGUMENT_MENU_ID))
         {
-            TasksHelper.displayNavigationMode(getActivity(), false, getArguments().getInt(ARGUMENT_MENU_ID));
+            TasksHelper.displayNavigationMode((AlfrescoActivity) getActivity(), false,
+                    getArguments().getInt(ARGUMENT_MENU_ID));
             getActionBar().setDisplayUseLogoEnabled(false);
             getActionBar().setDisplayShowTitleEnabled(false);
-            getActionBar().setDisplayShowCustomEnabled(true);
-            getActionBar().setCustomView(null);
+            getActionBar().setDisplayShowCustomEnabled(false);
         }
         else
         {
@@ -300,7 +301,7 @@ public class TasksFragment extends TasksFoundationFragment
             }
             else
             {
-                TasksHelper.displayNavigationMode(activity.get());
+                TasksHelper.displayNavigationMode((AlfrescoActivity) activity.get());
                 return null;
             }
         }

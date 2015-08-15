@@ -17,8 +17,9 @@
 -->
 <resources>
 
-    <item name="app_main" type="layout">@layout/app_main_two_panes</item>
-    <item name="app_details" type="layout">@layout/app_details_tab_tablet</item>
+    <item name="app_main" type="layout">@layout/activity_main_two_panels</item>
+    <item name="app_details" type="layout">@layout/app_pager_tab</item>
+    <item name="fr_details_summary" type="bool">true</item>
     <item name="app_import" type="layout">@layout/app_import_list</item>
     <item name="app_start_process" type="layout">@layout/app_start_process_tablet</item>
     <item name="app_task_complete" type="layout">@layout/app_task_complete_button</item>

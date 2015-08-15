@@ -63,6 +63,8 @@
     <color name="icons">#FFFFFF</color>
     <color name="divider">#B6B6B6</color>
     <color name="divider_translucent">#80ffffff</color>
+    <color name="subtitle">#54ffffff</color>
+
 
     <color name="primary_background">@color/background_material_light</color>
     <color name="secondary_background">#FFFFFF</color>

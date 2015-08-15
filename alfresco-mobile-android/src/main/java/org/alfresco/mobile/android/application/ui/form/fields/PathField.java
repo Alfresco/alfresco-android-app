@@ -42,7 +42,7 @@ public class PathField extends BaseField
 
     public View setupdReadView()
     {
-        View vr = inflater.inflate(R.layout.form_read_row, null);
+        View vr = inflater.inflate(R.layout.row_two_line_inverse, null);
         vr.setFocusable(false);
         vh = HolderUtils.configure(vr, fieldConfig.getLabel(), getHumanReadableReadValue(), -1);
         vh.bottomText.setClickable(true);

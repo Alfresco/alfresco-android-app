@@ -638,6 +638,11 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment implement
         return b;
     }
 
+    public boolean hasActionMode()
+    {
+        return nActions != null;
+    }
+
     private boolean startSelection(Node item)
     {
         if (nActions != null) { return false; }
@@ -735,9 +740,8 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment implement
         if (mode == MODE_PICK && adapter == null)
         {
             pickedNodes = fragmentPick.getNodeSelected(fieldId);
-            return new ProgressNodeAdapter(getActivity(),
-                    GridAdapterHelper.getDisplayItemLayout(getActivity(), gv, displayMode), parentFolder,
-                    new ArrayList<Node>(0), pickedNodes);
+            return new ProgressNodeAdapter(this, GridAdapterHelper.getDisplayItemLayout(getActivity(), gv, displayMode),
+                    parentFolder, new ArrayList<Node>(0), pickedNodes, mode);
         }
         else if (adapter == null) { return new ProgressNodeAdapter(this,
                 GridAdapterHelper.getDisplayItemLayout(getActivity(), gv, displayMode), parentFolder,
@@ -1240,6 +1244,10 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment implement
     {
         if (event.data == null) { return; }
         remove(event.data);
+        if (adapter.getCount() == 0)
+        {
+            setListShown(true);
+        }
     }
 
     @Subscribe
@@ -1256,9 +1264,15 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment implement
     public void onDocumentCreated(CreateDocumentEvent event)
     {
         if (event.hasException) { return; }
+        boolean hasEmptyAdapter = true;
+        hasEmptyAdapter = (adapter.getCount() == 0);
         if (parentFolder != null && parentFolder.getIdentifier().equals(event.parentFolder.getIdentifier()))
         {
             ((ProgressNodeAdapter) adapter).replaceNode(event.data);
+        }
+        if (hasEmptyAdapter)
+        {
+            displayDataView();
         }
     }
 
@@ -1267,7 +1281,13 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment implement
     {
         Node node = event.data;
         if (node == null) { return; }
+        boolean hasEmptyAdapter = true;
+        hasEmptyAdapter = (adapter.getCount() == 0);
         ((ProgressNodeAdapter) adapter).replaceNode(node);
+        if (hasEmptyAdapter)
+        {
+            displayDataView();
+        }
         if (getActivity() instanceof BaseActivity)
         {
             ((BaseActivity) getActivity()).removeWaitingDialog();
@@ -1448,8 +1468,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment implement
                     shortcut(true);
                 }
             }
-            else if (configuration != null
- && ((configuration.containsKey(NodeBrowserTemplate.ARGUMENT_LABEL)
+            else if (configuration != null && ((configuration.containsKey(NodeBrowserTemplate.ARGUMENT_LABEL)
                     && configuration.size() > 1)
                     || (!configuration.containsKey(NodeBrowserTemplate.ARGUMENT_LABEL) && configuration.size() > 0)))
             {

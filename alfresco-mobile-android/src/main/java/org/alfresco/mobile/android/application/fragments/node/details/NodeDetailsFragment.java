@@ -94,10 +94,13 @@ import org.alfresco.mobile.android.sync.utils.NodeSyncPlaceHolder;
 import org.alfresco.mobile.android.sync.utils.NodeSyncPlaceHolderFormatter;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.fragments.WaitingDialogFragment;
+import org.alfresco.mobile.android.ui.holder.HolderUtils;
+import org.alfresco.mobile.android.ui.holder.TwoLinesViewHolder;
 import org.alfresco.mobile.android.ui.rendition.RenditionManager;
 import org.alfresco.mobile.android.ui.rendition.RenditionRequest;
 import org.alfresco.mobile.android.ui.template.ViewTemplate;
 import org.alfresco.mobile.android.ui.utils.Formatter;
+import org.alfresco.mobile.android.ui.utils.UIUtils;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.enums.Action;
 
@@ -171,12 +174,6 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
     // LIFE CYCLE
     // //////////////////////////////////////////////////////////////////////
     @Override
-    public String onPrepareTitle()
-    {
-        return super.onPrepareTitle();
-    }
-
-    @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
@@ -205,6 +202,8 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
     {
         // Define the View
         setRootView(inflater.inflate(layoutId, container, false));
+
+        displayLoading();
 
         // If node not present we display nothing.
         if (node == null && nodeIdentifier == null && TextUtils.isEmpty(nodePath))
@@ -439,7 +438,6 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
             return;
         }
 
-        displayData();
         if (node instanceof Document || node instanceof Folder)
         {
             displayParts(node);
@@ -449,6 +447,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
             displayPartsOffline((NodeSyncPlaceHolder) node);
         }
         getActivity().invalidateOptionsMenu();
+        displayData();
     }
 
     protected void displayParts(Node refreshedNode)
@@ -469,7 +468,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
 
         // Display all parts
         displayTabs();
-        if (DisplayUtils.hasCentralPane(getActivity()))
+        if (!getResources().getBoolean(R.bool.fr_details_summary))
         {
             displayHeader();
             displayToolsBar();
@@ -478,26 +477,40 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
 
     protected void displayHeader()
     {
-        TextView tv = (TextView) viewById(R.id.title);
-        tv.setText(node.getName());
-        tv = (TextView) viewById(R.id.details);
-        if (node instanceof Document)
+        String topText = node.getName();
+        String bottomText = null;
+        if (node.isDocument())
         {
-            tv.setText(Formatter.createContentBottomText(getActivity(), node, true));
+            bottomText = Formatter.createContentBottomText(getActivity(), node, true);
+        }
+        else if (node.isFolder())
+        {
+            bottomText = UIUtils.getParentDirPath((String) node.getPropertyValue(PropertyIds.PATH));
         }
         else if (node instanceof NodeSyncPlaceHolder)
         {
-            tv.setText(NodeSyncPlaceHolderFormatter.createContentBottomText(getActivity(), (NodeSyncPlaceHolder) node,
-                    true));
+            bottomText = NodeSyncPlaceHolderFormatter.createContentBottomText(getActivity(), (NodeSyncPlaceHolder) node,
+                    true);
         }
+
+        View v = viewById(R.id.details_header);
+        TwoLinesViewHolder vh = HolderUtils.configure(v, topText, bottomText, -1);
+        vh.topText.setId(UIUtils.generateViewId());
+        vh.bottomText.setId(UIUtils.generateViewId());
 
         if (isRestrictable)
         {
-            tv.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_encrypt, 0);
+            vh.bottomText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_encrypt, 0);
         }
 
-        // Thumbnail
-        displayRendition(node, R.drawable.mime_folder, (ImageView) viewById(R.id.icon), false);
+        if (node.isFolder())
+        {
+            vh.bottomText.setEllipsize(TextUtils.TruncateAt.START);
+        }
+
+        // Thumbnail only for tablet
+        displayRendition(node, R.drawable.mime_folder, vh.icon, false);
+        vh.icon.setVisibility(View.VISIBLE);
     }
 
     protected void displayToolsBar()
@@ -598,7 +611,10 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         }
         else if (SyncContentManager.getInstance(getActivity()).hasActivateSync(getAccount()))
         {
-            isSynced = SyncContentManager.getInstance(getActivity()).isSynced(getAccount(), node);
+            isSynced = (node.isFolder())
+                    ? SyncContentManager.getInstance(getActivity()).isRootSynced(getAccount(), node)
+                    : SyncContentManager.getInstance(getActivity()).isSynced(getAccount(), node);
+
             if (isSynced && !isRootSynced(b))
             {
                 b.setVisibility(View.GONE);
@@ -616,7 +632,9 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
                     @Override
                     public void onClick(View v)
                     {
-                        isSynced = SyncContentManager.getInstance(getActivity()).isSynced(getAccount(), node);
+                        isSynced = (node.isFolder())
+                                ? SyncContentManager.getInstance(getActivity()).isRootSynced(getAccount(), node)
+                                : SyncContentManager.getInstance(getActivity()).isSynced(getAccount(), node);
                         sync(v);
                     }
                 });
@@ -665,6 +683,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
     protected void displayData()
     {
         hide(R.id.empty);
+        hide(R.id.progressbar_group);
         hide(R.id.progressbar);
         show(R.id.properties_details);
     }
@@ -672,12 +691,14 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
     protected void displayEmptyView()
     {
         show(R.id.empty);
+        hide(R.id.progressbar_group);
         hide(R.id.progressbar);
         hide(R.id.properties_details);
     }
 
     protected void displayLoading()
     {
+        show(R.id.progressbar_group);
         show(R.id.progressbar);
         hide(R.id.properties_details);
         hide(R.id.empty);
@@ -1092,7 +1113,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         {
             mi = menu.add(Menu.NONE, R.id.menu_action_delete, Menu.FIRST + 1000, R.string.delete);
             mi.setIcon(R.drawable.ic_delete);
-            mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+            mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
         }
     }
 

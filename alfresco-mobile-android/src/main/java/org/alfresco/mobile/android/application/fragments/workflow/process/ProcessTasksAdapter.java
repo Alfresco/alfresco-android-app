@@ -26,8 +26,8 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.user.UserProfileFragment;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
+import org.alfresco.mobile.android.ui.holder.ViewHolder;
 import org.alfresco.mobile.android.ui.rendition.RenditionManager;
-import org.alfresco.mobile.android.ui.utils.ViewHolder;
 
 import android.support.v4.app.FragmentActivity;
 import android.text.Html;

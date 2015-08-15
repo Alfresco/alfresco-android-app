@@ -35,7 +35,6 @@
     <attr name="MainTheme.TextView.Primary.Task" format="reference" />
     <attr name="MainTheme.TextView.Secondary" format="reference" />
     <attr name="MainTheme.TextView.SecondaryBold" format="reference" />
-    <attr name="MainTheme.TextView.MenuItem" format="reference" />
     <attr name="MainTheme.TextView.ListItem" format="reference" />
     <attr name="MainTheme.TextView.ListItem.Primary" format="reference" />
     <attr name="MainTheme.TextView.ListItem.Secondary" format="reference" />

@@ -77,7 +77,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -206,7 +206,7 @@ public class MainMenuFragment extends AlfrescoFragment implements AdapterView.On
             FragmentDisplayer.clearCentralPane(getActivity());
         }
 
-        UIUtils.displayTitle(R.string.app_name, (ActionBarActivity) getActivity(), !TAG.equals(getTag()));
+        UIUtils.displayTitle(R.string.app_name, (AppCompatActivity) getActivity(), !TAG.equals(getTag()));
         EventBusManager.getInstance().register(this);
     }
 
@@ -694,7 +694,7 @@ public class MainMenuFragment extends AlfrescoFragment implements AdapterView.On
         }
     }
 
-    public static void displayPreferences(BaseActivity context, Long accountId)
+    public static void displayPreferences(FragmentActivity context, Long accountId)
     {
         if (DisplayUtils.hasCentralPane(context))
         {

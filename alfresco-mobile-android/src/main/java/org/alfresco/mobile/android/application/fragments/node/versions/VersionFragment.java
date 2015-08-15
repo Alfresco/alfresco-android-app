@@ -22,6 +22,7 @@ import java.util.Map;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
+import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsFragment;
 import org.alfresco.mobile.android.async.node.version.DocumentVersionsEvent;
@@ -30,7 +31,9 @@ import org.alfresco.mobile.android.ui.node.version.VersionsNodeFragment;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.GridView;
 
 import com.squareup.otto.Subscribe;
@@ -65,6 +68,14 @@ public class VersionFragment extends VersionsNodeFragment
     {
         super.onRetrieveParameters(bundle);
         parentFolder = bundle.getParcelable(ARGUMENT_FOLDER);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
+        View v = super.onCreateView(inflater, container, savedInstanceState);
+        v.setBackgroundColor(getResources().getColor(R.color.secondary_background));
+        return v;
     }
 
     // ///////////////////////////////////////////////////////////////////////////

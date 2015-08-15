@@ -45,17 +45,17 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 
 import com.mattprecious.telescope.EmailDeviceInfoLens;
 import com.mattprecious.telescope.TelescopeLayout;
 
 /**
  * Base class for all activities.
- * 
+ *
  * @author Jean Marie Pascal
  */
-public abstract class AlfrescoActivity extends ActionBarActivity
+public abstract class AlfrescoActivity extends AppCompatActivity
 {
     protected LocalBroadcastManager broadcastManager;
 
@@ -284,7 +284,7 @@ public abstract class AlfrescoActivity extends ActionBarActivity
     /**
      * Register a broadcast receiver to this specific activity. If used this
      * methods is responsible to unregister the receiver during on stop().
-     * 
+     *
      * @param receiver
      * @param filter
      */
@@ -310,7 +310,7 @@ public abstract class AlfrescoActivity extends ActionBarActivity
      * Utility BroadcastReceiver for displaying dialog after an error or to
      * display custom message. Use ACTION_DISPLAY_DIALOG or ACTION_DISPLAY_ERROR
      * Action inside an Intent and send it with localBroadcastManager instance.
-     * 
+     *
      * @author Jean Marie Pascal
      */
     private class UtilsReceiver extends BroadcastReceiver

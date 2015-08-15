@@ -29,6 +29,7 @@ import org.alfresco.mobile.android.application.fragments.MenuFragmentHelper;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.fileexplorer.FileActions.onFinishModeListerner;
 import org.alfresco.mobile.android.ui.ListingModeFragment;
+import org.alfresco.mobile.android.ui.activity.AlfrescoActivity;
 import org.alfresco.mobile.android.ui.fragments.BaseCursorGridFragment;
 
 import android.content.Intent;
@@ -94,8 +95,8 @@ public class LibraryFragment extends BaseCursorGridFragment
         if (isShortCut)
         {
             getActionBar().show();
-            FileExplorerHelper.displayNavigationMode(getActivity(), getMode(), false, menuId);
-            getActionBar().setDisplayShowTitleEnabled(false);
+            FileExplorerHelper.displayNavigationMode((AlfrescoActivity) getActivity(), getMode(), false, menuId);
+            getActionBar().setDisplayShowTitleEnabled(true);
         }
         else
         {

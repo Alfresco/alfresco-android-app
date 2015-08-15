@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.activity.MainActivity;
+import org.alfresco.mobile.android.application.activity.PrivateDialogActivity;
 import org.alfresco.mobile.android.application.activity.WelcomeActivity;
 import org.alfresco.mobile.android.application.fragments.about.AboutFragment;
 import org.alfresco.mobile.android.application.fragments.account.AccountsAdapter;
@@ -29,11 +31,14 @@ import org.alfresco.mobile.android.application.fragments.builder.LeafFragmentBui
 import org.alfresco.mobile.android.application.fragments.signin.AccountSignInFragment;
 import org.alfresco.mobile.android.application.managers.ActionUtils;
 import org.alfresco.mobile.android.application.security.DataProtectionUserDialogFragment;
+import org.alfresco.mobile.android.async.session.RequestSessionEvent;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
+import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.SessionManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.extensions.DevToolsManager;
+import org.alfresco.mobile.android.platform.intent.PrivateRequestCode;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.mdm.MDMManager;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
@@ -217,7 +222,26 @@ public class GeneralPreferences extends AlfrescoFragment
             if (SessionManager.getInstance(getActivity()).getSession(account.getId()) != null)
             {
                 vh.choose.setVisibility(View.VISIBLE);
+                vh.choose.setTag(account);
                 vh.choose.setImageResource(R.drawable.ic_validate);
+                vh.choose.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        AlfrescoAccount acc = (AlfrescoAccount) v.getTag();
+                        SessionManager.getInstance(getActivity()).saveAccount(acc);
+                        if (getActivity() instanceof PrivateDialogActivity)
+                        {
+                            getActivity().setResult(PrivateRequestCode.RESULT_REFRESH_SESSION);
+                            getActivity().finish();
+                        }
+                        else if (getActivity() instanceof MainActivity)
+                        {
+                            EventBusManager.getInstance().post(new RequestSessionEvent(acc, true));
+                        }
+                    }
+                });
             }
 
             accountView.setOnClickListener(new View.OnClickListener()

@@ -415,6 +415,8 @@ public abstract class CommonGridFragment extends AlfrescoFragment
         {
             gv.setAdapter(null);
         }
+        prepareEmptyView(ev, (ImageView) ev.findViewById(R.id.empty_picture),
+                (TextView) ev.findViewById(R.id.empty_text), (TextView) ev.findViewById(R.id.empty_text_description));
     }
 
     protected void displayDataView()

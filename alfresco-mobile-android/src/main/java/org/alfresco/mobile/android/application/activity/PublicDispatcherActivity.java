@@ -42,6 +42,7 @@ import org.alfresco.mobile.android.ui.ListingModeFragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -75,7 +76,15 @@ public class PublicDispatcherActivity extends BaseActivity
     {
         super.onCreate(savedInstanceState);
         displayAsDialogActivity();
-        setContentView(R.layout.app_left_panel);
+        setContentView(R.layout.activitycompat_left_panel);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        if (toolbar != null)
+        {
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
+        }
 
         String action = getIntent().getAction();
         if ((Intent.ACTION_SEND.equals(action) || Intent.ACTION_SEND_MULTIPLE.equals(action))

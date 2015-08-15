@@ -35,6 +35,7 @@ import org.alfresco.mobile.android.async.workflow.process.start.StartProcessEven
 import org.alfresco.mobile.android.async.workflow.task.complete.CompleteTaskEvent;
 import org.alfresco.mobile.android.async.workflow.task.delegate.ReassignTaskEvent;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
+import org.alfresco.mobile.android.ui.activity.AlfrescoActivity;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 import org.alfresco.mobile.android.ui.workflow.process.ProcessesFoundationFragment;
 
@@ -89,7 +90,8 @@ public class ProcessesFragment extends ProcessesFoundationFragment
     {
         if (getArguments().containsKey(ARGUMENT_MENUID))
         {
-            TasksHelper.displayNavigationMode(getActivity(), false, getArguments().getInt(ARGUMENT_MENUID));
+            TasksHelper.displayNavigationMode((AlfrescoActivity) getActivity(), false,
+                    getArguments().getInt(ARGUMENT_MENUID));
            getActionBar().setDisplayShowTitleEnabled(false);
            getActionBar().setDisplayShowCustomEnabled(true);
            getActionBar().setCustomView(null);

@@ -81,7 +81,7 @@ public class NodeAdapter extends BaseListAdapter<Node, TwoLinesProgressViewHolde
 
     private BaseGridFragment gridFragment;
 
-    private Map<String, Node> selectedMapItems;
+    protected Map<String, Node> selectedMapItems;
 
     protected WeakReference<FragmentActivity> activityRef;
 
@@ -103,6 +103,7 @@ public class NodeAdapter extends BaseListAdapter<Node, TwoLinesProgressViewHolde
     public NodeAdapter(Fragment fr, int textViewResourceId, List<Node> listItems, List<Node> selectedItems, int mode)
     {
         super(fr.getActivity(), textViewResourceId, listItems);
+        this.fragmentRef = new WeakReference<>(fr);
         originalNodes = Collections.synchronizedList(listItems);
         this.selectedItems = selectedItems;
         this.renditionManager = RenditionManagerImpl.getInstance(fr.getActivity());
@@ -124,19 +125,6 @@ public class NodeAdapter extends BaseListAdapter<Node, TwoLinesProgressViewHolde
         this.vhClassName = TwoLinesProgressViewHolder.class.getCanonicalName();
         this.activityRef = new WeakReference<>(activity);
         this.fromFavorites = true;
-    }
-
-    public NodeAdapter(BaseGridFragment fr, int textViewResourceId, List<Node> listItems, List<Node> selectedItems,
-            int mode)
-    {
-        super(fr.getActivity(), textViewResourceId, listItems);
-        originalNodes = Collections.synchronizedList(listItems);
-        this.selectedItems = selectedItems;
-        this.renditionManager = RenditionManagerImpl.getInstance(fr.getActivity());
-        this.mode = mode;
-        this.vhClassName = TwoLinesProgressViewHolder.class.getCanonicalName();
-        this.activityRef = new WeakReference<>(fr.getActivity());
-        this.gridFragment = fr;
     }
 
     public NodeAdapter(Fragment fr, int textViewResourceId, List<Node> listItems, boolean isEditable)

@@ -19,7 +19,6 @@
 package org.alfresco.mobile.android.ui.holder;
 
 import org.alfresco.mobile.android.foundation.R;
-import org.alfresco.mobile.android.ui.utils.ViewHolder;
 
 import android.view.View;
 import android.widget.ImageView;

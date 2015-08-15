@@ -21,8 +21,8 @@ import java.lang.reflect.Constructor;
 import java.util.Date;
 import java.util.List;
 
+import org.alfresco.mobile.android.ui.holder.TwoLinesViewHolder;
 import org.alfresco.mobile.android.ui.utils.Formatter;
-import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -76,7 +76,7 @@ public abstract class BaseListAdapter<T, VH> extends ArrayAdapter<T>
     {
         super(context, textViewResourceId, objects);
         this.textViewResourceId = textViewResourceId;
-        this.vhClassName = GenericViewHolder.class.getCanonicalName();
+        this.vhClassName = TwoLinesViewHolder.class.getCanonicalName();
     }
 
     @Override

@@ -24,14 +24,13 @@ import org.alfresco.mobile.android.application.activity.PublicDispatcherActivity
 import org.alfresco.mobile.android.application.intent.RequestCode;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
+import org.alfresco.mobile.android.ui.activity.AlfrescoActivity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 
 public final class FileExplorerHelper
 {
@@ -44,10 +43,10 @@ public final class FileExplorerHelper
 
     private static final String FILEEXPLORER_DEFAULT = "org.alfresco.mobile.android.fileexplorer.preferences.default";
 
-    public static void displayNavigationMode(final FragmentActivity activity, final int mode, final boolean backStack,
+    public static void displayNavigationMode(final AlfrescoActivity activity, final int mode, final boolean backStack,
             int menuId)
     {
-        ActionBar bar = ((ActionBarActivity) activity).getSupportActionBar();
+        ActionBar bar = activity.getAppActionBar();
         bar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 
         ShortCutFolderMenuAdapter adapter = new ShortCutFolderMenuAdapter(activity);

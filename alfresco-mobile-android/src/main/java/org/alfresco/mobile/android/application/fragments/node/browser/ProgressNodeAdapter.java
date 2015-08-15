@@ -17,6 +17,7 @@
  */
 package org.alfresco.mobile.android.application.fragments.node.browser;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -119,16 +120,17 @@ public class ProgressNodeAdapter extends NodeAdapter
         super(context, textViewResourceId, listItems);
     }
 
-    public ProgressNodeAdapter(FragmentActivity activity, int textViewResourceId, Node parentNode, List<Node> listItems,
-            Map<String, Node> selectedItems)
+    public ProgressNodeAdapter(Fragment fr, int textViewResourceId, Node parentNode, List<Node> listItems,
+            Map<String, Node> selectedItems, int mode)
     {
-        super(activity, textViewResourceId, listItems, selectedItems);
+        super(fr.getActivity(), textViewResourceId, listItems, selectedItems);
+        fragmentRef = new WeakReference<>(fr);
         vhClassName = TwoLinesProgressViewHolder.class.getCanonicalName();
         this.parentNode = parentNode;
         if (parentNode != null)
         {
-            activity.getSupportLoaderManager().restartLoader(LOADER_OPERATION_ID, null, this);
-            activity.getSupportLoaderManager().restartLoader(LOADER_SYNC_ID, null, this);
+            getActivity().getSupportLoaderManager().restartLoader(LOADER_OPERATION_ID, null, this);
+            getActivity().getSupportLoaderManager().restartLoader(LOADER_SYNC_ID, null, this);
             getActivity().getSupportLoaderManager().restartLoader(LOADER_FAVORITE_ID, null, this);
             hasParentFavorite();
         }
@@ -322,13 +324,19 @@ public class ProgressNodeAdapter extends NodeAdapter
             super.updateIcon(vh, item);
         }
 
-        if (selectedItems.contains(item))
+        if (selectedItems.contains(item)
+                || (selectedMapItems != null && selectedMapItems.containsKey(item.getIdentifier())))
         {
-            vh.choose.setVisibility(View.VISIBLE);
-            vh.choose.setImageResource(R.drawable.ic_done_single_white);
-            int d_16 = DisplayUtils.getPixels(getContext(), R.dimen.d_16);
-            vh.choose.setPadding(d_16, d_16, d_16, d_16);
-            UIUtils.setBackground(vh.choose, null);
+            if (getFragment() != null && getFragment() instanceof DocumentFolderBrowserFragment
+                    && ((DocumentFolderBrowserFragment) getFragment()).hasActionMode())
+            {
+                vh.choose.setVisibility(View.VISIBLE);
+                vh.choose.setImageResource(R.drawable.ic_done_single_white);
+                int d_16 = DisplayUtils.getPixels(getContext(), R.dimen.d_16);
+                vh.choose.setPadding(d_16, d_16, d_16, d_16);
+                UIUtils.setBackground(vh.choose, null);
+                vh.choose.setOnClickListener(null);
+            }
         }
         else if (item.isFolder())
         {

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/background_light"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:visibility="visible">
+
+    <com.nirhart.parallaxscroll.views.ParallaxScrollView
+        android:id="@+id/properties_details"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:parallax_factor="1.9"
+        tools:context=".MainActivity">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/preview_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/primary_background"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <it.sephiroth.android.library.imagezoom.ImageViewTouch
+                    android:id="@+id/preview"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dip"
+                    android:layout_gravity="center"
+                    android:layout_margin="4dip"
+                    android:contentDescription="@string/preview"
+                    android:gravity="center"
+                    android:scaleType="fitCenter" />
+
+                <TextView
+                    android:id="@+id/preview_message"
+                    style="?MainTheme.TextView.ListItem.Secondary"
+                    android:gravity="center"
+                    android:text="@string/preview_unavailable"
+                    android:visibility="invisible" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/background_light"
+                android:orientation="vertical">
+
+                <include
+                    layout="@layout/fr_node_details_header"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <include
+                    layout="@layout/fr_node_properties"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </LinearLayout>
+        </LinearLayout>
+    </com.nirhart.parallaxscroll.views.ParallaxScrollView>
+
+    <include
+        layout="@layout/app_progress_emtpy"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</FrameLayout>

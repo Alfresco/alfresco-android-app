@@ -53,7 +53,7 @@ public class NodeSummaryFragment extends NodePropertiesFragment
     // //////////////////////////////////////////////////////////////////////
     public NodeSummaryFragment()
     {
-        layoutId = R.layout.app_details_summary;
+        layoutId = R.layout.fr_node_summary;
     }
 
     protected static NodeSummaryFragment newInstanceByTemplate(Bundle b)
@@ -73,14 +73,27 @@ public class NodeSummaryFragment extends NodePropertiesFragment
         isRestrictable = node.hasAspect(ContentModel.ASPECT_RESTRICTABLE);
         renditionManager = RenditionManagerImpl.getInstance(getActivity());
 
-        displayData();
-        if (!DisplayUtils.hasCentralPane(getActivity()))
+        if (!DisplayUtils.hasCentralPane(getActivity()) || node.isDocument())
+        {
+            displayHeader();
+        }
+        else
+        {
+            hide(R.id.details_header);
+        }
+
+        if (node.isDocument())
         {
             displayPreview();
-            displayHeader();
-            displayToolsBar();
         }
+        else
+        {
+            hide(R.id.preview_group);
+        }
+
+        displayToolsBar();
         displayProperties();
+        displayData();
     }
 
     // ///////////////////////////////////////////////////////////////////////////

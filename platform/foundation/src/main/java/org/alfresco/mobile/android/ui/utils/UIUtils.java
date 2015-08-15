@@ -17,6 +17,7 @@
  */
 package org.alfresco.mobile.android.ui.utils;
 
+import java.io.File;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -35,7 +36,7 @@ import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -109,7 +110,7 @@ public class UIUtils
         return matcher.matches();
     }
 
-    public static void displayTitle(int titleId, ActionBarActivity activity)
+    public static void displayTitle(int titleId, AppCompatActivity activity)
     {
         displayTitle(activity, activity.getString(titleId));
         ActionBar bar = activity.getSupportActionBar();
@@ -117,7 +118,7 @@ public class UIUtils
         bar.setLogo(R.drawable.ic_application_logo);
     }
 
-    public static void displayTitle(int titleId, ActionBarActivity activity, boolean isUpEnable)
+    public static void displayTitle(int titleId, AppCompatActivity activity, boolean isUpEnable)
     {
         displayTitle(activity, activity.getString(titleId), isUpEnable);
         ActionBar bar = activity.getSupportActionBar();
@@ -142,9 +143,9 @@ public class UIUtils
 
     public static void displayTitle(FragmentActivity activity, String title, boolean isUpEnable)
     {
-        if (activity instanceof ActionBarActivity)
+        if (activity instanceof AppCompatActivity)
         {
-            ActionBar bar = ((ActionBarActivity) activity).getSupportActionBar();
+            ActionBar bar = ((AppCompatActivity) activity).getSupportActionBar();
 
             bar.setDisplayShowTitleEnabled(false);
             bar.setDisplayShowCustomEnabled(true);
@@ -284,5 +285,12 @@ public class UIUtils
     {
         InputMethodManager mgr = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
         mgr.hideSoftInputFromWindow(v.getWindowToken(), 0);
+    }
+
+    public static String getParentDirPath(String fileOrDirPath)
+    {
+        boolean endsWithSlash = fileOrDirPath.endsWith(File.separator);
+        return fileOrDirPath.substring(0, fileOrDirPath.lastIndexOf(File.separatorChar,
+                endsWithSlash ? fileOrDirPath.length() - 2 : fileOrDirPath.length() - 1));
     }
 }

@@ -22,17 +22,17 @@ import java.util.List;
 import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.foundation.R;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
-import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
+import org.alfresco.mobile.android.ui.holder.TwoLinesViewHolder;
 
 import android.support.v4.app.Fragment;
 import android.view.View;
 
 /**
  * Responsible to display the list of Site;
- * 
+ *
  * @author Jean Marie Pascal
  */
-public class SitesPendingMembershipFoundationAdapter extends BaseListAdapter<Site, GenericViewHolder>
+public class SitesPendingMembershipFoundationAdapter extends BaseListAdapter<Site, TwoLinesViewHolder>
 {
     public SitesPendingMembershipFoundationAdapter(Fragment fr, int textViewResourceId, List<Site> objects)
     {
@@ -40,19 +40,19 @@ public class SitesPendingMembershipFoundationAdapter extends BaseListAdapter<Sit
     }
 
     @Override
-    protected void updateTopText(GenericViewHolder vh, Site item)
+    protected void updateTopText(TwoLinesViewHolder vh, Site item)
     {
         vh.topText.setText(item.getShortName());
     }
 
     @Override
-    protected void updateIcon(GenericViewHolder vh, Site item)
+    protected void updateIcon(TwoLinesViewHolder vh, Site item)
     {
         vh.icon.setImageDrawable(getContext().getResources().getDrawable(R.drawable.ic_site_light));
     }
 
     @Override
-    protected void updateBottomText(GenericViewHolder vh, Site item)
+    protected void updateBottomText(TwoLinesViewHolder vh, Site item)
     {
         vh.bottomText.setVisibility(View.GONE);
     }

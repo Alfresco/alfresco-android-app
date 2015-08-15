@@ -97,13 +97,13 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.squareup.otto.Subscribe;
@@ -161,13 +161,22 @@ public class MainActivity extends BaseActivity
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
-        supportRequestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+        // supportRequestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         super.onCreate(savedInstanceState);
 
         // Loading progress
         setContentView(R.layout.app_main);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        if (toolbar != null)
+        {
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
+        }
+
         mdmManager = MDMManager.getInstance(this);
 
         if (capture != null) capture.setActivity(this);
@@ -333,9 +342,17 @@ public class MainActivity extends BaseActivity
 
         if (requestCode == RequestCode.SETTINGS)
         {
-            // Refresh Accounts
-            ((MainMenuFragment) getFragment(MainMenuFragment.TAG)).refreshAccount();
-            ((MainMenuFragment) getFragment(MainMenuFragment.SLIDING_TAG)).refreshAccount();
+            if (resultCode == RequestCode.RESULT_REFRESH_SESSION)
+            {
+                // Refresh Accounts
+                EventBusManager.getInstance().post(new RequestSessionEvent(getCurrentAccount(), true));
+            }
+            else
+            {
+                // Refresh Accounts
+                ((MainMenuFragment) getFragment(MainMenuFragment.TAG)).refreshAccount();
+                ((MainMenuFragment) getFragment(MainMenuFragment.SLIDING_TAG)).refreshAccount();
+            }
         }
     }
 

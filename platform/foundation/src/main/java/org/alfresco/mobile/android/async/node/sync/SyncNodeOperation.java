@@ -83,7 +83,14 @@ public class SyncNodeOperation extends NodeOperation<Boolean>
             else
             {
                 nodeIdentifier = node.getIdentifier();
-                isSynced = SyncContentManager.getInstance(context).isSynced(acc, nodeIdentifier);
+                if (node.isFolder())
+                {
+                    isSynced = SyncContentManager.getInstance(context).isRootSynced(acc, nodeIdentifier);
+                }
+                else
+                {
+                    isSynced = SyncContentManager.getInstance(context).isSynced(acc, nodeIdentifier);
+                }
                 hasSyncParent = false;
 
                 // Retrieve local sync info.

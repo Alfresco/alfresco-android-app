@@ -22,13 +22,13 @@ import java.util.List;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
-import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
+import org.alfresco.mobile.android.ui.holder.TwoLinesViewHolder;
 
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class ShortCutFolderMenuAdapter extends BaseListAdapter<Integer, GenericViewHolder>
+public class ShortCutFolderMenuAdapter extends BaseListAdapter<Integer, TwoLinesViewHolder>
 {
     public ShortCutFolderMenuAdapter(FragmentActivity context)
     {
@@ -36,17 +36,17 @@ public class ShortCutFolderMenuAdapter extends BaseListAdapter<Integer, GenericV
     }
 
     @Override
-    protected void updateTopText(GenericViewHolder vh, Integer item)
+    protected void updateTopText(TwoLinesViewHolder vh, Integer item)
     {
     }
 
     @Override
-    protected void updateBottomText(GenericViewHolder vh, Integer item)
+    protected void updateBottomText(TwoLinesViewHolder vh, Integer item)
     {
     }
 
     @Override
-    protected void updateIcon(GenericViewHolder vh, Integer item)
+    protected void updateIcon(TwoLinesViewHolder vh, Integer item)
     {
         int iconId = -1;
         ((View) vh.icon.getParent()).setClickable(false);

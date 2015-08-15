@@ -19,12 +19,13 @@
             <include
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                layout="@layout/app_left_panel" />
+                layout="@layout/activitycompat_left_panel" />
         </com.mattprecious.telescope.TelescopeLayout>
     </FrameLayout>
 
     <!-- Sliding Drawer -->
     <include
+        android:fitsSystemWindows="true"
         android:id="@+id/left_drawer"
         android:layout_width="@dimen/sliding_panel"
         android:layout_height="match_parent"

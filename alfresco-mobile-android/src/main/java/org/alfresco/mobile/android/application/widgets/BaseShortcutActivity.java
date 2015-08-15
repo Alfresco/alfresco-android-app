@@ -58,7 +58,7 @@ public class BaseShortcutActivity extends BaseActivity
     {
         super.onCreate(savedInstanceState);
         displayAsDialogActivity();
-        setContentView(R.layout.app_left_panel);
+        setContentView(R.layout.activitycompat_left_panel);
 
         DocumentFolderPickerFragment.with(this).display();
     }
