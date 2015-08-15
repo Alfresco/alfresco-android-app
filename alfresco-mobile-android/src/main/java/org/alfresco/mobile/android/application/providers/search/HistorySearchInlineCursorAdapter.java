@@ -44,6 +44,7 @@ public class HistorySearchInlineCursorAdapter extends BaseCursorLoader<TwoLinesV
     protected void updateTopText(TwoLinesViewHolder vh, Cursor cursor)
     {
         // ((View)vh.icon.getParent()).setTag(cursor.getLong(HistorySearchSchema.COLUMN_ID_ID));
+        if (cursor.isClosed()) { return; }
         vh.topText.setText(cursor.getString(HistorySearchSchema.COLUMN_DESCRIPTION_ID));
         HolderUtils.makeMultiLine(vh.topText, 2);
     }
@@ -56,6 +57,7 @@ public class HistorySearchInlineCursorAdapter extends BaseCursorLoader<TwoLinesV
     @Override
     protected void updateIcon(TwoLinesViewHolder vh, Cursor cursor)
     {
+        if (cursor.isClosed()) { return; }
         vh.icon.setImageResource(R.drawable.ic_clock);
         vh.choose.setImageResource(R.drawable.ic_item_up);
         vh.choose.setVisibility(View.VISIBLE);
