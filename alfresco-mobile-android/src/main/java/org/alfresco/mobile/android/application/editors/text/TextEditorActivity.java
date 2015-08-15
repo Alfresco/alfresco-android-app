@@ -44,6 +44,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
@@ -105,6 +106,15 @@ public class TextEditorActivity extends BaseActivity
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.app_text_editor);
+
+        // TOOLBAR
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        if (toolbar != null)
+        {
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
+        }
 
         setSupportProgressBarIndeterminateVisibility(true);
 

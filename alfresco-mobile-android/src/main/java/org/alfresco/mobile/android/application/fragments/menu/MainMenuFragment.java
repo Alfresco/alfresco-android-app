@@ -177,6 +177,7 @@ public class MainMenuFragment extends AlfrescoFragment implements AdapterView.On
             public void onClick(View v)
             {
                 displayPreferences((BaseActivity) getActivity(), getAccount().getId());
+                hideSlidingMenu(false);
             }
         });
 

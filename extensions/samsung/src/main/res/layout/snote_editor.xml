@@ -9,9 +9,31 @@
 	the specific language governing permissions and limitations under the License.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ab_solid_alfrescohololight"
+        android:minHeight="?attr/actionBarSize"
+        app:contentInsetEnd="0dp"
+        app:contentInsetStart="@dimen/d_16"
+        app:popupTheme="@style/AlfrescoMaterialTheme.Toolbar"
+        app:theme="@style/ThemeOverlay.AppCompat.ActionBar">
+
+        <ProgressBar
+            android:id="@+id/progress_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:indeterminate="true"
+            android:visibility="gone" />
+
+    </android.support.v7.widget.Toolbar>
 
     <FrameLayout
         android:id="@+id/spenViewContainer"
@@ -21,7 +43,7 @@
         <RelativeLayout
             android:id="@+id/spenViewLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"></RelativeLayout>
+            android:layout_height="match_parent" />
 
         <TextView
             android:id="@+id/spen_page"
