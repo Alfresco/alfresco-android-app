@@ -123,7 +123,7 @@ public class ActivityStreamAdapter extends BaseListAdapter<ActivityEntry, TwoLin
             tmp = getData(item, CloudConstant.MEMEBERUSERNAME_VALUE);
             if (tmp.isEmpty())
             {
-                tmp = null;
+                tmp = getData(item, CloudConstant.MEMEBERPERSONID_VALUE);
             }
             RenditionManager.with(activityRef.get()).loadAvatar(tmp).placeHolder(R.drawable.ic_person_light).into(vh.icon);
         }
@@ -132,13 +132,14 @@ public class ActivityStreamAdapter extends BaseListAdapter<ActivityEntry, TwoLin
             tmp = getData(item, CloudConstant.FOLLOWERUSERNAME_VALUE);
             if (tmp.isEmpty())
             {
-                tmp = null;
+                tmp = item.getCreatedBy();
             }
             RenditionManager.with(activityRef.get()).loadAvatar(tmp).placeHolder(R.drawable.ic_person_light).into(vh.icon);
         }
         else
         {
-            RenditionManager.with(activityRef.get()).loadAvatar(tmp).placeHolder(R.drawable.ic_person_light).into(vh.icon);
+            RenditionManager.with(activityRef.get()).loadAvatar(item.getCreatedBy())
+                    .placeHolder(R.drawable.ic_person_light).into(vh.icon);
         }
     }
 
