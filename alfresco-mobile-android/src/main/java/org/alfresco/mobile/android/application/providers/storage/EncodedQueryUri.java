@@ -35,7 +35,9 @@ public class EncodedQueryUri
 
     private static final String ARGUMENT_ACCOUNT = "acc";
 
-    private static final String ARGUMENT_ID = "type";
+    private static final String ARGUMENT_ID = "id";
+
+    private static final String ARGUMENT_CURSOR_ID = "cid";
 
     // //////////////////////////////////////////////////////////////////////
     // MEMBERS
@@ -46,14 +48,25 @@ public class EncodedQueryUri
 
     String id;
 
+    Long cid;
+
     // //////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // //////////////////////////////////////////////////////////////////////
+    public EncodedQueryUri(int type, long account, String value, Long cursorId)
+    {
+        this.type = type;
+        this.accountId = account;
+        this.id = value;
+        this.cid = cursorId;
+    }
+
     public EncodedQueryUri(int type, long account, String value)
     {
         this.type = type;
         this.accountId = account;
         this.id = value;
+        this.cid = null;
     }
 
     public EncodedQueryUri(String encodedRow)
@@ -87,14 +100,18 @@ public class EncodedQueryUri
         {
             id = params.get(ARGUMENT_ID);
         }
+        if (params.containsKey(ARGUMENT_CURSOR_ID))
+        {
+            cid = (params.get(ARGUMENT_CURSOR_ID) != null) ? Long.parseLong(params.get(ARGUMENT_CURSOR_ID)) : null;
+        }
     }
 
     // //////////////////////////////////////////////////////////////////////
     // STATIC
     // //////////////////////////////////////////////////////////////////////
-    public static String encodeItem(Integer prefix, Long accountId, String id)
+    public static String encodeItem(Integer prefix, Long accountId, String id, Long cid)
     {
-        // t=xxx;acc=xxx;type=xxx
+        // t=xxx;acc=xxx;id=xxx;cid=xxx
         StringBuilder encodedItem = new StringBuilder();
         if (prefix != null && prefix > 0)
         {
@@ -122,8 +139,24 @@ public class EncodedQueryUri
             encodedItem.append("=");
             encodedItem.append(id);
         }
+        if (cid != null && cid > 0)
+        {
+            if (encodedItem.length() > 0)
+            {
+                encodedItem.append(SEPARATOR);
+            }
+            encodedItem.append(ARGUMENT_CURSOR_ID);
+            encodedItem.append("=");
+            encodedItem.append(cid);
+        }
         // Log.d(TAG, "encodeItem : " + encodedItem.toString());
         return encodedItem.toString();
+    }
+
+    public static String encodeItem(Integer prefix, Long accountId, String id)
+    {
+        // t=xxx;acc=xxx;id=xxx
+        return encodeItem(prefix, accountId, id, null);
     }
 
 }

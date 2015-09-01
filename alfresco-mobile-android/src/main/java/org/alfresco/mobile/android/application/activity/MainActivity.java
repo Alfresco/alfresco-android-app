@@ -161,7 +161,6 @@ public class MainActivity extends BaseActivity
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
-        // supportRequestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         super.onCreate(savedInstanceState);

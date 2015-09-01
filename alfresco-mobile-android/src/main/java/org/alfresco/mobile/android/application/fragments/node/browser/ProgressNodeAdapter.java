@@ -324,7 +324,7 @@ public class ProgressNodeAdapter extends NodeAdapter
             super.updateIcon(vh, item);
         }
 
-        if (selectedItems.contains(item)
+        if ((selectedItems != null && selectedItems.contains(item))
                 || (selectedMapItems != null && selectedMapItems.containsKey(item.getIdentifier())))
         {
             if (getFragment() != null && getFragment() instanceof DocumentFolderBrowserFragment

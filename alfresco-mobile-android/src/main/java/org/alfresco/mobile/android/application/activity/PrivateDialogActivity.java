@@ -41,6 +41,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.squareup.otto.Subscribe;
 
@@ -217,6 +218,11 @@ public class PrivateDialogActivity extends BaseAppCompatActivity
     public void setFieldId(String fieldId)
     {
         this.fieldId = fieldId;
+    }
+
+    public void doCancel(View v)
+    {
+        finish();
     }
 
     // ///////////////////////////////////////////////////////////////////////////
