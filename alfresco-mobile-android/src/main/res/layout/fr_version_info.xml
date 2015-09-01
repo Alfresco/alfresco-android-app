@@ -48,25 +48,29 @@
             android:layout_height="1dp"
             android:background="?android:attr/dividerVertical" />
 
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/button_layout"
             android:layout_width="fill_parent"
-            android:layout_height="@dimen/one_list_minHeight"
-            android:layout_alignParentBottom="true"
-            android:background="@android:color/transparent">
+            android:minHeight="@dimen/one_list_minHeight"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:orientation="horizontal">
 
             <Button
                 android:id="@+id/skip"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="match_parent"
-                android:gravity="center"
-                android:layout_alignParentLeft="true"
+                android:gravity="left|center"
                 android:text="@string/sync_info_skip"
-                style="@style/AlfrescoMaterialTheme.Button.BorderLess.Padding16" />
+                android:textSize="12sp"
+                style="@style/AlfrescoMaterialTheme.Button.BorderLess.Padding16"
+                android:singleLine="false"
+                android:maxLines="3" />
 
             <me.relex.circleindicator.CircleIndicator
                 android:id="@+id/welcome_pager_indicator"
-                android:layout_width="fill_parent"
+                android:layout_width="100dp"
                 android:layout_height="match_parent"
                 app:ci_drawable="@drawable/ic_crop_3_2_grey"
                 app:ci_drawable_unselected="@drawable/ic_crop_7_5_grey"
@@ -75,23 +79,27 @@
 
             <Button
                 android:id="@+id/done"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="match_parent"
-                android:gravity="center"
-                android:layout_alignParentRight="true"
+                android:gravity="right|center"
                 android:text="@string/sync_info_validation"
                 style="@style/AlfrescoMaterialTheme.Button.BorderLess.Padding16"
+                android:textSize="12sp"
+                android:singleLine="false"
+                android:maxLines="3"
                 android:visibility="gone" />
 
             <Button
                 android:id="@+id/next"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="match_parent"
-                android:gravity="center"
-                android:layout_alignParentRight="true"
+                android:gravity="right|center"
+                android:textSize="12sp"
                 android:text="@string/sync_info_next"
                 style="@style/AlfrescoMaterialTheme.Button.BorderLess.Padding16" />
-        </RelativeLayout>
+        </LinearLayout>
 
     </LinearLayout>
 </LinearLayout>
