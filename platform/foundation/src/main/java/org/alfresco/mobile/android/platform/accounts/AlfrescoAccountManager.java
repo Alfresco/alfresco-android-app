@@ -159,8 +159,8 @@ public class AlfrescoAccountManager extends Manager
         for (Account account : accounts)
         {
             String accountId = mAccountManager.getUserData(account, AlfrescoAccount.ACCOUNT_ID);
-            if (accountId != null && id == Long.parseLong(accountId)) { return AlfrescoAccount.parse(mAccountManager,
-                    account); }
+            if (accountId != null
+                    && id == Long.parseLong(accountId)) { return AlfrescoAccount.parse(mAccountManager, account); }
         }
         return null;
     }
@@ -204,7 +204,14 @@ public class AlfrescoAccountManager extends Manager
         AccountManager mAccountManager = AccountManager.get(appContext);
         Account[] accounts = mAccountManager.getAccountsByType(AlfrescoAccount.ACCOUNT_TYPE);
         if (accounts.length == 0) { return null; }
-        return AlfrescoAccount.parse(mAccountManager, accounts[0]);
+        try
+        {
+            return AlfrescoAccount.parse(mAccountManager, accounts[0]);
+        }
+        catch (Exception e)
+        {
+            return AlfrescoAccount.parse(mAccountManager, accounts[1]);
+        }
     }
 
     public String createUniqueAccountName(String defaultName)

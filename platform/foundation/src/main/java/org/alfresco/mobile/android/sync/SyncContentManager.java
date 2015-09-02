@@ -44,6 +44,7 @@ import org.alfresco.mobile.android.platform.provider.MapUtil;
 import org.alfresco.mobile.android.platform.utils.ConnectivityUtils;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.sync.operations.SyncContentStatus;
+import org.alfresco.mobile.android.sync.operations.SyncContentUpdate;
 import org.alfresco.mobile.android.sync.utils.NodeSyncPlaceHolder;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 
@@ -56,6 +57,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 import android.util.Log;
 
 public class SyncContentManager extends Manager
@@ -143,6 +145,33 @@ public class SyncContentManager extends Manager
     // ////////////////////////////////////////////////////
     // PUBLIC UTILS METHODS
     // ////////////////////////////////////////////////////
+    public Uri createTmpSyncFile(AlfrescoAccount account, String name, String parentId, String mimetype)
+    {
+        ContentValues cValues = new ContentValues();
+        cValues.put(SyncContentSchema.COLUMN_ACCOUNT_ID, account.getId());
+        cValues.put(SyncContentSchema.COLUMN_TENANT_ID, account.getRepositoryId());
+        cValues.put(SyncContentSchema.COLUMN_STATUS, Operation.STATUS_PENDING);
+        cValues.put(SyncContentSchema.COLUMN_REASON, -1);
+        cValues.put(SyncContentSchema.COLUMN_REQUEST_TYPE, SyncContentUpdate.TYPE_ID);
+        cValues.put(SyncContentSchema.COLUMN_TITLE, name);
+        cValues.put(SyncContentSchema.COLUMN_NOTIFICATION_VISIBILITY, OperationRequest.VISIBILITY_HIDDEN);
+        cValues.put(SyncContentSchema.COLUMN_NODE_ID, "");
+        cValues.put(SyncContentSchema.COLUMN_PARENT_ID, parentId);
+        cValues.put(SyncContentSchema.COLUMN_MIMETYPE, mimetype);
+        cValues.put(SyncContentSchema.COLUMN_STATUS, Operation.STATUS_PENDING);
+        cValues.put(SyncContentSchema.COLUMN_BYTES_DOWNLOADED_SO_FAR, 0);
+        cValues.put(SyncContentSchema.COLUMN_LOCAL_URI, "");
+        cValues.put(SyncContentSchema.COLUMN_SERVER_MODIFICATION_TIMESTAMP, -1);
+        cValues.put(SyncContentSchema.COLUMN_IS_SYNC_ROOT, 0);
+
+        return appContext.getContentResolver().insert(SyncContentProvider.CONTENT_URI, cValues);
+    }
+
+    public void update(Uri uri, ContentValues cValues)
+    {
+        appContext.getContentResolver().update(uri, cValues, null, null);
+    }
+
     public static ContentValues createContentValues(Context context, AlfrescoAccount account, int requestType,
             Node node, long time)
     {
@@ -331,6 +360,20 @@ public class SyncContentManager extends Manager
         if (node instanceof NodeSyncPlaceHolder) { return getSynchroFile(account, node.getName(),
                 node.getIdentifier()); }
         return getSynchroFile(account, (Document) node);
+    }
+
+    public File getSyncFile(AlfrescoAccount account, String name, String identifier)
+    {
+        if (account == null || TextUtils.isEmpty(name) || TextUtils.isEmpty(identifier)) { return null; }
+        if (appContext != null && account != null)
+        {
+            File synchroFolder = getSynchroFolder(account);
+            File uuidFolder = new File(synchroFolder, identifier);
+            uuidFolder.mkdirs();
+            if (!uuidFolder.exists()) { return null; }
+            return new File(uuidFolder, name);
+        }
+        return null;
     }
 
     public static Cursor getCursorForId(Context context, AlfrescoAccount acc, String identifier)

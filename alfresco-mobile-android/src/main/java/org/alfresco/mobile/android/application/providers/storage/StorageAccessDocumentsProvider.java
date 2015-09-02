@@ -70,6 +70,7 @@ import org.alfresco.mobile.android.sync.operations.SyncContentStatus;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 
 import android.annotation.TargetApi;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.pm.ProviderInfo;
 import android.content.res.AssetFileDescriptor;
@@ -430,9 +431,8 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
             File downloadedFile = null;
             if (getContext() != null && currentNode != null && session != null)
             {
-                // File folder =
-                // AlfrescoStorageManager.getInstance(getContext()).getShareFolder(selectedAccount);
-                File folder = new File("/sdcard/Downloads");
+                File folder = AlfrescoStorageManager.getInstance(getContext()).getShareFolder(selectedAccount);
+                // File folder = new File("/sdcard/Downloads");
                 if (folder != null)
                 {
                     String extension = MimeTypeManager.getExtension(currentNode.getName());
@@ -464,17 +464,19 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
             // Not in cache so let's download the content if it has content !
             if (((org.alfresco.mobile.android.api.model.Document) currentNode).getContentStreamLength() != 0)
             {
-                Log.d(TAG, "Dowload Doc : " + downloadedFile.getPath() + " - Mode " + mode);
+                Log.d(TAG, "Checking Doc : " + downloadedFile.getPath() + " - Mode " + mode);
                 ContentStream contentStream = session.getServiceRegistry().getDocumentFolderService()
                         .getContentStream((org.alfresco.mobile.android.api.model.Document) currentNode);
 
                 // Check Stream
                 if (contentStream == null || contentStream.getLength() == 0)
                 {
+                    Log.d(TAG, "Create Doc : " + downloadedFile.getPath());
                     downloadedFile.createNewFile();
                 }
                 else
                 {
+                    Log.d(TAG, "Retrieve Doc : " + downloadedFile.getPath());
                     // Copy the content locally.
                     copyFile(contentStream.getInputStream(), contentStream.getLength(), downloadedFile, signal);
                 }
@@ -705,13 +707,43 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
                     .getNodeByIdentifier(getIdentifier(cUri.id));
         }
 
-        createdNode = session.getServiceRegistry().getDocumentFolderService().createDocument((Folder) parentFolder,
-                displayName, null, null);
+        try
+        {
+            // Flag to detect loading in progress
+            Boolean active = mLoadingUris.get(cUri);
 
-        nodesIndex.put(NodeRefUtils.getVersionIdentifier(createdNode.getIdentifier()), createdNode);
+            switch (cUri.type)
+            {
+                case PREFIX_SYNC:
+                    //Create URI
+                    Uri uri = SyncContentManager.getInstance(getContext()).createTmpSyncFile(selectedAccount, displayName,
+                            parentFolder.getIdentifier(), mimeType);
 
-        return EncodedQueryUri.encodeItem(PREFIX_DOC, cUri.accountId,
-                NodeRefUtils.getVersionIdentifier(createdNode.getIdentifier()));
+                    //Update with file information
+                    File file = SyncContentManager.getInstance(getContext()).getSyncFile(selectedAccount, displayName, uri.getLastPathSegment());
+                    ContentValues cValues = new ContentValues();
+                    cValues.put(SyncContentSchema.COLUMN_TOTAL_SIZE_BYTES, file.length());
+                    cValues.put(SyncContentSchema.COLUMN_DOC_SIZE_BYTES, file.length());
+                    cValues.put(SyncContentSchema.COLUMN_LOCAL_URI, Uri.fromFile(file).toString());
+                    SyncContentManager.getInstance(getContext()).update(uri, cValues);
+
+                    return EncodedQueryUri.encodeItem(PREFIX_DOC, cUri.accountId, null,
+                            Long.parseLong(uri.getLastPathSegment()));
+                default:
+                    createdNode = session.getServiceRegistry().getDocumentFolderService()
+                            .createDocument((Folder) parentFolder, displayName, null, null);
+
+                    nodesIndex.put(NodeRefUtils.getVersionIdentifier(createdNode.getIdentifier()), createdNode);
+                    return EncodedQueryUri.encodeItem(PREFIX_DOC, cUri.accountId,
+                            NodeRefUtils.getVersionIdentifier(createdNode.getIdentifier()));
+            }
+        }
+        catch (Exception e)
+        {
+
+        }
+
+        return null;
     }
 
     @Override
@@ -1101,32 +1133,45 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
         removeUri(uri, active);
     }
 
-    private void addSyncContentRow(DocumentFolderCursor sitesCursor, Long id)
+    private void addSyncContentRow(DocumentFolderCursor syncContentCursor, Long cid)
     {
         Cursor syncCursor = null;
         try
         {
-            Log.v(TAG, "addSyncContentRow " + SyncContentManager.getUri(id));
-            Cursor itemCursor = getContext().getContentResolver().query(SyncContentManager.getUri(id),
+            Log.v(TAG, "addSyncContentRow " + SyncContentManager.getUri(cid));
+            Cursor itemCursor = getContext().getContentResolver().query(SyncContentManager.getUri(cid),
                     SyncContentSchema.COLUMN_ALL, null, null, null);
 
+            int flags = 0;
             if (itemCursor.getCount() == 1 && itemCursor.moveToNext())
             {
                 String mime = itemCursor.getString(SyncContentSchema.COLUMN_MIMETYPE_ID);
                 if ("cm:folder".equals(mime))
                 {
                     mime = null;
+                    flags |= Document.FLAG_DIR_SUPPORTS_CREATE;
+                }
+                else
+                {
+                    flags |= Document.FLAG_SUPPORTS_THUMBNAIL;
                 }
 
-                DocumentFolderCursor.RowBuilder row = sitesCursor.newRow();
-                row.add(Document.COLUMN_DOCUMENT_ID, EncodedQueryUri.encodeItem(PREFIX_SYNC, selectedAccountId,
-                        NodeRefUtils.getVersionIdentifier(itemCursor.getString(SyncContentSchema.COLUMN_NODE_ID_ID))));
+                DocumentFolderCursor.RowBuilder row = syncContentCursor.newRow();
+
+                String nodeId = itemCursor.getString(SyncContentSchema.COLUMN_NODE_ID_ID);
+                nodeId = TextUtils.isEmpty(nodeId) ? null
+                        : NodeRefUtils.getVersionIdentifier(itemCursor.getString(SyncContentSchema.COLUMN_NODE_ID_ID));
+                row.add(Document.COLUMN_DOCUMENT_ID,
+                        EncodedQueryUri.encodeItem(PREFIX_SYNC, selectedAccountId, nodeId, cid));
                 row.add(Document.COLUMN_DISPLAY_NAME, itemCursor.getString(SyncContentSchema.COLUMN_TITLE_ID));
                 row.add(Document.COLUMN_SIZE, itemCursor.getLong(SyncContentSchema.COLUMN_TOTAL_SIZE_BYTES_ID));
                 row.add(Document.COLUMN_MIME_TYPE, mime == null ? Document.MIME_TYPE_DIR : mime);
                 row.add(Document.COLUMN_LAST_MODIFIED,
                         itemCursor.getLong(SyncContentSchema.COLUMN_SERVER_MODIFICATION_TIMESTAMP_ID));
-                row.add(Document.COLUMN_FLAGS, 0);
+
+                flags |= Document.FLAG_SUPPORTS_WRITE;
+                // flags |= Document.FLAG_SUPPORTS_DELETE;
+                row.add(Document.COLUMN_FLAGS, flags);
             }
         }
         catch (Exception e)

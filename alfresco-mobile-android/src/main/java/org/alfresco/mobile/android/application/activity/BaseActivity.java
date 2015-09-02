@@ -75,7 +75,7 @@ public abstract class BaseActivity extends AlfrescoActivity
     }
 
     @Override
-    public void setSupportProgressBarIndeterminate(boolean indeterminate)
+    public void setSupportProgressBarIndeterminateVisibility(boolean indeterminate)
     {
         ProgressBar progressBar = (ProgressBar) findViewById(R.id.progress_spinner);
 
