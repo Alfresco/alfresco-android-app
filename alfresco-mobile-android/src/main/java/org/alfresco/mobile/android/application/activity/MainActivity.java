@@ -351,6 +351,11 @@ public class MainActivity extends BaseActivity
                 // Refresh Accounts
                 ((MainMenuFragment) getFragment(MainMenuFragment.TAG)).refreshAccount();
                 ((MainMenuFragment) getFragment(MainMenuFragment.SLIDING_TAG)).refreshAccount();
+
+                // Send Event
+                ConfigManager.getInstance(this).loadAndUseCustom(getCurrentAccount());
+                EventBusManager.getInstance()
+                        .post(new ConfigManager.ConfigurationMenuEvent(getCurrentAccount().getId()));
             }
         }
     }
