@@ -47,7 +47,6 @@ import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
 import org.alfresco.mobile.android.platform.utils.BundleUtils;
-import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.sync.SyncContentManager;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.holder.HolderUtils;
@@ -193,8 +192,8 @@ public class AccountSettingsFragment extends AlfrescoFragment implements EditTex
 
         // Account Name
         account = AlfrescoAccountManager.getInstance(getActivity()).retrieveAccount(accountId);
-        ((TextView) viewById(R.id.settings_account_name_title)).setText(account.getTitle() + "  ("
-                + account.getUsername() + ")");
+        ((TextView) viewById(R.id.settings_account_name_title))
+                .setText(account.getTitle() + "  (" + account.getUsername() + ")");
 
         // CUSTOMIZATION
         menuCustomizationVH = HolderUtils.configure(viewById(R.id.settings_custom_menu_manage),
@@ -356,8 +355,8 @@ public class AccountSettingsFragment extends AlfrescoFragment implements EditTex
         else
         {
             builder.title(R.string.delete);
-            builder.content(String.format(getResources().getQuantityString(R.plurals.delete_items, 1),
-                    account.getTitle()));
+            builder.content(
+                    String.format(getResources().getQuantityString(R.plurals.delete_items, 1), account.getTitle()));
             builder.positiveText(R.string.confirm).negativeText(R.string.cancel)
                     .callback(new MaterialDialog.ButtonCallback()
                     {
@@ -383,7 +382,7 @@ public class AccountSettingsFragment extends AlfrescoFragment implements EditTex
 
         // Delete Account from AccountManager
         AccountManager.get(getActivity()).removeAccount(
-                AlfrescoAccountManager.getInstance(getActivity()).getAndroidAccount(account.getId()), null, null);
+                AlfrescoAccountManager.getInstance(getActivity()).getAndroidAccount(account.getId()), null, null, null);
 
         // Send the event
         EventBusManager.getInstance().post(new DeleteAccountEvent(account));
@@ -391,8 +390,9 @@ public class AccountSettingsFragment extends AlfrescoFragment implements EditTex
         // In case where currentAccount is the one deleted.
         SessionManager.getInstance(getActivity()).removeAccount(account.getId());
 
-        if (SessionUtils.getAccount(getActivity()) != null
-                && SessionUtils.getAccount(getActivity()).getId() == account.getId())
+        AlfrescoAccount newAccount = AlfrescoAccountManager.getInstance(getActivity()).getDefaultAccount();
+
+        if (newAccount != null && newAccount.getId() == account.getId())
         {
             SharedPreferences settings = getActivity().getSharedPreferences(AccountsPreferences.ACCOUNT_PREFS, 0);
             long id = settings.getLong(AccountsPreferences.ACCOUNT_DEFAULT, -1);
@@ -400,14 +400,35 @@ public class AccountSettingsFragment extends AlfrescoFragment implements EditTex
             {
                 settings.edit().putLong(AccountsPreferences.ACCOUNT_DEFAULT, -1).commit();
             }
-            AlfrescoAccount newAccount = AlfrescoAccountManager.getInstance(getActivity()).getDefaultAccount();
-            SessionManager.getInstance(getActivity()).saveAccount(newAccount);
-            setCurrentAccount(account);
         }
 
         // UI Management
         if (accounts.size() - 1 > 0)
         {
+            for (AlfrescoAccount acc : accounts)
+            {
+                if (acc.getId() == account.getId())
+                {
+                    accounts.remove(acc);
+                    break;
+                }
+            }
+
+            newAccount = accounts.get(0);
+            SessionManager.getInstance(getActivity()).saveAccount(newAccount);
+            SharedPreferences settings = getActivity().getSharedPreferences(AccountsPreferences.ACCOUNT_PREFS, 0);
+            settings.edit().putLong(AccountsPreferences.ACCOUNT_DEFAULT, newAccount.getId()).commit();
+            setCurrentAccount(newAccount);
+
+            if (SessionManager.getInstance(getActivity()).hasSession(newAccount.getId()))
+            {
+                SessionManager.getInstance(getActivity()).getCurrentSession();
+            }
+            else
+            {
+                SessionManager.getInstance(getActivity()).loadSession(newAccount);
+            }
+
             // There's still other account.
             // Remove Details panel
             if (DisplayUtils.hasCentralPane(getActivity()))
@@ -416,8 +437,8 @@ public class AccountSettingsFragment extends AlfrescoFragment implements EditTex
             }
             else
             {
-                getFragmentManager()
-                        .popBackStack(AccountSettingsFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                getFragmentManager().popBackStack(AccountSettingsFragment.TAG,
+                        FragmentManager.POP_BACK_STACK_INCLUSIVE);
             }
         }
         else
@@ -460,14 +481,16 @@ public class AccountSettingsFragment extends AlfrescoFragment implements EditTex
         AccountManager manager = AccountManager.get(getActivity());
         if (account.getTypeId() == AlfrescoAccount.TYPE_ALFRESCO_CLOUD)
         {
-            manager.setUserData(androidAccount, AlfrescoAccount.ACCOUNT_NAME, getString(R.string.account_default_cloud));
+            manager.setUserData(androidAccount, AlfrescoAccount.ACCOUNT_NAME,
+                    getString(R.string.account_default_cloud));
         }
         else if (account.getTypeId() == AlfrescoAccount.TYPE_ALFRESCO_CMIS)
         {
             manager.setUserData(androidAccount, AlfrescoAccount.ACCOUNT_NAME,
                     getString(R.string.account_default_onpremise));
         }
-        manager.setUserData(androidAccount, AlfrescoAccount.ACCOUNT_NAME, getString(R.string.account_default_onpremise));
+        manager.setUserData(androidAccount, AlfrescoAccount.ACCOUNT_NAME,
+                getString(R.string.account_default_onpremise));
         account = AlfrescoAccountManager.getInstance(getActivity()).retrieveAccount(accountId);
         SessionManager.getInstance(getActivity()).saveSession(account,
                 SessionManager.getInstance(getActivity()).getSession(account.getId()));

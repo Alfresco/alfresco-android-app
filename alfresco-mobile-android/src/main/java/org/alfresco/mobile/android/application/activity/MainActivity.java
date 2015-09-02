@@ -836,7 +836,7 @@ public class MainActivity extends BaseActivity
         setSupportProgressBarIndeterminateVisibility(true);
         invalidateOptionsMenu();
         setCurrentAccount(event.account);
-        if (event != null)
+        if (event != null && event.account != null)
         {
             Snackbar.make(findViewById(R.id.left_pane_body), event.account.getTitle(), Snackbar.LENGTH_LONG).show();
         }
@@ -1016,7 +1016,7 @@ public class MainActivity extends BaseActivity
     @Subscribe
     public void onAccountInactiveEvent(LoadInactiveAccountEvent event)
     {
-        if (getCurrentAccount().getId() != event.account.getId()) { return; }
+        if (getCurrentAccount() == null || getCurrentAccount().getId() != event.account.getId()) { return; }
 
         setSessionState(SESSION_INACTIVE);
         setSupportProgressBarIndeterminateVisibility(false);
