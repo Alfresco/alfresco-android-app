@@ -194,6 +194,7 @@ public class SyncContentUpdate extends SyncContent
             cValues.put(SyncContentSchema.COLUMN_TOTAL_SIZE_BYTES, updatedNode.getContentStreamLength());
             cValues.put(SyncContentSchema.COLUMN_BYTES_DOWNLOADED_SO_FAR, updatedNode.getContentStreamLength());
             cValues.put(SyncContentSchema.COLUMN_DOC_SIZE_BYTES, 0);
+            cValues.put(SyncContentSchema.COLUMN_PROPERTIES, SyncContentManager.serializeProperties(updatedNode));
             cValues.put(SyncContentSchema.COLUMN_LOCAL_URI, Uri.fromFile(destFile).toString());
 
             context.getContentResolver().update(localUri, cValues, null, null);

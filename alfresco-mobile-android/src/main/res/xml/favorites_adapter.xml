@@ -5,4 +5,4 @@
     android:contentAuthority="@string/favorites_adapter"
     android:isAlwaysSyncable="true"
     android:supportsUploading="false"
-    android:userVisible="true" />
+    android:userVisible="false" />

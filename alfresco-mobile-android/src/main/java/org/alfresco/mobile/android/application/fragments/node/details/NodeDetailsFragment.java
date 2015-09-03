@@ -479,18 +479,18 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
     {
         String topText = node.getName();
         String bottomText = null;
-        if (node.isDocument())
+        if (node instanceof NodeSyncPlaceHolder)
+        {
+            bottomText = NodeSyncPlaceHolderFormatter.createContentBottomText(getActivity(), (NodeSyncPlaceHolder) node,
+                    true);
+        }
+        else if (node.isDocument())
         {
             bottomText = Formatter.createContentBottomText(getActivity(), node, true);
         }
         else if (node.isFolder())
         {
             bottomText = UIUtils.getParentDirPath((String) node.getPropertyValue(PropertyIds.PATH));
-        }
-        else if (node instanceof NodeSyncPlaceHolder)
-        {
-            bottomText = NodeSyncPlaceHolderFormatter.createContentBottomText(getActivity(), (NodeSyncPlaceHolder) node,
-                    true);
         }
 
         View v = viewById(R.id.details_header);
