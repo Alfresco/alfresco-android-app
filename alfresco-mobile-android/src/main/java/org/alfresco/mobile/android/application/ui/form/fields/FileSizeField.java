@@ -30,6 +30,11 @@ public class FileSizeField extends BaseField
     public String getHumanReadableReadValue()
     {
         if (originalValue == null) { return Formatter.formatFileSize(getContext(), 0L); }
+        if (originalValue instanceof String)
+        {
+            long value = Long.parseLong((String) originalValue);
+            return Formatter.formatFileSize(getContext(), value);
+        }
         return Formatter.formatFileSize(getContext(), ((BigInteger) originalValue).longValue());
 
     }

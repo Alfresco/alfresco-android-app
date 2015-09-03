@@ -35,6 +35,7 @@ import org.alfresco.mobile.android.api.session.impl.AbstractAlfrescoSessionImpl;
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.async.Operation;
 import org.alfresco.mobile.android.async.OperationSchema;
+import org.alfresco.mobile.android.async.OperationStatus;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.provider.CursorUtils;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
@@ -134,14 +135,14 @@ public abstract class PrepareBaseHelper
         switch (mode)
         {
             case SyncContentManager.MODE_BOTH:
-                retrieveDocumentFavorites();
-                retrieveFolderFavorites();
+                retrieveSyncedDocument();
+                retrieveSyncedFolder();
                 break;
             case SyncContentManager.MODE_FOLDERS:
-                retrieveFolderFavorites();
+                retrieveSyncedFolder();
                 break;
             case SyncContentManager.MODE_DOCUMENTS:
-                retrieveDocumentFavorites();
+                retrieveSyncedDocument();
                 break;
             case SyncContentManager.MODE_NODE:
                 break;
@@ -163,6 +164,9 @@ public abstract class PrepareBaseHelper
         else
         {
             // Check updated favorites
+            prepareRemoteCreation();
+
+            // Check updated favorites
             prepareUpdate();
 
             // Check deleted favorites
@@ -181,19 +185,19 @@ public abstract class PrepareBaseHelper
 
     private static final String QUERY_OR = " OR d.cmis:objectId=";
 
-    private void retrieveDocumentFavorites()
+    private void retrieveSyncedDocument()
     {
         // Retrieve list of synced documents
         Cursor cursorNodesIds = null;
         List<String> syncedDocumentIds = null;
         try
         {
-            cursorNodesIds = context.getContentResolver().query(
-                    SyncContentProvider.CONTENT_URI,
+            cursorNodesIds = context.getContentResolver().query(SyncContentProvider.CONTENT_URI,
                     SyncContentSchema.COLUMN_ALL,
                     SyncContentProvider.getAccountFilter(acc) + " AND " + SyncContentSchema.COLUMN_IS_SYNC_ROOT
-                            + " == '" + SyncContentProvider.FLAG_SYNC_SET + "' AND "
-                            + SyncContentSchema.COLUMN_MIMETYPE + " != '" + ContentModel.TYPE_FOLDER + "'", null, null);
+                            + " == '" + SyncContentProvider.FLAG_SYNC_SET + "' AND " + SyncContentSchema.COLUMN_MIMETYPE
+                            + " != '" + ContentModel.TYPE_FOLDER + "'",
+                    null, null);
 
             syncedDocumentIds = new ArrayList<String>(cursorNodesIds.getCount());
             while (cursorNodesIds.moveToNext())
@@ -245,8 +249,8 @@ public abstract class PrepareBaseHelper
             join(builder, " OR cmis:objectId=", syncedDocumentIds);
             builder.append(")");
 
-            List<Node> nodes = session.getServiceRegistry().getSearchService()
-                    .search(builder.toString(), SearchLanguage.CMIS);
+            List<Node> nodes = session.getServiceRegistry().getSearchService().search(builder.toString(),
+                    SearchLanguage.CMIS);
 
             for (Node node : nodes)
             {
@@ -270,19 +274,19 @@ public abstract class PrepareBaseHelper
         }
     }
 
-    private void retrieveFolderFavorites()
+    private void retrieveSyncedFolder()
     {
         // Retrieve list of synced documents
         Cursor cursorNodesIds = null;
         List<String> syncedFolderIds = null;
         try
         {
-            cursorNodesIds = context.getContentResolver().query(
-                    SyncContentProvider.CONTENT_URI,
+            cursorNodesIds = context.getContentResolver().query(SyncContentProvider.CONTENT_URI,
                     SyncContentSchema.COLUMN_ALL,
                     SyncContentProvider.getAccountFilter(acc) + " AND " + SyncContentSchema.COLUMN_IS_SYNC_ROOT
-                            + " == '" + SyncContentProvider.FLAG_SYNC_SET + "' AND "
-                            + SyncContentSchema.COLUMN_MIMETYPE + " == '" + ContentModel.TYPE_FOLDER + "'", null, null);
+                            + " == '" + SyncContentProvider.FLAG_SYNC_SET + "' AND " + SyncContentSchema.COLUMN_MIMETYPE
+                            + " == '" + ContentModel.TYPE_FOLDER + "'",
+                    null, null);
 
             syncedFolderIds = new ArrayList<>(cursorNodesIds.getCount());
             Uri localUri = null;
@@ -334,8 +338,8 @@ public abstract class PrepareBaseHelper
             join(builder, " OR cmis:objectId=", syncedFolderIds);
             builder.append(")");
 
-            List<Node> nodes = session.getServiceRegistry().getSearchService()
-                    .search(builder.toString(), SearchLanguage.CMIS);
+            List<Node> nodes = session.getServiceRegistry().getSearchService().search(builder.toString(),
+                    SearchLanguage.CMIS);
 
             for (Node node : nodes)
             {
@@ -377,38 +381,56 @@ public abstract class PrepareBaseHelper
                 syncResult.stats.numEntries = nodeDocumentSynced.getList().size();
                 for (Document doc : nodeDocumentSynced.getList())
                 {
-                    prepareCreation(doc);
+                    prepareLocalCreation(doc);
                 }
                 break;
             case SyncContentManager.MODE_FOLDERS:
                 for (Folder folder : nodeFolderSynced.getList())
                 {
-                    prepareCreation(folder);
+                    prepareLocalCreation(folder);
                 }
                 break;
             case SyncContentManager.MODE_BOTH:
                 for (Document doc : nodeDocumentSynced.getList())
                 {
-                    prepareCreation(doc);
+                    prepareLocalCreation(doc);
                 }
                 for (Folder folder : nodeFolderSynced.getList())
                 {
-                    prepareCreation(folder);
+                    prepareLocalCreation(folder);
                 }
                 break;
             case SyncContentManager.MODE_NODE:
                 if (node.isDocument())
                 {
                     syncResult.stats.numEntries = 1;
-                    prepareCreation((Document) node);
+                    prepareLocalCreation((Document) node);
                 }
                 else
                 {
-                    prepareCreation((Folder) node);
+                    prepareLocalCreation((Folder) node);
                 }
                 break;
             default:
                 break;
+        }
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // CREATION
+    // ///////////////////////////////////////////////////////////////////////////
+    private void prepareRemoteCreation()
+    {
+        Cursor cursorCreation = context.getContentResolver().query(SyncContentProvider.CONTENT_URI,
+                SyncContentSchema.COLUMN_ALL,
+                SyncContentProvider.getAccountFilter(acc) + " AND " + SyncContentSchema.COLUMN_STATUS + " == '"
+                        + OperationStatus.STATUS_PENDING + "' AND " + SyncContentSchema.COLUMN_NODE_ID + " == ''",
+                null, null);
+
+        while (cursorCreation.moveToNext())
+        {
+            prepareRemoteCreation(SyncContentManager.getUri(cursorCreation.getLong(SyncContentSchema.COLUMN_ID_ID)),
+                    cursorCreation.getLong(SyncContentSchema.COLUMN_ID_ID));
         }
     }
 
@@ -431,8 +453,8 @@ public abstract class PrepareBaseHelper
                     }
                     try
                     {
-                        ((AbstractAlfrescoSessionImpl) session).getCmisSession().removeObjectFromCache(
-                                node.getIdentifier());
+                        ((AbstractAlfrescoSessionImpl) session).getCmisSession()
+                                .removeObjectFromCache(node.getIdentifier());
                         if (session.getServiceRegistry().getDocumentFolderService()
                                 .getNodeByIdentifier(node.getIdentifier()) != null)
                         {
@@ -497,7 +519,7 @@ public abstract class PrepareBaseHelper
                         else
                         {
                             // If not create
-                            prepareCreation(favoriteFolder);
+                            prepareLocalCreation(favoriteFolder);
                         }
                         cursorId.close();
                     }
@@ -647,7 +669,7 @@ public abstract class PrepareBaseHelper
                     {
                         // No local change
                         // We download the new content
-                        prepareCreation(localUri, (Document) childrenNode);
+                        prepareLocalCreation(localUri, (Document) childrenNode);
                     }
                     CursorUtils.closeCursor(cursorId);
                     continue;
@@ -660,7 +682,7 @@ public abstract class PrepareBaseHelper
                 if (!localFile.exists())
                 {
                     // Content is not present, we download content
-                    prepareCreation(localUri, (Document) childrenNode);
+                    prepareLocalCreation(localUri, (Document) childrenNode);
                     CursorUtils.closeCursor(cursorId);
                     continue;
                 }
@@ -729,7 +751,7 @@ public abstract class PrepareBaseHelper
                 {
                     if (parentFolder != null && favoriteRootFolder != null)
                     {
-                        prepareCreation((Folder) childrenNode, parentFolder, favoriteRootFolder);
+                        prepareLocalCreation((Folder) childrenNode, parentFolder, favoriteRootFolder);
                     }
                     CursorUtils.closeCursor(cursorId);
                     continue;
@@ -743,7 +765,7 @@ public abstract class PrepareBaseHelper
                     }
                     else
                     {
-                        prepareCreation((Document) childrenNode);
+                        prepareLocalCreation((Document) childrenNode);
                     }
                 }
             }
@@ -798,11 +820,11 @@ public abstract class PrepareBaseHelper
         Cursor childrenCursor = null;
         try
         {
-            childrenCursor = context.getContentResolver().query(
-                    SyncContentProvider.CONTENT_URI,
+            childrenCursor = context.getContentResolver().query(SyncContentProvider.CONTENT_URI,
                     SyncContentSchema.COLUMN_ALL,
                     SyncContentProvider.getAccountFilter(acc) + " AND " + SyncContentSchema.COLUMN_PARENT_ID + " == '"
-                            + NodeRefUtils.getCleanIdentifier(folderIdentifier) + "'", null, null);
+                            + NodeRefUtils.getCleanIdentifier(folderIdentifier) + "'",
+                    null, null);
 
             while (childrenCursor.moveToNext())
             {
@@ -956,8 +978,8 @@ public abstract class PrepareBaseHelper
         while (localSyncCursor.moveToNext())
         {
             boolean favorited = localSyncCursor.getInt(SyncContentSchema.COLUMN_IS_SYNC_ROOT_ID) > 0;
-            String nodeId = NodeRefUtils.getCleanIdentifier(localSyncCursor
-                    .getString(SyncContentSchema.COLUMN_NODE_ID_ID));
+            String nodeId = NodeRefUtils
+                    .getCleanIdentifier(localSyncCursor.getString(SyncContentSchema.COLUMN_NODE_ID_ID));
             if (favorited)
             {
                 // Clean Id because of version number after update
@@ -1063,31 +1085,31 @@ public abstract class PrepareBaseHelper
     // ///////////////////////////////////////////////////////////////////////////
     // CREATION OPERATIONS
     // ///////////////////////////////////////////////////////////////////////////
-    private void prepareCreation(Document doc)
+    protected abstract void prepareRemoteCreation(Uri localUri, Long id);
+
+    private void prepareLocalCreation(Document doc)
     {
         Uri uri = syncManager.getUri(acc, doc.getIdentifier());
         if (uri == null)
         {
-            uri = context.getContentResolver().insert(
-                    SyncContentProvider.CONTENT_URI,
+            uri = context.getContentResolver().insert(SyncContentProvider.CONTENT_URI,
                     SyncContentManager.createFavoriteContentValues(context, acc, SyncContentDownload.TYPE_ID, doc,
                             syncScanningTimeStamp));
         }
         // Execution
-        prepareCreation(uri, doc);
+        prepareLocalCreation(uri, doc);
     }
 
-    protected abstract void prepareCreation(Uri localUri, Document doc);
+    protected abstract void prepareLocalCreation(Uri localUri, Document doc);
 
-    private void prepareCreation(Folder folder)
+    private void prepareLocalCreation(Folder folder)
     {
         Uri uri = syncManager.getUri(acc, folder.getIdentifier());
         if (uri == null)
         {
             Folder parentFolder = session.getServiceRegistry().getDocumentFolderService().getParentFolder(folder);
 
-            uri = context.getContentResolver().insert(
-                    SyncContentProvider.CONTENT_URI,
+            uri = context.getContentResolver().insert(SyncContentProvider.CONTENT_URI,
                     SyncContentManager.createFavoriteContentValues(context, acc, SyncContentDownload.TYPE_ID,
                             parentFolder.getIdentifier(), folder, syncScanningTimeStamp, -1));
         }
@@ -1106,7 +1128,7 @@ public abstract class PrepareBaseHelper
         context.getContentResolver().update(uri, cValues, null, null);
     }
 
-    private void prepareCreation(Folder currentFolder, Folder parentFolder, Folder rootFavoriteFolder)
+    private void prepareLocalCreation(Folder currentFolder, Folder parentFolder, Folder rootFavoriteFolder)
     {
         // Flag children
         long size = prepareChildrenFolderCreation(currentFolder, rootFavoriteFolder);
@@ -1115,8 +1137,7 @@ public abstract class PrepareBaseHelper
         Uri uri = syncManager.getUri(acc, currentFolder.getIdentifier());
         if (uri == null)
         {
-            uri = context.getContentResolver().insert(
-                    SyncContentProvider.CONTENT_URI,
+            uri = context.getContentResolver().insert(SyncContentProvider.CONTENT_URI,
                     SyncContentManager.createContentValues(context, acc, SyncContentDownload.TYPE_ID,
                             parentFolder.getIdentifier(), currentFolder, syncScanningTimeStamp, size));
         }
@@ -1167,8 +1188,7 @@ public abstract class PrepareBaseHelper
         Uri uri = syncManager.getUri(acc, folder.getIdentifier());
         if (uri == null)
         {
-            uri = context.getContentResolver().insert(
-                    SyncContentProvider.CONTENT_URI,
+            uri = context.getContentResolver().insert(SyncContentProvider.CONTENT_URI,
                     SyncContentManager.createContentValues(context, acc, SyncContentDownload.TYPE_ID, parentFolder,
                             folder, syncScanningTimeStamp, folderSize));
         }
@@ -1186,14 +1206,13 @@ public abstract class PrepareBaseHelper
         Uri uri = syncManager.getUri(acc, doc.getIdentifier());
         if (uri == null)
         {
-            uri = context.getContentResolver().insert(
-                    SyncContentProvider.CONTENT_URI,
-                    SyncContentManager.createContentValues(context, acc, SyncContentDownload.TYPE_ID, parentFolder,
-                            doc, syncScanningTimeStamp, 0));
+            uri = context.getContentResolver().insert(SyncContentProvider.CONTENT_URI,
+                    SyncContentManager.createContentValues(context, acc, SyncContentDownload.TYPE_ID, parentFolder, doc,
+                            syncScanningTimeStamp, 0));
         }
 
         // Execution
-        prepareCreation(uri, doc);
+        prepareLocalCreation(uri, doc);
     }
 
     // ///////////////////////////////////////////////////////////////////////////

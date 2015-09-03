@@ -52,6 +52,12 @@ public class FileExplorerMenuFragment extends AlfrescoFragment
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
+    public FileExplorerMenuFragment()
+    {
+        requiredSession = false;
+        checkSession = false;
+    }
+
     public static FileExplorerMenuFragment newInstanceByTemplate(Bundle b)
     {
         FileExplorerMenuFragment cbf = new FileExplorerMenuFragment();
@@ -123,8 +129,8 @@ public class FileExplorerMenuFragment extends AlfrescoFragment
             switch (v.getId())
             {
                 case R.id.shortcut_alfresco_downloads:
-                    currentLocation = AlfrescoStorageManager.getInstance(getActivity()).getDownloadFolder(
-                            ((BaseActivity) getActivity()).getCurrentAccount());
+                    currentLocation = AlfrescoStorageManager.getInstance(getActivity())
+                            .getDownloadFolder(((BaseActivity) getActivity()).getCurrentAccount());
                     break;
                 case R.id.shortcut_local_sdcard:
                     currentLocation = Environment.getExternalStorageDirectory();
@@ -150,10 +156,8 @@ public class FileExplorerMenuFragment extends AlfrescoFragment
 
             if (currentSelectedButton != null)
             {
-                UIUtils.setBackground(
-                        currentSelectedButton,
-                        FileExplorerMenuFragment.this.getResources().getDrawable(
-                                R.drawable.btn_default_holo_light_underline));
+                UIUtils.setBackground(currentSelectedButton, FileExplorerMenuFragment.this.getResources()
+                        .getDrawable(R.drawable.btn_default_holo_light_underline));
             }
 
             if (currentLocation != null)
@@ -165,10 +169,8 @@ public class FileExplorerMenuFragment extends AlfrescoFragment
                 LibraryFragment.with(getActivity()).mediaType(mediatype).display();
             }
 
-            UIUtils.setBackground(
-                    v,
-                    FileExplorerMenuFragment.this.getResources().getDrawable(
-                            R.drawable.alfrescohololight_btn_default_holo_light));
+            UIUtils.setBackground(v, FileExplorerMenuFragment.this.getResources()
+                    .getDrawable(R.drawable.alfrescohololight_btn_default_holo_light));
             currentSelectedButton = v;
         }
     };

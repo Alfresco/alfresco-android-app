@@ -5,4 +5,4 @@
     android:contentAuthority="@string/sync_adapter"
     android:isAlwaysSyncable="true"
     android:supportsUploading="true"
-    android:userVisible="true" />
+    android:userVisible="false" />
