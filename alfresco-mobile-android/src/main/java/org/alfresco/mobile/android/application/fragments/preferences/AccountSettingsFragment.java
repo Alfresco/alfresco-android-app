@@ -382,7 +382,7 @@ public class AccountSettingsFragment extends AlfrescoFragment implements EditTex
 
         // Delete Account from AccountManager
         AccountManager.get(getActivity()).removeAccount(
-                AlfrescoAccountManager.getInstance(getActivity()).getAndroidAccount(account.getId()), null, null, null);
+                AlfrescoAccountManager.getInstance(getActivity()).getAndroidAccount(account.getId()), null, null);
 
         // Send the event
         EventBusManager.getInstance().post(new DeleteAccountEvent(account));

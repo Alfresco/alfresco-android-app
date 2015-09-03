@@ -32,6 +32,7 @@ import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.sync.SyncContentManager;
 import org.alfresco.mobile.android.sync.SyncContentSchema;
 import org.alfresco.mobile.android.sync.operations.SyncContent;
+import org.alfresco.mobile.android.sync.operations.SyncContentCreate;
 import org.alfresco.mobile.android.sync.operations.SyncContentDelete;
 import org.alfresco.mobile.android.sync.operations.SyncContentDownload;
 import org.alfresco.mobile.android.sync.operations.SyncContentStatus;
@@ -74,7 +75,21 @@ public class PrepareSyncHelper extends PrepareBaseHelper
         return group;
     }
 
-    protected void prepareCreation(Uri syncUri, Document doc)
+    protected void prepareRemoteCreation(Uri localUri, Long id)
+    {
+        // Execution
+        try
+        {
+            SyncContent.saveStatus(context, localUri, SyncContentStatus.STATUS_PENDING);
+            group.add(new SyncContentCreate(context, acc, session, syncResult, id, localUri));
+        }
+        catch (Exception e)
+        {
+            // DO Nothing
+        }
+    }
+
+    protected void prepareLocalCreation(Uri syncUri, Document doc)
     {
         // Execution
         try

@@ -122,6 +122,7 @@ public class ResolveConflictSyncDialogFragment extends DialogFragment
                 onFavoriteChangeListener = unfavoriteListener;
                 break;
             default:
+                onFavoriteChangeListener = deletedFavoriteListener;
                 break;
         }
 

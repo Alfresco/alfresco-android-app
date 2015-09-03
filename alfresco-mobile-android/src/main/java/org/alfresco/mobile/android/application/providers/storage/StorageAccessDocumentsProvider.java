@@ -369,6 +369,13 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
             }
             else
             {
+                // Is it synced ?
+                if (cUri.type == PREFIX_SYNC)
+                {
+                    addSyncContentRow(docsCursor, cUri.cid);
+                    return docsCursor;
+                }
+
                 // Log.d(TAG, "Default Row " + documentId);
                 DocumentFolderCursor.RowBuilder row = docsCursor.newRow();
                 row.add(Document.COLUMN_DOCUMENT_ID,
@@ -411,6 +418,13 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
                 {
                     String nodeId = NodeRefUtils
                             .getVersionIdentifier(itemCursor.getString(SyncContentSchema.COLUMN_NODE_ID_ID));
+
+                    // Offline creation?
+                    if (nodeId == null)
+                    {
+                        nodeId = Long.toString(cUri.cid);
+                    }
+
                     String nodeName = itemCursor.getString(SyncContentSchema.COLUMN_TITLE_ID);
 
                     File downloadedFile = SyncContentManager.getInstance(getContext()).getSyncFile(selectedAccount,
@@ -739,19 +753,22 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
         EncodedQueryUri cUri = new EncodedQueryUri(parentDocumentId);
 
         Node parentFolder = null;
-        if (nodesIndex.containsKey(cUri.id))
+        if (cUri.type != PREFIX_SYNC)
         {
-            parentFolder = nodesIndex.get(cUri.id);
-        }
-        else if (pathIndex.containsKey(cUri.id))
-        {
-            parentFolder = nodesIndex.get(cUri.id);
-        }
+            if (nodesIndex.containsKey(cUri.id))
+            {
+                parentFolder = nodesIndex.get(cUri.id);
+            }
+            else if (pathIndex.containsKey(cUri.id))
+            {
+                parentFolder = nodesIndex.get(cUri.id);
+            }
 
-        if (parentFolder == null)
-        {
-            parentFolder = session.getServiceRegistry().getDocumentFolderService()
-                    .getNodeByIdentifier(getIdentifier(cUri.id));
+            if (parentFolder == null)
+            {
+                parentFolder = session.getServiceRegistry().getDocumentFolderService()
+                        .getNodeByIdentifier(getIdentifier(cUri.id));
+            }
         }
 
         try
@@ -764,23 +781,27 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
                 case PREFIX_SYNC:
                     // Create URI
                     Uri uri = SyncContentManager.getInstance(getContext()).createTmpSyncFile(selectedAccount,
-                            displayName, parentFolder.getIdentifier(), mimeType);
+                            displayName, cUri.id, mimeType);
 
                     Log.v(TAG, "createTmpSyncFile " + uri);
 
                     // Update with file information
                     File file = SyncContentManager.getInstance(getContext()).getSyncFile(selectedAccount, displayName,
                             uri.getLastPathSegment());
+                    file.createNewFile();
+
                     ContentValues cValues = new ContentValues();
                     cValues.put(SyncContentSchema.COLUMN_TOTAL_SIZE_BYTES, file.length());
                     cValues.put(SyncContentSchema.COLUMN_DOC_SIZE_BYTES, file.length());
                     cValues.put(SyncContentSchema.COLUMN_LOCAL_URI, Uri.fromFile(file).toString());
                     SyncContentManager.getInstance(getContext()).update(uri, cValues);
 
-                    Log.v(TAG, "return createTmpSyncFile " + EncodedQueryUri.encodeItem(PREFIX_DOC, cUri.accountId,
+                    Log.v(TAG, "return createTmpSyncFile " + EncodedQueryUri.encodeItem(PREFIX_SYNC, cUri.accountId,
                             null, Long.parseLong(uri.getLastPathSegment())));
 
-                    return EncodedQueryUri.encodeItem(PREFIX_DOC, cUri.accountId, null,
+                    syncIndex.put(uri.getLastPathSegment(), Long.parseLong(uri.getLastPathSegment()));
+
+                    return EncodedQueryUri.encodeItem(PREFIX_SYNC, cUri.accountId, null,
                             Long.parseLong(uri.getLastPathSegment()));
                 default:
                     createdNode = session.getServiceRegistry().getDocumentFolderService()
@@ -793,7 +814,7 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
         }
         catch (Exception e)
         {
-
+            Log.e(TAG, Log.getStackTraceString(e));
         }
 
         return null;
