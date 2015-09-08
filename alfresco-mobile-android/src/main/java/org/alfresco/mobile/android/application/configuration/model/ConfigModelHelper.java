@@ -176,8 +176,8 @@ public class ConfigModelHelper implements ConfigIconIds
             put(ActivitiesConfigModel.TYPE_ID, new ActivitiesConfigModel());
             put(RepositoryConfigModel.TYPE_ID, new RepositoryConfigModel());
             put(RepositorySearchConfigModel.TYPE_ID, new RepositorySearchConfigModel());
-            put(DocumentDetailsConfigModel.TYPE_ID, new DocumentDetailsConfigModel());
             put(FolderDetailsConfigModel.TYPE_ID, new FolderDetailsConfigModel());
+            put(DocumentDetailsConfigModel.TYPE_ID, new DocumentDetailsConfigModel());
             put(SitesConfigModel.TYPE_ID, new SitesConfigModel());
             put(SiteBrowserConfigModel.TYPE_ID, new SiteBrowserConfigModel());
             put(FavoritesConfigModel.TYPE_ID, new FavoritesConfigModel());

@@ -857,7 +857,7 @@
     <string name="config_view_site_browser">Displays a sites view.</string>
     <string name="config_view_sites">Displays a list of sites.</string>
     <string name="config_view_document_details">Displays the details of a repository document.</string>
-    <string name="config_view_folder_details">Displays the details of a repository folder.</string>
+    <string name="config_view_folder_details">Displays the details of a repository folder or document.</string>
     <string name="config_view_repository">Displays a folder from the repository.</string>
     <string name="config_view_repository_search">Displays a list of nodes based on a query.</string>
     <string name="config_view_tasks">Displays a list of tasks.</string>

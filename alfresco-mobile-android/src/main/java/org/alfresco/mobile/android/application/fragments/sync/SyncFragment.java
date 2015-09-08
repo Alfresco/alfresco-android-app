@@ -43,6 +43,7 @@ import org.alfresco.mobile.android.async.Operation;
 import org.alfresco.mobile.android.async.OperationSchema;
 import org.alfresco.mobile.android.async.node.sync.SyncNodeEvent;
 import org.alfresco.mobile.android.async.node.update.UpdateNodeEvent;
+import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.provider.CursorUtils;
@@ -689,6 +690,12 @@ public class SyncFragment extends BaseCursorGridFragment
             {
                 mi.setActionView(null);
             }
+            if (!ConnectivityUtils.hasNetwork(getActivity()))
+            {
+                AlfrescoNotificationManager.getInstance(getActivity()).showInfoCrouton(getActivity(),
+                        getString(org.alfresco.mobile.android.foundation.R.string.error_session_nodata));
+            }
+            refreshHelper.setRefreshComplete();
             return;
         }
 
