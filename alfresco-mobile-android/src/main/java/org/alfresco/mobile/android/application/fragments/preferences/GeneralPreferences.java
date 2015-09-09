@@ -212,7 +212,7 @@ public class GeneralPreferences extends AlfrescoFragment
         TwoLinesViewHolder vh;
         for (AlfrescoAccount account : accounts)
         {
-            accountView = LayoutInflater.from(getActivity()).inflate(R.layout.row_two_lines_borderless,
+            accountView = LayoutInflater.from(getActivity()).inflate(R.layout.row_two_lines_borderless_rounded,
                     accountContainer, false);
             accountView.setTag(account.getId());
             vh = HolderUtils.configure(accountView, account.getUsername(), account.getTitle(),
