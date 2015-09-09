@@ -104,8 +104,12 @@ public final class AlfrescoExceptionHelper
     {
         int messageId = R.string.error_session_creation;
 
+        if (e instanceof CmisUnauthorizedException)
+        {
+            messageId = R.string.error_session_unauthorized;
+        }
         // USername error during session creation
-        if (e.getCause() instanceof AlfrescoSessionException)
+        else if (e.getCause() instanceof AlfrescoSessionException)
         {
             if (e.getCause().getCause() instanceof CmisUnauthorizedException)
             {
