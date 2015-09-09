@@ -76,8 +76,14 @@ public class MainMenuConfigManager extends BaseConfigManager
     // ///////////////////////////////////////////////////////////////////////////
     public void createMenu()
     {
-        if (rootMenuViewConfig == null) { return; }
+        if (rootMenuViewConfig == null)
+        {
+            vRoot.removeAllViews();
+            vRoot.invalidate();
+            return;
+        }
         vRoot.removeAllViews();
+        vRoot.invalidate();
         createMenu(rootMenuViewConfig, vRoot, LayoutInflater.from(getActivity()));
     }
 
