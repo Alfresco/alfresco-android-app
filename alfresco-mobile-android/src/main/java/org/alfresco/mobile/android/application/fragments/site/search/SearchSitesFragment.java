@@ -307,7 +307,7 @@ public class SearchSitesFragment extends CommonBrowserSitesFragment implements L
     @Override
     public void onLoaderReset(Loader<Cursor> loader)
     {
-
+        searchAdapter.changeCursor(null);
     }
 
     public void setSearchValue(String searchValue)
