@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~  Copyright (C) 2005-2015 Alfresco Software Limited.
+  ~
+  ~ This file is part of Alfresco Activiti Mobile for Android.
+  ~
+  ~ Alfresco Activiti Mobile for Android is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Alfresco Activiti Mobile for Android is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public License
+  ~ along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
+  ~
+  -->
+
+<LinearLayout
+    android:id="@+id/button_container"
+    style="@style/AlfrescoMaterialTheme.Button.BorderLess"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/two_list_minHeight">
+
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id="@+id/icon"
+            android:layout_width="@dimen/thumbnail_height"
+            android:layout_height="@dimen/thumbnail_height"
+            android:layout_marginLeft="@dimen/d_16"
+            android:layout_centerVertical="true"
+            app:riv_border_color="@color/secondary_background"
+            app:riv_tile_mode="clamp"
+            app:riv_border_width="1dip"
+            app:riv_corner_radius="75dip"
+            app:riv_mutate_background="false"
+            app:riv_oval="true" />
+
+        <LinearLayout
+            android:id="@+id/textview_container"
+            style="@style/AlfrescoMaterialTheme.Container.Relative"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/choose"
+            android:layout_toRightOf="@+id/icon"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/toptext"
+                style="@style/AlfrescoMaterialTheme.Text.List.Primary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Text for Preview" />
+
+            <TextView
+                android:id="@+id/bottomtext"
+                style="@style/AlfrescoMaterialTheme.Text.List.Secondary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Plain Text for preview" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/choose"
+            style="@style/AlfrescoMaterialTheme.Icon.Right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
+
+</LinearLayout>

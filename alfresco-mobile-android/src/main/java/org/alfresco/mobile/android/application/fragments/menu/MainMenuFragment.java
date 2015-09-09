@@ -351,7 +351,6 @@ public class MainMenuFragment extends AlfrescoFragment implements AdapterView.On
     {
         if (configService == null || !configService.hasViewConfig())
         {
-            display();
             return;
         }
 
@@ -383,36 +382,6 @@ public class MainMenuFragment extends AlfrescoFragment implements AdapterView.On
             config.createMenu();
             syncFavoritesMenuItem.addAll(config.getViewsByType(ConfigConstants.VIEW_MODEL_SYNC));
         }
-    }
-
-    private void display()
-    {
-        DisplayUtils.show(viewById(R.id.main_menu_group));
-        show(R.id.menu_browse_activities);
-        show(R.id.menu_browse_root);
-        show(R.id.menu_browse_my_sites);
-        if (currentAccount != null && currentAccount.getTypeId() == AlfrescoAccount.TYPE_ALFRESCO_CLOUD)
-        {
-            hide(R.id.menu_workflow);
-        }
-        else
-        {
-            show(R.id.menu_workflow);
-        }
-        show(R.id.menu_favorites);
-        show(R.id.menu_search);
-        show(R.id.menu_downloads);
-        if (OperationsFragment.canDisplay(getActivity(), currentAccount))
-        {
-            show(R.id.menu_notifications);
-            showOperationsMenu = true;
-        }
-        else
-        {
-            hide(R.id.menu_notifications);
-            showOperationsMenu = false;
-        }
-        displayFolderShortcut(SessionUtils.getSession(getActivity()));
     }
 
     private void hideOrDisplay(ViewConfig viewConfig, int viewId)
@@ -554,10 +523,6 @@ public class MainMenuFragment extends AlfrescoFragment implements AdapterView.On
         {
             refresh();
             configure(configManager.getConfig(accountId));
-        }
-        else
-        {
-            display();
         }
     }
 

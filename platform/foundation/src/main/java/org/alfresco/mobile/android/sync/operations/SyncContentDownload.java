@@ -142,6 +142,7 @@ public class SyncContentDownload extends SyncContent
             }
             cValues.put(SyncContentSchema.COLUMN_CONTENT_URI,
                     (String) doc.getPropertyValue(PropertyIds.CONTENT_STREAM_ID));
+            cValues.put(SyncContentSchema.COLUMN_NODE_ID, doc.getIdentifier());
             cValues.put(SyncContentSchema.COLUMN_PROPERTIES, SyncContentManager.serializeProperties(doc));
             cValues.put(SyncContentSchema.COLUMN_TOTAL_SIZE_BYTES, doc.getContentStreamLength());
             cValues.put(SyncContentSchema.COLUMN_BYTES_DOWNLOADED_SO_FAR, doc.getContentStreamLength());

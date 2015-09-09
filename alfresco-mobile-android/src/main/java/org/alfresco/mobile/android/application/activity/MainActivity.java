@@ -616,7 +616,6 @@ public class MainActivity extends BaseActivity
         switch (sessionState)
         {
             case SESSION_ERROR:
-                Bundle b = new Bundle();
                 new MaterialDialog.Builder(this).iconRes(R.drawable.ic_application_logo)
                         .title(R.string.error_session_creation_message)
                         .content(Html.fromHtml(getString(sessionStateErrorMessageId))).positiveText(android.R.string.ok)

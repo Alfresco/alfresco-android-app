@@ -166,7 +166,7 @@ public class NodeChildrenOperation extends ListingOperation<PagingResult<Node>>
             }
             catch (AlfrescoServiceException e)
             {
-                // Do Nothing
+                result.setException(e);
             }
 
             result.setData(pagingResult);

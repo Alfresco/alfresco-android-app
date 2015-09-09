@@ -15,7 +15,7 @@ import org.alfresco.mobile.android.application.configuration.model.ConfigParamet
  */
 public class FolderDetailsConfigModel extends NodeDetailsConfigModel
 {
-    public static final String TYPE_ID = ConfigurationConstant.KEY_DOC_DETAILS;
+    public static final String TYPE_ID = ConfigurationConstant.KEY_FOLDER_DETAILS;
 
     public static final String ICON_ID = ConfigIconIds.ICON_FOLDER;
 
