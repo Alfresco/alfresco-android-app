@@ -1263,7 +1263,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment implement
     @Subscribe
     public void onDocumentCreated(CreateDocumentEvent event)
     {
-        if (event.hasException) { return; }
+        if (event.hasException || adapter == null) { return; }
         boolean hasEmptyAdapter = true;
         hasEmptyAdapter = (adapter.getCount() == 0);
         if (parentFolder != null && parentFolder.getIdentifier().equals(event.parentFolder.getIdentifier()))

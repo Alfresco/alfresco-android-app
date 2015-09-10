@@ -42,15 +42,19 @@ import org.alfresco.mobile.android.async.OperationEvent;
 import org.alfresco.mobile.android.async.OperationRequest.OperationBuilder;
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.foundation.R;
-import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
 import org.alfresco.mobile.android.platform.utils.ConnectivityUtils;
 
 import android.annotation.TargetApi;
 import android.os.Bundle;
+import android.text.Html;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
 
 @TargetApi(11)
 public abstract class BaseGridFragment extends CommonGridFragment
@@ -220,8 +224,9 @@ public abstract class BaseGridFragment extends CommonGridFragment
             {
                 refreshHelper.setRefreshComplete();
             }
-            AlfrescoNotificationManager.getInstance(getActivity()).showInfoCrouton(getActivity(),
-                    getString(R.string.error_session_nodata));
+            Crouton.cancelAllCroutons();
+            Crouton.showText(getActivity(), Html.fromHtml(getString(R.string.error_session_nodata)), Style.INFO,
+                    (ViewGroup) (getRootView().getParent()));
             return;
         }
 

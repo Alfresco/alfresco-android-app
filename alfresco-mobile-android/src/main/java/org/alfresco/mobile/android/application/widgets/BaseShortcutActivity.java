@@ -33,7 +33,9 @@ import org.apache.chemistry.opencmis.commons.PropertyIds;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.squareup.otto.Subscribe;
@@ -59,6 +61,14 @@ public class BaseShortcutActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         displayAsDialogActivity();
         setContentView(R.layout.activitycompat_left_panel);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        if (toolbar != null)
+        {
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
+        }
 
         DocumentFolderPickerFragment.with(this).display();
     }
@@ -95,8 +105,8 @@ public class BaseShortcutActivity extends BaseActivity
         }
         else
         {
-            shortcutName = (selectedSite != null && shortcutName.startsWith("/Sites") && shortcutName
-                    .endsWith("documentLibrary")) ? selectedSite.getTitle() : folder.getName();
+            shortcutName = (selectedSite != null && shortcutName.startsWith("/Sites")
+                    && shortcutName.endsWith("documentLibrary")) ? selectedSite.getTitle() : folder.getName();
         }
         return shortcutName;
     }
@@ -118,8 +128,8 @@ public class BaseShortcutActivity extends BaseActivity
         // Remove OAuthFragment if one
         if (getFragment(AccountOAuthFragment.TAG) != null)
         {
-            getSupportFragmentManager()
-                    .popBackStack(AccountOAuthFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            getSupportFragmentManager().popBackStack(AccountOAuthFragment.TAG,
+                    FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
 
         removeWaitingDialog();
@@ -146,5 +156,21 @@ public class BaseShortcutActivity extends BaseActivity
         requestedAccountId = event.accountToLoad.getId();
         setCurrentAccount(event.accountToLoad);
         displayWaitingDialog();
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // MENU
+    // ///////////////////////////////////////////////////////////////////////////
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

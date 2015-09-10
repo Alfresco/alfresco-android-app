@@ -42,26 +42,15 @@
             android:orientation="horizontal"
             tools:context=".activity.BaseActivity">
 
-            <com.makeramen.roundedimageview.RoundedImageView
+
+            <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/accounts_spinner_icon"
                 android:layout_margin="@dimen/thumbnail_margin"
                 android:layout_width="@dimen/thumbnail_height"
                 android:layout_height="@dimen/thumbnail_height"
-                android:layout_centerVertical="true"
-                app:riv_border_color="@color/secondary_background"
-                app:riv_tile_mode="clamp"
-                app:riv_border_width="1dip"
-                app:riv_corner_radius="75dip"
-                app:riv_mutate_background="false"
-                app:riv_oval="true" />
-
-            <!--<ImageView
-                android:id="@+id/accounts_spinner_icon"
-                style="?MainTheme.ImageView.Thumbnail"
-                android:layout_width="@dimen/avatar_thumbnail"
-                android:layout_height="@dimen/avatar_thumbnail"
-                android:contentDescription="@null"
-                android:src="@drawable/ic_account_light" />-->
+                app:border_width="1dp"
+                app:border_color="#FFFFFF"
+                />
 
             <TextView
                 android:id="@+id/accounts_spinner_title"

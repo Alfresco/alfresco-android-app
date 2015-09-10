@@ -90,7 +90,7 @@ public class PublicDispatcherActivity extends BaseActivity
         if ((Intent.ACTION_SEND.equals(action) || Intent.ACTION_SEND_MULTIPLE.equals(action))
                 && getFragment(UploadFormFragment.TAG) == null)
         {
-            FragmentDisplayer.with(this).load(new UploadFormFragment()).back(false).into(FragmentDisplayer.PANEL_LEFT);
+            FragmentDisplayer.with(this).load(new UploadFormFragment()).back(false).animate(null).into(FragmentDisplayer.PANEL_LEFT);
             return;
         }
 

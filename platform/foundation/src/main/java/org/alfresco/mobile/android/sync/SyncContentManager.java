@@ -386,6 +386,30 @@ public class SyncContentManager extends Manager
                 null, null);
     }
 
+    public static boolean hasPendingSync(Context context, AlfrescoAccount acc)
+    {
+        if (acc == null) { return false; }
+
+        StringBuilder builder = new StringBuilder(SyncContentProvider.getAccountFilter(acc));
+        builder.append(" AND ");
+        builder.append(SyncContentSchema.COLUMN_STATUS + " IN (");
+        builder.append(SyncContentStatus.STATUS_PENDING);
+        builder.append(",");
+        builder.append(SyncContentStatus.STATUS_HIDDEN);
+        builder.append(",");
+        builder.append(SyncContentStatus.STATUS_MODIFIED);
+        builder.append(",");
+        builder.append(SyncContentStatus.STATUS_TO_UPDATE);
+        builder.append(")");
+
+        Cursor pendingcursor = context.getContentResolver().query(SyncContentProvider.CONTENT_URI,
+                SyncContentSchema.COLUMN_ALL, builder.toString(), null, null);
+        int count = pendingcursor.getCount();
+        CursorUtils.closeCursor(pendingcursor);
+
+        return count > 0;
+    }
+
     public Uri getUri(AlfrescoAccount account, String nodeIdentifier)
     {
         if (account == null) { return null; }

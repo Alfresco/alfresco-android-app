@@ -32,18 +32,13 @@
         android:layout_height="wrap_content"
         android:minHeight="@dimen/two_list_minHeight">
 
-        <com.makeramen.roundedimageview.RoundedImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/icon"
+            android:layout_margin="@dimen/thumbnail_margin"
             android:layout_width="@dimen/thumbnail_height"
             android:layout_height="@dimen/thumbnail_height"
-            android:layout_marginLeft="@dimen/d_16"
-            android:layout_centerVertical="true"
-            app:riv_border_color="@color/secondary_background"
-            app:riv_tile_mode="clamp"
-            app:riv_border_width="1dip"
-            app:riv_corner_radius="75dip"
-            app:riv_mutate_background="false"
-            app:riv_oval="true" />
+            app:border_width="1dp"
+            app:border_color="#FFFFFF" />
 
         <LinearLayout
             android:id="@+id/textview_container"

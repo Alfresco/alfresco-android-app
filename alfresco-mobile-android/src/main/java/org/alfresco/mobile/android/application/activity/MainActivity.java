@@ -1065,11 +1065,18 @@ public class MainActivity extends BaseActivity
                         SessionManager.getInstance(MainActivity.this).loadSession(getCurrentAccount());
                     }
                     invalidateOptionsMenu();
+
+                    if (getCurrentAccount() != null && SyncContentManager.hasPendingSync(context, getCurrentAccount()))
+                    {
+                        SyncContentManager.getInstance(context).sync(getCurrentAccount());
+                    }
+
                 }
             }
             catch (Exception e)
             {
                 // Nothing special
+                Log.d(TAG, Log.getStackTraceString(e));
             }
         }
     }

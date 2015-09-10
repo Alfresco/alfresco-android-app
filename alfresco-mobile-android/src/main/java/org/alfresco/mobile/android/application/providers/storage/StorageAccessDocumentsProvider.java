@@ -62,6 +62,8 @@ import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.mimetype.MimeTypeManager;
 import org.alfresco.mobile.android.platform.provider.AlfrescoContentProvider;
 import org.alfresco.mobile.android.platform.provider.CursorUtils;
+import org.alfresco.mobile.android.platform.security.DataProtectionManager;
+import org.alfresco.mobile.android.platform.security.EncryptionUtils;
 import org.alfresco.mobile.android.platform.utils.ConnectivityUtils;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.sync.SyncContentManager;
@@ -433,7 +435,16 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
                     // Is Synced doc ?
                     if (downloadedFile != null && downloadedFile.exists())
                     {
-                        Log.d(TAG, "Doc synced : " + downloadedFile.getPath() + " - Mode " + mode);
+                        if (DataProtectionManager.getInstance(getContext()).isEncryptionEnable()
+                                && DataProtectionManager.getInstance(getContext())
+                                        .isEncrypted(downloadedFile.getPath()))
+                        {
+                            Log.d(TAG, "Decrypt : " + downloadedFile.getPath());
+                            // Decrypt now !
+                            EncryptionUtils.decryptFile(getContext(), downloadedFile.getPath());
+                        }
+
+                        Log.d(TAG, "Create Sync File Descriptor : " + downloadedFile.getPath());
                         // Document available locally
                         return createSyncFileDescriptor(nodeId, isWrite, downloadedFile, accessMode);
                     }
@@ -1676,7 +1687,7 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
             this.file = new File(path);
             this.currentNode = (org.alfresco.mobile.android.api.model.Document) currentNode;
             this.parentFolder = parentFolder;
-            this.isSynced = isSynced;
+            this.isSynced = false;
             this.nodeId = currentNode.getIdentifier();
         }
 
@@ -1702,8 +1713,17 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
                     // Update statut of the sync reference
                     ContentValues cValues = new ContentValues();
                     cValues.put(SyncContentSchema.COLUMN_STATUS, SyncContentStatus.STATUS_MODIFIED);
-                    getContext().getContentResolver().update(SyncContentManager.getInstance(getContext())
-                            .getUri(SessionUtils.getAccount(getContext()), nodeId), cValues, null, null);
+                    Uri localUri;
+                    if (NodeRefUtils.isIdentifier(nodeId) || NodeRefUtils.isNodeRef(nodeId))
+                    {
+                        localUri = SyncContentManager.getInstance(getContext())
+                                .getUri(SessionUtils.getAccount(getContext()), nodeId);
+                    }
+                    else
+                    {
+                        localUri = android.net.Uri.parse(SyncContentProvider.CONTENT_URI + "/" + nodeId);
+                    }
+                    getContext().getContentResolver().update(localUri, cValues, null, null);
 
                     // Sync if it's possible.
                     if (SyncContentManager.getInstance(getContext()).canSync(SessionUtils.getAccount(getContext())))
@@ -1735,6 +1755,7 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
             }
             catch (Exception e)
             {
+                Log.e(TAG, Log.getStackTraceString(e));
                 stopWatching();
             }
             finally
