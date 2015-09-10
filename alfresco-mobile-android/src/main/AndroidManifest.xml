@@ -269,7 +269,7 @@
         </activity>
         <activity
             android:name="org.alfresco.mobile.android.application.widgets.ActionShortcutActivity"
-            android:theme="@style/MainTheme.Dialog"
+            android:theme="@style/AlfrescoMaterialTheme.Dialog"
             android:label="@string/shortcut_actions_title"
             android:enabled="@bool/widgetEnabled">
             <intent-filter>
@@ -281,7 +281,7 @@
 
         <activity
             android:name="org.alfresco.mobile.android.application.widgets.FolderShortcutActivity"
-            android:theme="@style/MainTheme.Dialog"
+            android:theme="@style/AlfrescoMaterialTheme.Dialog"
             android:label="@string/shortcut_title"
             android:enabled="@bool/widgetEnabled">
             <intent-filter>

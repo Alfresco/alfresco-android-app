@@ -43,7 +43,6 @@ import org.alfresco.mobile.android.async.Operation;
 import org.alfresco.mobile.android.async.OperationSchema;
 import org.alfresco.mobile.android.async.node.sync.SyncNodeEvent;
 import org.alfresco.mobile.android.async.node.update.UpdateNodeEvent;
-import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.provider.CursorUtils;
@@ -76,16 +75,21 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.text.Html;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.otto.Subscribe;
+
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
 
 public class SyncFragment extends BaseCursorGridFragment
         implements RefreshFragment, ListingModeFragment, GridFragment, SyncStatusObserver, SelectableFragment
@@ -692,8 +696,10 @@ public class SyncFragment extends BaseCursorGridFragment
             }
             if (!ConnectivityUtils.hasNetwork(getActivity()))
             {
-                AlfrescoNotificationManager.getInstance(getActivity()).showInfoCrouton(getActivity(),
-                        getString(org.alfresco.mobile.android.foundation.R.string.error_session_nodata));
+                Crouton.cancelAllCroutons();
+                Crouton.showText(getActivity(),
+                        Html.fromHtml(getString(org.alfresco.mobile.android.foundation.R.string.error_session_nodata)),
+                        Style.INFO, (ViewGroup) (getRootView().getParent()));
             }
             refreshHelper.setRefreshComplete();
             return;

@@ -79,7 +79,8 @@ public abstract class NodeOperation<T> extends BaseOperation<T>
                 nodeIdentifier = NodeRefUtils.createNodeRefByIdentifier(node.getIdentifier());
                 node = null;
             }
-            else if (NodeRefUtils.isIdentifier(nodeIdentifier) && session instanceof RepositorySessionImpl)
+            else if (nodeIdentifier != null && NodeRefUtils.isIdentifier(nodeIdentifier)
+                    && session instanceof RepositorySessionImpl)
             {
                 nodeIdentifier = NodeRefUtils.createNodeRefByIdentifier(nodeIdentifier);
             }

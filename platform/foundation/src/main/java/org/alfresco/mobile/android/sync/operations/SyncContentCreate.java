@@ -27,6 +27,7 @@ import org.alfresco.mobile.android.async.OperationSchema;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
 import org.alfresco.mobile.android.platform.security.EncryptionUtils;
+import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.sync.SyncContentManager;
 import org.alfresco.mobile.android.sync.SyncContentSchema;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
@@ -111,6 +112,12 @@ public class SyncContentCreate extends SyncContent
                             && !DataProtectionManager.getInstance(context).isEncrypted(localFile.getPath()))
                     {
                         EncryptionUtils.encryptFile(context, localFile.getPath(), true);
+
+                        // Update statut of the sync reference
+                        ContentValues cValues = new ContentValues();
+                        cValues.put(SyncContentSchema.COLUMN_LOCAL_MODIFICATION_TIMESTAMP, localFile.lastModified());
+                        context.getContentResolver().update(SyncContentManager.getInstance(context).getUri(
+                                SessionUtils.getAccount(context), updatedNode.getIdentifier()), cValues, null, null);
                     }
                 }
             }
