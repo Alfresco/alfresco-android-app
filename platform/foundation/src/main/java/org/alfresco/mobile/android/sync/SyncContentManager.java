@@ -540,7 +540,15 @@ public class SyncContentManager extends Manager
         if (appContext != null && acc != null)
         {
             File synchroFolder = getSynchroFolder(acc);
-            File uuidFolder = new File(synchroFolder, NodeRefUtils.getNodeIdentifier(nodeIdentifier));
+            File uuidFolder;
+            if (NodeRefUtils.isIdentifier(nodeIdentifier) || NodeRefUtils.isNodeRef(nodeIdentifier))
+            {
+                uuidFolder = new File(synchroFolder, NodeRefUtils.getNodeIdentifier(nodeIdentifier));
+            }
+            else
+            {
+                uuidFolder = new File(synchroFolder, nodeIdentifier);
+            }
             uuidFolder.mkdirs();
             if (!uuidFolder.exists()) { return null; }
             return new File(uuidFolder, documentName);

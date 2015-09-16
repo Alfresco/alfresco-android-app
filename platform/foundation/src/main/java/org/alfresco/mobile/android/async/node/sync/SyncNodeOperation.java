@@ -301,7 +301,7 @@ public class SyncNodeOperation extends NodeOperation<Boolean>
                         null, null);
                 if (ContentModel.TYPE_FOLDER.equals(childrenCursor.getString(SyncContentSchema.COLUMN_MIMETYPE_ID)))
                 {
-                    prepareChildrenFolderDelete(nodeId);
+                    prepareChildrenFolderDelete(childrenCursor.getString(SyncContentSchema.COLUMN_NODE_ID_ID));
                 }
             }
 
