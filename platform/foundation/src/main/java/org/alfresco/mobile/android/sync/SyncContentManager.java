@@ -187,7 +187,7 @@ public class SyncContentManager extends Manager
     }
 
     public static ContentValues createContentValues(Context context, AlfrescoAccount account, int requestType,
-            String parent, Node node, long time, long folderSize)
+            String parentId, Node node, long time, long folderSize)
     {
         ContentValues cValues = new ContentValues();
         cValues.put(SyncContentSchema.COLUMN_ACCOUNT_ID, account.getId());
@@ -198,7 +198,7 @@ public class SyncContentManager extends Manager
         cValues.put(SyncContentSchema.COLUMN_TITLE, node.getName());
         cValues.put(SyncContentSchema.COLUMN_NOTIFICATION_VISIBILITY, OperationRequest.VISIBILITY_HIDDEN);
         cValues.put(SyncContentSchema.COLUMN_NODE_ID, node.getIdentifier());
-        cValues.put(SyncContentSchema.COLUMN_PARENT_ID, parent);
+        cValues.put(SyncContentSchema.COLUMN_PARENT_ID, parentId);
         if (node instanceof Document)
         {
             cValues.put(SyncContentSchema.COLUMN_MIMETYPE, ((Document) node).getContentStreamMimeType());

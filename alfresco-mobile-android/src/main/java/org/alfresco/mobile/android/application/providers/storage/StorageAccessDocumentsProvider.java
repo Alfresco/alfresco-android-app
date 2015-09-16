@@ -418,8 +418,9 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
                         SyncContentSchema.COLUMN_ALL, null, null, null);
                 if (itemCursor.getCount() == 1 && itemCursor.moveToNext())
                 {
+                    String nodeRefId = itemCursor.getString(SyncContentSchema.COLUMN_NODE_ID_ID);
                     String nodeId = NodeRefUtils
-                            .getVersionIdentifier(itemCursor.getString(SyncContentSchema.COLUMN_NODE_ID_ID));
+                            .getNodeIdentifier(itemCursor.getString(SyncContentSchema.COLUMN_NODE_ID_ID));
 
                     // Offline creation?
                     if (nodeId == null)
@@ -446,7 +447,7 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
 
                         Log.d(TAG, "Create Sync File Descriptor : " + downloadedFile.getPath());
                         // Document available locally
-                        return createSyncFileDescriptor(nodeId, isWrite, downloadedFile, accessMode);
+                        return createSyncFileDescriptor(nodeRefId, isWrite, downloadedFile, accessMode);
                     }
                 }
 
@@ -1167,7 +1168,8 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
 
                 if (row.type == PREFIX_SYNC && !TextUtils.isEmpty(row.id))
                 {
-                    selection.append(SyncContentSchema.COLUMN_PARENT_ID).append(" == '").append(row.id).append("'");
+                    selection.append(SyncContentSchema.COLUMN_PARENT_ID).append(" == '")
+                            .append(NodeRefUtils.createNodeRefByIdentifier(row.id)).append("'");
                 }
                 else
                 {
@@ -1197,7 +1199,9 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
 
                     while (syncCursor.moveToNext())
                     {
-                        syncIndex.put(syncCursor.getString(SyncContentSchema.COLUMN_NODE_ID_ID),
+                        syncIndex.put(
+                                NodeRefUtils.getVersionIdentifier(
+                                        syncCursor.getString(SyncContentSchema.COLUMN_NODE_ID_ID)),
                                 syncCursor.getLong(SyncContentSchema.COLUMN_ID_ID));
                     }
                 }

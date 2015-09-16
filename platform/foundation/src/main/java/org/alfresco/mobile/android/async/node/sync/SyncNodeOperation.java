@@ -257,7 +257,8 @@ public class SyncNodeOperation extends NodeOperation<Boolean>
                     SyncContentProvider.CONTENT_URI,
                     SyncContentSchema.COLUMN_ALL,
                     SyncContentProvider.getAccountFilter(acc) + " AND " + SyncContentSchema.COLUMN_PARENT_ID + " == '"
-                            + NodeRefUtils.getCleanIdentifier(folder.getIdentifier()) + "'", null, null);
+ + folder.getIdentifier() + "'",
+                            null, null);
 
             while (childrenCursor.moveToNext())
             {
