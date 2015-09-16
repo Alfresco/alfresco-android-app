@@ -30,7 +30,6 @@ import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.AccountOAuthHelper;
 import org.alfresco.mobile.android.application.capture.DeviceCapture;
-import org.alfresco.mobile.android.application.capture.DeviceCaptureHelper;
 import org.alfresco.mobile.android.application.configuration.ConfigurationConstant;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
@@ -68,7 +67,6 @@ import org.alfresco.mobile.android.platform.SessionManager;
 import org.alfresco.mobile.android.platform.accounts.AccountsPreferences;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
-import org.alfresco.mobile.android.platform.extensions.ScanSnapManager;
 import org.alfresco.mobile.android.platform.favorite.FavoritesManager;
 import org.alfresco.mobile.android.platform.intent.AlfrescoIntentAPI;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
@@ -669,18 +667,6 @@ public class MainActivity extends BaseActivity
             case R.id.menu_account_reload:
                 sessionManager.loadSession(getCurrentAccount());
                 return true;
-            case R.id.menu_device_capture_camera_photo:
-            case R.id.menu_device_capture_camera_video:
-            case R.id.menu_device_capture_mic_audio:
-                capture = DeviceCaptureHelper.createDeviceCapture(this, item.getItemId());
-                return true;
-
-            case R.id.menu_scan_document:
-                if (ScanSnapManager.getInstance(this) != null)
-                {
-                    ScanSnapManager.getInstance(this).startPresetChooser(this);
-                }
-                return true;
             case R.id.menu_refresh:
                 if (getSupportFragmentManager()
                         .findFragmentById(DisplayUtils.getLeftFragmentId(this)) instanceof RefreshFragment)
@@ -730,6 +716,11 @@ public class MainActivity extends BaseActivity
     // ///////////////////////////////////////////////////////////////////////////
     // UTILS
     // ///////////////////////////////////////////////////////////////////////////
+    public void setCapture(DeviceCapture deviceCapture)
+    {
+        capture = deviceCapture;
+    }
+
     public Node getCurrentNode()
     {
         return currentNode;

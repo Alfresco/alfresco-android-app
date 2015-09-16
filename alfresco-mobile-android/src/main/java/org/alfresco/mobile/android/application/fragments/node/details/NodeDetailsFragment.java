@@ -1334,8 +1334,15 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
 
         if (SyncContentManager.getInstance(getActivity()).canSync(SessionUtils.getAccount(getActivity())))
         {
-            SyncContentManager.getInstance(getActivity()).sync(SessionUtils.getAccount(getActivity()),
-                    event.node.getIdentifier());
+            if (event.node != null)
+            {
+                SyncContentManager.getInstance(getActivity()).sync(SessionUtils.getAccount(getActivity()),
+                        event.node.getIdentifier());
+            }
+            else
+            {
+                SyncContentManager.getInstance(getActivity()).sync(SessionUtils.getAccount(getActivity()));
+            }
         }
 
         if (!DisplayUtils.hasCentralPane(getActivity()) && getFragment(DocumentFolderBrowserFragment.TAG) != null)

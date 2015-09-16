@@ -94,7 +94,7 @@ public class ProcessesFragment extends ProcessesFoundationFragment
                     getArguments().getInt(ARGUMENT_MENUID));
            getActionBar().setDisplayShowTitleEnabled(false);
            getActionBar().setDisplayShowCustomEnabled(true);
-           getActionBar().setCustomView(null);
+            // getActionBar().setCustomView(null);
         }
         else
         {

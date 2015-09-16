@@ -101,4 +101,9 @@ public class PhotoCapture extends DeviceCapture
     {
         return true;
     }
+
+    public int getRequestCode()
+    {
+        return 300;
+    }
 }

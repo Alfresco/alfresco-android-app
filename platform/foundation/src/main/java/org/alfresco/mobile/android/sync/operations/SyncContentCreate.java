@@ -23,6 +23,7 @@ import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.impl.ContentFileImpl;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
+import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.async.OperationSchema;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
@@ -81,8 +82,16 @@ public class SyncContentCreate extends SyncContent
                 String parentIdentifier = itemCursor.getString(SyncContentSchema.COLUMN_PARENT_ID_ID);
 
                 // Retrieve parent
-                parentFolder = (Folder) session.getServiceRegistry().getDocumentFolderService()
-                        .getNodeByIdentifier(parentIdentifier);
+                try
+                {
+                    parentFolder = (Folder) session.getServiceRegistry().getDocumentFolderService()
+                            .getNodeByIdentifier(parentIdentifier);
+                }
+                catch (Exception e)
+                {
+                    parentFolder = (Folder) session.getServiceRegistry().getDocumentFolderService()
+                            .getNodeByIdentifier(NodeRefUtils.createNodeRefByIdentifier(parentIdentifier));
+                }
 
                 if (!session.getServiceRegistry().getDocumentFolderService().getPermissions(parentFolder)
                         .canAddChildren())

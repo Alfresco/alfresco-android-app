@@ -257,7 +257,8 @@ public class SyncNodeOperation extends NodeOperation<Boolean>
                     SyncContentProvider.CONTENT_URI,
                     SyncContentSchema.COLUMN_ALL,
                     SyncContentProvider.getAccountFilter(acc) + " AND " + SyncContentSchema.COLUMN_PARENT_ID + " == '"
-                            + NodeRefUtils.getCleanIdentifier(folder.getIdentifier()) + "'", null, null);
+ + folder.getIdentifier() + "'",
+                            null, null);
 
             while (childrenCursor.moveToNext())
             {
@@ -301,7 +302,7 @@ public class SyncNodeOperation extends NodeOperation<Boolean>
                         null, null);
                 if (ContentModel.TYPE_FOLDER.equals(childrenCursor.getString(SyncContentSchema.COLUMN_MIMETYPE_ID)))
                 {
-                    prepareChildrenFolderDelete(nodeId);
+                    prepareChildrenFolderDelete(childrenCursor.getString(SyncContentSchema.COLUMN_NODE_ID_ID));
                 }
             }
 

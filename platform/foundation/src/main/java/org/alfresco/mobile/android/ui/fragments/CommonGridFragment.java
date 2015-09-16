@@ -289,7 +289,9 @@ public abstract class CommonGridFragment extends AlfrescoFragment
         {
             if (adapter.getCount() == 0)
             {
-                gv.setEmptyView(ev);
+                prepareEmptyInitialView(ev, (ImageView) ev.findViewById(R.id.empty_picture),
+                        (TextView) ev.findViewById(R.id.empty_text),
+                        (TextView) ev.findViewById(R.id.empty_text_description));
             }
             else
             {

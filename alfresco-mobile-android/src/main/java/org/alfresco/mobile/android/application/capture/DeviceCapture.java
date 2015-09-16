@@ -170,8 +170,5 @@ public abstract class DeviceCapture implements Serializable
         this.parentActivity = parentActivity;
     }
 
-    public int getRequestCode()
-    {
-        return Math.abs(getClass().hashCode());
-    }
+    public abstract int getRequestCode();
 }

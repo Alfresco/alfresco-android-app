@@ -1139,7 +1139,8 @@ public abstract class PrepareBaseHelper
         {
             uri = context.getContentResolver().insert(SyncContentProvider.CONTENT_URI,
                     SyncContentManager.createContentValues(context, acc, SyncContentDownload.TYPE_ID,
-                            parentFolder.getIdentifier(), currentFolder, syncScanningTimeStamp, size));
+                            NodeRefUtils.getNodeIdentifier(parentFolder.getIdentifier()), currentFolder,
+                            syncScanningTimeStamp, size));
         }
     }
 
@@ -1183,31 +1184,32 @@ public abstract class PrepareBaseHelper
     // ///////////////////////////////////////////////////////////////////////////
     // CREATION CHILDREN
     // ///////////////////////////////////////////////////////////////////////////
-    private void prepareChildCreation(Folder folder, String parentFolder, String favoriteFolderId, long folderSize)
+    private void prepareChildCreation(Folder folder, String parentFolderId, String favoriteFolderId, long folderSize)
     {
         Uri uri = syncManager.getUri(acc, folder.getIdentifier());
         if (uri == null)
         {
             uri = context.getContentResolver().insert(SyncContentProvider.CONTENT_URI,
-                    SyncContentManager.createContentValues(context, acc, SyncContentDownload.TYPE_ID, parentFolder,
+                    SyncContentManager.createContentValues(context, acc, SyncContentDownload.TYPE_ID, parentFolderId,
                             folder, syncScanningTimeStamp, folderSize));
         }
         else
         {
             // Already present == Favorite Folder
             ContentValues cValues = new ContentValues();
-            cValues.put(SyncContentSchema.COLUMN_PARENT_ID, parentFolder);
+            cValues.put(SyncContentSchema.COLUMN_PARENT_ID, parentFolderId);
             context.getContentResolver().update(uri, cValues, null, null);
         }
     }
 
-    private void prepareChildCreation(Document doc, String parentFolder)
+    private void prepareChildCreation(Document doc, String parentFolderId)
     {
         Uri uri = syncManager.getUri(acc, doc.getIdentifier());
         if (uri == null)
         {
             uri = context.getContentResolver().insert(SyncContentProvider.CONTENT_URI,
-                    SyncContentManager.createContentValues(context, acc, SyncContentDownload.TYPE_ID, parentFolder, doc,
+                    SyncContentManager.createContentValues(context, acc, SyncContentDownload.TYPE_ID, parentFolderId,
+                            doc,
                             syncScanningTimeStamp, 0));
         }
 

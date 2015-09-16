@@ -36,6 +36,8 @@ import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.activity.PrivateDialogActivity;
 import org.alfresco.mobile.android.application.activity.PublicDispatcherActivity;
+import org.alfresco.mobile.android.application.capture.DeviceCapture;
+import org.alfresco.mobile.android.application.capture.DeviceCaptureHelper;
 import org.alfresco.mobile.android.application.configuration.model.view.RepositoryConfigModel;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
@@ -1016,6 +1018,21 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment implement
                 return true;
             case R.id.menu_gallery:
                 CarouselPreviewFragment.with(getActivity()).display();
+                return true;
+            case R.id.menu_device_capture_camera_photo:
+            case R.id.menu_device_capture_camera_video:
+            case R.id.menu_device_capture_mic_audio:
+                DeviceCapture capture = DeviceCaptureHelper.createDeviceCapture((BaseActivity) getActivity(), itemId);
+                if (getActivity() instanceof MainActivity)
+                {
+                    ((MainActivity) getActivity()).setCapture(capture);
+                }
+                return true;
+            case R.id.menu_scan_document:
+                if (ScanSnapManager.getInstance(getActivity()) != null)
+                {
+                    ScanSnapManager.getInstance(getActivity()).startPresetChooser(getActivity());
+                }
                 return true;
             default:
                 break;

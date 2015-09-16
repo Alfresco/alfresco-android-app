@@ -197,6 +197,10 @@ public class AudioCapture extends DeviceCapture
             IOUtils.closeStream(in);
             IOUtils.closeStream(out);
         }
+    }
 
+    public int getRequestCode()
+    {
+        return 302;
     }
 }
