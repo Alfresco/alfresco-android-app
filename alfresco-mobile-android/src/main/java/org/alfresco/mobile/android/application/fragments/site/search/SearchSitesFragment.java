@@ -300,7 +300,10 @@ public class SearchSitesFragment extends CommonBrowserSitesFragment implements L
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data)
     {
-        searchAdapter.changeCursor(data);
+        if (!data.isClosed())
+        {
+            searchAdapter.changeCursor(data);
+        }
         // searchText.setAdapter(searchAdapter);
     }
 
