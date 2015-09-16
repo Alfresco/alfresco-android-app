@@ -1712,24 +1712,30 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
                 {
                     // Update statut of the sync reference
                     ContentValues cValues = new ContentValues();
-                    cValues.put(SyncContentSchema.COLUMN_STATUS, SyncContentStatus.STATUS_MODIFIED);
                     Uri localUri;
                     if (NodeRefUtils.isIdentifier(nodeId) || NodeRefUtils.isNodeRef(nodeId))
                     {
                         localUri = SyncContentManager.getInstance(getContext())
                                 .getUri(SessionUtils.getAccount(getContext()), nodeId);
+                        cValues.put(SyncContentSchema.COLUMN_STATUS, SyncContentStatus.STATUS_MODIFIED);
                     }
                     else
                     {
                         localUri = android.net.Uri.parse(SyncContentProvider.CONTENT_URI + "/" + nodeId);
+                        cValues.put(SyncContentSchema.COLUMN_STATUS, SyncContentStatus.STATUS_PENDING);
                     }
                     getContext().getContentResolver().update(localUri, cValues, null, null);
 
                     // Sync if it's possible.
-                    if (SyncContentManager.getInstance(getContext()).canSync(SessionUtils.getAccount(getContext())))
+                    if ((NodeRefUtils.isIdentifier(nodeId) || NodeRefUtils.isNodeRef(nodeId)) && SyncContentManager
+                            .getInstance(getContext()).canSync(SessionUtils.getAccount(getContext())))
                     {
                         SyncContentManager.getInstance(getContext()).sync(SessionUtils.getAccount(getContext()),
                                 nodeId);
+                    }
+                    else
+                    {
+                        SyncContentManager.getInstance(getContext()).sync(SessionUtils.getAccount(getContext()));
                     }
                     return;
                 }
