@@ -106,4 +106,9 @@ public class VideoCapture extends DeviceCapture
     {
         return true;
     }
+
+    public int getRequestCode()
+    {
+        return 301;
+    }
 }
