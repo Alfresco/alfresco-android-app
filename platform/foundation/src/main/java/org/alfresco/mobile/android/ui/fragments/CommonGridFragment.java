@@ -166,7 +166,7 @@ public abstract class CommonGridFragment extends AlfrescoFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        if (container == null) { return null; }
+        // if (container == null) { return null; }
         setRootView(inflater.inflate(R.layout.sdk_grid, container, false));
 
         init(getRootView(), emptyListMessageId);
