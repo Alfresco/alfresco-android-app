@@ -307,7 +307,13 @@ public class NodeActions extends AbstractActions<Node>
     private void startReview()
     {
         Intent it = new Intent(PrivateIntent.ACTION_START_PROCESS, null, getActivity(), PrivateDialogActivity.class);
-        it.putParcelableArrayListExtra(PrivateIntent.EXTRA_DOCUMENTS, (ArrayList<? extends Parcelable>) selectedItems);
+        ArrayList<Node> docs = new ArrayList<>(selectedItems.size());
+        for (Node node : selectedItems)
+        {
+            docs.add(new NodePlaceHolder(node.getIdentifier(), node.getName()));
+        }
+
+        it.putParcelableArrayListExtra(PrivateIntent.EXTRA_DOCUMENTS, docs);
         getActivity().startActivity(it);
     }
 

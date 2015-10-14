@@ -17,12 +17,18 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.async.workflow.process.start;
 
+import java.util.ArrayList;
+
+import org.alfresco.mobile.android.api.model.Document;
+import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.Process;
+import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.async.LoaderResult;
 import org.alfresco.mobile.android.async.OperationAction;
 import org.alfresco.mobile.android.async.OperationsDispatcher;
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.impl.BaseOperation;
+import org.alfresco.mobile.android.async.utils.NodePlaceHolder;
 import org.alfresco.mobile.android.platform.EventBusManager;
 
 import android.util.Log;
@@ -52,12 +58,46 @@ public class StartProcessOperation extends BaseOperation<Process>
         try
         {
             result = super.doInBackground();
-            process = session
-                    .getServiceRegistry()
-                    .getWorkflowService()
-                    .startProcess(((StartProcessRequest) request).processDefinition,
-                            ((StartProcessRequest) request).assignees, ((StartProcessRequest) request).variables,
-                            ((StartProcessRequest) request).items);
+
+            // Check Nodes values
+            ArrayList<Document> attachments = new ArrayList<>(((StartProcessRequest) request).items.size());
+            for (Node node : ((StartProcessRequest) request).items)
+            {
+                if (node instanceof NodePlaceHolder)
+                {
+                    Node tmpNode;
+                    try
+                    {
+                        tmpNode = session.getServiceRegistry().getDocumentFolderService()
+                                .getNodeByIdentifier(NodeRefUtils.getCleanIdentifier(node.getIdentifier()));
+                    }
+                    catch (Exception e)
+                    {
+                        try
+                        {
+                            tmpNode = session.getServiceRegistry().getDocumentFolderService()
+                                    .getNodeByIdentifier(node.getIdentifier());
+                        }
+                        catch (Exception ee)
+                        {
+                            tmpNode = null;
+                        }
+                    }
+
+                    if (tmpNode != null && tmpNode instanceof Document)
+                    {
+                        attachments.add((Document) tmpNode);
+                    }
+                }
+                else if (node instanceof Document)
+                {
+                    attachments.add((Document) node);
+                }
+            }
+
+            process = session.getServiceRegistry().getWorkflowService().startProcess(
+                    ((StartProcessRequest) request).processDefinition, ((StartProcessRequest) request).assignees,
+                    ((StartProcessRequest) request).variables, attachments);
         }
         catch (Exception e)
         {

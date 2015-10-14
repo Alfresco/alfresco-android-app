@@ -89,7 +89,7 @@ public class CreateTaskFragment extends AlfrescoFragment
 
     private Map<String, Person> assignees = new HashMap<String, Person>(1);
 
-    private Map<String, Document> items = new HashMap<String, Document>(1);
+    private Map<String, Node> items = new HashMap<String, Node>(1);
 
     private int approvers = 0;
 
@@ -145,7 +145,7 @@ public class CreateTaskFragment extends AlfrescoFragment
         {
             @SuppressWarnings("unchecked")
             List<Document> docs = (List<Document>) getArguments().get(PrivateIntent.EXTRA_DOCUMENTS);
-            for (Document document : docs)
+            for (Node document : docs)
             {
                 items.put(document.getIdentifier(), document);
             }
@@ -163,7 +163,7 @@ public class CreateTaskFragment extends AlfrescoFragment
         {
             if (items.size() == 1)
             {
-                List<Document> attachments = new ArrayList<Document>(items.values());
+                List<Node> attachments = new ArrayList<Node>(items.values());
                 titleTask.setText(String.format(getString(R.string.task_review_document),
                         MimeTypeManager.getName(attachments.get(0).getName())));
             }
@@ -402,7 +402,7 @@ public class CreateTaskFragment extends AlfrescoFragment
         List<Person> persons = new ArrayList<Person>(assignees.values());
 
         // Items
-        List<Document> attachments = new ArrayList<Document>(items.values());
+        List<Node> attachments = new ArrayList<>(items.values());
 
         // Start process
         String operationId = Operator.with(getActivity(), getAccount())
