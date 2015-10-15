@@ -412,9 +412,23 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment implement
     // //////////////////////////////////////////////////////////////////////
     private void displayPathShortcut()
     {
+        displayPathShortcut(false);
+    }
+
+    private void displayPathShortcut(boolean force)
+    {
         // /QUICK PATH
         if (parentFolder != null && getActionBar() != null)
         {
+            // If tablet & right panel displayed show nothing
+            if (DisplayUtils.hasCentralPane(getActivity()) && !force)
+            {
+                Fragment sideFragment = getFragmentManager()
+                        .findFragmentById(DisplayUtils.getCentralFragmentId(getActivity()));
+                if (sideFragment != null) { return; }
+            }
+
+            ((ViewGroup) getActionBar().getCustomView()).setVisibility(View.GONE);
             getActionBar().setDisplayUseLogoEnabled(false);
             getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
             String pathValue = parentFolder.getName();
@@ -593,6 +607,8 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment implement
             {
                 nActions.finish();
             }
+            getActivity().supportInvalidateOptionsMenu();
+            displayPathShortcut(true);
         }
         else if (nActions == null || (nActions != null && !nActions.hasMultiSelectionEnabled()))
         {
