@@ -38,6 +38,7 @@ import org.alfresco.mobile.android.application.fragments.node.details.NodeDetail
 import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsFragment;
 import org.alfresco.mobile.android.async.node.favorite.FavoriteNodeEvent;
 import org.alfresco.mobile.android.async.node.favorite.FavoriteNodesEvent;
+import org.alfresco.mobile.android.platform.favorite.FavoritesManager;
 import org.alfresco.mobile.android.ui.ListingModeFragment;
 import org.alfresco.mobile.android.ui.SelectableFragment;
 import org.alfresco.mobile.android.ui.node.favorite.FavoritesNodeFragment;
@@ -124,6 +125,7 @@ public class FavoritesFragment extends FavoritesNodeFragment implements Selectab
     {
         super.onResult(event);
         gv.setColumnWidth(DisplayUtils.getDPI(getResources().getDisplayMetrics(), 1000));
+        FavoritesManager.getInstance(getActivity()).sync(getAccount());
     }
 
     // ///////////////////////////////////////////////////////////////////////////
