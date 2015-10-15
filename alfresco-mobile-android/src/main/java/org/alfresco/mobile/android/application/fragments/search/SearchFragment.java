@@ -278,7 +278,10 @@ public class SearchFragment extends BaseCursorGridFragment
     {
         super.onCreateOptionsMenu(menu, inflater);
         if (!MenuFragmentHelper.canDisplayFragmentMenu(getActivity())) { return; }
-        getMenu(menu);
+        if (optionPosition < 3)
+        {
+            getMenu(menu);
+        }
     }
 
     @Override
@@ -340,6 +343,7 @@ public class SearchFragment extends BaseCursorGridFragment
                     if (itemPosition == optionPosition) { return true; }
                     optionPosition = itemPosition;
                     updateForm(optionAdapter.getItem(itemPosition));
+                    getActivity().supportInvalidateOptionsMenu();
                     return true;
                 }
             };

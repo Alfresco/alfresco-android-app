@@ -21,7 +21,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-import org.alfresco.mobile.android.api.model.Document;
+import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.api.model.ProcessDefinition;
 import org.alfresco.mobile.android.async.OperationRequestIds;
@@ -42,14 +42,14 @@ public class StartProcessRequest extends BaseOperationRequest
 
     final List<Person> assignees;
 
-    final List<Document> items;
+    final List<Node> items;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
     protected StartProcessRequest(Context context, long accountId, String networkId, int notificationVisibility,
             String title, String mimeType, int requestTypeId, ProcessDefinition processDefinition,
-            List<Person> assignees, Map<String, Serializable> variables, List<Document> items)
+            List<Person> assignees, Map<String, Serializable> variables, List<Node> items)
     {
         super(context, accountId, networkId, notificationVisibility, title, mimeType, requestTypeId);
         this.processDefinition = processDefinition;
@@ -83,7 +83,7 @@ public class StartProcessRequest extends BaseOperationRequest
 
         protected List<Person> assignees;
 
-        protected List<Document> items;
+        protected List<Node> items;
 
         public Builder()
         {
@@ -91,7 +91,8 @@ public class StartProcessRequest extends BaseOperationRequest
         }
 
         public Builder(ProcessDefinition processDefinition, List<Person> assignees,
-                Map<String, Serializable> variables, List<Document> items)
+ Map<String, Serializable> variables,
+                List<Node> items)
         {
             this();
             this.processDefinition = processDefinition;

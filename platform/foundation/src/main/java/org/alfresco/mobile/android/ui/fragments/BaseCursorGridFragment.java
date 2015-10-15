@@ -24,6 +24,7 @@ import android.annotation.TargetApi;
 import android.database.Cursor;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
+import android.view.View;
 import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -67,6 +68,10 @@ public abstract class BaseCursorGridFragment extends CommonGridFragment implemen
             ((CursorAdapter) adapter).changeCursor(onChangeCursor(cursor));
         }
         setListShown(true);
+        if (cursor.getCount() == 0)
+        {
+            ev.setVisibility(View.VISIBLE);
+        }
 
         AccessibilityUtils.sendAccessibilityEvent(getActivity());
         refreshHelper.setRefreshComplete();

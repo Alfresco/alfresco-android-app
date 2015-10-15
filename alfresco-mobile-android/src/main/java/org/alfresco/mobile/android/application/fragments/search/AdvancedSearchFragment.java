@@ -374,7 +374,8 @@ public class AdvancedSearchFragment extends AlfrescoFragment
 
     private void startPersonPicker()
     {
-        UserSearchFragment.with(getActivity()).fragmentTag(TAG).singleChoice(true).displayAsDialog();
+        UserSearchFragment.with(getActivity()).fragmentTag(TAG).singleChoice(true).mode(UserSearchFragment.MODE_PICK)
+                .displayAsDialog();
     }
 
     private void search()

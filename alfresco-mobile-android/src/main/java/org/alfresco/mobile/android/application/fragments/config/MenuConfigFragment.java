@@ -329,8 +329,8 @@ public class MenuConfigFragment extends AlfrescoFragment implements DefaultMenuC
         {
             profileId = customConfiguration.getDefaultProfile().getIdentifier();
         }
-        ViewConfig rootMenuViewConfig = customConfiguration.getViewConfig(customConfiguration.getProfile(profileId)
-                .getRootViewId(), configManager.getCurrentScope());
+        ViewConfig rootMenuViewConfig = customConfiguration.getViewConfig(
+                customConfiguration.getProfile(profileId).getRootViewId(), configManager.getCurrentScope());
 
         for (ViewConfig viewConfig : ((ViewGroupConfig) rootMenuViewConfig).getItems())
         {
@@ -359,25 +359,32 @@ public class MenuConfigFragment extends AlfrescoFragment implements DefaultMenuC
         addMenuConfigItem(VIEW_REPOSITORY, RepositoryConfigModel.LABEL_ID_REPOSITORY, RepositoryConfigModel.TYPE_ID,
                 RepositoryConfigModel.MODEL_ICON_ID_REPOSITORY, null);
 
-        // Shared Files
-        HashMap<String, Object> sharedProperties = new HashMap<String, Object>();
-        sharedProperties.put(NodeBrowserTemplate.ARGUMENT_FOLDER_TYPE_ID, RepositoryConfigModel.FOLDER_TYPE_SHARED);
-        addMenuConfigItem(VIEW_REPOSITORY_SHARED, RepositoryConfigModel.LABEL_ID_SHARED, RepositoryConfigModel.TYPE_ID,
-                RepositoryConfigModel.MODEL_ICON_ID_SHARED, sharedProperties);
+        if (account.getTypeId() != AlfrescoAccount.TYPE_ALFRESCO_CLOUD)
+        {
+            // Shared Files
+            HashMap<String, Object> sharedProperties = new HashMap<String, Object>();
+            sharedProperties.put(NodeBrowserTemplate.ARGUMENT_FOLDER_TYPE_ID, RepositoryConfigModel.FOLDER_TYPE_SHARED);
+            addMenuConfigItem(VIEW_REPOSITORY_SHARED, RepositoryConfigModel.LABEL_ID_SHARED,
+                    RepositoryConfigModel.TYPE_ID, RepositoryConfigModel.MODEL_ICON_ID_SHARED, sharedProperties);
+        }
 
         // Sites
         addMenuConfigItem(VIEW_SITES, SiteBrowserConfigModel.MENU_LABEL_ID, SiteBrowserConfigModel.TYPE_ID,
                 SiteBrowserConfigModel.MODEL_ICON_ID, null);
 
         // Userhome
-        HashMap<String, Object> userHomeProperties = new HashMap<String, Object>();
-        userHomeProperties.put(NodeBrowserTemplate.ARGUMENT_FOLDER_TYPE_ID, RepositoryConfigModel.FOLDER_TYPE_USERHOME);
-        addMenuConfigItem(VIEW_REPOSITORY_USERHOME, RepositoryConfigModel.LABEL_ID_USERHOME,
-                RepositoryConfigModel.TYPE_ID, RepositoryConfigModel.MODEL_ICON_ID_USERHOME, userHomeProperties);
+        if (account.getTypeId() != AlfrescoAccount.TYPE_ALFRESCO_CLOUD)
+        {
+            HashMap<String, Object> userHomeProperties = new HashMap<String, Object>();
+            userHomeProperties.put(NodeBrowserTemplate.ARGUMENT_FOLDER_TYPE_ID,
+                    RepositoryConfigModel.FOLDER_TYPE_USERHOME);
+            addMenuConfigItem(VIEW_REPOSITORY_USERHOME, RepositoryConfigModel.LABEL_ID_USERHOME,
+                    RepositoryConfigModel.TYPE_ID, RepositoryConfigModel.MODEL_ICON_ID_USERHOME, userHomeProperties);
 
-        // Tasks & Workflow
-        addMenuConfigItem(VIEW_TASKS, TasksConfigModel.MENU_LABEL_ID, TasksConfigModel.TYPE_ID,
-                TasksConfigModel.MODEL_ICON_ID, null);
+            // Tasks & Workflow
+            addMenuConfigItem(VIEW_TASKS, TasksConfigModel.MENU_LABEL_ID, TasksConfigModel.TYPE_ID,
+                    TasksConfigModel.MODEL_ICON_ID, null);
+        }
 
         // Favorites
         addMenuConfigItem(VIEW_FAVORITES, FavoritesConfigModel.MENU_LABEL_ID, FavoritesConfigModel.TYPE_ID,

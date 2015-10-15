@@ -174,6 +174,7 @@ public class UIUtils
                         .getSystemService(FragmentActivity.LAYOUT_INFLATER_SERVICE);
                 v = inflater.inflate(R.layout.app_header_row, null);
             }
+            v.setVisibility(View.VISIBLE);
 
             TextView tv = (TextView) v.findViewById(R.id.toptext);
             if (SessionUtils.getAccount(activity) != null
