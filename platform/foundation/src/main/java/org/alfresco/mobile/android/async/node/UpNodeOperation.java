@@ -110,6 +110,7 @@ public abstract class UpNodeOperation extends NodeOperation<Document> implements
 
     protected Folder retrieveParentFolder()
     {
+        if (session == null) { return null; }
         if (parentFolder == null && parentFolderIdentifier != null)
         {
             parentFolder = (Folder) session.getServiceRegistry().getDocumentFolderService()

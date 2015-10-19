@@ -41,19 +41,30 @@ import org.alfresco.mobile.android.platform.intent.AlfrescoIntentAPI;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.provider.MediaStore;
+import android.util.Log;
 
 /**
  * @author Jean Marie Pascal
  */
 public class IntentAPIDispatcherActivity extends BaseActivity
 {
+    private static final int REQUEST_IMAGE_CAPTURE = 1;
+
+    private static final String PARAM_URI = "tmpFileUri";
+
     private static final String MIMETYPE_JPG = "image/jpg";
 
     private static final String MIMETYPE_TXT = "text/plain";
+
+    private Uri mOutputFileUri;
 
     private File payload;
 
@@ -67,14 +78,43 @@ public class IntentAPIDispatcherActivity extends BaseActivity
     // LIFECYCLE
     // ///////////////////////////////////////////////////////////////////////////
     @Override
+    protected void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+        if (outState != null)
+        {
+            outState.putParcelable(PARAM_URI, mOutputFileUri);
+        }
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState)
+    {
+        super.onRestoreInstanceState(savedInstanceState);
+        mOutputFileUri = savedInstanceState.getParcelable(PARAM_URI);
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
         String action = getIntent().getAction();
         String mimetype = getIntent().getType();
         accountId = getIntent().getLongExtra(AlfrescoIntentAPI.EXTRA_ACCOUNT_ID, -1);
         folderId = getIntent().getStringExtra(AlfrescoIntentAPI.EXTRA_FOLDER_ID);
         canUpload = (accountId != -1 && folderId != null);
+
+        if (savedInstanceState != null)
+        {
+            mOutputFileUri = savedInstanceState.getParcelable(PARAM_URI);
+        }
+
+        if (mOutputFileUri != null)
+        {
+            // finish();
+            return;
+        }
 
         if (AlfrescoIntentAPI.ACTION_CREATE.equals(action))
         {
@@ -95,6 +135,7 @@ public class IntentAPIDispatcherActivity extends BaseActivity
                     folder.mkdirs();
                 }
                 payload = new File(folder.getPath(), createFilename("IMG_", "jpg"));
+                Log.i("[WIDGET]", payload.getName());
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(payload));
                 if (intent.resolveActivity(getPackageManager()) == null)
                 {
@@ -102,8 +143,9 @@ public class IntentAPIDispatcherActivity extends BaseActivity
                             getString(R.string.feature_disable));
                     return;
                 }
+                mOutputFileUri = Uri.fromFile(payload);
+                startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
 
-                startActivityForResult(intent, 1);
                 return;
             }
 
@@ -162,7 +204,7 @@ public class IntentAPIDispatcherActivity extends BaseActivity
                 {
                     requestsBuilder.add(new CreateDocumentRequest.Builder(folderId, file.getName(),
                             new ContentFileProgressImpl(file))
-                            .setNotificationVisibility(OperationRequest.VISIBILITY_NOTIFICATIONS));
+                                    .setNotificationVisibility(OperationRequest.VISIBILITY_NOTIFICATIONS));
                 }
                 String operationId = Operator.with(this, acc).load(requestsBuilder);
             }
@@ -179,9 +221,11 @@ public class IntentAPIDispatcherActivity extends BaseActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
-        if (canUpload)
+        payload = new File(mOutputFileUri.getPath());
+
+        if (canUpload && requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK)
         {
-            ArrayList<File> files = new ArrayList<File>(1);
+            ArrayList<File> files = new ArrayList<>(1);
             files.add(payload);
             send(files);
         }
@@ -199,9 +243,9 @@ public class IntentAPIDispatcherActivity extends BaseActivity
         List<OperationBuilder> requestsBuilder = new ArrayList<OperationBuilder>(files.size());
         for (File file : files)
         {
-            requestsBuilder.add(new CreateDocumentRequest.Builder(folderId, file.getName(),
-                    new ContentFileProgressImpl(file))
-                    .setNotificationVisibility(OperationRequest.VISIBILITY_NOTIFICATIONS));
+            requestsBuilder
+                    .add(new CreateDocumentRequest.Builder(folderId, file.getName(), new ContentFileProgressImpl(file))
+                            .setNotificationVisibility(OperationRequest.VISIBILITY_NOTIFICATIONS));
         }
         String operationId = Operator.with(this, acc).load(requestsBuilder);
     }
@@ -212,4 +256,61 @@ public class IntentAPIDispatcherActivity extends BaseActivity
 
         return prefix + timeStamp + "." + extension;
     }
+
+    private void openPhotoChooser()
+    {
+        // Determine Uri of camera image to save
+        File folder = AlfrescoStorageManager.getInstance(this).getFileInPrivateFolder("/temp");
+        if (!folder.exists())
+        {
+            folder.mkdirs();
+        }
+        payload = new File(folder.getPath(), createFilename("IMG_", "jpg"));
+        mOutputFileUri = Uri.fromFile(payload);
+
+        // Camera.
+        final List<Intent> cameraIntents = new ArrayList<Intent>();
+        final Intent captureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        final PackageManager packageManager = getPackageManager();
+        final List<ResolveInfo> listCam = packageManager.queryIntentActivities(captureIntent, 0);
+        for (ResolveInfo res : listCam)
+        {
+            final String packageName = res.activityInfo.packageName;
+            final Intent intent = new Intent(captureIntent);
+            intent.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
+            intent.setPackage(packageName);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, mOutputFileUri);
+            cameraIntents.add(intent);
+        }
+
+        // Filesystem.
+        final Intent galleryIntent = new Intent();
+        galleryIntent.setType("image/*");
+        galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
+
+        // Chooser of filesystem options.
+        final Intent chooserIntent = Intent.createChooser(galleryIntent, "Select Source");
+
+        // Add the camera options.
+        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, cameraIntents.toArray(new Parcelable[] {}));
+
+        startActivityForResult(chooserIntent, REQUEST_IMAGE_CAPTURE);
+    }
+
+    /*
+     * @Override public void onActivityResult(int requestCode, int resultCode,
+     * Intent data) { Uri selectedImageUri = null; //Log.v(TAG,
+     * "#onActivityResult req: " + requestCode); if (resultCode ==
+     * Activity.RESULT_OK) { if (requestCode == REQUEST_IMAGE_CAPTURE) { final
+     * boolean isCamera; if (data == null) { isCamera = true; } else { final
+     * String action = data.getAction(); if (action == null) { isCamera = false;
+     * } else { isCamera =
+     * action.equals(android.provider.MediaStore.ACTION_IMAGE_CAPTURE); } } if
+     * (isCamera) { selectedImageUri = mOutputFileUri; } else { selectedImageUri
+     * = data == null ? null : data.getData(); } if (selectedImageUri != null) {
+     * //showImageTaken(selectedImageUri); ArrayList<File> files = new
+     * ArrayList<>(1); files.add(new File(selectedImageUri.getPath()));
+     * send(files); } else { // TODO: show no image data received message } } }
+     * finish(); }
+     */
 }
