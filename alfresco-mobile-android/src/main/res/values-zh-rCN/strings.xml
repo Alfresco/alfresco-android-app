@@ -20,18 +20,40 @@
     <string name="app_name">Alfresco</string>
     <string name="empty_accounts">无可用 Alfresco 帐户</string>
 
-    <!-- HOME SCREEN -->
-    <string name="home_login">登录</string>
+    <!-- SIGN IN & CREATE ACCOUNT SCREEN -->
+    <string name="general_login_server_title">输入您的 Alfresco 服务器主机名</string>
+    <string name="general_login_server_hostname">主机名</string>
+    <string name="general_login_server_next">继续</string>
+    <string name="general_login_server_done">完成</string>
+    <string name="general_login_credentials_title">输入您的凭证</string>
+    <string name="general_login_credentials_username">用户名</string>
+    <string name="general_login_credentials_password">密码</string>
+    <string name="general_login_credentials_show_password">显示密码</string>
+    <string name="general_login_credentials_sign_in">activiti.alfresco.com</string>
+    <string name="general_login_credentials_or">或者</string>
+    <string name="general_login_credentials_connect">Activiti 预置型</string>
+    <string name="general_login_signed_in_title">成功登录！</string>
+    <string name="general_login_account_added">帐户已添加！</string>
+    <string name="general_login_account_name">对此帐户命名（可选）</string>
+    <string name="general_login_account_name_title">最后&#8230;</string>
+    <string name="prompt_url">URL</string>
+    <string name="general_login_check_server">服务器验证</string>
+
+    <string name="settings_userinfo">帐户</string>
+    <string name="settings_userinfo_account">详细信息</string>
+    <string name="settings_userinfo_account_summary">编辑用户和服务器信息</string>
+    <string name="settings_userinfo_account_name">名称</string>
+    <string name="settings_userinfo_account_name_summary">编辑帐户名称</string>
+    <string name="settings_account">帐户设置</string>
+
+    <string name="home_signin">登录</string>
     <string name="home_account">我已经有一个帐户</string>
-    <string name="home_helper">如果想要了解 Alfresco Mobile 的更多信息，请浏览帮助区域中<a href="alfresco://view_help_guide/">我们的指南</a></string>
+    <string name="home_helper">如果您要了解有关 Alfresco Mobile 的更多信息，请查看 <a href="alfresco://view_help_guide/">帮助区域中</a> 的指南</string>
 
-    <!-- AlfrescoAccount WIZARD SCRE STEP 1 -->
-    <string name="account_wizard_alfresco_server">Alfresco 服务器</string>
-    <string name="account_wizard_alfresco_server_description">连接至 Alfresco 服务器</string>
-    <string name="account_wizard_alfresco_cloud">Alfresco 云</string>
-    <string name="account_wizard_alfresco_cloud_description">访问 Alfresco 云帐户</string>
+    <string name="account_wizard_alfresco_server">Alfresco One</string>
+    <string name="account_wizard_or">或者</string>
+    <string name="account_wizard_alfresco_cloud">Alfresco Cloud</string>
 
-    <!-- AlfrescoAccount WIZARD SCREEN STEP 2 -->
     <string name="account">帐户</string>
     <string name="action_add_account">添加一个帐户</string>
     <string name="account_username">用户名</string>
@@ -42,85 +64,22 @@
     <string name="account_hostname_required_hint">主机名，如 www.example.com（必填）</string>
     <string name="account_hostname_hint">www.example.com（必填）</string>
     <string name="account_description">说明</string>
-    <string name="account_description_optional_hint">说明（可选）。 默认为 Alfresco 服务器</string>
+    <string name="account_description_optional_hint">说明（可选）。默认为 Alfresco 服务器</string>
     <string name="account_description_hint">Alfresco 服务器（可选）</string>
     <string name="account_advanced">高级</string>
     <string name="account_authentication">帐户身份验证</string>
     <string name="account_https">HTTPS</string>
     <string name="account_https_on_hint">HTTPS 打开</string>
     <string name="account_https_off_hint">HTTPS 关闭</string>
-    <string name="account_port">端口</string>
-    <string name="account_port_hint">端口（可选）</string>
-    <string name="account_servicedocument">服务 URL</string>
-    <string name="account_servicedocument_hint">服务 URL（可选）。 </string>
-    <string name="account_wizard_step2_title">帐户身份验证信息</string>
     <string name="account_verify">正在验证 Alfresco 帐户信息&#8230;</string>
-    <string name="account_validate">保存</string>
-    <string name="account_validate_hint">保存您的 Alfresco 帐户信息</string>
-    <string name="account_validate_disable_hint">请填写用户名、密码和主机名字段。</string>
-    <string name="account_validate_disable_url_hint">您的主机名和服务 URL 值可能有误。 请检查您的 Alfresco 帐户设置。</string>
-
-
-    <!-- AlfrescoAccount WIZARD SCREEN STEP 3 -->
-    <string name="account_wizard_alldone_description">您的 Alfresco 帐户已可使用。</string>
-
-    <!-- AlfrescoAccount WIZARD SCREEN STEP -->
-    <string name="account_wizard_step1">步骤 1 / 2</string>
-    <string name="account_wizard_step1_description">选择帐户</string>
-    <string name="account_wizard_step2">步骤 2 / 2</string>
-    <string name="account_wizard_step2_description">帐户信息</string>
 
     <!-- ACCOUNTS -->
-    <string name="account_not_activated">您的 Alfresco 帐户没有激活。 请检查管理帐户屏幕。</string>
-    <string name="account_default_cloud">Alfresco 云</string>
+    <string name="account_default_cloud">Alfresco Cloud</string>
     <string name="account_default_onpremise">Alfresco 服务器</string>
-    <string name="account_edit_hint">编辑 "%s" Alfresco 帐户信息</string>
-    <string name="account_delete_hint">删除 "%s" 帐户</string>
-
 
     <!-- WAITING SESSION -->
     <string name="wait_title">请稍候</string>
     <string name="wait_message">正在连接您的服务器&#8230;</string>
-
-    <!-- SESSION ERROR -->
-    <string name="retry_account_loading">重试</string>
-    <string name="error_session_creation_title">保存帐户</string>
-    <string name="error_session_creation_message">连接错误</string>
-    <string name="error_session_creation">无法进行身份验证。 检查您的 Alfresco 帐户设置。</string>
-    <string name="error_session_hostname"><![CDATA[您的<b>主机名</b>值可能有误<br/>或者您可能需要<b>打开您的 VPN</b>。<br/>请检查您的 Alfresco 帐户设置。]]></string>
-    <string name="error_session_nodata"><![CDATA[<p><b>您的设备没有数据连接。</b><br/></p>请检查您的设备设置并启用数据连接。]]></string>
-    <string name="error_session_unauthorized"><![CDATA[不允许您访问此服务器。<br/>请检查您的 Alfresco 帐户设置<b>（用户名/密码）</b>。]]></string>
-    <string name="error_session_service_url"><![CDATA[您的<b>服务 url</b> 值不正确。<br/>请检查您的 Alfresco 帐户设置。]]></string>
-    <string name="error_session_service_unavailable"><![CDATA[由于维护停机或容量问题服务器暂时无法接收您的请求。<br/>请稍后重试。]]></string>
-    <string name="error_session_notfound"><![CDATA[无法连接您的服务器。<br/>请检查您的 Alfresco 帐户设置。]]></string>
-    <string name="error_session_port"><![CDATA[您的<b>端口</b>值不正确。<br/>请检查您的 Alfresco 帐户设置。]]></string>
-    <string name="error_session_certificate">
-<![CDATA[<p><b>服务器的安全证书不受信任！</b><br/></p>
-		颁发您的目标服务器证书的第三方组织不是您的设备所认可的同一组织。<br/>
-		为了让 Alfresco Mobile 确认您正在与合适的服务器连接，其证书必须来自受信任的组织。<br/>
-		如果您的服务器有一个自签发的证书，请将其添加到您的设备上以便成功进行连接。<br/> ]]>
-    </string>
-    <string name="error_session_certificate_expired">
-<![CDATA[<p><b>服务器的安全证书已过期或无效！</b><br/></p>
-		请检查您的设备设置的日期和时间。<br/>如果问题仍然存在，请联系您的管理员。 ]]>
-    </string>
-    <string name="error_session_ssl">
-<![CDATA[<p><b>SSL 协议出错。</b><br/></p>
-        请检查您的 Alfresco 帐户设置并重试。<br/>如果问题仍然存在，请联系您的管理员。]]>
-    </string>
-    <string name="error_session_cloud_unavailable">
-<![CDATA[<p><b>云端的 Alfresco 现在非常繁忙！</b><br/></p>
-        请过几分钟再试。<br/>]]>
-    </string>
-    <string name="error_session_expired">您的会话已过期。 请重新登录。</string>
-    <string name="error_session_refresh">正在刷新会话。</string>
-    <string name="error_chunk_transfert"><![CDATA[服务器不支持分块传输。<br/>请重新加载您的帐户</b>。]]></string>
-
-    <!-- MESSAGE ERROR -->
-    <string name="error_general_title">出错了。</string>
-    <string name="error_general">出错了。 请重试。</string>
-    <string name="error_account_url">URL 不正确。 请检查您的 Alfresco 帐户设置。</string>
-    <string name="error_unknown_filepath">未找到资源。</string>
 
     <!-- DETAILS -->
     <string name="geolocation">地理位置</string>
@@ -147,6 +106,7 @@
     <string name="menu_browse_sites">站点</string>
     <string name="menu_browse_userhome">我的文件</string>
     <string name="menu_browse_shared">共享文件</string>
+    <string name="menu_browse_site_finder">站点查找工具</string>
     <string name="menu_browse_all_sites">所有站点</string>
     <string name="menu_browse_my_sites">我的站点</string>
     <string name="menu_browse_favorite_sites">收藏站点</string>
@@ -194,7 +154,7 @@
     <string name="update_complete">更新完成。</string>
     <string name="update_in_progress">正在更新&#8230;</string>
     <string name="error_unable_open_file_title">无法打开此文件。</string>
-    <string name="error_unable_open_file">不支持此文件格式。 您需要安装一个可以读取它的应用程序。</string>
+    <string name="error_unable_open_file">不支持此文件格式。您需要安装一个可以读取它的应用程序。</string>
 
     <!-- OTHER -->
     <string name="unlike">不喜欢</string>
@@ -208,11 +168,12 @@
     <string name="docs_prefix" />
 
     <!-- About Message -->
+    <string name="version_number">版本</string>
     <string name="buildnumber_version">版本： </string>
     <string name="sdknumber_version">SDK： </string>
     <string name="about_description">
 <![CDATA[
-<p>Alfresco Mobile 连接至云端的 Alfresco 和 Alfresco 内部部署服务器（3.4 及以上版本）以便安全访问当前您的企业内容。</p>
+<p>Alfresco Mobile 连接至 Alfresco Cloud 和 Alfresco 内部部署服务器（3.4 及以上版本）以便安全访问当前您的企业内容。</p>
 
 <p>Alfresco Mobile 使用 Alfresco 登录凭证（通过 HTTP 或 HTTPS）与您的 Alfresco 存储库连接，并且根据用户的权限管理用户访问。</p>
 ]]>
@@ -237,7 +198,7 @@
     <string name="delete_sucess">\"%s\" 已成功删除。</string>
 
     <!-- Save Back -->
-    <string name="save_back_description">\"%s\" 已修改。 是否要上传此新版本？</string>
+    <string name="save_back_description">\"%s\" 已修改。是否要上传此新版本？</string>
     <string name="update_sucess">\"%s\" 已成功更新。</string>
     <string name="no_voice_recorder">此设备上没有录音机</string>
     <string name="cannot_capture">捕获此信息无法完成</string>
@@ -262,7 +223,7 @@
 
     <!-- DATA PROTECTION -->
     <string name="data_protection">数据保护</string>
-    <string name="data_protection_blurb"><![CDATA[<p><b>数据保护可用。</b><br/>您想要启用吗？ <p>  这将对每个帐户的所有已下载 Alfresco 内容加密，这意味着此内容无法用其他应用程序读取，而只能用 Alfresco 应用程序读取。 ]]></string>
+    <string name="data_protection_blurb"><![CDATA[<p><b>数据保护可用。</b><br/>您想要启用吗？ <p>  这将对每个帐户的所有已下载 Alfresco 内容加密，这意味着此内容无法用其他应用程序读取，而只能用 Alfresco 应用程序读取。]]></string>
     <string name="decryption_failed">解密失败</string>
     <string name="protect_question"><![CDATA[<p><b>您现在是否想要保护所有已下载的 Alfresco 内容？</b><p>  这将应用到您从您的所有 Alfresco 帐户下载的所有内容，并且意味着此内容无法用其他应用程序读取，而只能用 Alfresco 应用程序读取。]]></string>
     <string name="unprotect_question"><![CDATA[<p><b>您现在是否想要取消对所有已下载的 Alfresco 内容的保护？</b><p>  这将应用到您从您的所有 Alfresco 帐户下载的所有内容。]]></string>
@@ -279,6 +240,7 @@
     <string name="open_as_txt">文本文档</string>
 
     <!-- SITES ACTION -->
+    <string name="sites_empty_title">未找到站点</string>
     <string name="action_join_site">加入</string>
     <string name="action_join_request_site">请求加入</string>
     <string name="action_leave_site">离开</string>
@@ -357,7 +319,7 @@
     <!-- Settings -->
     <string name="settings">设置</string>
     <string name="settings_enterprise">企业设置</string>
-    <string name="settings_privatefolder_summary">启用数据保护时所有已下载内容只能在 Alfresco 应用程序中读取。 （仅限于企业客户）</string>
+    <string name="settings_privatefolder_summary">启用数据保护时所有已下载内容只能在 Alfresco 应用程序中读取。（仅限于企业客户）</string>
     <string name="settings_privatefolder_title">数据保护</string>
     <string name="settings_links">链接</string>
     <string name="settings_links_website">Alfresco</string>
@@ -365,11 +327,13 @@
     <string name="settings_links_website_url">http://www.alfresco.com/products/mobile</string>
     <string name="settings_rating">发表评论</string>
     <string name="settings_rating_summary">在 Google Play 上对 Alfresco Mobile 评级</string>
+    <string name="settings_rating_packagename">org.alfresco.mobile.android.application</string>
     <string name="settings_rating_url">market://details?id=org.alfresco.mobile.android.application</string>
     <string name="settings_links_facebook">在 Facebook 上点赞 Alfresco</string>
     <string name="settings_links_facebook_summary">在 Facebook 上点赞</string>
     <string name="settings_links_facebook_url">http://www.facebook.com/alfrescosoftware</string>
     <string name="settings_favorite">收藏夹</string>
+    <string name="settings_synced_content">已同步内容</string>
     <string name="settings_favorite_sync">启用同步</string>
     <string name="settings_favorite_sync_summary">启用 \"%s\" 同步</string>
     <string name="settings_favorite_sync_data">数据使用量</string>
@@ -398,20 +362,21 @@
     </plurals>
 
     <!-- Favorites -->
-    <string name="menu_favorites_folder">收藏夹文件夹</string>
+    <string name="menu_favorites_folder">收藏的文件夹</string>
     <string name="menu_favorites">收藏夹</string>
+    <string name="sync_mark">标记为同步</string>
     <string name="synced_content">已同步内容</string>
     <string name="empty_favorites">无收藏夹</string>
-    <string name="favorites_document">收藏夹</string>
+    <string name="favorites_document">收藏</string>
     <string name="error_retrieve_favorite">无法检索此内容的收藏夹信息。</string>
     <string name="favorites_activate">\"%s\" 的同步内容</string>
     <string name="favorites_activate_description">您是否想让您的收藏夹内容自动与此设备同步？</string>
     <string name="favorites_deactivate">停用同步</string>
     <string name="favorites_deactivate_description"><![CDATA[<p>您是否想要停用同步？</p> 所有已同步内容将从您的设备删除。]]></string>
     <string name="sync_error_title">同步错误</string>
-    <string name="sync_error_node_unfavorited"><![CDATA[从您开始编辑时<p>您就已取消收藏<b>%s</b>。 <br/> <b>将</b>您编辑的版本同步到服务器或<b>保存</b>到您的 \"Downloads\" 文件夹。 </p>]]></string>
+    <string name="sync_error_node_unfavorited"><![CDATA[从您开始编辑时<p>您就已经取消同步<b>%s</b>。<br/> <b>将</b>您编辑的版本同步到服务器或<b>保存</b>到您的 \"Downloads\" 文件夹。</p>]]></string>
     <string name="sync_error_node_deleted"><![CDATA[<p><b>%s</b> 已从服务器中删除，但是在您的 \"Downloads\" 文件夹中保留了一个副本。</p>]]></string>
-    <string name="sync_error_no_permission"><![CDATA[<p>您没有上传 <b>%s</b> 的已编辑版本所需要的权限。 您可以将其<b>保存</b>到您的 \"Downloads\"文件夹，或用服务器版本<b>覆盖</b>它以放弃您的编辑。]]></string>
+    <string name="sync_error_no_permission"><![CDATA[<p>您没有上传 <b>%s</b> 的已编辑版本所需要的权限。您可以将其<b>保存</b>到您的 \"Downloads\"文件夹，或用服务器版本<b>覆盖</b>它以放弃您的编辑。]]></string>
     <string name="sync_error_node_local_modification">同步错误</string>
     <string name="sync_action">同步</string>
     <string name="sync_override_action">覆盖</string>
@@ -421,16 +386,23 @@
     <string name="sync_in_progress">正在同步&#8230;</string>
     <string name="upload_await">等待上传&#8230;</string>
     <string name="download_await">等待下载&#8230;</string>
+
+    <!-- Sync -->
+    <string name="sync_title">已同步内容</string>
+    <string name="sync">同步</string>
+    <string name="unsync">取消同步</string>
     <string name="sync_favorites">收藏夹</string>
+    <string name="sync_empty_title">保持您的文件同步</string>
+    <string name="sync_empty_description">您可以在离线时查看和编辑同步的文件。</string>
 
     <string name="sync_info_one_title">同步已更改！</string>
-    <string name="sync_info_one_first_text">现在，您可以在不同设备上同步不同的文件。 只需找到文件并同步！</string>
-    <string name="sync_info_one_second_text">在您离线时查看和编辑同步的文件。 在您重新上线后，它们将与 Alfresco 自动同步。</string>
+    <string name="sync_info_one_first_text">现在，您可以在不同设备上同步不同的文件。只需找到文件并同步！</string>
+    <string name="sync_info_one_second_text">在您离线时查看和编辑同步的文件。在您重新上线后，它们将与 Alfresco 自动同步。</string>
     <string name="sync_info_two_title">我已收藏的文件会怎么样？</string>
     <string name="sync_info_two_first_text">没问题，它们都将会同步！</string>
-    <string name="sync_info_two_second_text">如果您从现在开始收藏文件，它们将出现在 \"收藏夹\" 选项卡中，但是，在您想要离线访问时，需要同步这些文件。</string>
+    <string name="sync_info_two_second_text">如果您从现在开始收藏文件，它们将出现在 "收藏夹" 选项卡中，但是，在您想要离线访问时，需要同步这些文件。</string>
     <string name="sync_info_third_title">在哪里可以找到同步的文件？</string>
-    <string name="sync_info_third_first_text">您可以在新的 \"已同步内容\" 视图中查找所有同步的文件！</string>
+    <string name="sync_info_third_first_text">您可以在新的 "已同步内容" 视图中查找所有同步的文件！</string>
     <string name="sync_info_third_second_text">已同步内容</string>
     <string name="sync_info_validation">好的，我知道了。</string>
     <string name="sync_info_more_information">了解更多</string>
@@ -718,6 +690,7 @@
     <string name="search_person">人员</string>
     <string name="search_documents">文件</string>
     <string name="search_folders">文件夹</string>
+    <string name="search_site">站点</string>
     <string name="search_advanced">高级搜索</string>
 
     <!-- DOCUMENT PICKER -->
@@ -757,9 +730,10 @@
 
 
     <!-- Storage Access Framework -->
+    <string name="menu_browse_sync_content_folder">已同步内容</string>
     <string name="menu_browse_favorites_folder">收藏夹文件夹</string>
     <string name="account_alfresco">Alfresco</string>
-    <string name="account_alfresco_cloud">Alfresco 云</string>
+    <string name="account_alfresco_cloud">Alfresco Cloud</string>
     <string name="account_alfresco_onpremise">Alfresco 内部部署</string>
 
 
@@ -786,7 +760,7 @@
     <!-- CUSTOM FORMS -->
     <string name="picker_selected_value">已选择 %s</string>
     <string name="picker_select_value">添加 %s&#8230;</string>
-    <string name="picker_multi_value_selected">{0,choice,0#无 %2$s|1#1 %2$s|1&lt;%1$s %2$s}</string>
+    <string name="picker_multi_value_selected">{0,choice,0#No %2$s|1#1 %2$s|1&lt;%1$s %2$s}</string>
 
     <!-- SHORTCUT & ACTIONS -->
     <string name="select_folder">选择</string>
@@ -810,5 +784,124 @@
     <string name="shortcut_alfresco">Alfresco</string>
     <string name="error_offline"><![CDATA[<p><b>无法访问 Alfresco Mobile 帮助，因为您离线。</b><br/></p>请您在重新上线后重试。]]></string>
     <string name="feature_disable">此功能不受支持或已在您的设备上禁用。</string>
+
+    <!-- ANDROID FOR WORK -->
+    <!-- AlfrescoUserName restriction -->
+    <string name="title_alfresco_username">用户名</string>
+    <string name="description_alfresco_username">用户名用于连接至 Alfresco 服务器</string>
+    <!-- AlfrescoRepositoryURL restriction -->
+    <string name="title_alfresco_repository_url">Alfresco 存储库 URL</string>
+    <string name="description_alfresco_repository_url">要连接至的 Alfresco 服务器</string>
+    <!-- AlfrescoShareURL restriction -->
+    <string name="title_alfresco_share_url">Alfresco 共享 URL</string>
+    <string name="description_alfresco_share_url">要连接至的 Alfresco 共享服务器</string>
+    <!-- AlfrescoDisplayName restriction -->
+    <string name="title_alfresco_display_name">帐户显示名</string>
+    <string name="description_alfresco_display_name">与存储库相关联的服务器的名称。</string>
+    <string name="default_alfresco_display_name" translatable="false">Alfresco 服务器</string>
+
+
+    <!-- Empty -->
+    <string name="nodebrowser_empty_ro_title">此文件夹为空</string>
+    <string name="nodebrowser_empty_rw_title">@string/nodebrowser_empty_ro_title</string>
+    <string name="nodebrowser_empty_rw_description">使用 + 将文件添加至此文件夹。</string>
+    <string name="favorites_empty_title">未找到收藏夹</string>
+    <string name="favorites_empty_description">您可以收藏文件和文件夹，以便快速访问。</string>
+    <string name="sites_my_empty_title">您尚未加入任何站点</string>
+    <string name="sites_my_empty_description">使用站点查找工具查找您可以加入的站点。</string>
+    <string name="sites_favorites_empty_title">未找到收藏夹</string>
+    <string name="sites_favorites_empty_description">您可以收藏站点，以便快速访问。</string>
+    <string name="sites_search_empty_title">未找到站点</string>
+    <string name="sites_search_empty_description">尝试使用不同的搜索词。</string>
+    <string name="tasks_list_empty_title">目前没有任何任务</string>
+    <string name="tasks_list_empty_description">为您自己创建任务或将任务分配给他人。</string>
+    <string name="activities_list_empty_title">没有要显示的活动</string>
+    <string name="activities_list_empty_description">加入 Alfresco 站点，然后您将看到您同事参加的活动。</string>
+    <string name="node_search_empty_title">未找到结果</string>
+    <string name="node_search_empty_description">尝试使用不同的搜索词。</string>
+    <string name="people_search_empty_title">未找到用户</string>
+    <string name="people_search_empty_description">尝试使用不同的搜索词。</string>
+
+
+    <string name="empty_site">无可用站点</string>
+    <string name="empty_version">无可用版本历史记录</string>
+    <string name="empty_session">无可用会话</string>
+    <string name="empty_actvity">未找到活动</string>
+    <string name="empty_tag">未找到标签</string>
+    <string name="empty_comment">未找到评论</string>
+    <string name="empty_search">未找到文件</string>
+    <string name="action_sign_in_short">登录</string>
+
+
+    <!-- DATA PROTECTION -->
+    <string name="general_login_data_protection_title">数据保护可用</string>
+    <string name="general_login_data_protection_description">这将对每个帐户的所有已下载 Alfresco 内容加密，即这些内容无法用其他应用程序读取，而只能用 Alfresco 应用程序读取。</string>
+
+    <!-- ERRORS -->
+    <string name="error_invalid_email">此电子邮件地址无效</string>
+    <string name="error_invalid_password">此密码太短</string>
+    <string name="error_incorrect_password">此密码不正确</string>
+    <string name="error_field_required">此字段必填</string>
+    <string name="error_invalid_url">此主机名无效</string>
+
+
+    <!-- CONFIG VALUES -->
+    <string name="config_view_config_editor">Displays Menu Configuration Editor.</string>
+    <string name="config_view_activities">Displays user\'s activities.</string>
+    <string name="config_view_people">Displays a list of users.</string>
+    <string name="config_view_person_profile">Displays person profile details.</string>
+    <string name="config_view_local">Displays a list of most important local folder available inside the device.</string>
+    <string name="config_view_local_files">Displays files local to the client.</string>
+    <string name="config_view_search">Displays a search view.</string>
+    <string name="config_view_search_advanced">Displays an advanced search view.</string>
+    <string name="config_view_site_browser">Displays a sites view.</string>
+    <string name="config_view_sites">Displays a list of sites.</string>
+    <string name="config_view_document_details">Displays the details of a repository document.</string>
+    <string name="config_view_folder_details">Displays the details of a repository folder or document.</string>
+    <string name="config_view_repository">Displays a folder from the repository.</string>
+    <string name="config_view_repository_search">Displays a list of nodes based on a query.</string>
+    <string name="config_view_tasks">Displays a list of tasks.</string>
+    <string name="config_view_favorites">Displays list of favorite files and folders.</string>
+    <string name="config_view_sync">Displays list of synced content.</string>
+
+    <string name="config_view_activities_username">Displays activities stream for a specific user.</string>
+    <string name="config_view_activities_siteshortname">Displays activities stream for a specific site.</string>
+    <string name="config_view_people_keywords">Displays a search view for users with the matching keywords.</string>
+    <string name="config_view_people_siteshortname">Displays list of members for a specific site.</string>
+    <string name="config_view_people_path">Absolute path to the specified folder.</string>
+    <string name="config_view_people_shortcut">Display Up path selector.</string>
+    <string name="config_view_person_profile_username">Displays the profile for the specified username.</string>
+    <string name="config_view_advanced_search_type">Values: person|document|folder.</string>
+    <string name="config_view_sites_show">Values: favorites|my|all|finder.</string>
+    <string name="config_view_sites_keywords">keywords to search</string>
+    <string name="config_view_doc_details_path">Absolute path to the specified document</string>
+    <string name="config_view_doc_details_noderef">NodeRef associated to a document</string>
+    <string name="config_view_folder_details_path">Absolute path to the specified folder</string>
+    <string name="config_view_folder_details_noderef">NodeRef associated to a folder</string>
+    <string name="config_view_repository_path">Displays a folder defined by its absolute path</string>
+    <string name="config_view_repository_noderef">Displays a folder retrieved by its nodeRef</string>
+    <string name="config_view_repository_siteShortName">Displays the document library folder associated to the specified site</string>
+    <string name="config_view_repository_folderTypeId">Displays the system folder shared|userhome</string>
+    <string name="config_view_repository_search_keywords">keywords to search</string>
+    <string name="config_view_repository_search_isExact">Requires : keywords</string>
+    <string name="config_view_repository_search_fullText">Requires : keywords</string>
+    <string name="config_view_repository_search_searchFolderOnly">Requires : keywords</string>
+    <string name="config_view_repository_search_statement">CMIS query</string>
+
+    <!-- FORM -->
+    <!-- ################################################################################## -->
+    <string name="form_message_title">表单</string>
+    <string name="form_default_outcome_complete">完成</string>
+    <string name="form_default_outcome_start_process">开始进程</string>
+    <string name="form_message_empty">（无）</string>
+    <string name="form_error_message_required">%s 是必需的</string>
+    <string name="form_message_validation">某些字段必填。</string>
+    <string name="form_message_unsupported_field_summary">不支持呈现</string>
+    <string name="form_message_unsupported_field">此类输入字段在移动设备上不受支持</string>
+    <string name="form_message_unsupported_title">不支持的表单</string>
+    <string name="form_message_unsupported_description"><![CDATA[<p>此表单包含的一个或多个必填字段在移动设备上目前不受支持。</p>请使用 Web 应用程序执行此步骤。]]></string>
+    <string name="form_message_link_error_title">链接不受支持</string>
+    <string name="form_message_link_error"><![CDATA[<p>此内容不是来自受支持的内容源。</p>请选择其他内容源。]]></string>
+
 
 </resources>

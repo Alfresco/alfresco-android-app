@@ -1,4 +1,21 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~  Copyright (C) 2005-2015 Alfresco Software Limited.
+  ~
+  ~  This file is part of Alfresco Mobile for Android.
+  ~
+  ~  Licensed under the Apache License, Version 2.0 (the "License");
+  ~  you may not use this file except in compliance with the License.
+  ~  You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~  limitations under the License.
+  -->
+
 <resources>
 
     <!-- ************************** -->
@@ -35,7 +52,7 @@
     <string name="ok">OK</string>
     <string name="cancel">Abbrechen</string>
     <!-- Listing -->
-    <string name="load_more">Mehr laden...</string>
+    <string name="load_more">Mehr laden&#8230;</string>
     <string name="load_more_progress">Ladevorgang wird durchgeführt&#8230;</string>
     <string name="listing_nodata">Keine Daten.</string>
     <!-- Dialog -->
@@ -177,7 +194,7 @@
     <!-- Create Folder -->
     <string name="folder_create">Neuen Ordner anlegen</string>
     <string name="folder_name">Name</string>
-    <string name="folder_name_hint">Ordnernamen hier eingeben...</string>
+    <string name="folder_name_hint">Ordnernamen hier eingeben &#8230;</string>
     <!-- Update Properties -->
     <string name="edit">Bearbeiten</string>
     <string name="update">Aktualisieren</string>
@@ -186,7 +203,7 @@
     <string name="download">Herunterladen</string>
     <string name="download_complete">Download abgeschlossen</string>
     <string name="download_error">Beim Herunterladen ist ein Fehler aufgetreten.</string>
-    <string name="download_progress">Download wird durchgeführt...</string>
+    <string name="download_progress">Download wird durchgeführt &#8230;</string>
     <!-- Empty -->
     <string name="empty_users">Keine Benutzer gefunden</string>
     <string name="empty_child">Keine Dateien gefunden</string>
@@ -208,7 +225,7 @@
     <string name="search_hint">Suchbegriff eingeben</string>
     <!-- Comments -->
     <string name="comments">Kommentare</string>
-    <string name="comment_add_hint">Kommentar hier eingeben&#8230;</string>
+    <string name="comment_add_hint">Kommentar hier eingeben &#8230;</string>
     <!-- Actions -->
     <string name="create">Erstellen</string>
     <string name="add">Hinzufügen</string>
@@ -230,19 +247,22 @@
     <string name="error_unable_open_file">Diese Datei konnte nicht geöffnet werden.</string>
     <string name="error_unable_share_link">Link konnte nicht freigegeben werden.</string>
     <string name="error_unable_share_content">Inhalt konnte nicht freigegeben werden.</string>
+    <string name="error_unable_open_map">Karte konnte nicht geöffnet werden.</string>
 
     <!-- SESSION ERROR -->
     <string name="retry_account_loading">Wiederholen</string>
     <string name="error_session_creation_title">Account speichern</string>
     <string name="error_session_creation_message">Verbindungsfehler</string>
-    <string name="error_session_creation">Fehler bei der Authentifizierung. Überprüfen Sie die Account-Einstellungen.</string>
-    <string name="error_session_hostname"><![CDATA[Der Wert Ihres <b>Hostnamens</b> ist anscheinend falsch<br/> oder Sie müssen <b>Ihr VPN aktivieren</b>.<br/> Überprüfen Sie die Account-Einstellungen.]]></string>
+    <string name="error_session_creation">Fehler bei der Authentifizierung. Überprüfen Sie die Alfresco Account-Einstellungen.</string>
+    <string name="error_session_hostname_short">Der Wert Ihres <b>Hostnamens</b> ist anscheinend falsch.</string>
+    <string name="error_session_hostname"><![CDATA[Der Wert Ihres <b>Hostnamens</b> ist anscheinend falsch oder Sie müssen <b>Ihr VPN aktivieren</b>.<br/> Überprüfen Sie die Werte und Einstellungen.]]></string>
+    <string name="error_session_nodata_short">Ihr Gerät hat keine Datenverbindung.</string>
     <string name="error_session_nodata"><![CDATA[<p><b>Ihr Gerät hat keine Datenverbindung.</b><br/></p> Überprüfen Sie Ihre Geräteeinstellungen und stellen Sie eine Datenverbindung her.]]></string>
-    <string name="error_session_unauthorized"><![CDATA[Sie dürfen nicht auf diesen Server zugreifen.<br/> Überprüfen Sie Ihre Account-Einstellungen <b>(Benutzername/Passwort)</b>.]]></string>
-    <string name="error_session_service_url"><![CDATA[Der Wert Ihrer <b>Dienst-URL</b> ist falsch.<br/> Überprüfen Sie Ihre Account-Einstellungen.]]></string>
+    <string name="error_session_unauthorized"><![CDATA[Sie dürfen nicht auf diesen Server zugreifen.<br/> Überprüfen Sie Ihre Alfresco Account-Einstellungen <b>(Benutzername/Passwort)</b>.]]></string>
+    <string name="error_session_service_url"><![CDATA[Der Wert Ihrer <b>Dienst-URL</b> ist falsch.<br/> Überprüfen Sie Ihre Alfresco Account-Einstellungen.]]></string>
     <string name="error_session_service_unavailable"><![CDATA[Der Server kann Ihrer Anfrage aufgrund eines wartungsbedingten Ausfalls oder aufgrund von Kapazitätsproblemen derzeit nicht nachkommen.<br/> Bitte versuchen Sie es später erneut.]]></string>
-    <string name="error_session_notfound"><![CDATA[Ihr Server konnte nicht erreicht werden.<br/> Überprüfen Sie Ihre Account-Einstellungen.]]></string>
-    <string name="error_session_port"><![CDATA[Der Wert Ihres <b>Ports</b> ist falsch.<br/> Überprüfen Sie Ihre Account-Einstellungen.]]></string>
+    <string name="error_session_notfound"><![CDATA[Ihr Server konnte nicht erreicht werden.<br/> Überprüfen Sie Ihre Alfresco Account-Einstellungen.]]></string>
+    <string name="error_session_port"><![CDATA[Der Wert Ihres <b>Ports</b> ist falsch.<br/> Überprüfen Sie Ihre Alfresco Account-Einstellungen.]]></string>
     <string name="error_session_certificate">
 <![CDATA[<p><b>Das Sicherheitszertifikat des Servers ist nicht vertrauenswürdig!</b><br/></p>
 		Der Drittanbieter, der das Server-Zielzertifikat ausgestellt hat, wird von Ihrem Gerät nicht erkannt.<br/>
@@ -255,7 +275,7 @@
     </string>
     <string name="error_session_ssl">
 <![CDATA[<p><b>Beim SSL-Protokoll ist ein Fehler aufgetreten.</b><br/></p>
-        Überprüfen Sie Ihre Account-Einstellungen und versuchen Sie es erneut.<br/> Kontaktieren Sie Ihren Administrator, falls das Problem weiterhin besteht.]]>
+        Überprüfen Sie Ihre Alfresco Account-Einstellungen und versuchen Sie es erneut.<br/> Kontaktieren Sie Ihren Administrator, falls das Problem weiterhin besteht.]]>
     </string>
     <string name="error_session_cloud_unavailable">
 <![CDATA[<p><b>Alfresco in der Cloud ist derzeit überlastet!</b><br/></p>
@@ -264,10 +284,12 @@
     <string name="error_session_expired">Ihre Sitzung ist abgelaufen. Melden Sie sich erneut an.</string>
     <string name="error_session_refresh">Sitzung wird aktualisiert.</string>
     <string name="error_chunk_transfert"><![CDATA[Der Server unterstützt keine Blockübertragungen.<br/> Laden Sie Ihren Account erneut</b>.]]></string>
+
+    <string name="error_account_url">Die URL ist nicht korrekt. Überprüfen Sie die Alfresco Account-Einstellungen.</string>
+    <string name="error_unknown_filepath">Die Ressource wurde nicht gefunden.</string>
     <string name="error_name_already_exist">Datei konnte nicht umbenannt werden. Es existiert möglicherweise eine andere Datei mit demselben Namen.</string>
     <string name="error_unknown_exception">Es ist ein Fehler aufgetreten: %s</string>
     <string name="error_unknown">Es ist ein Fehler aufgetreten: %s</string>
-
 
     <!-- Share -->
     <string name="share_url">Link freigeben</string>
@@ -279,14 +301,14 @@
     <string name="security_ssl_disable">Validierung von SSL-Zertifikaten wurde deaktiviert.</string>
 
     <!-- ACCOUNT -->
-    <string name="account_verify">Account-Informationen werden verifiziert...</string>
+    <string name="account_verify">Account-Informationen werden verifiziert&#8230;</string>
     <string name="account_wizard_alldone_description">Sie können Ihren Account jetzt verwenden.</string>
     <string name="account_default_onpremise">Alfresco Server</string>
     <string name="account_default_cloud">Alfresco Cloud</string>
 
     <!-- WAITING SESSION -->
     <string name="wait_title">Bitte warten</string>
-    <string name="wait_message">Verbindung mit dem Server wird hergestellt...</string>
+    <string name="wait_message">Verbindung mit dem Server wird hergestellt&#8230;</string>
     <string name="session_loaded">Sitzung bereit</string>
 
     <!-- Creation Folder -->
@@ -296,12 +318,12 @@
     <!-- Workflow FILTERS -->
     <string name="empty_tasks">Keine Aufgaben</string>
     <string name="tasks_assignee_unassigned">Nicht zugewiesen</string>
-    <string name="task_delegate_in_progress">Erneute Zuweisung wird durchgeführt...</string>
+    <string name="task_delegate_in_progress">Erneute Zuweisung wird durchgeführt&#8230;</string>
     <string name="task_delegate_complete">Erneute Zuweisung abgeschlossen</string>
     <string name="update_sucess">\"%s\" wurde erfolgreich aktualisiert.</string>
 
     <!-- Delete -->
-    <string name="delete_in_progress">Löschvorgang wird durchgeführt...</string>
+    <string name="delete_in_progress">Löschvorgang wird durchgeführt&#8230;</string>
     <string name="delete_complete">Löschvorgang abgeschlossen</string>
 
     <!-- Quick Action Folder -->
@@ -341,8 +363,8 @@
 
     <!-- NETWORKS -->
     <string name="cloud_networks_empty">Keine Netzwerke verfügbar</string>
-    <string name="manage_accounts">Accounts verwalten...</string>
-    <string name="cloud_networks_switch">Netzwerke wechseln...</string>
+    <string name="manage_accounts">Accounts verwalten&#8230;</string>
+    <string name="cloud_networks_switch">Netzwerke wechseln&#8230;</string>
 
     <!-- PROFILES -->
     <string name="profiles_empty">Keine Profile verfügbar</string>
@@ -378,9 +400,9 @@
     <string name="sync_save_action">Speichern</string>
     <string name="sync_resolve_conflict">Konflikt lösen</string>
     <string name="sync_complete">Synchronisierung abgeschlossen</string>
-    <string name="sync_in_progress">Synchronisierung wird durchgeführt...</string>
-    <string name="upload_await">Auf Upload wird gewartet...</string>
-    <string name="download_await">Auf Download wird gewartet...</string>
+    <string name="sync_in_progress">Synchronisierung wird durchgeführt&#8230;</string>
+    <string name="upload_await">Auf Upload wird gewartet&#8230;</string>
+    <string name="download_await">Auf Download wird gewartet&#8230;</string>
     <string name="sync_favorites">Favoriten</string>
 
     <plurals name="sync_complete_description">
@@ -429,7 +451,7 @@
     <!-- NOTIFICATION -->
     <string name="upload">Hochladen </string>
     <string name="upload_complete">Upload abgeschlossen.</string>
-    <string name="upload_in_progress">Upload wird durchgeführt...</string>
+    <string name="upload_in_progress">Upload wird durchgeführt&#8230;</string>
     <string name="update_complete">Update abgeschlossen.</string>
     <string name="update_in_progress">Update wird durchgeführt&#8230;</string>
 
