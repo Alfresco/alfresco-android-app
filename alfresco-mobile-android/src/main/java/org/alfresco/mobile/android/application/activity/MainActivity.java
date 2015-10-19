@@ -634,7 +634,7 @@ public class MainActivity extends BaseActivity
                 }
                 else if (getCurrentAccount() != null && getCurrentAccount().getActivation() != null)
                 {
-                    AlfrescoNotificationManager.getInstance(this).showToast(R.string.account_not_activated);
+                    // AlfrescoNotificationManager.getInstance(this).showToast(R.string.account_not_activated);
                     return false;
                 }
                 break;
@@ -1016,7 +1016,7 @@ public class MainActivity extends BaseActivity
         setSessionState(SESSION_INACTIVE);
         setSupportProgressBarIndeterminateVisibility(false);
         invalidateOptionsMenu();
-        AlfrescoNotificationManager.getInstance(this).showLongToast(getString(R.string.account_not_activated));
+        // AlfrescoNotificationManager.getInstance(this).showLongToast(getString(R.string.account_not_activated));
     }
 
     @Subscribe
