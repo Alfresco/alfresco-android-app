@@ -1093,7 +1093,7 @@ public abstract class PrepareBaseHelper
         if (uri == null)
         {
             uri = context.getContentResolver().insert(SyncContentProvider.CONTENT_URI,
-                    SyncContentManager.createFavoriteContentValues(context, acc, SyncContentDownload.TYPE_ID, doc,
+                    SyncContentManager.createRemoteRootContentValues(context, acc, SyncContentDownload.TYPE_ID, doc,
                             syncScanningTimeStamp));
         }
         // Execution
@@ -1110,7 +1110,7 @@ public abstract class PrepareBaseHelper
             Folder parentFolder = session.getServiceRegistry().getDocumentFolderService().getParentFolder(folder);
 
             uri = context.getContentResolver().insert(SyncContentProvider.CONTENT_URI,
-                    SyncContentManager.createFavoriteContentValues(context, acc, SyncContentDownload.TYPE_ID,
+                    SyncContentManager.createSyncRootContentValues(context, acc, SyncContentDownload.TYPE_ID,
                             parentFolder.getIdentifier(), folder, syncScanningTimeStamp, -1));
         }
 

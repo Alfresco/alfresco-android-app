@@ -28,9 +28,11 @@ import org.alfresco.mobile.android.async.OperationsDispatcher;
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.node.UpNodeOperation;
 import org.alfresco.mobile.android.platform.EventBusManager;
+import org.alfresco.mobile.android.platform.exception.AlfrescoAppException;
 import org.alfresco.mobile.android.platform.io.IOUtils;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
 import org.alfresco.mobile.android.platform.security.EncryptionUtils;
+import org.alfresco.mobile.android.sync.SyncContentManager;
 
 import android.content.ContentValues;
 import android.util.Log;
@@ -88,33 +90,38 @@ public class CreateDocumentOperation extends UpNodeOperation
                 if (((CreateDocumentRequest) request).type != null)
                 {
                     // CREATE CONTENT
-                    doc = session
-                            .getServiceRegistry()
-                            .getDocumentFolderService()
-                            .createDocument(parentFolder, finalDocumentName,
-                                    ((CreateDocumentRequest) request).properties, contentFile, null,
-                                    ((CreateDocumentRequest) request).type);
+                    doc = session.getServiceRegistry().getDocumentFolderService().createDocument(parentFolder,
+                            finalDocumentName, ((CreateDocumentRequest) request).properties, contentFile, null,
+                            ((CreateDocumentRequest) request).type);
                 }
                 else
                 {
                     // CREATE CONTENT
-                    doc = session
-                            .getServiceRegistry()
-                            .getDocumentFolderService()
-                            .createDocument(parentFolder, finalDocumentName,
-                                    ((CreateDocumentRequest) request).properties, contentFile);
+                    doc = session.getServiceRegistry().getDocumentFolderService().createDocument(parentFolder,
+                            finalDocumentName, ((CreateDocumentRequest) request).properties, contentFile);
                 }
 
                 if (((CreateDocumentRequest) request).tags != null && !((CreateDocumentRequest) request).tags.isEmpty())
                 {
-                    session.getServiceRegistry().getTaggingService()
-                            .addTags(doc, ((CreateDocumentRequest) request).tags);
+                    session.getServiceRegistry().getTaggingService().addTags(doc,
+                            ((CreateDocumentRequest) request).tags);
                 }
             }
+            else
+            {
+                result.setException(new AlfrescoAppException("ParentFolder is empty"));
+            }
 
+            // Encrypt if necessary
             if (encdec)
             {
                 EncryptionUtils.encryptFile(context, filename, true);
+            }
+
+            // Sync if necessary
+            if (SyncContentManager.getInstance(context).isRootSynced(getAccount(), parentFolder))
+            {
+                SyncContentManager.getInstance(context).sync(getAccount());
             }
         }
         catch (Exception e)

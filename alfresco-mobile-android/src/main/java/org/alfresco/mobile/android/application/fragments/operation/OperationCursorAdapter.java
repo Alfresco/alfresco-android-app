@@ -37,6 +37,7 @@ import org.alfresco.mobile.android.ui.holder.TwoLinesProgressViewHolder;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 
@@ -56,8 +57,8 @@ public class OperationCursorAdapter extends BaseCursorLoader<TwoLinesProgressVie
 
     protected void updateIcon(TwoLinesProgressViewHolder vh, Cursor cursor)
     {
-        vh.icon.setImageResource(MimeTypeManager.getInstance(context).getIcon(
-                cursor.getString(OperationSchema.COLUMN_TITLE_ID)));
+        vh.icon.setImageResource(
+                MimeTypeManager.getInstance(context).getIcon(cursor.getString(OperationSchema.COLUMN_TITLE_ID)));
     }
 
     protected void updateBottomText(TwoLinesProgressViewHolder vh, final Cursor cursor)
@@ -125,35 +126,42 @@ public class OperationCursorAdapter extends BaseCursorLoader<TwoLinesProgressVie
                 break;
         }
 
-        vh.choose.setOnClickListener(new OnClickListener()
+        try
         {
-            public void onClick(View v)
+            vh.choose.setOnClickListener(new OnClickListener()
             {
-                int status = (Integer) v.getTag(R.id.operation_status);
-                long id = (Integer) v.getTag(R.id.operation_id);
-                Uri uri = Uri.parse(OperationsContentProvider.CONTENT_URI + "/" + v.getTag(R.id.operation_id));
-                switch (status)
+                public void onClick(View v)
                 {
-                    case Operation.STATUS_PENDING:
-                    case Operation.STATUS_RUNNING:
-                        // Cancel operation
-                        Operator.with(context).cancel(uri.toString());
-                        break;
-                    case Operation.STATUS_PAUSED:
-                    case Operation.STATUS_FAILED:
-                    case Operation.STATUS_CANCEL:
-                        // Retry
-                        Operator.with(context).retry(uri);
-                        break;
-                    case Operation.STATUS_SUCCESSFUL:
-                        // Remove operation
-                        v.getContext().getContentResolver().delete(uri, null, null);
-                        break;
-                    default:
-                        break;
+                    int status = (Integer) v.getTag(R.id.operation_status);
+                    long id = (Integer) v.getTag(R.id.operation_id);
+                    Uri uri = Uri.parse(OperationsContentProvider.CONTENT_URI + "/" + v.getTag(R.id.operation_id));
+                    switch (status)
+                    {
+                        case Operation.STATUS_PENDING:
+                        case Operation.STATUS_RUNNING:
+                            // Cancel operation
+                            Operator.with(context).cancel(uri.toString());
+                            break;
+                        case Operation.STATUS_PAUSED:
+                        case Operation.STATUS_FAILED:
+                        case Operation.STATUS_CANCEL:
+                            // Retry
+                            Operator.with(context).retry(uri);
+                            break;
+                        case Operation.STATUS_SUCCESSFUL:
+                            // Remove operation
+                            v.getContext().getContentResolver().delete(uri, null, null);
+                            break;
+                        default:
+                            break;
+                    }
                 }
-            }
-        });
+            });
+        }
+        catch (Exception e)
+        {
+            Log.d("Operations", Log.getStackTraceString(e));
+        }
 
         vh.bottomText.setText(statusValue);
     }

@@ -273,8 +273,8 @@ public class AccountCredentialsFragment extends AlfrescoFragment
         UIUtils.hideKeyboard(getActivity(), usernameField);
 
         // Create AlfrescoAccount + Session
-        Operator.with(getActivity()).load(
-                new CreateAccountRequest.Builder(endpoint.toString(), username, password, null));
+        Operator.with(getActivity())
+                .load(new CreateAccountRequest.Builder(endpoint.toString(), username, password, null));
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -295,9 +295,10 @@ public class AccountCredentialsFragment extends AlfrescoFragment
                 // Revert to Alfresco WebApp
                 MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity())
                         .title(R.string.error_session_creation_title)
-                        .content(
-                                Html.fromHtml(messageId == R.string.error_unknown ? String.format(getString(messageId),
-                                        event.exception.getCause()) : getString(messageId))).positiveText(R.string.ok);
+                        .content(Html.fromHtml(messageId == R.string.error_unknown
+                                ? String.format(getString(messageId), event.exception.getCause())
+                                : getString(messageId)))
+                        .positiveText(R.string.ok);
                 builder.show();
                 show(R.id.server_form);
 
@@ -313,12 +314,9 @@ public class AccountCredentialsFragment extends AlfrescoFragment
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
             if (acc.getIsPaidAccount() && !prefs.getBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, false))
             {
-                AccountOptionalFragment.with(getActivity()).acocuntId(acc.getId()).back(false).display();
+                prefs.edit().putBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, true).commit();
             }
-            else
-            {
-                AccountNameFragment.with(getActivity()).acocuntId(acc.getId()).back(false).display();
-            }
+            AccountNameFragment.with(getActivity()).accountId(acc.getId()).back(false).display();
         }
     }
 

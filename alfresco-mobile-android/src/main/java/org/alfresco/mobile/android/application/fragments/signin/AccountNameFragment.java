@@ -167,7 +167,7 @@ public class AccountNameFragment extends AlfrescoFragment
             super(appActivity, configuration);
         }
 
-        public Builder acocuntId(Long accountId)
+        public Builder accountId(Long accountId)
         {
             extraConfiguration.putLong(ARGUMENT_ACCOUNT_ID, accountId);
             return this;

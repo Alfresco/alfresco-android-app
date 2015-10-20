@@ -157,7 +157,7 @@ public class AccountOAuthHelper
      */
     public static void requestRefreshToken(AlfrescoSession alfrescoSession, FragmentActivity activity)
     {
-        if (alfrescoSession instanceof CloudSession && doesRequireRefreshToken(activity))
+        if (alfrescoSession != null && alfrescoSession instanceof CloudSession && doesRequireRefreshToken(activity))
         {
             Operator.with(activity).load(new RetrieveOAuthDataRequest.Builder((CloudSession) alfrescoSession));
         }
