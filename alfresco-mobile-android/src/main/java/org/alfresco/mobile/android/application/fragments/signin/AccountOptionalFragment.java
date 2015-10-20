@@ -101,7 +101,7 @@ public class AccountOptionalFragment extends AlfrescoFragment
 
                 prefs.edit().putBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, true).commit();
 
-                AccountNameFragment.with(getActivity()).acocuntId(accountId).back(false).display();
+                AccountNameFragment.with(getActivity()).accountId(accountId).back(false).display();
             }
         });
 

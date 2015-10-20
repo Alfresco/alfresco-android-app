@@ -292,12 +292,9 @@ public class AccountOAuthFragment extends OAuthFragment
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
             if (acc.getIsPaidAccount() && !prefs.getBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, false))
             {
-                AccountOptionalFragment.with(getActivity()).acocuntId(acc.getId()).back(false).display();
+                prefs.edit().putBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, true).commit();
             }
-            else
-            {
-                AccountNameFragment.with(getActivity()).acocuntId(acc.getId()).back(false).display();
-            }
+            AccountNameFragment.with(getActivity()).accountId(acc.getId()).back(false).display();
             return;
         }
     }
