@@ -32,6 +32,7 @@ import org.alfresco.mobile.android.platform.exception.AlfrescoAppException;
 import org.alfresco.mobile.android.platform.io.IOUtils;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
 import org.alfresco.mobile.android.platform.security.EncryptionUtils;
+import org.alfresco.mobile.android.sync.SyncContentManager;
 
 import android.content.ContentValues;
 import android.util.Log;
@@ -111,9 +112,16 @@ public class CreateDocumentOperation extends UpNodeOperation
                 result.setException(new AlfrescoAppException("ParentFolder is empty"));
             }
 
+            // Encrypt if necessary
             if (encdec)
             {
                 EncryptionUtils.encryptFile(context, filename, true);
+            }
+
+            // Sync if necessary
+            if (SyncContentManager.getInstance(context).isRootSynced(getAccount(), parentFolder))
+            {
+                SyncContentManager.getInstance(context).sync(getAccount());
             }
         }
         catch (Exception e)

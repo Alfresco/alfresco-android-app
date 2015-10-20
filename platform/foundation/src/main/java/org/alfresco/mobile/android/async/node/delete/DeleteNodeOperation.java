@@ -22,7 +22,9 @@ import org.alfresco.mobile.android.async.OperationAction;
 import org.alfresco.mobile.android.async.OperationsDispatcher;
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.node.NodeOperation;
+import org.alfresco.mobile.android.async.node.sync.SyncNodeRequest;
 import org.alfresco.mobile.android.platform.EventBusManager;
+import org.alfresco.mobile.android.sync.SyncContentManager;
 
 import android.util.Log;
 
@@ -49,6 +51,14 @@ public class DeleteNodeOperation extends NodeOperation<Void>
             if (parentFolder == null) { return result; }
 
             session.getServiceRegistry().getDocumentFolderService().deleteNode(node);
+
+            // UNSync if necessary
+            if (SyncContentManager.getInstance(context).isRootSynced(getAccount(), parentFolder))
+            {
+                Operator.with(context, getAccount())
+                        .load(new SyncNodeRequest.Builder(node.getIdentifier(), false, false));
+            }
+
         }
         catch (Exception e)
         {

@@ -158,7 +158,6 @@ public class SyncContentManager extends Manager
         cValues.put(SyncContentSchema.COLUMN_NODE_ID, "");
         cValues.put(SyncContentSchema.COLUMN_PARENT_ID, parentId);
         cValues.put(SyncContentSchema.COLUMN_MIMETYPE, mimetype);
-        cValues.put(SyncContentSchema.COLUMN_STATUS, Operation.STATUS_PENDING);
         cValues.put(SyncContentSchema.COLUMN_BYTES_DOWNLOADED_SO_FAR, 0);
         cValues.put(SyncContentSchema.COLUMN_LOCAL_URI, "");
         cValues.put(SyncContentSchema.COLUMN_SERVER_MODIFICATION_TIMESTAMP, -1);
@@ -178,7 +177,7 @@ public class SyncContentManager extends Manager
         return createContentValues(context, account, requestType, "", node, time, 0);
     }
 
-    public static ContentValues createFavoriteContentValues(Context context, AlfrescoAccount account, int requestType,
+    public static ContentValues createRemoteRootContentValues(Context context, AlfrescoAccount account, int requestType,
             Node node, long time)
     {
         ContentValues cValues = createContentValues(context, account, requestType, "", node, time, 0);
@@ -230,7 +229,7 @@ public class SyncContentManager extends Manager
         return cValues;
     }
 
-    public static ContentValues createFavoriteContentValues(Context context, AlfrescoAccount account, int requestType,
+    public static ContentValues createSyncRootContentValues(Context context, AlfrescoAccount account, int requestType,
             String parent, Node node, long time, long folderSize)
     {
         ContentValues cValues = createContentValues(context, account, requestType, parent, node, time, folderSize);

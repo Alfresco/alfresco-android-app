@@ -184,7 +184,10 @@ public class SyncNodeOperation extends NodeOperation<Boolean>
             if (SyncContentManager.getInstance(context).hasActivateSync(acc))
             {
                 ContentValues cValues = new ContentValues();
-                cValues.put(SyncContentSchema.COLUMN_PARENT_ID, parentFolder.getIdentifier());
+                if (parentFolder != null)
+                {
+                    cValues.put(SyncContentSchema.COLUMN_PARENT_ID, parentFolder.getIdentifier());
+                }
                 if (cursorId.getInt(SyncContentSchema.COLUMN_IS_SYNC_ROOT_ID) > 0)
                 {
                     // Unfavorite
@@ -199,14 +202,14 @@ public class SyncNodeOperation extends NodeOperation<Boolean>
                         SyncContentManager.getUri(cursorId.getLong(SyncContentSchema.COLUMN_ID_ID)), cValues, null,
                         null);
 
-                if (node.isFolder())
+                if (node != null && node.isFolder())
                 {
                     prepareChildrenFolderDelete(node.getIdentifier());
                 }
             }
             else
             {
-                if (node.isFolder())
+                if (node != null && node.isFolder())
                 {
                     prepareChildrenFolderDelete((Folder) node);
                 }
@@ -221,13 +224,17 @@ public class SyncNodeOperation extends NodeOperation<Boolean>
         // Add to favorite
         if (cursorId.getCount() == 0)
         {
+            ContentValues addValues = (hasSyncParent)
+                    ? SyncContentManager.createContentValues(context,
+                            AlfrescoAccountManager.getInstance(context).retrieveAccount(accountId), 456,
+                            parentFolderIdentifier, node, new GregorianCalendar().getTimeInMillis(), -1)
+                    : SyncContentManager.createSyncRootContentValues(context,
+                            AlfrescoAccountManager.getInstance(context).retrieveAccount(accountId), 456,
+                            parentFolderIdentifier, node, new GregorianCalendar().getTimeInMillis(), -1);
+
             // First time creation
             // Update local sync referential.
-            context.getContentResolver().insert(
-                    SyncContentProvider.CONTENT_URI,
-                    SyncContentManager.createFavoriteContentValues(context, AlfrescoAccountManager.getInstance(context)
-                            .retrieveAccount(accountId), 456, parentFolderIdentifier, node, new GregorianCalendar()
-                            .getTimeInMillis(), -1));
+            context.getContentResolver().insert(SyncContentProvider.CONTENT_URI, addValues);
         }
         else if (cursorId.getCount() == 1 && cursorId.moveToFirst())
         {
@@ -253,11 +260,10 @@ public class SyncNodeOperation extends NodeOperation<Boolean>
         Cursor childrenCursor = null;
         try
         {
-            childrenCursor = context.getContentResolver().query(
-                    SyncContentProvider.CONTENT_URI,
-                    SyncContentSchema.COLUMN_ALL,
-                    SyncContentProvider.getAccountFilter(acc) + " AND " + SyncContentSchema.COLUMN_PARENT_ID + " == '"
- + folder.getIdentifier() + "'",
+            childrenCursor = context.getContentResolver()
+                    .query(SyncContentProvider.CONTENT_URI,
+                            SyncContentSchema.COLUMN_ALL, SyncContentProvider.getAccountFilter(acc) + " AND "
+                                    + SyncContentSchema.COLUMN_PARENT_ID + " == '" + folder.getIdentifier() + "'",
                             null, null);
 
             while (childrenCursor.moveToNext())
@@ -286,11 +292,11 @@ public class SyncNodeOperation extends NodeOperation<Boolean>
         Cursor childrenCursor = null;
         try
         {
-            childrenCursor = context.getContentResolver().query(
-                    SyncContentProvider.CONTENT_URI,
+            childrenCursor = context.getContentResolver().query(SyncContentProvider.CONTENT_URI,
                     SyncContentSchema.COLUMN_ALL,
                     SyncContentProvider.getAccountFilter(acc) + " AND " + SyncContentSchema.COLUMN_PARENT_ID + " == '"
-                            + NodeRefUtils.getCleanIdentifier(nodeId) + "'", null, null);
+                            + NodeRefUtils.getCleanIdentifier(nodeId) + "'",
+                    null, null);
 
             ContentValues cValues = new ContentValues(1);
             while (childrenCursor.moveToNext())

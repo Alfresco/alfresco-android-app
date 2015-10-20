@@ -1168,8 +1168,7 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
 
                 if (row.type == PREFIX_SYNC && !TextUtils.isEmpty(row.id))
                 {
-                    selection.append(SyncContentSchema.COLUMN_PARENT_ID).append(" == '")
-                            .append(NodeRefUtils.createNodeRefByIdentifier(row.id)).append("'");
+                    selection.append(SyncContentSchema.COLUMN_PARENT_ID).append(" == '").append(row.id).append("'");
                 }
                 else
                 {
@@ -1728,7 +1727,11 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
                         localUri = android.net.Uri.parse(SyncContentProvider.CONTENT_URI + "/" + nodeId);
                         cValues.put(SyncContentSchema.COLUMN_STATUS, SyncContentStatus.STATUS_PENDING);
                     }
-                    getContext().getContentResolver().update(localUri, cValues, null, null);
+
+                    if (!TextUtils.isEmpty(nodeId))
+                    {
+                        getContext().getContentResolver().update(localUri, cValues, null, null);
+                    }
 
                     // Sync if it's possible.
                     if ((NodeRefUtils.isIdentifier(nodeId) || NodeRefUtils.isNodeRef(nodeId)) && SyncContentManager

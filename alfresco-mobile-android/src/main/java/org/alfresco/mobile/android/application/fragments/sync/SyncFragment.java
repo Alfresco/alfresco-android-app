@@ -120,7 +120,7 @@ public class SyncFragment extends BaseCursorGridFragment
 
     private Object mContentProviderHandle;
 
-    private boolean stopRefresh = false;
+    private Boolean stopRefresh = false;
 
     private Runnable refreshTimer;
 
@@ -356,7 +356,7 @@ public class SyncFragment extends BaseCursorGridFragment
                 b.putBoolean(ARGUMENT_HIDE, false);
                 getLoaderManager().restartLoader(0, b, SyncFragment.this);
 
-                if (!stopRefresh)
+                if (stopRefresh != null && !stopRefresh)
                 {
                     refreshHandler.postDelayed(this, 1000);
                 }
