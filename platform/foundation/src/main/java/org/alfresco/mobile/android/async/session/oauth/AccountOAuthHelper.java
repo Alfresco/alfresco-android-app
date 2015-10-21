@@ -15,7 +15,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.alfresco.mobile.android.application.accounts;
+package org.alfresco.mobile.android.async.session.oauth;
 
 import java.util.Date;
 
@@ -23,13 +23,10 @@ import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
 import org.alfresco.mobile.android.async.Operator;
-import org.alfresco.mobile.android.async.session.oauth.RetrieveOAuthDataEvent;
-import org.alfresco.mobile.android.async.session.oauth.RetrieveOAuthDataRequest;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
-import org.alfresco.mobile.android.ui.activity.AlfrescoActivity;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -67,14 +64,13 @@ public class AccountOAuthHelper
     // //////////////////////////////////////////////////////////////////////
     // UTILS
     // //////////////////////////////////////////////////////////////////////
-    public static void onNewOauthData(FragmentActivity activity, RetrieveOAuthDataEvent event)
+    public static void onNewOauthData(Context context, RetrieveOAuthDataEvent event)
     {
-        AlfrescoAccount acc = SessionUtils.getAccount(activity);
-        AccountOAuthHelper.saveLastCloudLoadingTime(activity);
-        ((AlfrescoActivity) activity).setSupportProgressBarIndeterminateVisibility(false);
+        AlfrescoAccount acc = SessionUtils.getAccount(context);
+        AccountOAuthHelper.saveLastCloudLoadingTime(context);
         if (!event.hasException)
         {
-            saveNewOauthData(activity, acc, event.data);
+            saveNewOauthData(context, acc, event.data);
         }
         else
         {
@@ -82,7 +78,7 @@ public class AccountOAuthHelper
             {
                 case AlfrescoAccount.TYPE_ALFRESCO_TEST_OAUTH:
                 case AlfrescoAccount.TYPE_ALFRESCO_CLOUD:
-                    CloudExceptionUtils.handleCloudException(activity, event.exception, true);
+                    CloudExceptionUtils.handleCloudException(context, event.exception, true);
                     break;
                 default:
                     break;
@@ -91,19 +87,21 @@ public class AccountOAuthHelper
         }
     }
 
-    private static void saveNewOauthData(FragmentActivity activity, AlfrescoAccount acc, OAuthData data)
+    public static AlfrescoAccount saveNewOauthData(Context context, AlfrescoAccount acc, OAuthData data)
     {
+        AccountOAuthHelper.saveLastCloudLoadingTime(context);
         switch (acc.getTypeId())
         {
             case AlfrescoAccount.TYPE_ALFRESCO_TEST_OAUTH:
             case AlfrescoAccount.TYPE_ALFRESCO_CLOUD:
-                acc = AlfrescoAccountManager.getInstance(activity).update(acc.getId(), acc.getTitle(), acc.getUrl(),
+                acc = AlfrescoAccountManager.getInstance(context).update(acc.getId(), acc.getTitle(), acc.getUrl(),
                         acc.getUsername(), acc.getPassword(), acc.getRepositoryId(), acc.getTypeId(), null,
                         data.getAccessToken(), data.getRefreshToken(), acc.getIsPaidAccount() ? 1 : 0);
                 break;
             default:
                 break;
         }
+        return acc;
     }
 
     /**

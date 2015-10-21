@@ -28,7 +28,6 @@ import org.alfresco.mobile.android.api.services.ServiceRegistry;
 import org.alfresco.mobile.android.api.services.impl.AlfrescoServiceRegistry;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.accounts.AccountOAuthHelper;
 import org.alfresco.mobile.android.application.capture.DeviceCapture;
 import org.alfresco.mobile.android.application.configuration.ConfigurationConstant;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
@@ -60,6 +59,7 @@ import org.alfresco.mobile.android.async.session.LoadSessionCallBack.LoadAccount
 import org.alfresco.mobile.android.async.session.LoadSessionCallBack.LoadAccountStartedEvent;
 import org.alfresco.mobile.android.async.session.LoadSessionCallBack.LoadInactiveAccountEvent;
 import org.alfresco.mobile.android.async.session.RequestSessionEvent;
+import org.alfresco.mobile.android.async.session.oauth.AccountOAuthHelper;
 import org.alfresco.mobile.android.async.session.oauth.RetrieveOAuthDataEvent;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.EventBusManager;
@@ -753,6 +753,7 @@ public class MainActivity extends BaseActivity
     @Subscribe
     public void onRetrieveOAuthDataEvent(RetrieveOAuthDataEvent event)
     {
+        setCurrentAccount(event.accountId);
         AccountOAuthHelper.onNewOauthData(this, event);
     }
 

@@ -26,6 +26,7 @@ import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.RepositorySession;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
 import org.alfresco.mobile.android.api.session.authentication.impl.OAuthHelper;
+import org.alfresco.mobile.android.async.session.oauth.AccountOAuthHelper;
 import org.alfresco.mobile.android.platform.SessionManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
@@ -46,6 +47,8 @@ public class LoadSessionHelper
     private AlfrescoAccount account;
 
     private OAuthData oauthData;
+
+    private OAuthData originalOauthData;
 
     private AlfrescoSessionSettings sessionSettings;
 
@@ -83,6 +86,7 @@ public class LoadSessionHelper
         {
             // CLOUD
             oauthData = sessionSettings.oAuthData;
+            originalOauthData = oauthData;
             if (sessionSettings.requestNewOAuthToken)
             {
                 OAuthHelper helper = null;
@@ -95,6 +99,7 @@ public class LoadSessionHelper
                     helper = new OAuthHelper();
                 }
                 oauthData = helper.refreshToken(oauthData);
+                account = AccountOAuthHelper.saveNewOauthData(context, getAccount(), oauthData);
             }
 
             CloudSession cloudSession = CloudSession.connect(oauthData, settings);
@@ -119,7 +124,7 @@ public class LoadSessionHelper
 
     public OAuthData getOAuthData()
     {
-        return oauthData;
+        return oauthData != null ? oauthData : originalOauthData;
     }
 
     public AlfrescoAccount getAccount()

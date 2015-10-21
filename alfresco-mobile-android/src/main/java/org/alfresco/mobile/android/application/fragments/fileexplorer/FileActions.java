@@ -217,7 +217,10 @@ public class FileActions implements ActionMode.Callback
 
     public void finish()
     {
-        mode.finish();
+        if (mode != null)
+        {
+            mode.finish();
+        }
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -259,6 +262,7 @@ public class FileActions implements ActionMode.Callback
     // ///////////////////////////////////////////////////////////////////////////////////
     public void selectFile(File n)
     {
+
         if (selectedFiles.contains(n))
         {
             removeNode(n);
@@ -267,6 +271,7 @@ public class FileActions implements ActionMode.Callback
         {
             addFile(n);
         }
+        if (mode == null) { return; }
         if (selectedFiles.isEmpty())
         {
             mode.finish();
@@ -287,6 +292,7 @@ public class FileActions implements ActionMode.Callback
         {
             addFile(node);
         }
+        if (mode == null) { return; }
         mode.setTitle(createTitle());
         mode.invalidate();
     }

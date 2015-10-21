@@ -361,6 +361,7 @@ public class ProgressNodeAdapter extends NodeAdapter
                 public void onClick(View v)
                 {
                     Node item = (Node) v.getTag(R.id.node_action);
+                    if (item == null) { return; }
                     selectedOptionItems.add(item);
                     PopupMenu popup = new PopupMenu(getActivity(), v);
                     getMenu(popup.getMenu(), item);
