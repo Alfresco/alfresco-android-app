@@ -62,6 +62,10 @@ public class MapUtil
         for (String nameValuePair : nameValuePairs)
         {
             String[] nameValue = nameValuePair.split("=");
+            if (nameValue.length == 0)
+            {
+                continue;
+            }
             try
             {
                 map.put(URLDecoder.decode(nameValue[0], "UTF-8"),

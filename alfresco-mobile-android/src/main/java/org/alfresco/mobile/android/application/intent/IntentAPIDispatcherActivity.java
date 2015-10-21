@@ -49,7 +49,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.MediaStore;
-import android.util.Log;
 
 /**
  * @author Jean Marie Pascal
@@ -135,7 +134,6 @@ public class IntentAPIDispatcherActivity extends BaseActivity
                     folder.mkdirs();
                 }
                 payload = new File(folder.getPath(), createFilename("IMG_", "jpg"));
-                Log.i("[WIDGET]", payload.getName());
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(payload));
                 if (intent.resolveActivity(getPackageManager()) == null)
                 {
