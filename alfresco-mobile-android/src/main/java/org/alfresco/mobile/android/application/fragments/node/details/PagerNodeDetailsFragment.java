@@ -103,6 +103,7 @@ public class PagerNodeDetailsFragment extends NodeDetailsFragment
         // Retrieve pager & pager tabs
         ViewPager viewPager = (ViewPager) viewById(R.id.view_pager);
         PagerSlidingTabStrip tabs = (PagerSlidingTabStrip) viewById(R.id.tabs);
+        if (tabs == null) { return; }
 
         tabs.setBackgroundColor(getActivity().getResources().getColor(R.color.grey_lighter));
         NodeDetailsPagerAdapter adapter = new NodeDetailsPagerAdapter(getChildFragmentManager(), getActivity(), node,

@@ -33,7 +33,6 @@ import org.apache.chemistry.opencmis.commons.exceptions.CmisConnectionException;
 import org.apache.http.HttpStatus;
 
 import android.content.Context;
-import android.support.v4.app.FragmentActivity;
 import android.text.Html;
 import android.util.Log;
 
@@ -115,10 +114,10 @@ public final class CloudExceptionUtils
         }
     }
 
-    public static void handleCloudException(FragmentActivity activity, Exception exception, boolean forceRefresh)
+    public static void handleCloudException(Context context, Exception exception, boolean forceRefresh)
     {
         Long accountId = null;
-        handleCloudException(activity, accountId, exception, forceRefresh, "");
+        handleCloudException(context, accountId, exception, forceRefresh, "");
     }
 
     private static void requestOAuthAuthentication(Context context, long accountId, String taskId, boolean forceRefresh)

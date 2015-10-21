@@ -361,6 +361,7 @@ public abstract class CreateDocumentDialogFragment extends AlfrescoFragment
     // //////////////////////////////////////////////////////////////////////
     public void onRetrieveDocumentName(RetrieveDocumentNameEvent event)
     {
+        if (tv == null) { return; }
         requestInProgress = false;
         recommandedName = event.data;
         if (!recommandedName.equals(event.originalName))

@@ -23,8 +23,11 @@ import org.alfresco.mobile.android.async.OperationEvent;
 
 public class RetrieveOAuthDataEvent extends OperationEvent<OAuthData>
 {
-    public RetrieveOAuthDataEvent(String requestId, LoaderResult<OAuthData> results)
+    public final long accountId;
+
+    public RetrieveOAuthDataEvent(String requestId, LoaderResult<OAuthData> results, long accountId)
     {
         super(requestId, results);
+        this.accountId = accountId;
     }
 }

@@ -257,6 +257,7 @@ public class ConfigManager extends Manager
     public ConfigService getConfig(long accountId, ConfigTypeIds id)
     {
         ConfigService service = getConfig(accountId);
+        if (service == null) { return null; }
         switch (id)
         {
             case VIEWS:

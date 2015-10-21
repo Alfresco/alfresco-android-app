@@ -104,7 +104,11 @@ public final class AlfrescoExceptionHelper
     {
         int messageId = R.string.error_session_creation;
 
-        if (e instanceof CmisUnauthorizedException)
+        if (e instanceof CmisConnectionException)
+        {
+            messageId = R.string.error_session_nodata;
+        }
+        else if (e instanceof CmisUnauthorizedException)
         {
             messageId = R.string.error_session_unauthorized;
         }
@@ -154,8 +158,8 @@ public final class AlfrescoExceptionHelper
         // Case where missing certificate / untrusted certificate
         else if (e.getCause() instanceof CmisConnectionException
                 && e.getCause().getCause() instanceof SSLHandshakeException
-                && (e.getCause().getCause().getCause() instanceof CertPathValidatorException || e.getCause().getCause()
-                        .getCause() instanceof CertificateException)
+                && (e.getCause().getCause().getCause() instanceof CertPathValidatorException
+                        || e.getCause().getCause().getCause() instanceof CertificateException)
                 && e.getCause().getCause().getCause().getMessage()
                         .contains("Trust anchor for certification path not found."))
         {
@@ -164,17 +168,16 @@ public final class AlfrescoExceptionHelper
         // Case where the certificate has expired or is not yet valid.
         else if (e.getCause() instanceof CmisConnectionException
                 && e.getCause().getCause() instanceof SSLHandshakeException
-                && e.getCause().getCause().getCause() instanceof CertificateException
-                && e.getCause().getCause().getCause().getMessage()
-                        .contains("Could not validate certificate: current time:"))
+                && e.getCause().getCause().getCause() instanceof CertificateException && e.getCause().getCause()
+                        .getCause().getMessage().contains("Could not validate certificate: current time:"))
         {
             messageId = R.string.error_session_certificate_expired;
         }
         // Case where the certificate has expired or is not yet valid.
         else if (e.getCause() instanceof CmisConnectionException
                 && e.getCause().getCause() instanceof SSLHandshakeException
-                && (e.getCause().getCause().getCause() instanceof CertificateExpiredException || e.getCause()
-                        .getCause().getCause() instanceof CertificateNotYetValidException))
+                && (e.getCause().getCause().getCause() instanceof CertificateExpiredException
+                        || e.getCause().getCause().getCause() instanceof CertificateNotYetValidException))
         {
             messageId = R.string.error_session_certificate_expired;
         }
