@@ -255,6 +255,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
+        super.onActivityResult(requestCode, resultCode, data);
         File tmpFile = null;
         isSynced = SyncContentManager.getInstance(getActivity()).isSynced(SessionUtils.getAccount(getActivity()), node);
         boolean modified = false;

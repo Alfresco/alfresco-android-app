@@ -49,7 +49,14 @@ public class BaseActionUtils
 
         try
         {
-            fr.startActivityForResult(intent, requestCode);
+            if (fr.getParentFragment() != null)
+            {
+                fr.getParentFragment().startActivityForResult(intent, requestCode);
+            }
+            else
+            {
+                fr.startActivityForResult(intent, requestCode);
+            }
         }
         catch (ActivityNotFoundException e)
         {
