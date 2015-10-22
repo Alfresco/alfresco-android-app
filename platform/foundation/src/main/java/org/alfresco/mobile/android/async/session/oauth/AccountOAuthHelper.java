@@ -90,6 +90,7 @@ public class AccountOAuthHelper
     public static AlfrescoAccount saveNewOauthData(Context context, AlfrescoAccount acc, OAuthData data)
     {
         AccountOAuthHelper.saveLastCloudLoadingTime(context);
+        if (acc == null) { return null; }
         switch (acc.getTypeId())
         {
             case AlfrescoAccount.TYPE_ALFRESCO_TEST_OAUTH:

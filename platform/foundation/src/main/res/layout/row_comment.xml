@@ -41,13 +41,14 @@
             android:layout_height="wrap_content"
             android:minHeight="@dimen/one_list_minHeight">
 
-            <ImageView
+
+            <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/icon"
-                style="@style/AlfrescoMaterialTheme.Icon.Left"
                 android:layout_width="@dimen/list_icon_size"
                 android:layout_height="@dimen/list_icon_size"
-                android:layout_centerVertical="true"
-                tools:src="@drawable/ic_action_inbox" />
+                app:border_width="1dp"
+                app:border_color="@color/grey_light"
+                style="@style/AlfrescoMaterialTheme.Icon.Left" />
 
             <LinearLayout
                 android:id="@+id/textview_container"

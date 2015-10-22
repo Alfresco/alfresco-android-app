@@ -158,7 +158,8 @@ public class UsersFragment extends PeopleFragment
     @Override
     protected ArrayAdapter<?> onAdapterCreation()
     {
-        return new UserAdapter(this, R.layout.row_two_lines_caption_divider, new ArrayList<Person>(0), selectedItems);
+        return new UserAdapter(this, R.layout.row_two_lines_caption_divider_circle, new ArrayList<Person>(0),
+                selectedItems);
     }
 
     @Subscribe
