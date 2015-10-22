@@ -165,7 +165,7 @@
 
     <!-- HELP -->
     <string name="asset_folder_prefix">en</string>
-    <string name="docs_prefix" />
+    <string name="docs_prefix" translatable="false" />
 
     <!-- About Message -->
     <string name="version_number">Version</string>

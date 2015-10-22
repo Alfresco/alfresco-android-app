@@ -33,6 +33,7 @@ import org.alfresco.mobile.android.async.node.like.LikeNodeEvent;
 import org.alfresco.mobile.android.async.node.update.UpdateNodeEvent;
 import org.alfresco.mobile.android.async.tag.TagsEvent;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -99,6 +100,12 @@ public class NodeSummaryFragment extends NodePropertiesFragment
     // ///////////////////////////////////////////////////////////////////////////
     // EVENTS RECEIVER
     // ///////////////////////////////////////////////////////////////////////////
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
     @Subscribe
     public void onResult(RetrieveNodeEvent event)
     {

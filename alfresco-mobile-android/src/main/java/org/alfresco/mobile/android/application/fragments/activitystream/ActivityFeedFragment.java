@@ -162,7 +162,8 @@ public class ActivityFeedFragment extends ActivityStreamFragment
     @Override
     protected ArrayAdapter<ActivityEntry> onAdapterCreation()
     {
-        return new ActivityFeedAdapter(this, R.layout.row_two_lines_caption_divider, new ArrayList<ActivityEntry>(0),
+        return new ActivityFeedAdapter(this, R.layout.row_two_lines_caption_divider_circle,
+                new ArrayList<ActivityEntry>(0),
                 selectedEntry);
     }
 

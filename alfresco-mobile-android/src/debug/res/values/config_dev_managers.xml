@@ -3,6 +3,6 @@
 
     <!-- Dev Tools Manager -->
     <bool name="manager_isEnable_DevToolsManager">true</bool>
-    <string name="manager_DevToolsManager">org.alfresco.mobile.android.application.managers.DevToolsManagerImpl</string>
+    <string name="manager_DevToolsManager" translatable="false">org.alfresco.mobile.android.application.managers.DevToolsManagerImpl</string>
 
 </resources>

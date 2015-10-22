@@ -272,7 +272,7 @@ public class AccountSettingsFragment extends AlfrescoFragment implements EditTex
                 getActivity().onBackPressed();
                 return true;
             case R.id.my_profile:
-                UserProfileFragment.with(getActivity()).personId(account.getUsername()).display();
+                UserProfileFragment.with(getActivity()).accountId(accountId).personId(account.getUsername()).display();
                 return true;
             case R.id.menu_account_delete:
                 delete();

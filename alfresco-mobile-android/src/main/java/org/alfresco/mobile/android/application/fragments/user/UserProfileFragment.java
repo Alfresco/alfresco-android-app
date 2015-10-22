@@ -21,6 +21,7 @@ import java.util.Map;
 
 import org.alfresco.mobile.android.api.model.Company;
 import org.alfresco.mobile.android.api.model.Person;
+import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.configuration.model.view.UserProfileConfigModel;
 import org.alfresco.mobile.android.application.fragments.builder.LeafFragmentBuilder;
@@ -28,6 +29,8 @@ import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.person.PersonEvent;
 import org.alfresco.mobile.android.async.person.PersonRequest;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
+import org.alfresco.mobile.android.platform.SessionManager;
+import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
@@ -69,9 +72,15 @@ public class UserProfileFragment extends AlfrescoFragment implements OnMenuItemC
 {
     public static final String TAG = UserProfileFragment.class.getName();
 
+    public static final String ARGUMENT_ACCOUNTID = "accountId";
+
+    private Long accountId;
+
     private Person person;
 
     private String userName;
+
+    private AlfrescoSession session;
 
     private int titleId = R.string.user_profile;
 
@@ -105,9 +114,16 @@ public class UserProfileFragment extends AlfrescoFragment implements OnMenuItemC
         if (getArguments() != null)
         {
             userName = getArguments().getString(ARGUMENT_USERNAME);
+            accountId = getArguments().getLong(ARGUMENT_ACCOUNTID);
         }
 
-        setSession(SessionUtils.getSession(getActivity()));
+        session = SessionUtils.getSession(getActivity());
+        if (accountId != null && accountId != -1)
+        {
+            session = SessionManager.getInstance(getActivity()).getSession(accountId);
+        }
+
+        setSession(session);
         SessionUtils.checkSession(getActivity(), getSession());
 
         // Create View
@@ -129,13 +145,14 @@ public class UserProfileFragment extends AlfrescoFragment implements OnMenuItemC
     @Override
     public void onActivityCreated(Bundle savedInstanceState)
     {
-        setSession(SessionUtils.getSession(getActivity()));
+        setSession(session);
         SessionUtils.checkSession(getActivity(), getSession());
         super.onActivityCreated(savedInstanceState);
 
         hide(R.id.profile_details);
         show(R.id.progressbar);
-        Operator.with(getActivity()).load(new PersonRequest.Builder(userName));
+        Operator.with(getActivity(), AlfrescoAccountManager.getInstance(getActivity()).retrieveAccount(accountId))
+                .load(new PersonRequest.Builder(userName).setAccountId(accountId));
     }
 
     @Override
@@ -881,6 +898,12 @@ public class UserProfileFragment extends AlfrescoFragment implements OnMenuItemC
         public Builder personId(String personIdentifier)
         {
             extraConfiguration.putString(ARGUMENT_USERNAME, personIdentifier);
+            return this;
+        }
+
+        public Builder accountId(Long accountId)
+        {
+            extraConfiguration.putLong(ARGUMENT_ACCOUNTID, accountId);
             return this;
         }
     }

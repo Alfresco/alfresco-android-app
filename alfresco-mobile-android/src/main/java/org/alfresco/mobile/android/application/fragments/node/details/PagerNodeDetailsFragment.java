@@ -18,6 +18,7 @@
 package org.alfresco.mobile.android.application.fragments.node.details;
 
 import java.lang.ref.WeakReference;
+import java.util.List;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.model.Folder;
@@ -46,6 +47,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -117,7 +119,25 @@ public class PagerNodeDetailsFragment extends NodeDetailsFragment
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
-        super.onActivityResult(requestCode, resultCode, data);
+        // super.onActivityResult(requestCode, resultCode, data);
+
+        // notifying nested fragments (support library bug fix)
+        final FragmentManager childFragmentManager = getChildFragmentManager();
+
+        if (childFragmentManager != null)
+        {
+            final List<Fragment> nestedFragments = childFragmentManager.getFragments();
+
+            if (nestedFragments == null || nestedFragments.size() == 0) return;
+
+            for (Fragment childFragment : nestedFragments)
+            {
+                if (childFragment != null && !childFragment.isDetached() && !childFragment.isRemoving())
+                {
+                    childFragment.onActivityResult(requestCode, resultCode, data);
+                }
+            }
+        }
     }
 
     // ///////////////////////////////////////////////////////////////////////////

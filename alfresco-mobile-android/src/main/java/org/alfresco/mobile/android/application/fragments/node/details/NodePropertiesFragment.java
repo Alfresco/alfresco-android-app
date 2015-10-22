@@ -30,6 +30,7 @@ import org.alfresco.mobile.android.application.managers.RenditionManagerImpl;
 import org.alfresco.mobile.android.application.ui.form.FormManager;
 import org.alfresco.mobile.android.async.tag.TagsEvent;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -77,6 +78,12 @@ public class NodePropertiesFragment extends NodeDetailsFragment
             display(node);
         }
         super.onResume();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
