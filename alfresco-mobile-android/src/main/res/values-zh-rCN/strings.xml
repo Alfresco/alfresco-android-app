@@ -164,7 +164,7 @@
     <string name="share_content">与&#8230;共享内容</string>
 
     <!-- HELP -->
-    <string name="asset_folder_prefix">en</string>
+    <string name="asset_folder_prefix">zh_cn</string>
     <string name="docs_prefix" />
 
     <!-- About Message -->

@@ -26,6 +26,6 @@
 
     <!-- Notification Manager -->
     <bool name="manager_isEnable_AlfrescoNotificationManager">true</bool>
-    <string name="manager_AlfrescoNotificationManager">org.alfresco.mobile.android.application.managers.NotificationManager</string>
+    <string name="manager_AlfrescoNotificationManager" translatable="false">org.alfresco.mobile.android.application.managers.NotificationManager</string>
 
 </resources>

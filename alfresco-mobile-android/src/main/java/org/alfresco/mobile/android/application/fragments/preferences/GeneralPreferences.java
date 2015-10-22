@@ -113,11 +113,9 @@ public class GeneralPreferences extends AlfrescoFragment
         // Alfresco Website
         vh = HolderUtils.configure(viewById(R.id.settings_links_website), getString(R.string.settings_links_website),
                 getString(R.string.settings_links_website_summary), -1);
-        viewById(R.id.settings_links_website_container).setOnClickListener(new View.OnClickListener()
-        {
+        viewById(R.id.settings_links_website_container).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 ActionUtils.startWebBrowser(getActivity(), getString(R.string.settings_links_website_url));
             }
         });
@@ -294,6 +292,7 @@ public class GeneralPreferences extends AlfrescoFragment
         dataProtectionVH = HolderUtils.configure(viewById(R.id.settings_privatefolder),
                 getString(R.string.settings_privatefolder_title), getString(R.string.settings_privatefolder_summary),
                 -1);
+        HolderUtils.makeMultiLine(dataProtectionVH.bottomText, 2);
 
         if (!sharedPref.getBoolean(HAS_ACCESSED_PAID_SERVICES, false))
         {
