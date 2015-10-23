@@ -281,7 +281,7 @@ public class AccountEditFragment extends AlfrescoFragment
         UIUtils.hideKeyboard(getActivity(), usernameField);
 
         // Create AlfrescoAccount + Session
-        Operator.with(getActivity()).load(new CheckSessionRequest.Builder(hostname, username, password));
+        Operator.with(getActivity(), acc).load(new CheckSessionRequest.Builder(hostname, username, password));
     }
 
     // ///////////////////////////////////////////////////////////////////////////

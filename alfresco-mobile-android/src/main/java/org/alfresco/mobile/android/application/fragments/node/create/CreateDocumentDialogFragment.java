@@ -324,7 +324,7 @@ public abstract class CreateDocumentDialogFragment extends AlfrescoFragment
         Operator.with(getActivity(), getAccount())
                 .load(new CreateDocumentRequest.Builder(parentFolder, documentName,
                         (type != null) ? type.getIdentifier() : null, f, props, listTagValue, isCreation)
-                        .setNotificationVisibility(OperationRequest.VISIBILITY_NOTIFICATIONS));
+                                .setNotificationVisibility(OperationRequest.VISIBILITY_NOTIFICATIONS));
 
         if (getActivity() instanceof PublicDispatcherActivity)
         {
@@ -367,17 +367,26 @@ public abstract class CreateDocumentDialogFragment extends AlfrescoFragment
         if (!recommandedName.equals(event.originalName))
         {
             tv.setError(getString(R.string.create_document_filename_error));
-            ((MaterialDialog) getDialog()).getActionButton(DialogAction.POSITIVE).setEnabled(false);
+            if (getDialog() != null && getDialog() instanceof MaterialDialog)
+            {
+                ((MaterialDialog) getDialog()).getActionButton(DialogAction.POSITIVE).setEnabled(false);
+            }
         }
         else
         {
             tv.setError(null);
-            ((MaterialDialog) getDialog()).getActionButton(DialogAction.POSITIVE).setEnabled(true);
+            if (getDialog() != null && getDialog() instanceof MaterialDialog)
+            {
+                ((MaterialDialog) getDialog()).getActionButton(DialogAction.POSITIVE).setEnabled(true);
+            }
         }
 
         if (requestCheck)
         {
-            ((MaterialDialog) getDialog()).getActionButton(DialogAction.POSITIVE).setEnabled(false);
+            if (getDialog() != null && getDialog() instanceof MaterialDialog)
+            {
+                ((MaterialDialog) getDialog()).getActionButton(DialogAction.POSITIVE).setEnabled(false);
+            }
             Operator.with(getActivity(), getAccount())
                     .load(new RetrieveDocumentNameRequest.Builder(getParent(), tv.getText().toString()));
             requestCheck = false;

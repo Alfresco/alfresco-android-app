@@ -51,14 +51,13 @@
                 android:background="@null"
                 android:ems="10"
                 android:hint="@string/search_person_hint"
-                android:inputType="text"></EditText>
+                android:inputType="text" />
 
             <ImageButton
                 android:id="@+id/search_microphone"
                 style="?MainTheme.ImageView.ActionIcon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="2dip"
                 android:src="@drawable/ic_microphone" />
         </LinearLayout>
     </LinearLayout>

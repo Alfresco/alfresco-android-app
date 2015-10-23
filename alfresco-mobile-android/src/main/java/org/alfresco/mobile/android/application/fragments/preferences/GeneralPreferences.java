@@ -143,6 +143,7 @@ public class GeneralPreferences extends AlfrescoFragment
                 ActionUtils.startWebBrowser(getActivity(), getString(R.string.settings_links_facebook_url));
             }
         });
+        HolderUtils.makeMultiLine(vh.topText, 2);
 
         // About
         vh = HolderUtils.configure(viewById(R.id.settings_about), getString(R.string.version_number),
