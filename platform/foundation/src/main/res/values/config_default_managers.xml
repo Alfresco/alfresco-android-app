@@ -27,8 +27,11 @@
     <string name="manager_AlfrescoStorageManager">org.alfresco.mobile.android.persistence.io.AlfrescoStorageManager</string>
 
     <!-- Favorite Sync Manager -->
-    <bool name="manager_isEnable_FavoritesSyncManager">false</bool>
-    <string name="manager_FavoritesSyncManager">org.alfresco.mobile.android.sync.FavoritesSyncManager</string>
+    <bool name="manager_isEnable_SyncContentManager">false</bool>
+    <string name="manager_SyncContentManager">org.alfresco.mobile.android.sync.SyncContentManager</string>
+
+    <bool name="manager_isEnable_FavoritesManager">false</bool>
+    <string name="manager_FavoritesManager">org.alfresco.mobile.android.platform.favorite.FavoritesManager</string>
 
     <!-- Data Protection Manager -->
     <bool name="manager_isEnable_DataProtectionManager">false</bool>
@@ -48,9 +51,5 @@
     <!-- MimeType Manager -->
     <bool name="manager_isEnable_MimeTypeManager">true</bool>
     <string name="manager_MimeTypeManager">org.alfresco.mobile.android.platform.mimetype.DefaultMimeTypeManager</string>
-
-    <!-- Notification Manager -->
-    <bool name="manager_isEnable_AlfrescoNotificationManager">true</bool>
-    <string name="manager_AlfrescoNotificationManager">org.alfresco.mobile.android.platform.DefaultNotificationManager</string>
 
 </resources>

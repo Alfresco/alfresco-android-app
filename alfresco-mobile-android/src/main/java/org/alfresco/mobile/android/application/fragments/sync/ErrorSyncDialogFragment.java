@@ -1,35 +1,35 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.fragments.sync;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
-import org.alfresco.mobile.android.sync.FavoritesSyncManager;
+import org.alfresco.mobile.android.sync.SyncContentManager;
 import org.alfresco.mobile.android.sync.SyncScanInfo;
 
-import android.app.AlertDialog.Builder;
 import android.app.Dialog;
-import android.app.DialogFragment;
-import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.text.Html;
 import android.view.Gravity;
 import android.widget.TextView;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 
 public class ErrorSyncDialogFragment extends DialogFragment
 {
@@ -70,18 +70,30 @@ public class ErrorSyncDialogFragment extends DialogFragment
         int negativeId = android.R.string.no;
         onFavoriteChangeListener = downloadListener;
 
-        Builder builder = new Builder(getActivity()).setIcon(iconId).setTitle(title).setMessage(Html.fromHtml(message))
-                .setCancelable(false);
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity()).iconRes(iconId).title(title)
+                .content(Html.fromHtml(message)).cancelable(false);
 
         if (info.hasError())
         {
-            negativeId = R.string.ok;
+            builder.negativeText(R.string.ok).callback(new MaterialDialog.ButtonCallback()
+            {
+                @Override
+                public void onNegative(MaterialDialog dialog)
+                {
+                    if (onFavoriteChangeListener != null)
+                    {
+                        onFavoriteChangeListener.onNegative();
+                    }
+                    dialog.dismiss();
+                }
+            });
         }
         else
         {
-            builder.setPositiveButton(positiveId, new DialogInterface.OnClickListener()
+            builder.positiveText(positiveId).negativeText(negativeId).callback(new MaterialDialog.ButtonCallback()
             {
-                public void onClick(DialogInterface dialog, int whichButton)
+                @Override
+                public void onPositive(MaterialDialog dialog)
                 {
                     if (onFavoriteChangeListener != null)
                     {
@@ -89,22 +101,20 @@ public class ErrorSyncDialogFragment extends DialogFragment
                     }
                     dialog.dismiss();
                 }
+
+                @Override
+                public void onNegative(MaterialDialog dialog)
+                {
+                    if (onFavoriteChangeListener != null)
+                    {
+                        onFavoriteChangeListener.onNegative();
+                    }
+                    dialog.dismiss();
+                }
             });
         }
 
-        builder.setNegativeButton(negativeId, new DialogInterface.OnClickListener()
-        {
-            public void onClick(DialogInterface dialog, int whichButton)
-            {
-                if (onFavoriteChangeListener != null)
-                {
-                    onFavoriteChangeListener.onNegative();
-                }
-                dialog.dismiss();
-            }
-        });
-
-        return builder.create();
+        return builder.show();
     }
 
     @Override
@@ -112,8 +122,11 @@ public class ErrorSyncDialogFragment extends DialogFragment
     {
         if (getDialog() != null)
         {
-            TextView messageText = (TextView) getDialog().findViewById(android.R.id.message);
-            messageText.setGravity(Gravity.CENTER);
+            TextView messageText = ((MaterialDialog) getDialog()).getContentView();
+            if (messageText != null)
+            {
+                messageText.setGravity(Gravity.CENTER);
+            }
             getDialog().show();
         }
         super.onResume();
@@ -134,8 +147,8 @@ public class ErrorSyncDialogFragment extends DialogFragment
         @Override
         public void onPositive()
         {
-            FavoritesSyncManager.getInstance(getActivity()).runPendingOperationGroup(
-                    SessionUtils.getAccount(getActivity()));
+            SyncContentManager.getInstance(getActivity())
+                    .runPendingOperationGroup(SessionUtils.getAccount(getActivity()));
             getActivity().invalidateOptionsMenu();
 
             if (getFragmentManager().findFragmentByTag(SyncFragment.TAG) != null)
@@ -149,8 +162,8 @@ public class ErrorSyncDialogFragment extends DialogFragment
         {
             if (info.hasWarning() && !info.hasError())
             {
-                SyncScanInfo.getLastSyncScanData(getActivity(), SessionUtils.getAccount(getActivity())).waitSync(
-                        getActivity(), SessionUtils.getAccount(getActivity()));
+                SyncScanInfo.getLastSyncScanData(getActivity(), SessionUtils.getAccount(getActivity()))
+                        .waitSync(getActivity(), SessionUtils.getAccount(getActivity()));
             }
             getActivity().invalidateOptionsMenu();
         }

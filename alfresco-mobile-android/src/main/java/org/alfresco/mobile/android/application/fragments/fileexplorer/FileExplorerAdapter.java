@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.fragments.fileexplorer;
 
 import java.io.File;
@@ -29,32 +29,31 @@ import java.util.List;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.activity.MainActivity;
-import org.alfresco.mobile.android.application.fragments.utils.ProgressViewHolder;
+import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.managers.ActionUtils;
 import org.alfresco.mobile.android.application.managers.RenditionManagerImpl;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.mimetype.MimeTypeManager;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
-import org.alfresco.mobile.android.platform.utils.AndroidVersion;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.ListingModeFragment;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
+import org.alfresco.mobile.android.ui.holder.TwoLinesProgressViewHolder;
 import org.alfresco.mobile.android.ui.utils.Formatter;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnDismissListener;
 import android.widget.PopupMenu.OnMenuItemClickListener;
@@ -65,7 +64,8 @@ import android.widget.PopupMenu.OnMenuItemClickListener;
  * 
  * @author Jean Marie Pascal
  */
-public class FileExplorerAdapter extends BaseListAdapter<File, ProgressViewHolder> implements OnMenuItemClickListener
+public class FileExplorerAdapter extends BaseListAdapter<File, TwoLinesProgressViewHolder>
+        implements OnMenuItemClickListener
 {
     private List<File> originalFiles;
 
@@ -98,12 +98,12 @@ public class FileExplorerAdapter extends BaseListAdapter<File, ProgressViewHolde
         this.mode = mode;
         if (((BaseActivity) fr.getActivity()).getCurrentAccount() != null)
         {
-            File f = AlfrescoStorageManager.getInstance(fr.getActivity()).getDownloadFolder(
-                    ((BaseActivity) fr.getActivity()).getCurrentAccount());
+            File f = AlfrescoStorageManager.getInstance(fr.getActivity())
+                    .getDownloadFolder(((BaseActivity) fr.getActivity()).getCurrentAccount());
             this.downloadPath = (f != null) ? f.getPath() : null;
         }
         this.renditionManager = RenditionManagerImpl.getInstance(fr.getActivity());
-        this.vhClassName = ProgressViewHolder.class.getCanonicalName();
+        this.vhClassName = TwoLinesProgressViewHolder.class.getCanonicalName();
     }
 
     @Override
@@ -113,24 +113,24 @@ public class FileExplorerAdapter extends BaseListAdapter<File, ProgressViewHolde
     }
 
     @Override
-    protected void updateTopText(ProgressViewHolder vh, File item)
+    protected void updateTopText(TwoLinesProgressViewHolder vh, File item)
     {
         vh.topText.setText(item.getName());
     }
 
     @Override
-    protected void updateBottomText(ProgressViewHolder vh, File item)
+    protected void updateBottomText(TwoLinesProgressViewHolder vh, File item)
     {
         vh.bottomText.setText(createContentBottomText(getContext(), item));
 
         if (selectedItems != null && selectedItems.contains(item))
         {
-            UIUtils.setBackground(((LinearLayout) vh.choose.getParent()),
+            UIUtils.setBackground(((View) vh.choose.getParent()),
                     getContext().getResources().getDrawable(R.drawable.list_longpressed_holo));
         }
         else
         {
-            UIUtils.setBackground(((LinearLayout) vh.choose.getParent()), null);
+            UIUtils.setBackground(((View) vh.choose.getParent()), null);
         }
 
         if (DataProtectionManager.getInstance(getContext()).isEncrypted(item.getPath()))
@@ -156,12 +156,12 @@ public class FileExplorerAdapter extends BaseListAdapter<File, ProgressViewHolde
     }
 
     @Override
-    protected void updateIcon(ProgressViewHolder vh, File item)
+    protected void updateIcon(TwoLinesProgressViewHolder vh, File item)
     {
         if (item.isFile())
         {
-            Drawable drawable = getContext().getResources().getDrawable(
-                    MimeTypeManager.getInstance(getContext()).getIcon(item.getName()));
+            Drawable drawable = getContext().getResources()
+                    .getDrawable(MimeTypeManager.getInstance(getContext()).getIcon(item.getName()));
             renditionManager.getPicasso().load(item).placeholder(drawable).error(drawable).into(vh.icon);
             AccessibilityUtils.addContentDescription(vh.icon, R.string.mime_document);
         }
@@ -174,9 +174,10 @@ public class FileExplorerAdapter extends BaseListAdapter<File, ProgressViewHolde
         if (mode == FileExplorerFragment.MODE_LISTING && fragmentRef.get().getActivity() instanceof MainActivity
                 && ((downloadPath != null && item.getPath().startsWith(downloadPath)) || (item.isFile())))
         {
-            UIUtils.setBackground(vh.choose,
-                    getContext().getResources().getDrawable(R.drawable.quickcontact_badge_overlay_light));
-
+            vh.choose.setImageResource(R.drawable.ic_more_options);
+            vh.choose.setBackgroundResource(R.drawable.alfrescohololight_list_selector_holo_light);
+            int d_16 = DisplayUtils.getPixels(getContext(), R.dimen.d_16);
+            vh.choose.setPadding(d_16, d_16, d_16, d_16);
             vh.choose.setVisibility(View.VISIBLE);
             AccessibilityUtils.addContentDescription(vh.choose,
                     String.format(getContext().getString(R.string.more_options_file), item.getName()));
@@ -192,18 +193,14 @@ public class FileExplorerAdapter extends BaseListAdapter<File, ProgressViewHolde
                     selectedOptionItems.add(item);
                     PopupMenu popup = new PopupMenu(getContext(), v);
                     getMenu(popup.getMenu(), item);
-
-                    if (AndroidVersion.isICSOrAbove())
+                    popup.setOnDismissListener(new OnDismissListener()
                     {
-                        popup.setOnDismissListener(new OnDismissListener()
+                        @Override
+                        public void onDismiss(PopupMenu menu)
                         {
-                            @Override
-                            public void onDismiss(PopupMenu menu)
-                            {
-                                selectedOptionItems.clear();
-                            }
-                        });
-                    }
+                            selectedOptionItems.clear();
+                        }
+                    });
 
                     popup.setOnMenuItemClickListener(FileExplorerAdapter.this);
 
@@ -348,11 +345,11 @@ public class FileExplorerAdapter extends BaseListAdapter<File, ProgressViewHolde
         {
             case R.id.menu_upload:
                 onMenuItemClick = true;
-                ActionUtils.actionSendDocumentToAlfresco((Activity) getContext(), selectedOptionItems.get(0));
+                ActionUtils.actionSendDocumentToAlfresco((FragmentActivity) getContext(), selectedOptionItems.get(0));
                 break;
             case R.id.menu_action_share:
                 onMenuItemClick = true;
-                ActionUtils.actionShareContent((Activity) getContext(), selectedOptionItems.get(0));
+                ActionUtils.actionShareContent((FragmentActivity) getContext(), selectedOptionItems.get(0));
                 break;
             case R.id.menu_action_edit:
                 onMenuItemClick = true;

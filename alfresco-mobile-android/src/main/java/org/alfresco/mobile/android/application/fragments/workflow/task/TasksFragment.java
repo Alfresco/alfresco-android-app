@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.fragments.workflow.task;
 
 import java.util.ArrayList;
@@ -23,6 +23,7 @@ import java.util.Map;
 import org.alfresco.mobile.android.api.model.Task;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.PrivateDialogActivity;
+import org.alfresco.mobile.android.application.configuration.model.view.TasksConfigModel;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.MenuFragmentHelper;
@@ -33,23 +34,25 @@ import org.alfresco.mobile.android.async.workflow.task.complete.CompleteTaskEven
 import org.alfresco.mobile.android.async.workflow.task.delegate.ReassignTaskEvent;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.utils.BundleUtils;
+import org.alfresco.mobile.android.ui.activity.AlfrescoActivity;
 import org.alfresco.mobile.android.ui.template.ListingTemplate;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 import org.alfresco.mobile.android.ui.workflow.task.TasksFoundationAdapter;
 import org.alfresco.mobile.android.ui.workflow.task.TasksFoundationFragment;
-import org.alfresco.mobile.android.ui.workflow.task.TasksTemplate;
 
-import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.squareup.otto.Subscribe;
 
@@ -67,7 +70,6 @@ public class TasksFragment extends TasksFoundationFragment
     public TasksFragment()
     {
         emptyListMessageId = R.string.empty_tasks;
-        enableTitle = false;
         loadState = LOAD_VISIBLE;
         setHasOptionsMenu(true);
     }
@@ -85,21 +87,32 @@ public class TasksFragment extends TasksFoundationFragment
     // LIFECYCLE
     // ///////////////////////////////////////////////////////////////////////////
     @Override
-    public void onResume()
+    public void displayTitle()
     {
         if (getArguments().containsKey(ARGUMENT_MENU_ID))
         {
-            TasksHelper.displayNavigationMode(getActivity(), false, getArguments().getInt(ARGUMENT_MENU_ID));
-            getActivity().getActionBar().setDisplayShowTitleEnabled(false);
-            getActivity().getActionBar().setDisplayShowCustomEnabled(true);
-            getActivity().getActionBar().setCustomView(null);
+            TasksHelper.displayNavigationMode((AlfrescoActivity) getActivity(), false,
+                    getArguments().getInt(ARGUMENT_MENU_ID));
+            getActionBar().setDisplayUseLogoEnabled(false);
+            getActionBar().setDisplayShowTitleEnabled(false);
+            getActionBar().setDisplayShowCustomEnabled(false);
         }
         else
         {
             UIUtils.displayTitle(getActivity(), getString(R.string.my_tasks));
         }
         getActivity().invalidateOptionsMenu();
-        super.onResume();
+    }
+
+    @Override
+    protected void prepareEmptyView(View ev, ImageView emptyImageView, TextView firstEmptyMessage,
+            TextView secondEmptyMessage)
+    {
+        emptyImageView.setLayoutParams(DisplayUtils.resizeLayout(getActivity(), 275, 275));
+        emptyImageView.setImageResource(R.drawable.ic_empty_tasks);
+        firstEmptyMessage.setText(R.string.tasks_list_empty_title);
+        secondEmptyMessage.setVisibility(View.VISIBLE);
+        secondEmptyMessage.setText(R.string.tasks_list_empty_description);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -108,7 +121,8 @@ public class TasksFragment extends TasksFoundationFragment
     @Override
     protected ArrayAdapter<?> onAdapterCreation()
     {
-        return new TasksFoundationAdapter(getActivity(), R.layout.sdk_grid_row, new ArrayList<Task>(0), selectedItems);
+        return new TasksFoundationAdapter(getActivity(), R.layout.row_two_lines_caption_divider, new ArrayList<Task>(0),
+                selectedItems);
     }
 
     @Override
@@ -116,6 +130,19 @@ public class TasksFragment extends TasksFoundationFragment
     public void onResult(TasksEvent request)
     {
         super.onResult(request);
+    }
+
+    @Override
+    protected View.OnClickListener onPrepareFabClickListener()
+    {
+        return new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                onOptionMenuItemSelected(R.id.menu_workflow_add);
+            }
+        };
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -136,15 +163,18 @@ public class TasksFragment extends TasksFoundationFragment
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-        if (!MenuFragmentHelper.canDisplayFragmentMenu(getActivity())) { return; }
         menu.clear();
-        getMenu(getActivity(), menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        switch (item.getItemId())
+        return !onOptionMenuItemSelected(item.getItemId()) ? false : super.onOptionsItemSelected(item);
+    }
+
+    private boolean onOptionMenuItemSelected(int itemId)
+    {
+        switch (itemId)
         {
             case R.id.menu_workflow_add:
                 Intent in = new Intent(PrivateIntent.ACTION_START_PROCESS, null, getActivity(),
@@ -153,7 +183,7 @@ public class TasksFragment extends TasksFoundationFragment
                 getActivity().startActivity(in);
                 return true;
         }
-        return super.onOptionsItemSelected(item);
+        return false;
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -219,33 +249,29 @@ public class TasksFragment extends TasksFoundationFragment
     // ///////////////////////////////////////////////////////////////////////////
     // BUILDER
     // ///////////////////////////////////////////////////////////////////////////
-    public static Builder with(Activity activity)
+    public static Builder with(FragmentActivity activity)
     {
         return new Builder(activity);
     }
 
     public static class Builder extends ListingFragmentBuilder
     {
-        public static final int ICON_ID = R.drawable.ic_task_dark;
-
-        public static final int LABEL_ID = R.string.my_tasks;
-
         // ///////////////////////////////////////////////////////////////////////////
         // CONSTRUCTORS
         // ///////////////////////////////////////////////////////////////////////////
-        public Builder(Activity activity)
+        public Builder(FragmentActivity activity)
         {
             super(activity);
             this.extraConfiguration = new Bundle();
         }
 
-        public Builder(Activity appActivity, Map<String, Object> configuration)
+        public Builder(FragmentActivity appActivity, Map<String, Object> configuration)
         {
             super(appActivity, configuration);
-            menuIconId = R.drawable.ic_task_dark;
-            menuTitleId = R.string.my_tasks;
-            templateArguments = new String[] { ListingTemplate.ARGUMENT_HAS_FILTER, TasksTemplate.FILTER_KEY_STATUS,
-                    TasksTemplate.FILTER_KEY_DUE, TasksTemplate.FILTER_KEY_PRIORITY, TasksTemplate.FILTER_KEY_ASSIGNEE };
+            viewConfigModel = new TasksConfigModel(configuration);
+            templateArguments = new String[] { ListingTemplate.ARGUMENT_HAS_FILTER, TasksConfigModel.FILTER_KEY_STATUS,
+                    TasksConfigModel.FILTER_KEY_DUE, TasksConfigModel.FILTER_KEY_PRIORITY,
+                    TasksConfigModel.FILTER_KEY_ASSIGNEE };
         }
 
         protected void retrieveCustomArgument(Map<String, Object> properties, Bundle b)
@@ -275,7 +301,7 @@ public class TasksFragment extends TasksFoundationFragment
             }
             else
             {
-                TasksHelper.displayNavigationMode(activity.get());
+                TasksHelper.displayNavigationMode((AlfrescoActivity) activity.get());
                 return null;
             }
         }

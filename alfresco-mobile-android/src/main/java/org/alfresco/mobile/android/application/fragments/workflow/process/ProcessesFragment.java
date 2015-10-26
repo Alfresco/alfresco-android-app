@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.fragments.workflow.process;
 
 import java.util.ArrayList;
@@ -35,19 +35,23 @@ import org.alfresco.mobile.android.async.workflow.process.start.StartProcessEven
 import org.alfresco.mobile.android.async.workflow.task.complete.CompleteTaskEvent;
 import org.alfresco.mobile.android.async.workflow.task.delegate.ReassignTaskEvent;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
+import org.alfresco.mobile.android.ui.activity.AlfrescoActivity;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 import org.alfresco.mobile.android.ui.workflow.process.ProcessesFoundationFragment;
 
-import android.app.Activity;
-import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.squareup.otto.Subscribe;
 
@@ -67,7 +71,6 @@ public class ProcessesFragment extends ProcessesFoundationFragment
     public ProcessesFragment()
     {
         emptyListMessageId = R.string.empty_tasks;
-        enableTitle = false;
         loadState = LOAD_VISIBLE;
         setHasOptionsMenu(true);
     }
@@ -87,10 +90,11 @@ public class ProcessesFragment extends ProcessesFoundationFragment
     {
         if (getArguments().containsKey(ARGUMENT_MENUID))
         {
-            TasksHelper.displayNavigationMode(getActivity(), false, getArguments().getInt(ARGUMENT_MENUID));
-            getActivity().getActionBar().setDisplayShowTitleEnabled(false);
-            getActivity().getActionBar().setDisplayShowCustomEnabled(true);
-            getActivity().getActionBar().setCustomView(null);
+            TasksHelper.displayNavigationMode((AlfrescoActivity) getActivity(), false,
+                    getArguments().getInt(ARGUMENT_MENUID));
+           getActionBar().setDisplayShowTitleEnabled(false);
+           getActionBar().setDisplayShowCustomEnabled(true);
+            // getActionBar().setCustomView(null);
         }
         else
         {
@@ -107,7 +111,8 @@ public class ProcessesFragment extends ProcessesFoundationFragment
     @Override
     protected ArrayAdapter<?> onAdapterCreation()
     {
-        return new ProcessesAdapter(getActivity(), R.layout.sdk_grid_row, new ArrayList<Process>(0), selectedItems);
+        return new ProcessesAdapter(getActivity(), R.layout.row_two_lines_caption_divider, new ArrayList<Process>(0),
+                selectedItems);
     }
 
     @Subscribe
@@ -116,28 +121,59 @@ public class ProcessesFragment extends ProcessesFoundationFragment
         super.onResult(event);
     }
 
+    @Override
+    protected void prepareEmptyView(View ev, ImageView emptyImageView, TextView firstEmptyMessage,
+            TextView secondEmptyMessage)
+    {
+        emptyImageView.setLayoutParams(DisplayUtils.resizeLayout(getActivity(), 275, 275));
+        emptyImageView.setImageResource(R.drawable.ic_empty_tasks);
+        firstEmptyMessage.setText(R.string.tasks_list_empty_title);
+        secondEmptyMessage.setVisibility(View.VISIBLE);
+        secondEmptyMessage.setText(R.string.tasks_list_empty_description);
+    }
+
+    @Override
+    protected View.OnClickListener onPrepareFabClickListener()
+    {
+        return new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                onOptionMenuItemSelected(R.id.menu_workflow_add);
+            }
+        };
+    }
     // ///////////////////////////////////////////////////////////////////////////
     // MENU
     // ///////////////////////////////////////////////////////////////////////////
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    public static void getMenu(Context context, Menu menu)
     {
-        super.onCreateOptionsMenu(menu, inflater);
-        if (!MenuFragmentHelper.canDisplayFragmentMenu(getActivity())) { return; }
-        menu.clear();
         MenuItem mi;
 
         mi = menu.add(Menu.NONE, R.id.menu_workflow_add, Menu.FIRST, R.string.workflow_start);
         mi.setIcon(android.R.drawable.ic_menu_add);
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
-        MenuFragmentHelper.getMenu(getActivity(), menu);
+        MenuFragmentHelper.getMenu(context, menu);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        super.onCreateOptionsMenu(menu, inflater);
+        menu.clear();
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        switch (item.getItemId())
+        return !onOptionMenuItemSelected(item.getItemId()) ? false : super.onOptionsItemSelected(item);
+    }
+
+    private boolean onOptionMenuItemSelected(int itemId)
+    {
+        switch (itemId)
         {
             case R.id.menu_workflow_add:
                 Intent in = new Intent(PrivateIntent.ACTION_START_PROCESS, null, getActivity(),
@@ -212,7 +248,7 @@ public class ProcessesFragment extends ProcessesFoundationFragment
     // ///////////////////////////////////////////////////////////////////////////
     // BUILDER
     // ///////////////////////////////////////////////////////////////////////////
-    public static Builder with(Activity activity)
+    public static Builder with(FragmentActivity activity)
     {
         return new Builder(activity);
     }
@@ -224,13 +260,13 @@ public class ProcessesFragment extends ProcessesFoundationFragment
         // ///////////////////////////////////////////////////////////////////////////
         // CONSTRUCTORS
         // ///////////////////////////////////////////////////////////////////////////
-        public Builder(Activity activity)
+        public Builder(FragmentActivity activity)
         {
             super(activity);
             this.extraConfiguration = new Bundle();
         }
 
-        public Builder(Activity appActivity, Map<String, Object> configuration)
+        public Builder(FragmentActivity appActivity, Map<String, Object> configuration)
         {
             super(appActivity, configuration);
         }

@@ -95,11 +95,13 @@ public class CreateDocumentRequest extends UpNodeRequest
     {
         super(cursor);
 
-        this.type = (String) persistentProperties.remove(PROP_TYPE);
+        HashMap<String, Serializable> tmpProperties = new HashMap<>(persistentProperties);
 
-        if (persistentProperties.containsKey(ContentModel.PROP_NAME))
+        this.type = (String) tmpProperties.remove(PROP_TYPE);
+
+        if (tmpProperties.containsKey(ContentModel.PROP_NAME))
         {
-            this.documentName = (String) persistentProperties.remove(ContentModel.PROP_NAME);
+            this.documentName = (String) tmpProperties.remove(ContentModel.PROP_NAME);
             this.title = documentName;
         }
         else
@@ -107,12 +109,12 @@ public class CreateDocumentRequest extends UpNodeRequest
             this.documentName = "";
         }
 
-        this.isCreation = persistentProperties.containsKey(PROP_ISCREATION)
-                && Boolean.parseBoolean((String) persistentProperties.remove(PROP_ISCREATION));
+        this.isCreation = tmpProperties.containsKey(PROP_ISCREATION)
+                && Boolean.parseBoolean((String) tmpProperties.remove(PROP_ISCREATION));
 
         List<String> tags = new ArrayList<String>();
         List<String> keys = new ArrayList<String>();
-        for (Entry<String, Serializable> entry : persistentProperties.entrySet())
+        for (Entry<String, Serializable> entry : tmpProperties.entrySet())
         {
             if (entry.getKey().startsWith(PROP_TAG))
             {
@@ -123,10 +125,10 @@ public class CreateDocumentRequest extends UpNodeRequest
 
         for (String key : keys)
         {
-            persistentProperties.remove(key);
+            tmpProperties.remove(key);
         }
 
-        this.properties = new HashMap<String, Serializable>(persistentProperties);
+        this.properties = new HashMap<>(tmpProperties);
         this.tags = tags;
     }
 

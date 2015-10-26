@@ -18,6 +18,7 @@
 package org.alfresco.mobile.android.application.managers;
 
 import java.io.File;
+import java.util.HashMap;
 
 import org.alfresco.mobile.android.api.model.config.ConfigConstants;
 import org.alfresco.mobile.android.api.model.config.ConfigScope;
@@ -50,7 +51,7 @@ public class ConfigManager extends Manager
 
     protected static Manager mInstance;
 
-    private LongSparseArray<ConfigService> currentService = new LongSparseArray<>();
+    private HashMap<Long, ConfigService> currentService = new HashMap<>();
 
     private LongSparseArray<ConfigService> remoteConfigService = new LongSparseArray<>();
 
@@ -132,8 +133,10 @@ public class ConfigManager extends Manager
                 ((LocalConfigServiceImpl) configService).setSession(SessionUtils.getSession(appContext));
             }
 
-            currentService.put(acc.getId(), configService);
-
+            if (configService != null)
+            {
+                currentService.put(acc.getId(), configService);
+            }
             // Config is available. Send an event
             if (configService.hasViewConfig())
             {
@@ -167,7 +170,10 @@ public class ConfigManager extends Manager
         else if (customConfigService != null && customConfigService.get(accountId) != null)
         {
             ((LocalConfigServiceImpl) customConfigService.get(accountId)).setSession(session);
-            currentService.put(accountId, customConfigService.get(accountId));
+            if (customConfigService.get(accountId) != null)
+            {
+                currentService.put(accountId, customConfigService.get(accountId));
+            }
         }
         else
         {
@@ -177,7 +183,10 @@ public class ConfigManager extends Manager
                 embedConfigService = new LocalConfigServiceImpl(appContext);
             }
             ((LocalConfigServiceImpl) embedConfigService).setSession(session);
-            currentService.put(accountId, embedConfigService);
+            if (embedConfigService != null)
+            {
+                currentService.put(accountId, embedConfigService);
+            }
         }
         currentProfileId = null;
         eventBus.post(new ConfigurationMenuEvent(accountId));
@@ -248,6 +257,7 @@ public class ConfigManager extends Manager
     public ConfigService getConfig(long accountId, ConfigTypeIds id)
     {
         ConfigService service = getConfig(accountId);
+        if (service == null) { return null; }
         switch (id)
         {
             case VIEWS:
@@ -332,7 +342,10 @@ public class ConfigManager extends Manager
 
     public void loadAndUseCustom(AlfrescoAccount account)
     {
-        currentService.put(account.getId(), loadCustom(account));
+        if (loadCustom(account) != null)
+        {
+            currentService.put(account.getId(), loadCustom(account));
+        }
     }
 
     public void cleanCache(AlfrescoAccount account)

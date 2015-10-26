@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.platform;
 
 import org.alfresco.mobile.android.async.Operation;
@@ -31,7 +31,6 @@ import org.alfresco.mobile.android.platform.utils.AndroidVersion;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -42,14 +41,10 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NotificationCompat;
-import android.text.Html;
 import android.util.Log;
-import android.widget.RemoteViews;
 import android.widget.Toast;
-
-import de.keyboardsurfer.android.widget.crouton.Crouton;
-import de.keyboardsurfer.android.widget.crouton.Style;
 
 /**
  * Manager responsible of all dialog, notification and warning
@@ -167,28 +162,24 @@ public class AlfrescoNotificationManager extends Manager
     // //////////////////////////////////////////////////////////////////////
     // CROUTON
     // //////////////////////////////////////////////////////////////////////
-    public void showInfoCrouton(Activity activity, String text)
+    public void showInfoCrouton(FragmentActivity activity, String text)
     {
-        Crouton.cancelAllCroutons();
-        Crouton.showText(activity, Html.fromHtml(text), Style.INFO);
+        // Implement in subclass
     }
 
-    public void showAlertCrouton(Activity activity, String text)
+    public void showAlertCrouton(FragmentActivity activity, String text)
     {
-        Crouton.cancelAllCroutons();
-        Crouton.showText(activity, Html.fromHtml(text), Style.ALERT);
+        // Implement in subclass
     }
 
-    public void showInfoCrouton(Activity activity, int text)
+    public void showInfoCrouton(FragmentActivity activity, int text)
     {
-        Crouton.cancelAllCroutons();
-        Crouton.showText(activity, text, Style.INFO);
+        // Implement in subclass
     }
 
-    public void showAlertCrouton(Activity activity, int text)
+    public void showAlertCrouton(FragmentActivity activity, int text)
     {
-        Crouton.cancelAllCroutons();
-        Crouton.showText(activity, text, Style.ALERT);
+        // Implement in subclass
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -304,29 +295,18 @@ public class AlfrescoNotificationManager extends Manager
         }
         builder.setContentIntent(pIntent);
 
-        if (AndroidVersion.isICSOrAbove())
+        if (params.containsKey(ARGUMENT_PROGRESS_MAX) && params.containsKey(ARGUMENT_PROGRESS))
         {
-            if (params.containsKey(ARGUMENT_PROGRESS_MAX) && params.containsKey(ARGUMENT_PROGRESS))
-            {
-                long max = params.getLong(ARGUMENT_PROGRESS_MAX);
-                long progress = params.getLong(ARGUMENT_PROGRESS);
-                float value = (((float) progress / ((float) max)) * 100);
-                int percentage = Math.round(value);
-                builder.setProgress(100, percentage, false);
-            }
-
-            if (params.getBoolean(ARGUMENT_INDETERMINATE))
-            {
-                builder.setProgress(0, 0, true);
-            }
+            long max = params.getLong(ARGUMENT_PROGRESS_MAX);
+            long progress = params.getLong(ARGUMENT_PROGRESS);
+            float value = (((float) progress / ((float) max)) * 100);
+            int percentage = Math.round(value);
+            builder.setProgress(100, percentage, false);
         }
-        else
+
+        if (params.getBoolean(ARGUMENT_INDETERMINATE))
         {
-            RemoteViews remote = new RemoteViews(appContext.getPackageName(), R.layout.app_notification);
-            remote.setImageViewResource(R.id.status_icon, R.drawable.ic_application_logo);
-            remote.setTextViewText(R.id.status_text, params.getString(ARGUMENT_TITLE));
-            remote.setProgressBar(R.id.status_progress, params.getInt(ARGUMENT_PROGRESS_MAX), 0, false);
-            builder.setContent(remote);
+            builder.setProgress(0, 0, true);
         }
 
         if (AndroidVersion.isJBOrAbove())
@@ -533,9 +513,8 @@ public class AlfrescoNotificationManager extends Manager
                     // COMPLETED
                     if (completed == total)
                     {
-                        title = String.format(
-                                appContext.getResources().getQuantityString(R.plurals.download_complete_description,
-                                        completed), Integer.toString(completed));
+                        title = String.format(appContext.getResources().getQuantityString(
+                                R.plurals.download_complete_description, completed), Integer.toString(completed));
                         description = appContext.getString(R.string.download_complete);
                         cancelMonitorChannel(CHANNEL_DOWNLOAD);
                     }
@@ -557,9 +536,8 @@ public class AlfrescoNotificationManager extends Manager
                     // COMPLETED
                     if (completed == total)
                     {
-                        title = String.format(
-                                appContext.getResources().getQuantityString(R.plurals.upload_complete_description,
-                                        completed), Integer.toString(completed));
+                        title = String.format(appContext.getResources().getQuantityString(
+                                R.plurals.upload_complete_description, completed), Integer.toString(completed));
                         description = appContext.getString(R.string.upload_complete);
                         cancelMonitorChannel(CHANNEL_UPLOAD);
                     }

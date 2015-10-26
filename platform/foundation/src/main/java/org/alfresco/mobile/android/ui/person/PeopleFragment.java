@@ -34,7 +34,7 @@ import android.widget.ArrayAdapter;
 
 import com.squareup.otto.Subscribe;
 
-public class PeopleFragment extends BaseGridFragment implements PeopleTemplate
+public class PeopleFragment extends BaseGridFragment implements PeopleFragmentArgument
 {
     public static final String TAG = PeopleFragment.class.getName();
 
@@ -50,7 +50,6 @@ public class PeopleFragment extends BaseGridFragment implements PeopleTemplate
     public PeopleFragment()
     {
         emptyListMessageId = R.string.empty_users;
-        enableTitle = true;
     }
 
     // //////////////////////////////////////////////////////////////////////
@@ -73,7 +72,7 @@ public class PeopleFragment extends BaseGridFragment implements PeopleTemplate
     @Override
     protected ArrayAdapter<?> onAdapterCreation()
     {
-        return new PeopleAdapter(this, R.layout.sdk_grid_row, new ArrayList<Person>(0), selectedItems);
+        return new PeopleAdapter(this, R.layout.row_two_lines_caption_divider, new ArrayList<Person>(0), selectedItems);
     }
 
     @Subscribe

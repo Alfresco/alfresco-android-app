@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.ui.fragments;
 
 import java.io.Serializable;
@@ -25,12 +25,12 @@ import org.alfresco.mobile.android.api.model.ListingFilter;
 import org.alfresco.mobile.android.async.LoaderResult;
 import org.alfresco.mobile.android.foundation.R;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
+import org.alfresco.mobile.android.platform.exception.AlfrescoExceptionHelper;
 import org.alfresco.mobile.android.platform.utils.BundleUtils;
 import org.alfresco.mobile.android.ui.GridFragment;
 import org.alfresco.mobile.android.ui.ListingModeFragment;
 import org.alfresco.mobile.android.ui.RefreshFragment;
 import org.alfresco.mobile.android.ui.template.ListingTemplate;
-import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -40,20 +40,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.github.clans.fab.FloatingActionButton;
 
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
-public abstract class CommonGridFragment extends AlfrescoFragment implements RefreshFragment, GridFragment,
-        ListingModeFragment, ListingTemplate
+public abstract class CommonGridFragment extends AlfrescoFragment
+        implements RefreshFragment, GridFragment, ListingModeFragment, ListingTemplate
 {
     // /////////////////////////////////////////////////////////////
     // CONSTANTS
@@ -120,23 +122,21 @@ public abstract class CommonGridFragment extends AlfrescoFragment implements Ref
 
     protected View footer;
 
-    protected int titleId = -1;
-
-    protected String mTitle = "";
-
     protected RefreshHelper refreshHelper;
 
     protected ListingContext originListing;
 
     protected ListingContext currentListing;
 
-    protected boolean enableTitle = false;
-
     protected BaseAdapter adapter;
 
     protected boolean displayAsList = true;
 
     protected int mode = MODE_LISTING;
+
+    protected FloatingActionButton fab;
+
+    private int mLastFirstVisibleItem;
 
     // /////////////////////////////////////////////////////////////
     // BUNDLE CONSTRUCTOR
@@ -166,7 +166,7 @@ public abstract class CommonGridFragment extends AlfrescoFragment implements Ref
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        if (container == null && getDialog() == null) { return null; }
+        // if (container == null) { return null; }
         setRootView(inflater.inflate(R.layout.sdk_grid, container, false));
 
         init(getRootView(), emptyListMessageId);
@@ -225,6 +225,9 @@ public abstract class CommonGridFragment extends AlfrescoFragment implements Ref
             setListShown(true);
             adapter = onAdapterCreation();
             gv.setAdapter(adapter);
+            prepareEmptyInitialView(ev, (ImageView) ev.findViewById(R.id.empty_picture),
+                    (TextView) ev.findViewById(R.id.empty_text),
+                    (TextView) ev.findViewById(R.id.empty_text_description));
         }
     }
 
@@ -248,16 +251,6 @@ public abstract class CommonGridFragment extends AlfrescoFragment implements Ref
         setListShown(!(adapter == null));
     }
 
-    @Override
-    public void onResume()
-    {
-        super.onResume();
-        if (enableTitle)
-        {
-            UIUtils.displayTitle(getActivity(), onCreateTitle(mTitle));
-        }
-    }
-
     // /////////////////////////////////////////////////////////////
     // SESSION MANAGEMENT
     // ////////////////////////////////////////////////////////////
@@ -267,15 +260,6 @@ public abstract class CommonGridFragment extends AlfrescoFragment implements Ref
         super.onSessionMissing();
         setListShown(true);
         gv.setEmptyView(ev);
-    }
-
-    // /////////////////////////////////////////////////////////////
-    // TITLE
-    // ////////////////////////////////////////////////////////////
-    /** Title is displayed during onResume. */
-    protected String onCreateTitle(String title)
-    {
-        return TextUtils.isEmpty(title) ? (titleId == -1) ? mTitle : getString(titleId) : title;
     }
 
     // /////////////////////////////////////////////////////////////
@@ -305,7 +289,9 @@ public abstract class CommonGridFragment extends AlfrescoFragment implements Ref
         {
             if (adapter.getCount() == 0)
             {
-                gv.setEmptyView(ev);
+                prepareEmptyInitialView(ev, (ImageView) ev.findViewById(R.id.empty_picture),
+                        (TextView) ev.findViewById(R.id.empty_text),
+                        (TextView) ev.findViewById(R.id.empty_text_description));
             }
             else
             {
@@ -334,7 +320,7 @@ public abstract class CommonGridFragment extends AlfrescoFragment implements Ref
             }
         });
 
-        gv.setOnScrollListener(new OnScrollListener()
+        AbsListView.OnScrollListener listener = new AbsListView.OnScrollListener()
         {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState)
@@ -344,6 +330,12 @@ public abstract class CommonGridFragment extends AlfrescoFragment implements Ref
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount)
             {
+                /*
+                 * if (fab == null) { return; } if (firstVisibleItem >
+                 * selectedPosition) { fab.hide(true); } else if
+                 * (firstVisibleItem < selectedPosition) { fab.show(true); }
+                 */
+
                 savePosition();
                 if (totalItemCount > 0 && firstVisibleItem + visibleItemCount == totalItemCount
                         && loadState == LOAD_VISIBLE && !isLockVisibleLoader)
@@ -359,12 +351,26 @@ public abstract class CommonGridFragment extends AlfrescoFragment implements Ref
                     refreshHelper.setEnabled(firstItemVisible && topOfFirstItemVisible);
                 }
             }
-        });
+        };
+
+        fab = (FloatingActionButton) v.findViewById(R.id.fab);
+        View.OnClickListener onFabClickListener = onPrepareFabClickListener();
+        if (onFabClickListener != null)
+        {
+            fab.setVisibility(View.VISIBLE);
+            gv.setOnScrollListener(listener);
+            fab.setOnClickListener(onFabClickListener);
+        }
+        else
+        {
+            fab.setVisibility(View.GONE);
+            gv.setOnScrollListener(listener);
+        }
     }
 
     /**
      * Control whether the list is being displayed.
-     * 
+     *
      * @param shown : If true, the list view is shown; if false, the progress
      *            indicator. The initial value is true.
      */
@@ -374,6 +380,14 @@ public abstract class CommonGridFragment extends AlfrescoFragment implements Ref
         {
             gv.setVisibility(View.VISIBLE);
             pb.setVisibility(View.GONE);
+            if (adapter != null && adapter.isEmpty())
+            {
+                ev.setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                ev.setVisibility(View.GONE);
+            }
         }
         else
         {
@@ -381,6 +395,18 @@ public abstract class CommonGridFragment extends AlfrescoFragment implements Ref
             gv.setVisibility(View.GONE);
             pb.setVisibility(View.VISIBLE);
         }
+    }
+
+    protected void prepareEmptyView(View ev, ImageView emptyImageView, TextView firstEmptyMessage,
+            TextView secondEmptyMessage)
+    {
+
+    }
+
+    protected void prepareEmptyInitialView(View ev, ImageView emptyImageView, TextView firstEmptyMessage,
+            TextView secondEmptyMessage)
+    {
+        prepareEmptyView(ev, emptyImageView, firstEmptyMessage, secondEmptyMessage);
     }
 
     protected void displayEmptyView()
@@ -392,6 +418,8 @@ public abstract class CommonGridFragment extends AlfrescoFragment implements Ref
         {
             gv.setAdapter(null);
         }
+        prepareEmptyView(ev, (ImageView) ev.findViewById(R.id.empty_picture),
+                (TextView) ev.findViewById(R.id.empty_text), (TextView) ev.findViewById(R.id.empty_text_description));
     }
 
     protected void displayDataView()
@@ -400,6 +428,7 @@ public abstract class CommonGridFragment extends AlfrescoFragment implements Ref
         {
             setListShown(true);
             gv.setAdapter(adapter);
+            gv.setSelection(selectedPosition);
         }
     }
 
@@ -414,6 +443,11 @@ public abstract class CommonGridFragment extends AlfrescoFragment implements Ref
     // /////////////////////////////////////////////////////////////
     // ITEMS SELECTION
     // ////////////////////////////////////////////////////////////
+    protected View.OnClickListener onPrepareFabClickListener()
+    {
+        return null;
+    }
+
     /**
      * Affect a clickListener to the principal GridView.
      */
@@ -447,8 +481,8 @@ public abstract class CommonGridFragment extends AlfrescoFragment implements Ref
             maxItems = lc.getMaxItems();
             if (hasmore)
             {
-                skipCount = (adapter != null) ? (((ArrayAdapter<Object>) adapter)).getCount() : lc.getSkipCount()
-                        + lc.getMaxItems();
+                skipCount = (adapter != null) ? (((ArrayAdapter<Object>) adapter)).getCount()
+                        : lc.getSkipCount() + lc.getMaxItems();
             }
             lc.setSkipCount(skipCount);
         }
@@ -505,7 +539,10 @@ public abstract class CommonGridFragment extends AlfrescoFragment implements Ref
         onPrepareRefresh();
         calculateSkipCount(currentListing);
         performRequest(currentListing);
-        Crouton.showText(getActivity(), R.string.load_more_progress, Style.INFO, (ViewGroup) footer);
+        if (loadState == LOAD_VISIBLE)
+        {
+            Crouton.showText(getActivity(), R.string.load_more_progress, Style.INFO, (ViewGroup) footer);
+        }
     }
 
     protected static ListingContext copyListing(ListingContext lco)
@@ -538,18 +575,29 @@ public abstract class CommonGridFragment extends AlfrescoFragment implements Ref
 
     /**
      * Override this method to handle an exception coming back from the server.
-     * 
+     *
      * @param e : exception raised by the client API.
      */
     public void onResultError(Exception e)
     {
-        AlfrescoNotificationManager.getInstance(getActivity()).showToast(e.getMessage());
+        int messageId = AlfrescoExceptionHelper.getMessageId(getActivity(), e);
+        if (messageId != R.string.error_unknown)
+        {
+            AlfrescoNotificationManager.getInstance(getActivity()).showAlertCrouton(getActivity(),
+                    getString(messageId));
+        }
+        else
+        {
+            AlfrescoNotificationManager.getInstance(getActivity()).showToast(e.getMessage());
+        }
+
         setListShown(true);
     }
 
     public void refreshListView()
     {
         gv.setAdapter(adapter);
+        gv.setSelection(selectedPosition);
     }
 
     // /////////////////////////////////////////////////////////////
@@ -558,6 +606,14 @@ public abstract class CommonGridFragment extends AlfrescoFragment implements Ref
     public void setColumnWidth(int value)
     {
         gv.setColumnWidth(value);
+    }
+
+    public void setSpacing(int value)
+    {
+        int padding4 = getResources().getDimensionPixelSize(R.dimen.d_4);
+        gv.setHorizontalSpacing(padding4);
+        gv.setVerticalSpacing(padding4);
+        gv.setPadding(padding4, 0, padding4, 0);
     }
 
     // //////////////////////////////////////////////////////////////////////

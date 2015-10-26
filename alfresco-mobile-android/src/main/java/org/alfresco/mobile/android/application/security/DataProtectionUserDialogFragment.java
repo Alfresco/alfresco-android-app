@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.security;
 
 import org.alfresco.mobile.android.application.R;
@@ -23,16 +23,16 @@ import org.alfresco.mobile.android.platform.security.DataProtectionManager;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.WaitingDialogFragment;
 
-import android.app.AlertDialog.Builder;
 import android.app.Dialog;
-import android.app.DialogFragment;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.DialogFragment;
 import android.text.Html;
 import android.view.Gravity;
 import android.widget.TextView;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 
 public class DataProtectionUserDialogFragment extends DialogFragment
 {
@@ -81,19 +81,20 @@ public class DataProtectionUserDialogFragment extends DialogFragment
         // Messages informations
         int titleId = R.string.data_protection;
         int iconId = R.drawable.ic_application_logo;
-        int messageId = (firstTime) ? R.string.data_protection_blurb : (checked ? R.string.unprotect_question
-                : R.string.protect_question);
+        int messageId = (firstTime) ? R.string.data_protection_blurb
+                : (checked ? R.string.unprotect_question : R.string.protect_question);
         int positiveId = android.R.string.yes;
         int negativeId = android.R.string.no;
         onDataProtectionListener = dataProtectionListener;
 
         String message = getString(messageId);
 
-        Builder builder = new Builder(getActivity()).setIcon(iconId).setTitle(titleId)
-                .setMessage(Html.fromHtml(message)).setCancelable(false)
-                .setPositiveButton(positiveId, new DialogInterface.OnClickListener()
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity()).iconRes(iconId).title(titleId)
+                .content(Html.fromHtml(message)).positiveText(positiveId).negativeText(negativeId)
+                .callback(new MaterialDialog.ButtonCallback()
                 {
-                    public void onClick(DialogInterface dialog, int whichButton)
+                    @Override
+                    public void onPositive(MaterialDialog dialog)
                     {
                         if (onDataProtectionListener != null)
                         {
@@ -101,24 +102,18 @@ public class DataProtectionUserDialogFragment extends DialogFragment
                         }
                         dialog.dismiss();
                     }
-                });
 
-        if (negativeId != -1)
-        {
-            builder.setNegativeButton(negativeId, new DialogInterface.OnClickListener()
-            {
-                public void onClick(DialogInterface dialog, int whichButton)
-                {
-                    if (onDataProtectionListener != null)
+                    @Override
+                    public void onNegative(MaterialDialog dialog)
                     {
-                        onDataProtectionListener.onNegative();
+                        if (onDataProtectionListener != null)
+                        {
+                            onDataProtectionListener.onNegative();
+                        }
+                        dialog.dismiss();
                     }
-                    dialog.dismiss();
-                }
-            });
-        }
-
-        return builder.create();
+                });
+        return builder.show();
     }
 
     @Override
@@ -126,8 +121,11 @@ public class DataProtectionUserDialogFragment extends DialogFragment
     {
         if (getDialog() != null)
         {
-            TextView messageText = (TextView) getDialog().findViewById(android.R.id.message);
-            messageText.setGravity(Gravity.CENTER);
+            TextView messageText = ((MaterialDialog) getDialog()).getContentView();
+            if (messageText != null)
+            {
+                messageText.setGravity(Gravity.CENTER);
+            }
             getDialog().show();
         }
         super.onResume();
@@ -172,7 +170,7 @@ public class DataProtectionUserDialogFragment extends DialogFragment
             {
                 WaitingDialogFragment dialog = WaitingDialogFragment.newInstance(R.string.data_protection,
                         localMessageId, false);
-                dialog.show(getActivity().getFragmentManager(), WaitingDialogFragment.TAG);
+                dialog.show(getActivity().getSupportFragmentManager(), WaitingDialogFragment.TAG);
             }
 
             // Execute encryption / decryption

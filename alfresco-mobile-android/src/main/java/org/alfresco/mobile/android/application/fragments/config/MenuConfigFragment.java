@@ -1,3 +1,21 @@
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
+ *
+ *  This file is part of Alfresco Mobile for Android.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 package org.alfresco.mobile.android.application.fragments.config;
 
 import java.io.File;
@@ -15,18 +33,23 @@ import org.alfresco.mobile.android.api.model.config.ViewGroupConfig;
 import org.alfresco.mobile.android.api.model.config.impl.ViewConfigImpl;
 import org.alfresco.mobile.android.api.services.ConfigService;
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.configuration.ConfigurationConstant;
-import org.alfresco.mobile.android.application.fragments.activitystream.ActivityFeedFragment;
+import org.alfresco.mobile.android.application.configuration.model.ConfigModelHelper;
+import org.alfresco.mobile.android.application.configuration.model.view.ActivitiesConfigModel;
+import org.alfresco.mobile.android.application.configuration.model.view.FavoritesConfigModel;
+import org.alfresco.mobile.android.application.configuration.model.view.LocalConfigModel;
+import org.alfresco.mobile.android.application.configuration.model.view.RepositoryConfigModel;
+import org.alfresco.mobile.android.application.configuration.model.view.SearchConfigModel;
+import org.alfresco.mobile.android.application.configuration.model.view.SiteBrowserConfigModel;
+import org.alfresco.mobile.android.application.configuration.model.view.SyncConfigModel;
+import org.alfresco.mobile.android.application.configuration.model.view.TasksConfigModel;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
-import org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerFragment;
-import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
-import org.alfresco.mobile.android.application.fragments.search.SearchFragment;
-import org.alfresco.mobile.android.application.fragments.site.browser.BrowserSitesFragment;
-import org.alfresco.mobile.android.application.fragments.sync.SyncFragment;
-import org.alfresco.mobile.android.application.fragments.workflow.task.TasksFragment;
 import org.alfresco.mobile.android.application.managers.ConfigManager;
 import org.alfresco.mobile.android.platform.EventBusManager;
+import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
+import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
+import org.alfresco.mobile.android.platform.utils.BundleUtils;
+import org.alfresco.mobile.android.sync.SyncContentManager;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.node.browse.NodeBrowserTemplate;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
@@ -34,9 +57,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.Activity;
-import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,30 +68,16 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+
 /**
  * Created by jpascal on 21/01/2015.
  */
-public class MenuConfigFragment extends AlfrescoFragment
+public class MenuConfigFragment extends AlfrescoFragment implements DefaultMenuConfigIds
 {
+    private static final String ARGUMENT_ACCOUNT_ID = "accountId";
+
     public static final String TAG = MenuConfigFragment.class.getSimpleName();
-
-    public static final String VIEW_ACTIVITIES = "view-activities-default";
-
-    public static final String VIEW_REPOSITORY = "view-repository-default";
-
-    public static final String VIEW_REPOSITORY_SHARED = "view-repository-shared-default";
-
-    public static final String VIEW_SITES = "view-sites-default";
-
-    public static final String VIEW_REPOSITORY_USERHOME = "view-repository-userhome-default";
-
-    public static final String VIEW_TASKS = "view-task-default";
-
-    public static final String VIEW_FAVORITES = "view-favorites-default";
-
-    public static final String VIEW_SEARCH = "view-search-default";
-
-    public static final String VIEW_LOCAL_FILE = "view-local-default";
 
     // //////////////////////////////////////////////////////////////////////
     // VARIABLES
@@ -83,6 +93,12 @@ public class MenuConfigFragment extends AlfrescoFragment
     private ConfigManager configManager;
 
     private Button save;
+
+    private boolean originalSyncState;
+
+    private AlfrescoAccount account;
+
+    private Long accountId = null;
 
     // //////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
@@ -113,10 +129,17 @@ public class MenuConfigFragment extends AlfrescoFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        setRootView(inflater.inflate(R.layout.config_default_menu, container, false));
+        setRootView(inflater.inflate(R.layout.fr_config_default_menu, container, false));
+
+        account = null;
+        if (getArguments() != null)
+        {
+            accountId = BundleUtils.getLong(getArguments(), ARGUMENT_ACCOUNT_ID);
+            account = AlfrescoAccountManager.getInstance(getActivity()).retrieveAccount(accountId);
+        }
 
         configManager = ConfigManager.getInstance(getActivity());
-        customConfiguration = ConfigManager.getInstance(getActivity()).getCustomConfig(getAccount().getId());
+        customConfiguration = ConfigManager.getInstance(getActivity()).getCustomConfig(accountId);
 
         createDefaultMenu();
         if (customConfiguration != null)
@@ -126,9 +149,9 @@ public class MenuConfigFragment extends AlfrescoFragment
 
         menuConfigItems = new ArrayList<>(defaultMenuItems.values());
 
-        adapter = new MenuItemConfigAdapter(this, R.layout.config_menu_row_dynamic, menuConfigItems);
+        adapter = new MenuItemConfigAdapter(this, R.layout.row_single_line_checkbox, menuConfigItems);
         DynamicListView listView = (DynamicListView) viewById(R.id.listview);
-        listView.setCheeseList(menuConfigItems);
+        listView.setItemList(menuConfigItems);
         listView.setAdapter(adapter);
         listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
@@ -146,8 +169,16 @@ public class MenuConfigFragment extends AlfrescoFragment
         {
             public void onClick(View v)
             {
-                saveConfiguration();
-                getActivity().onBackPressed();
+                if (!defaultMenuItems.get(VIEW_SYNC).isEnable() && originalSyncState
+                        || (defaultMenuItems.get(VIEW_SYNC).isEnable() && !originalSyncState))
+                {
+                    manageSyncSetting();
+                }
+                else
+                {
+                    saveConfiguration();
+                    getActivity().onBackPressed();
+                }
             }
         });
 
@@ -157,6 +188,33 @@ public class MenuConfigFragment extends AlfrescoFragment
     // ///////////////////////////////////////////////////////////////////////////
     // HELPER
     // ///////////////////////////////////////////////////////////////////////////
+    public void manageSyncSetting()
+    {
+        if (!defaultMenuItems.get(VIEW_SYNC).isEnable() && originalSyncState)
+        {
+            MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity()).cancelable(false)
+                    .title(R.string.favorites_deactivate).callback(new MaterialDialog.ButtonCallback()
+                    {
+                        @Override
+                        public void onPositive(MaterialDialog dialog)
+                        {
+                            SyncContentManager.getInstance(getActivity()).setActivateSync(account, false);
+                            SyncContentManager.getInstance(getActivity()).unsync(account);
+                            saveConfiguration();
+                            getActivity().onBackPressed();
+                        }
+                    }).content(Html.fromHtml(getString(R.string.favorites_deactivate_description)))
+                    .positiveText(R.string.ok).negativeText(R.string.cancel);
+            builder.show();
+        }
+        else if (defaultMenuItems.get(VIEW_SYNC).isEnable() && !originalSyncState)
+        {
+            SyncContentManager.getInstance(getActivity()).setActivateSync(account, true);
+            saveConfiguration();
+            getActivity().onBackPressed();
+        }
+    }
+
     public void updateCounter(int counter)
     {
         int selectedCounter = counter;
@@ -213,7 +271,7 @@ public class MenuConfigFragment extends AlfrescoFragment
             OutputStream sourceFile = null;
             try
             {
-                File configFolder = AlfrescoStorageManager.getInstance(getActivity()).getCustomFolder(getAccount());
+                File configFolder = AlfrescoStorageManager.getInstance(getActivity()).getCustomFolder(account);
                 File configFile = new File(configFolder, ConfigConstants.CONFIG_FILENAME);
 
                 sourceFile = new FileOutputStream(configFile);
@@ -221,8 +279,8 @@ public class MenuConfigFragment extends AlfrescoFragment
                 sourceFile.close();
 
                 // Send Event
-                ConfigManager.getInstance(getActivity()).loadAndUseCustom(getAccount());
-                EventBusManager.getInstance().post(new ConfigManager.ConfigurationMenuEvent(getAccount().getId()));
+                ConfigManager.getInstance(getActivity()).loadAndUseCustom(account);
+                EventBusManager.getInstance().post(new ConfigManager.ConfigurationMenuEvent(accountId));
             }
             catch (Exception e)
             {
@@ -240,15 +298,26 @@ public class MenuConfigFragment extends AlfrescoFragment
         return configuration;
     }
 
-    private void addMenuConfigItem(String id, int labelId, String type, int iconId, HashMap<String, Object> properties)
+    private void addMenuConfigItem(String id, int labelId, String type, Integer iconId,
+            HashMap<String, Object> properties)
     {
         if (defaultMenuItems == null)
         {
-            defaultMenuItems = new LinkedHashMap<String, MenuItemConfig>();
+            defaultMenuItems = new LinkedHashMap<>();
+        }
+        defaultMenuItems.put(id,
+                new MenuItemConfig(new ViewConfigImpl(id, getString(labelId), type, properties), iconId));
+    }
+
+    private void addMenuConfigItem(String id, int labelId, String type, HashMap<String, Object> properties)
+    {
+        if (defaultMenuItems == null)
+        {
+            defaultMenuItems = new LinkedHashMap<>();
         }
 
-        defaultMenuItems.put(id, new MenuItemConfig(new ViewConfigImpl(id, getString(labelId), type, properties),
-                iconId));
+        defaultMenuItems.put(id,
+                new MenuItemConfig(new ViewConfigImpl(id, getString(labelId), type, properties), null));
     }
 
     private void updateMenu()
@@ -260,8 +329,8 @@ public class MenuConfigFragment extends AlfrescoFragment
         {
             profileId = customConfiguration.getDefaultProfile().getIdentifier();
         }
-        ViewConfig rootMenuViewConfig = customConfiguration.getViewConfig(customConfiguration.getProfile(profileId)
-                .getRootViewId(), configManager.getCurrentScope());
+        ViewConfig rootMenuViewConfig = customConfiguration.getViewConfig(
+                customConfiguration.getProfile(profileId).getRootViewId(), configManager.getCurrentScope());
 
         for (ViewConfig viewConfig : ((ViewGroupConfig) rootMenuViewConfig).getItems())
         {
@@ -274,6 +343,8 @@ public class MenuConfigFragment extends AlfrescoFragment
         }
         defaultMenuItems.clear();
         defaultMenuItems = sortedItems;
+
+        originalSyncState = defaultMenuItems.get(VIEW_SYNC).isEnable();
     }
 
     private void createDefaultMenu()
@@ -281,50 +352,61 @@ public class MenuConfigFragment extends AlfrescoFragment
         defaultMenuItems = new LinkedHashMap<String, MenuItemConfig>();
 
         // Activities
-        addMenuConfigItem(VIEW_ACTIVITIES, ActivityFeedFragment.Builder.LABEL_ID, ConfigurationConstant.KEY_ACTIVITIES,
-                R.drawable.ic_activities_light, null);
+        addMenuConfigItem(VIEW_ACTIVITIES, ActivitiesConfigModel.LABEL_ID, ActivitiesConfigModel.TYPE_ID,
+                ActivitiesConfigModel.MODEL_ICON_ID, null);
 
         // Repository
-        addMenuConfigItem(VIEW_REPOSITORY, DocumentFolderBrowserFragment.Builder.LABEL_ID_REPOSITORY,
-                ConfigurationConstant.KEY_REPOSITORY, R.drawable.ic_repository_light, null);
+        addMenuConfigItem(VIEW_REPOSITORY, RepositoryConfigModel.LABEL_ID_REPOSITORY, RepositoryConfigModel.TYPE_ID,
+                RepositoryConfigModel.MODEL_ICON_ID_REPOSITORY, null);
 
-        // Shared Files
-        HashMap<String, Object> sharedProperties = new HashMap<String, Object>();
-        sharedProperties.put(NodeBrowserTemplate.ARGUMENT_FOLDER_TYPE_ID, NodeBrowserTemplate.FOLDER_TYPE_SHARED);
-        addMenuConfigItem(VIEW_REPOSITORY_SHARED, DocumentFolderBrowserFragment.Builder.LABEL_ID_SHARED,
-                ConfigurationConstant.KEY_REPOSITORY, R.drawable.ic_shared_light, sharedProperties);
+        if (account.getTypeId() != AlfrescoAccount.TYPE_ALFRESCO_CLOUD)
+        {
+            // Shared Files
+            HashMap<String, Object> sharedProperties = new HashMap<String, Object>();
+            sharedProperties.put(NodeBrowserTemplate.ARGUMENT_FOLDER_TYPE_ID, RepositoryConfigModel.FOLDER_TYPE_SHARED);
+            addMenuConfigItem(VIEW_REPOSITORY_SHARED, RepositoryConfigModel.LABEL_ID_SHARED,
+                    RepositoryConfigModel.TYPE_ID, RepositoryConfigModel.MODEL_ICON_ID_SHARED, sharedProperties);
+        }
 
         // Sites
-        addMenuConfigItem(VIEW_SITES, BrowserSitesFragment.Builder.LABEL_ID, ConfigurationConstant.KEY_SITES,
-                R.drawable.ic_site_light, null);
+        addMenuConfigItem(VIEW_SITES, SiteBrowserConfigModel.MENU_LABEL_ID, SiteBrowserConfigModel.TYPE_ID,
+                SiteBrowserConfigModel.MODEL_ICON_ID, null);
 
         // Userhome
-        HashMap<String, Object> userHomeProperties = new HashMap<String, Object>();
-        userHomeProperties.put(NodeBrowserTemplate.ARGUMENT_FOLDER_TYPE_ID, NodeBrowserTemplate.FOLDER_TYPE_USERHOME);
-        addMenuConfigItem(VIEW_REPOSITORY_USERHOME, DocumentFolderBrowserFragment.Builder.LABEL_ID_USERHOME,
-                ConfigurationConstant.KEY_REPOSITORY, R.drawable.ic_myfiles_light, userHomeProperties);
+        if (account.getTypeId() != AlfrescoAccount.TYPE_ALFRESCO_CLOUD)
+        {
+            HashMap<String, Object> userHomeProperties = new HashMap<String, Object>();
+            userHomeProperties.put(NodeBrowserTemplate.ARGUMENT_FOLDER_TYPE_ID,
+                    RepositoryConfigModel.FOLDER_TYPE_USERHOME);
+            addMenuConfigItem(VIEW_REPOSITORY_USERHOME, RepositoryConfigModel.LABEL_ID_USERHOME,
+                    RepositoryConfigModel.TYPE_ID, RepositoryConfigModel.MODEL_ICON_ID_USERHOME, userHomeProperties);
 
-        // Tasks & Workflow
-        addMenuConfigItem(VIEW_TASKS, TasksFragment.Builder.LABEL_ID, ConfigurationConstant.KEY_TASKS,
-                R.drawable.ic_task_light, null);
+            // Tasks & Workflow
+            addMenuConfigItem(VIEW_TASKS, TasksConfigModel.MENU_LABEL_ID, TasksConfigModel.TYPE_ID,
+                    TasksConfigModel.MODEL_ICON_ID, null);
+        }
 
-        // Sync & Favorites
-        addMenuConfigItem(VIEW_FAVORITES, SyncFragment.Builder.LABEL_ID, ConfigurationConstant.KEY_FAVORITES,
-                R.drawable.ic_favorite_light, null);
+        // Favorites
+        addMenuConfigItem(VIEW_FAVORITES, FavoritesConfigModel.MENU_LABEL_ID, FavoritesConfigModel.TYPE_ID,
+                FavoritesConfigModel.MODEL_ICON_ID, null);
+
+        // Sync
+        addMenuConfigItem(VIEW_SYNC, SyncConfigModel.MENU_LABEL_ID, SyncConfigModel.TYPE_ID,
+                SyncConfigModel.MODEL_ICON_ID, null);
 
         // Search
-        addMenuConfigItem(VIEW_SEARCH, SearchFragment.Builder.LABEL_ID, ConfigurationConstant.KEY_SEARCH,
-                R.drawable.ic_search_light, null);
+        addMenuConfigItem(VIEW_SEARCH, SearchConfigModel.MENU_LABEL_ID, SearchConfigModel.TYPE_ID,
+                SearchConfigModel.MODEL_ICON_ID, null);
 
         // Local Files
-        addMenuConfigItem(VIEW_LOCAL_FILE, FileExplorerFragment.Builder.LABEL_ID, ConfigurationConstant.KEY_LOCALFILES,
-                R.drawable.ic_download_light, null);
+        addMenuConfigItem(VIEW_LOCAL_FILE, LocalConfigModel.MENU_LABEL_ID, LocalConfigModel.TYPE_ID,
+                LocalConfigModel.MODEL_ICON_ID, null);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
     // BUILDER
     // ///////////////////////////////////////////////////////////////////////////
-    public static Builder with(Activity activity)
+    public static Builder with(FragmentActivity activity)
     {
         return new Builder(activity);
     }
@@ -334,15 +416,21 @@ public class MenuConfigFragment extends AlfrescoFragment
         // ///////////////////////////////////////////////////////////////////////////
         // CONSTRUCTORS
         // ///////////////////////////////////////////////////////////////////////////
-        public Builder(Activity activity)
+        public Builder(FragmentActivity activity)
         {
             super(activity);
             this.extraConfiguration = new Bundle();
         }
 
-        public Builder(Activity appActivity, Map<String, Object> configuration)
+        public Builder(FragmentActivity appActivity, Map<String, Object> configuration)
         {
             super(appActivity, configuration);
+        }
+
+        public Builder accountId(long accountId)
+        {
+            extraConfiguration.putLong(ARGUMENT_ACCOUNT_ID, accountId);
+            return this;
         }
 
         // ///////////////////////////////////////////////////////////////////////////
@@ -362,14 +450,21 @@ public class MenuConfigFragment extends AlfrescoFragment
     {
         final ViewConfig config;
 
-        final int iconId;
+        final Integer iconId;
 
         private boolean isEnable = true;
 
-        MenuItemConfig(ViewConfig config, int iconId)
+        MenuItemConfig(ViewConfig config, Integer iconId)
         {
             this.config = config;
-            this.iconId = iconId;
+            if (iconId != null)
+            {
+                this.iconId = iconId;
+            }
+            else
+            {
+                this.iconId = ConfigModelHelper.getLightIconId(config);
+            }
         }
 
         public void setEnable(boolean enable)

@@ -66,7 +66,7 @@ public class SitesFoundationFragment extends BaseGridFragment implements SitesTe
     @Override
     protected ArrayAdapter<?> onAdapterCreation()
     {
-        return new SitesFoundationAdapter(getActivity(), R.layout.sdk_grid_row, new ArrayList<Site>(0));
+        return new SitesFoundationAdapter(getActivity(), R.layout.row_two_lines_caption_divider, new ArrayList<Site>(0));
     }
 
     @Subscribe

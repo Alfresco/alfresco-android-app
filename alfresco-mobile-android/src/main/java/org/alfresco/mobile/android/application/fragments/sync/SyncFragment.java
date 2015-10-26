@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.fragments.sync;
 
 import java.io.File;
@@ -29,20 +29,19 @@ import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.configuration.model.view.SyncConfigModel;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
-import org.alfresco.mobile.android.application.fragments.GridAdapterHelper;
 import org.alfresco.mobile.android.application.fragments.MenuFragmentHelper;
 import org.alfresco.mobile.android.application.fragments.actions.AbstractActions;
 import org.alfresco.mobile.android.application.fragments.actions.NodeIdActions;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsFragment;
-import org.alfresco.mobile.android.application.fragments.sync.EnableSyncDialogFragment.OnSyncChangeListener;
 import org.alfresco.mobile.android.application.intent.RequestCode;
 import org.alfresco.mobile.android.async.Operation;
 import org.alfresco.mobile.android.async.OperationSchema;
-import org.alfresco.mobile.android.async.node.favorite.FavoriteNodeEvent;
+import org.alfresco.mobile.android.async.node.sync.SyncNodeEvent;
 import org.alfresco.mobile.android.async.node.update.UpdateNodeEvent;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
@@ -51,42 +50,49 @@ import org.alfresco.mobile.android.platform.provider.MapUtil;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
 import org.alfresco.mobile.android.platform.utils.ConnectivityUtils;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
-import org.alfresco.mobile.android.sync.FavoritesSyncManager;
-import org.alfresco.mobile.android.sync.FavoritesSyncProvider;
-import org.alfresco.mobile.android.sync.FavoritesSyncScanEvent;
-import org.alfresco.mobile.android.sync.FavoritesSyncSchema;
+import org.alfresco.mobile.android.sync.SyncContentManager;
+import org.alfresco.mobile.android.sync.SyncContentProvider;
+import org.alfresco.mobile.android.sync.SyncContentScanEvent;
+import org.alfresco.mobile.android.sync.SyncContentSchema;
 import org.alfresco.mobile.android.sync.SyncScanInfo;
-import org.alfresco.mobile.android.sync.operations.FavoriteSyncStatus;
+import org.alfresco.mobile.android.sync.operations.SyncContentStatus;
 import org.alfresco.mobile.android.sync.utils.NodeSyncPlaceHolder;
 import org.alfresco.mobile.android.ui.GridFragment;
 import org.alfresco.mobile.android.ui.ListingModeFragment;
 import org.alfresco.mobile.android.ui.RefreshFragment;
+import org.alfresco.mobile.android.ui.SelectableFragment;
 import org.alfresco.mobile.android.ui.fragments.BaseCursorGridFragment;
-import org.alfresco.mobile.android.ui.utils.UIUtils;
 
-import android.app.Activity;
-import android.app.Fragment;
 import android.content.ContentResolver;
 import android.content.ContentValues;
-import android.content.CursorLoader;
 import android.content.Intent;
-import android.content.Loader;
 import android.content.SyncStatusObserver;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
+import android.text.Html;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.squareup.otto.Subscribe;
 
-public class SyncFragment extends BaseCursorGridFragment implements RefreshFragment, ListingModeFragment, GridFragment,
-        SyncStatusObserver
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
+
+public class SyncFragment extends BaseCursorGridFragment
+        implements RefreshFragment, ListingModeFragment, GridFragment, SyncStatusObserver, SelectableFragment
 {
     public static final String TAG = SyncFragment.class.getName();
 
@@ -106,10 +112,6 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
 
     private Date downloadDateTime;
 
-    private File localFile;
-
-    private Uri favoriteUri;
-
     private Date decryptDateTime;
 
     private AlfrescoAccount acc;
@@ -118,7 +120,7 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
 
     private Object mContentProviderHandle;
 
-    private boolean stopRefresh = false;
+    private Boolean stopRefresh = false;
 
     private Runnable refreshTimer;
 
@@ -128,10 +130,10 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
     public SyncFragment()
     {
         super();
-        emptyListMessageId = R.string.empty_favorites;
         mode = MODE_LISTING;
         checkSession = false;
         setHasOptionsMenu(true);
+        displayAsList = true;
     }
 
     protected static SyncFragment newInstanceByTemplate(Bundle b)
@@ -166,29 +168,25 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
     }
 
     @Override
+    public String onPrepareTitle()
+    {
+        if (getFolderName() != null)
+        {
+            return getFolderName();
+        }
+        else
+        {
+            return getString(R.string.synced_content);
+        }
+    }
+
+    @Override
     public void onResume()
     {
         getLoaderManager().restartLoader(0, null, this);
 
-        displayActivateDialog();
-
         hasSynchroActive = getMode() == MODE_PROGRESS
-                || FavoritesSyncManager.getInstance(getActivity()).hasActivateSync(acc);
-
-        int titleId = R.string.menu_favorites;
-        if (hasSynchroActive)
-        {
-            titleId = R.string.synced_documents;
-        }
-
-        if (getFolderName() != null)
-        {
-            UIUtils.displayTitle(getActivity(), getFolderName());
-        }
-        else
-        {
-            UIUtils.displayTitle(getActivity(), getString(titleId));
-        }
+                || SyncContentManager.getInstance(getActivity()).hasActivateSync(acc);
 
         mContentProviderHandle = ContentResolver.addStatusChangeListener(ContentResolver.SYNC_OBSERVER_TYPE_ACTIVE,
                 this);
@@ -222,14 +220,14 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
     {
         if (requestCode != RequestCode.SAVE_BACK && requestCode != RequestCode.DECRYPTED) { return; }
 
-        final File dlFile = localFile;
+        final File dlFile = null;
 
         if (dlFile == null) { return; }
 
         long datetime = dlFile.lastModified();
         Date d = new Date(datetime);
-        boolean modified = false;
-        final Uri lUri = favoriteUri;
+        boolean modified;
+        final Uri lUri = null;
 
         switch (requestCode)
         {
@@ -241,13 +239,13 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
                 {
                     // Update to Pending
                     ContentValues cValues = new ContentValues();
-                    cValues.put(FavoritesSyncSchema.COLUMN_STATUS, Operation.STATUS_PENDING);
+                    cValues.put(SyncContentSchema.COLUMN_STATUS, Operation.STATUS_PENDING);
                     getActivity().getContentResolver().update(lUri, cValues, null, null);
 
                     // Start sync if possible
-                    if (FavoritesSyncManager.getInstance(getActivity()).canSync(acc))
+                    if (SyncContentManager.getInstance(getActivity()).canSync(acc))
                     {
-                        FavoritesSyncManager.getInstance(getActivity()).sync(acc);
+                        SyncContentManager.getInstance(getActivity()).sync(acc);
                     }
                 }
                 break;
@@ -259,7 +257,7 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
                     // If modified by user, we flag the uri
                     // The next sync will update the content.
                     ContentValues cValues = new ContentValues();
-                    cValues.put(FavoritesSyncSchema.COLUMN_STATUS, FavoriteSyncStatus.STATUS_MODIFIED);
+                    cValues.put(SyncContentSchema.COLUMN_STATUS, SyncContentStatus.STATUS_MODIFIED);
                     getActivity().getContentResolver().update(lUri, cValues, null, null);
                 }
 
@@ -277,10 +275,20 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
         super.onAdapterCreation();
         if (adapter == null)
         {
-            int[] layouts = GridAdapterHelper.getGridLayoutId(getActivity(), this);
-            adapter = new SyncCursorAdapter(this, null, layouts[0], selectedItems, getMode());
+            adapter = new SyncCursorAdapter(this, null, R.layout.row_two_lines_progress, selectedItems, getMode());
         }
         return adapter;
+    }
+
+    @Override
+    protected void prepareEmptyView(View ev, ImageView emptyImageView, TextView firstEmptyMessage,
+            TextView secondEmptyMessage)
+    {
+        emptyImageView.setImageResource(R.drawable.ic_empty_folder_rw);
+        emptyImageView.setLayoutParams(DisplayUtils.resizeLayout(getActivity(), 275, 275));
+        firstEmptyMessage.setText(R.string.sync_empty_title);
+        secondEmptyMessage.setVisibility(View.VISIBLE);
+        secondEmptyMessage.setText(R.string.sync_empty_description);
     }
 
     // /////////////////////////////////////////////////////////////
@@ -290,9 +298,8 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
     {
         try
         {
-            return ContentResolver.isSyncActive(
-                    AlfrescoAccountManager.getInstance(getActivity()).getAndroidAccount(
-                            SessionUtils.getAccount(getActivity()).getId()), FavoritesSyncProvider.AUTHORITY);
+            return ContentResolver.isSyncActive(AlfrescoAccountManager.getInstance(getActivity())
+                    .getAndroidAccount(SessionUtils.getAccount(getActivity()).getId()), SyncContentProvider.AUTHORITY);
         }
         catch (Exception e)
         {
@@ -349,7 +356,7 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
                 b.putBoolean(ARGUMENT_HIDE, false);
                 getLoaderManager().restartLoader(0, b, SyncFragment.this);
 
-                if (!stopRefresh)
+                if (stopRefresh != null && !stopRefresh)
                 {
                     refreshHandler.postDelayed(this, 1000);
                 }
@@ -361,40 +368,6 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
     }
 
     private Handler refreshHandler = new Handler();
-
-    // /////////////////////////////////////////////////////////////
-    // UTILS
-    // ////////////////////////////////////////////////////////////
-    private void displayActivateDialog()
-    {
-        if (!FavoritesSyncManager.getInstance(getActivity()).hasDisplayedActivateSync(getAccount())
-                && getMode() != MODE_PROGRESS)
-        {
-            FavoritesSyncManager.getInstance(getActivity()).setDisplayActivateSync(getAccount(), true);
-            EnableSyncDialogFragment.newInstance(new OnSyncChangeListener()
-            {
-                @Override
-                public void onPositive()
-                {
-                    FavoritesSyncManager.getInstance(getActivity()).setActivateSync(getAccount(), true);
-                    hasSynchroActive = true;
-                    refresh();
-                    refreshSilently();
-                    refreshHelper.setRefreshing();
-                }
-
-                @Override
-                public void onNegative()
-                {
-                    hasSynchroActive = false;
-                    FavoritesSyncManager.getInstance(getActivity()).setActivateSync(getAccount(), false);
-                    refresh();
-                    refreshSilently();
-                    refreshHelper.setRefreshing();
-                }
-            }).show(getActivity().getFragmentManager(), EnableSyncDialogFragment.TAG);
-        }
-    }
 
     // /////////////////////////////////////////////////////////////
     // CURSOR ADAPTER
@@ -413,7 +386,7 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
         }
         if (acc != null)
         {
-            selection.append(FavoritesSyncProvider.getAccountFilter(acc));
+            selection.append(SyncContentProvider.getAccountFilter(acc));
         }
 
         if (selection.length() > 0)
@@ -423,15 +396,13 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
 
         if (getFolderId() != null)
         {
-            selection.append(FavoritesSyncSchema.COLUMN_PARENT_ID).append(" == '").append(getFolderId()).append("'");
+            selection.append(SyncContentSchema.COLUMN_PARENT_ID).append(" == '").append(getFolderId()).append("'");
         }
         else
         {
-            selection.append(FavoritesSyncSchema.COLUMN_IS_FAVORITE + " == '" + FavoritesSyncProvider.FLAG_FAVORITE
-                    + "'");
+            selection.append(SyncContentSchema.COLUMN_IS_SYNC_ROOT + " == '" + SyncContentProvider.FLAG_SYNC_SET + "'");
             selection.append(" OR ");
-            selection
-                    .append(FavoritesSyncSchema.COLUMN_STATUS + " == '" + FavoriteSyncStatus.STATUS_REQUEST_USER + "'");
+            selection.append(SyncContentSchema.COLUMN_STATUS + " == '" + SyncContentStatus.STATUS_REQUEST_USER + "'");
         }
 
         if (selection.length() > 0)
@@ -439,10 +410,10 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
             selection.append(" AND ");
         }
 
-        selection.append(FavoritesSyncSchema.COLUMN_STATUS + " NOT IN (" + FavoriteSyncStatus.STATUS_HIDDEN + ")");
+        selection.append(SyncContentSchema.COLUMN_STATUS + " NOT IN (" + SyncContentStatus.STATUS_HIDDEN + ")");
 
-        return new CursorLoader(getActivity(), FavoritesSyncProvider.CONTENT_URI, FavoritesSyncSchema.COLUMN_ALL,
-                selection.toString(), null, FavoritesSyncSchema.COLUMN_TITLE + " COLLATE NOCASE ASC");
+        return new CursorLoader(getActivity(), SyncContentProvider.CONTENT_URI, SyncContentSchema.COLUMN_ALL,
+                selection.toString(), null, SyncContentSchema.COLUMN_TITLE + " COLLATE NOCASE ASC");
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -451,8 +422,8 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
     public void onListItemClick(GridView l, View v, int position, long id)
     {
         Cursor cursor = (Cursor) l.getItemAtPosition(position);
-        String nodeId = cursor.getString(FavoritesSyncSchema.COLUMN_NODE_ID_ID);
-        String documentName = cursor.getString(FavoritesSyncSchema.COLUMN_TITLE_ID);
+        String nodeId = cursor.getString(SyncContentSchema.COLUMN_NODE_ID_ID);
+        String documentName = cursor.getString(SyncContentSchema.COLUMN_TITLE_ID);
 
         if (DisplayUtils.hasCentralPane(getActivity()))
         {
@@ -489,10 +460,10 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
         }
         else if (nActions == null)
         {
-            if (FavoritesSyncManager.isFolder(cursor))
+            if (SyncContentManager.isFolder(cursor))
             {
                 selectedItems.clear();
-                if (FavoritesSyncManager.getInstance(getActivity()).hasActivateSync(acc))
+                if (SyncContentManager.getInstance(getActivity()).hasActivateSync(acc))
                 {
                     // GO TO Local subfolder
                     SyncFragment.with(getActivity()).mode(getMode()).folderIdentifier(nodeId).folderName(documentName)
@@ -520,10 +491,10 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
 
     public boolean onListItemLongClick(GridView l, View v, int position, long id)
     {
-        if (nActions != null) { return false; }
+        if (nActions != null || getFolderId() != null) { return false; }
 
         Cursor cursor = (Cursor) l.getItemAtPosition(position);
-        String documentId = cursor.getString(FavoritesSyncSchema.COLUMN_NODE_ID_ID);
+        String documentId = cursor.getString(SyncContentSchema.COLUMN_NODE_ID_ID);
 
         selectedItems.clear();
         selectedItems.add(documentId);
@@ -540,12 +511,68 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
                 adapter.notifyDataSetChanged();
                 ((SyncCursorAdapter) adapter).refresh();
                 gv.setAdapter(adapter);
+                displayFab(-1, null);
             }
         });
+
+        displayFab(R.drawable.ic_done_all_white, onMultiSelectionFabClickListener());
         getActivity().startActionMode(nActions);
         adapter.notifyDataSetChanged();
 
         return true;
+    }
+
+    @Override
+    public void selectAll()
+    {
+        if (nActions != null && adapter != null)
+        {
+            displayFab(R.drawable.ic_close_dark, onCancelMultiSelectionFabClickListener());
+            nActions.selectNodes(((SyncCursorAdapter) adapter).getNodes());
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    protected View.OnClickListener onMultiSelectionFabClickListener()
+    {
+        return new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                selectAll();
+            }
+        };
+    }
+
+    protected View.OnClickListener onCancelMultiSelectionFabClickListener()
+    {
+        return new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                if (nActions != null)
+                {
+                    nActions.finish();
+                }
+            }
+        };
+    }
+
+    private void displayFab(int iconId, View.OnClickListener listener)
+    {
+        if (listener != null)
+        {
+            fab.setVisibility(View.VISIBLE);
+            fab.setImageResource(iconId);
+            fab.setOnClickListener(listener);
+            fab.show(true);
+        }
+        else
+        {
+            fab.setVisibility(View.GONE);
+        }
     }
 
     public int getMode()
@@ -583,11 +610,11 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
         Node syncedNode = null;
         try
         {
-            FavoritesSyncManager syncManager = FavoritesSyncManager.getInstance(getActivity());
+            SyncContentManager syncManager = SyncContentManager.getInstance(getActivity());
             // Retrieve Sync Cursor for the specified node
             Uri localUri = syncManager.getUri(acc, nodeIdentifier);
-            Cursor syncCursor = getActivity().getContentResolver().query(localUri, FavoritesSyncSchema.COLUMN_ALL,
-                    null, null, null);
+            Cursor syncCursor = getActivity().getContentResolver().query(localUri, SyncContentSchema.COLUMN_ALL, null,
+                    null, null);
             if (syncCursor.getCount() == 1 && syncCursor.moveToFirst())
             {
                 Map<String, Serializable> properties = retrievePropertiesMap(syncCursor);
@@ -667,10 +694,18 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
             {
                 mi.setActionView(null);
             }
+            if (!ConnectivityUtils.hasNetwork(getActivity()))
+            {
+                Crouton.cancelAllCroutons();
+                Crouton.showText(getActivity(),
+                        Html.fromHtml(getString(org.alfresco.mobile.android.foundation.R.string.error_session_nodata)),
+                        Style.INFO, (ViewGroup) (getRootView().getParent()));
+            }
+            refreshHelper.setRefreshComplete();
             return;
         }
 
-        FavoritesSyncManager.getInstance(getActivity()).sync(acc);
+        SyncContentManager.getInstance(getActivity()).sync(acc);
         if (mi != null)
         {
             // Display spinning wheel instead of refresh
@@ -688,7 +723,8 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
     {
         if (info != null && info.hasWarning())
         {
-            ErrorSyncDialogFragment.newInstance().show(getActivity().getFragmentManager(), ErrorSyncDialogFragment.TAG);
+            ErrorSyncDialogFragment.newInstance().show(getActivity().getSupportFragmentManager(),
+                    ErrorSyncDialogFragment.TAG);
         }
     }
 
@@ -701,7 +737,7 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
     // BROADCAST RECEIVER
     // ///////////////////////////////////////////////////////////////////////////
     @Subscribe
-    public void onSyncCompleted(FavoritesSyncScanEvent event)
+    public void onSyncCompleted(SyncContentScanEvent event)
     {
         if (mi != null)
         {
@@ -712,18 +748,16 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
 
             if (info.hasWarning())
             {
-                ErrorSyncDialogFragment.newInstance().show(getActivity().getFragmentManager(),
+                ErrorSyncDialogFragment.newInstance().show(getActivity().getSupportFragmentManager(),
                         ErrorSyncDialogFragment.TAG);
             }
         }
     }
 
     @Subscribe
-    public void onFavoriteNodeEvent(FavoriteNodeEvent event)
+    public void onSyncNodeEvent(SyncNodeEvent event)
     {
-        // getLoaderManager().initLoader(0, null, this);
         refreshSilently();
-        // refresh();
     }
 
     @Subscribe
@@ -733,26 +767,25 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
         Node updatedNode = event.data;
         if (updatedNode == null) { return; }
 
-        Cursor favoriteCursor = null;
+        Cursor syncCursor = null;
         try
         {
-            favoriteCursor = getActivity().getContentResolver().query(
-                    FavoritesSyncProvider.CONTENT_URI,
-                    FavoritesSyncSchema.COLUMN_ALL,
-                    FavoritesSyncProvider.getAccountFilter(acc) + " AND " + FavoritesSyncSchema.COLUMN_NODE_ID
-                            + " LIKE '" + NodeRefUtils.getCleanIdentifier(updatedNode.getIdentifier()) + "%'", null,
-                    null);
-            boolean hasFavorite = (favoriteCursor.getCount() == 1);
-            if (hasFavorite && !hasSynchroActive)
+            syncCursor = getActivity().getContentResolver()
+                    .query(SyncContentProvider.CONTENT_URI, SyncContentSchema.COLUMN_ALL,
+                            SyncContentProvider.getAccountFilter(acc) + " AND " + SyncContentSchema.COLUMN_NODE_ID
+                                    + " LIKE '" + NodeRefUtils.getCleanIdentifier(updatedNode.getIdentifier()) + "%'",
+                            null, null);
+            boolean hasSynced = (syncCursor.getCount() == 1);
+            if (hasSynced && !hasSynchroActive)
             {
-                favoriteCursor.moveToFirst();
+                syncCursor.moveToFirst();
                 ContentValues cValues = new ContentValues();
-                cValues.put(FavoritesSyncSchema.COLUMN_NODE_ID, updatedNode.getIdentifier());
-                cValues.put(FavoritesSyncSchema.COLUMN_SERVER_MODIFICATION_TIMESTAMP, updatedNode.getModifiedAt()
-                        .getTimeInMillis());
+                cValues.put(SyncContentSchema.COLUMN_NODE_ID, updatedNode.getIdentifier());
+                cValues.put(SyncContentSchema.COLUMN_SERVER_MODIFICATION_TIMESTAMP,
+                        updatedNode.getModifiedAt().getTimeInMillis());
                 getActivity().getContentResolver().update(
-                        FavoritesSyncManager.getUri(favoriteCursor.getLong(FavoritesSyncSchema.COLUMN_ID_ID)), cValues,
-                        null, null);
+                        SyncContentManager.getUri(syncCursor.getLong(SyncContentSchema.COLUMN_ID_ID)), cValues, null,
+                        null);
             }
         }
         catch (Exception e)
@@ -761,45 +794,39 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
         }
         finally
         {
-            CursorUtils.closeCursor(favoriteCursor);
+            CursorUtils.closeCursor(syncCursor);
         }
     }
 
     protected Fragment getFragment(String tag)
     {
-        return getActivity().getFragmentManager().findFragmentByTag(tag);
+        return getActivity().getSupportFragmentManager().findFragmentByTag(tag);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
     // BUILDER
     // ///////////////////////////////////////////////////////////////////////////
-    public static Builder with(Activity activity)
+    public static Builder with(FragmentActivity activity)
     {
         return new Builder(activity);
     }
 
     public static class Builder extends AlfrescoFragmentBuilder
     {
-        public static final int ICON_ID = R.drawable.ic_favorite_dark;
-
-        public static final int LABEL_ID = R.string.menu_favorites;
-
         // ///////////////////////////////////////////////////////////////////////////
         // CONSTRUCTORS
         // ///////////////////////////////////////////////////////////////////////////
-        public Builder(Activity activity)
+        public Builder(FragmentActivity activity)
         {
             super(activity);
             this.extraConfiguration = new Bundle();
         }
 
-        public Builder(Activity appActivity, Map<String, Object> configuration)
+        public Builder(FragmentActivity appActivity, Map<String, Object> configuration)
         {
             super(appActivity, configuration);
-
+            viewConfigModel = new SyncConfigModel(configuration);
             sessionRequired = false;
-            menuIconId = ICON_ID;
-            menuTitleId = LABEL_ID;
             templateArguments = new String[] {};
         }
 

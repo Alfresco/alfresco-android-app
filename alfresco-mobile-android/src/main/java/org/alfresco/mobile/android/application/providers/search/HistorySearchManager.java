@@ -100,6 +100,22 @@ public final class HistorySearchManager
         return null;
     }
 
+    public static HistorySearch retrieveHistorySearchByQuery(Context context, Long accountId, int typeId, String query)
+    {
+        Cursor cursor = context.getContentResolver().query(CONTENT_URI, COLUMN_ALL,
+                HistorySearchSchema.COLUMN_ACCOUNT_ID + " = " + accountId + " AND " + HistorySearchSchema.COLUMN_TYPE
+                        + " = " + typeId + " AND " + HistorySearchSchema.COLUMN_DESCRIPTION + " LIKE ?",
+                new String[] { query }, null);
+        // Log.d(TAG, cursor.getCount() + " ");
+        if (cursor.getCount() > 0)
+        {
+            cursor.moveToFirst();
+            return createHistorySearch(cursor);
+        }
+        cursor.close();
+        return null;
+    }
+
     public static HistorySearch createHistorySearch(Cursor c)
     {
         HistorySearch search = new HistorySearch(c.getLong(HistorySearchSchema.COLUMN_ID_ID),
@@ -180,8 +196,8 @@ public final class HistorySearchManager
     // ///////////////////////////////////////////////////////////////////////////
     private void getCount()
     {
-        Cursor cursor = appContext.getContentResolver().query(HistorySearchProvider.CONTENT_URI, COLUMN_ALL, null,
-                null, null);
+        Cursor cursor = appContext.getContentResolver().query(HistorySearchProvider.CONTENT_URI, COLUMN_ALL, null, null,
+                null);
         if (cursor != null)
         {
             historySize = cursor.getCount();

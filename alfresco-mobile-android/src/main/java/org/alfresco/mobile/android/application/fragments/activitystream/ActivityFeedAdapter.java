@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+ * Copyright (C) 2005-2015 Alfresco Software Limited.
  *
  * This file is part of Alfresco Mobile for Android.
  *
@@ -20,16 +20,15 @@ package org.alfresco.mobile.android.application.fragments.activitystream;
 import java.util.List;
 
 import org.alfresco.mobile.android.api.model.ActivityEntry;
-import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.user.UserProfileFragment;
 import org.alfresco.mobile.android.application.managers.RenditionManagerImpl;
-import org.alfresco.mobile.android.ui.activitystream.ActivityEventViewHolder;
 import org.alfresco.mobile.android.ui.activitystream.ActivityStreamAdapter;
+import org.alfresco.mobile.android.ui.holder.TwoLinesCaptionViewHolder;
 
 import android.annotation.TargetApi;
-import android.app.Fragment;
 import android.os.Build;
+import android.support.v4.app.Fragment;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -46,19 +45,20 @@ public class ActivityFeedAdapter extends ActivityStreamAdapter implements OnMenu
 {
     protected Fragment fr;
 
-    public ActivityFeedAdapter(Fragment fr, AlfrescoSession session, int textViewResourceId,
+    public ActivityFeedAdapter(Fragment fr, int textViewResourceId,
             List<ActivityEntry> listItems, List<ActivityEntry> selectedItems)
     {
-        super(fr, session, textViewResourceId, listItems, selectedItems);
+        super(fr, textViewResourceId, listItems, selectedItems);
         this.renditionManager = RenditionManagerImpl.getInstance(fr.getActivity());
         this.fr = fr;
     }
 
-    protected void updateBottomText(ActivityEventViewHolder vh, ActivityEntry item)
+    protected void updateBottomText(TwoLinesCaptionViewHolder vh, ActivityEntry item)
     {
         super.updateBottomText(vh, item);
-        ((View) vh.icon.getParent()).setTag(R.id.entry_action, item);
-        ((View) vh.icon.getParent()).setOnClickListener(new OnClickListener()
+        vh.icon.setBackgroundResource(R.drawable.alfrescohololight_item_background_holo_light);
+        vh.icon.setTag(R.id.entry_action, item);
+        vh.icon.setOnClickListener(new OnClickListener()
         {
 
             @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)

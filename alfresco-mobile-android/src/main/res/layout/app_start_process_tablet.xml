@@ -139,7 +139,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:contentDescription="@string/picker_assignees"
-                            android:src="@drawable/ic_person" />
+                            android:src="@drawable/ic_person_light" />
                     </LinearLayout>
                 </TableRow>
 

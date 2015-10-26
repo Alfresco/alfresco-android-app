@@ -1,4 +1,21 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~  Copyright (C) 2005-2015 Alfresco Software Limited.
+  ~
+  ~  This file is part of Alfresco Mobile for Android.
+  ~
+  ~  Licensed under the Apache License, Version 2.0 (the "License");
+  ~  you may not use this file except in compliance with the License.
+  ~  You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~  limitations under the License.
+  -->
+
 <resources>
 
     <!-- ************************** -->
@@ -230,19 +247,22 @@
     <string name="error_unable_open_file">Impossible d\'ouvrir ce fichier</string>
     <string name="error_unable_share_link">Impossible de partager un lien</string>
     <string name="error_unable_share_content">Impossible de partager du contenu</string>
+    <string name="error_unable_open_map">Impossible d\'ouvrir une carte</string>
 
     <!-- SESSION ERROR -->
     <string name="retry_account_loading">Réessayer</string>
     <string name="error_session_creation_title">Enregistrer le compte</string>
     <string name="error_session_creation_message">Erreur de connexion</string>
-    <string name="error_session_creation">Impossible d\'authentifier. Vérifiez les paramètres de votre compte.</string>
-    <string name="error_session_hostname"><![CDATA[La valeur de votre <b>nom d\'hôte</b> semble erronée<br/> ou vous devez peut-être <b>activer votre VPN</b>.<br/> Vérifiez les paramètres de votre compte.]]></string>
+    <string name="error_session_creation">Impossibilité de s\'authentifier. Vérifiez les paramètres de votre compte Alfresco.</string>
+    <string name="error_session_hostname_short">La valeur de votre <b>nom d\'hôte</b> semble erronée.</string>
+    <string name="error_session_hostname"><![CDATA[La valeur de votre <b>nom d\'hôte</b> semble erronée ou vous devez peut-être <b>activer votre VPN</b>.<br/> Vérifiez vos valeurs et paramètres.]]></string>
+    <string name="error_session_nodata_short">Votre appareil n\'a aucune connexion aux données.</string>
     <string name="error_session_nodata"><![CDATA[<p><b>Votre appareil n\'a aucune connexion aux données.</b><br/></p> Vérifiez les paramètres de votre appareil et activez une connexion aux données.]]></string>
-    <string name="error_session_unauthorized"><![CDATA[Vous n\'êtes pas autorisé à accéder à ce serveur.<br/> Vérifiez les paramètres de votre compte <b>(nom d\'utilisateur/mot de passe)</b>.]]></string>
-    <string name="error_session_service_url"><![CDATA[La valeur de votre <b>URL de service</b> est incorrecte.<br/> Vérifiez les paramètres de votre compte.]]></string>
+    <string name="error_session_unauthorized"><![CDATA[Vous n\'êtes pas autorisé à accéder à ce serveur.<br/> Vérifiez les paramètres de votre compte Alfresco <b>(nom d\'utilisateur/mot de passe)</b>.]]></string>
+    <string name="error_session_service_url"><![CDATA[La valeur de votre <b>URL de service</b> est incorrecte.<br/> Vérifiez les paramètres de votre compte Alfresco.]]></string>
     <string name="error_session_service_unavailable"><![CDATA[En raison d\'un arrêt de maintenance ou de problèmes de capacité, le serveur ne peut traiter votre demande pour l\'instant.<br/>Réessayez ultérieurement.]]></string>
-    <string name="error_session_notfound"><![CDATA[Impossible d\'atteindre votre serveur.<br/> Vérifiez les paramètres de votre compte.]]></string>
-    <string name="error_session_port"><![CDATA[La valeur de votre <b>port</b> est incorrecte.<br/> Vérifiez les paramètres de votre compte.]]></string>
+    <string name="error_session_notfound"><![CDATA[Impossible d\'atteindre votre serveur.<br/> Vérifiez les paramètres de votre compte Alfresco.]]></string>
+    <string name="error_session_port"><![CDATA[La valeur de votre <b>port</b> est incorrecte.<br/> Vérifiez les paramètres de votre compte Alfresco.]]></string>
     <string name="error_session_certificate">
 <![CDATA[<p><b>Le certificat de sécurité du serveur n\'est pas vérifié !</b><br/></p>
 		L\'organisation de tierce partie qui a émis le certificat de destination de votre serveur ne fait pas partie de celles que votre appareil reconnaît.<br/>
@@ -255,7 +275,7 @@
     </string>
     <string name="error_session_ssl">
 <![CDATA[<p><b>Une erreur s\'est produite avec le protocole SSL.</b><br/></p>
-        Vérifiez vos paramètres de compte et réessayez.<br/> Si le problème persiste, contactez votre administrateur.]]>
+        Vérifiez vos paramètres de compte Alfresco et réessayez.<br/> Si le problème persiste, contactez votre administrateur.]]>
     </string>
     <string name="error_session_cloud_unavailable">
 <![CDATA[<p><b>Alfresco Cloud est actuellement surchargé !</b><br/></p>
@@ -264,10 +284,12 @@
     <string name="error_session_expired">Votre session a expiré. Veuillez vous reconnecter.</string>
     <string name="error_session_refresh">Rafraîchissement de la session.</string>
     <string name="error_chunk_transfert"><![CDATA[Le serveur ne prend pas en charge les transferts par bloc.<br/> Rechargez votre compte</b>.]]></string>
+
+    <string name="error_account_url">L\'URL est incorrecte. Vérifiez les paramètres de votre compte Alfresco.</string>
+    <string name="error_unknown_filepath">Ressource introuvable.</string>
     <string name="error_name_already_exist">Impossible de renommer le fichier. Un fichier du même nom existe déjà.</string>
     <string name="error_unknown_exception">Une erreur s\'est produite : %s</string>
     <string name="error_unknown">Une erreur s\'est produite : %s</string>
-
 
     <!-- Share -->
     <string name="share_url">Partager un lien</string>
@@ -360,11 +382,11 @@
     <!-- Favorites -->
     <string name="menu_favorites_folder">Dossiers favoris</string>
     <string name="menu_favorites">Favoris</string>
-    <string name="synced_documents">Contenu synchronisé</string>
+    <string name="synced_content">Contenu synchronisé</string>
     <string name="empty_favorites">Aucun favori</string>
     <string name="favorites_document">Favori</string>
     <string name="error_retrieve_favorite">Impossible de récupérer les infos de favori de ce contenu.</string>
-    <string name="favorites_activate">Synchroniser le contenu pour "%s"</string>
+    <string name="favorites_activate">Synchroniser le contenu pour \"%s\"</string>
     <string name="favorites_activate_description">Voulez-vous conserver automatiquement vos contenus favoris en synchronisation avec cet appareil ?</string>
     <string name="favorites_deactivate">Désactiver la synchronisation</string>
     <string name="favorites_deactivate_description"><![CDATA[<p>Voulez-vous désactiver la synchronisation ?</p> Tous les contenus synchronisés seront supprimés de votre appareil.]]></string>

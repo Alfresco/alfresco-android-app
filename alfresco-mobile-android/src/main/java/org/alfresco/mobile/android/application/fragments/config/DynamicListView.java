@@ -39,6 +39,7 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 
@@ -69,7 +70,7 @@ public class DynamicListView<T> extends ListView
 
     private final int LINE_THICKNESS = 15;
 
-    public ArrayList<ViewConfig> mCheeseList;
+    public ArrayList<ViewConfig> itemList;
 
     private int mLastEventY = -1;
 
@@ -221,7 +222,7 @@ public class DynamicListView<T> extends ListView
     private void updateNeighborViewsForID(long itemID)
     {
         int position = getPositionForID(itemID);
-        MenuItemConfigAdapter adapter = ((MenuItemConfigAdapter) getAdapter());
+        ArrayAdapter adapter = ((ArrayAdapter) getAdapter());
         mAboveItemId = adapter.getItemId(position - 1);
         mBelowItemId = adapter.getItemId(position + 1);
     }
@@ -230,7 +231,7 @@ public class DynamicListView<T> extends ListView
     public View getViewForID(long itemID)
     {
         int firstVisiblePosition = getFirstVisiblePosition();
-        MenuItemConfigAdapter adapter = ((MenuItemConfigAdapter) getAdapter());
+        ArrayAdapter adapter = ((ArrayAdapter) getAdapter());
         for (int i = 0; i < getChildCount(); i++)
         {
             View v = getChildAt(i);
@@ -368,7 +369,7 @@ public class DynamicListView<T> extends ListView
                 return;
             }
 
-            swapElements(mCheeseList, originalItem, getPositionForView(switchView));
+            swapElements(itemList, originalItem, getPositionForView(switchView));
 
             ((BaseAdapter) getAdapter()).notifyDataSetChanged();
 
@@ -557,9 +558,9 @@ public class DynamicListView<T> extends ListView
         return false;
     }
 
-    public void setCheeseList(ArrayList<ViewConfig> cheeseList)
+    public void setItemList(ArrayList<ViewConfig> itemList)
     {
-        mCheeseList = cheeseList;
+        this.itemList = itemList;
     }
 
     /**

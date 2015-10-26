@@ -75,7 +75,7 @@ public class VersionsNodeFragment extends BaseGridFragment
     @Override
     protected ArrayAdapter<?> onAdapterCreation()
     {
-        return new VersionsNodeAdapter(getActivity(), R.layout.sdk_list_version_row, new ArrayList<Document>(0));
+        return new VersionsNodeAdapter(getActivity(), R.layout.row_two_lines_progress, new ArrayList<Document>(0));
     }
 
     @Subscribe

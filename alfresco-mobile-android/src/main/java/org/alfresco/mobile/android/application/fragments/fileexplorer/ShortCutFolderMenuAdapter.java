@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.fragments.fileexplorer;
 
 import java.util.ArrayList;
@@ -22,31 +22,31 @@ import java.util.List;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
-import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
+import org.alfresco.mobile.android.ui.holder.TwoLinesViewHolder;
 
-import android.app.Activity;
+import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class ShortCutFolderMenuAdapter extends BaseListAdapter<Integer, GenericViewHolder>
+public class ShortCutFolderMenuAdapter extends BaseListAdapter<Integer, TwoLinesViewHolder>
 {
-    public ShortCutFolderMenuAdapter(Activity context)
+    public ShortCutFolderMenuAdapter(FragmentActivity context)
     {
         super(context, R.layout.app_path_shortcut, SHORTCUTS);
     }
 
     @Override
-    protected void updateTopText(GenericViewHolder vh, Integer item)
+    protected void updateTopText(TwoLinesViewHolder vh, Integer item)
     {
     }
 
     @Override
-    protected void updateBottomText(GenericViewHolder vh, Integer item)
+    protected void updateBottomText(TwoLinesViewHolder vh, Integer item)
     {
     }
 
     @Override
-    protected void updateIcon(GenericViewHolder vh, Integer item)
+    protected void updateIcon(TwoLinesViewHolder vh, Integer item)
     {
         int iconId = -1;
         ((View) vh.icon.getParent()).setClickable(false);
@@ -64,7 +64,7 @@ public class ShortCutFolderMenuAdapter extends BaseListAdapter<Integer, GenericV
                 iconId = R.drawable.ic_sdcard;
                 break;
             case R.string.shortcut_library_office:
-                iconId = R.drawable.ic_office;
+                iconId = R.drawable.ic_doc_light;
                 break;
             case R.string.shortcut_library_images:
                 iconId = R.drawable.ic_pictures;

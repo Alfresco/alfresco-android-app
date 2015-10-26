@@ -33,6 +33,8 @@ public class HistorySearch implements Serializable
 
     public static final int TYPE_PERSON = 4;
 
+    public static final int TYPE_SITE = 8;
+
     private long id;
 
     private long accountId;

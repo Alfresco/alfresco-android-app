@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.platform.exception;
 
 import java.net.UnknownHostException;
@@ -40,7 +40,11 @@ import org.apache.chemistry.opencmis.commons.exceptions.CmisUnauthorizedExceptio
 import android.accounts.NetworkErrorException;
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 
 /**
  * Helper class to find the right user message to display when an exception has
@@ -55,6 +59,40 @@ public final class AlfrescoExceptionHelper
     {
     }
 
+    public static int getMessageErrorId(Context context, Exception e, boolean longMessage)
+    {
+        int messageId = R.string.error_session_creation;
+
+        try
+        {
+            if (e.getCause() != null)
+            {
+                throw e.getCause();
+            }
+            else
+            {
+                throw e;
+            }
+        }
+        catch (UnknownHostException ue)
+        {
+            if (ConnectivityUtils.hasInternetAvailable(context))
+            {
+                messageId = longMessage ? R.string.error_session_hostname_short : R.string.error_session_hostname;
+            }
+            else
+            {
+                messageId = longMessage ? R.string.error_session_nodata_short : R.string.error_session_nodata;
+            }
+        }
+        catch (Throwable er)
+        {
+            messageId = R.string.error_unknown;
+        }
+
+        return messageId;
+    }
+
     /**
      * Return user friendly message Id for a specific exception.
      * 
@@ -66,8 +104,16 @@ public final class AlfrescoExceptionHelper
     {
         int messageId = R.string.error_session_creation;
 
+        if (e instanceof CmisConnectionException)
+        {
+            messageId = R.string.error_session_nodata;
+        }
+        else if (e instanceof CmisUnauthorizedException)
+        {
+            messageId = R.string.error_session_unauthorized;
+        }
         // USername error during session creation
-        if (e.getCause() instanceof AlfrescoSessionException)
+        else if (e.getCause() instanceof AlfrescoSessionException)
         {
             if (e.getCause().getCause() instanceof CmisUnauthorizedException)
             {
@@ -112,8 +158,8 @@ public final class AlfrescoExceptionHelper
         // Case where missing certificate / untrusted certificate
         else if (e.getCause() instanceof CmisConnectionException
                 && e.getCause().getCause() instanceof SSLHandshakeException
-                && (e.getCause().getCause().getCause() instanceof CertPathValidatorException || e.getCause().getCause()
-                        .getCause() instanceof CertificateException)
+                && (e.getCause().getCause().getCause() instanceof CertPathValidatorException
+                        || e.getCause().getCause().getCause() instanceof CertificateException)
                 && e.getCause().getCause().getCause().getMessage()
                         .contains("Trust anchor for certification path not found."))
         {
@@ -122,17 +168,16 @@ public final class AlfrescoExceptionHelper
         // Case where the certificate has expired or is not yet valid.
         else if (e.getCause() instanceof CmisConnectionException
                 && e.getCause().getCause() instanceof SSLHandshakeException
-                && e.getCause().getCause().getCause() instanceof CertificateException
-                && e.getCause().getCause().getCause().getMessage()
-                        .contains("Could not validate certificate: current time:"))
+                && e.getCause().getCause().getCause() instanceof CertificateException && e.getCause().getCause()
+                        .getCause().getMessage().contains("Could not validate certificate: current time:"))
         {
             messageId = R.string.error_session_certificate_expired;
         }
         // Case where the certificate has expired or is not yet valid.
         else if (e.getCause() instanceof CmisConnectionException
                 && e.getCause().getCause() instanceof SSLHandshakeException
-                && (e.getCause().getCause().getCause() instanceof CertificateExpiredException || e.getCause()
-                        .getCause().getCause() instanceof CertificateNotYetValidException))
+                && (e.getCause().getCause().getCause() instanceof CertificateExpiredException
+                        || e.getCause().getCause().getCause() instanceof CertificateNotYetValidException))
         {
             messageId = R.string.error_session_certificate_expired;
         }
@@ -173,9 +218,9 @@ public final class AlfrescoExceptionHelper
         else
         // Default case. We don't know what's wrong...
         {
-            if (context instanceof Activity)
+            if (context instanceof FragmentActivity)
             {
-                AlfrescoNotificationManager.getInstance(context).showAlertCrouton((Activity) context,
+                AlfrescoNotificationManager.getInstance(context).showAlertCrouton((FragmentActivity) context,
                         String.format(context.getString(R.string.error_unknown_exception), e.getCause()));
                 messageId = R.string.error_unknown;
             }
@@ -188,7 +233,7 @@ public final class AlfrescoExceptionHelper
         return messageId;
     }
 
-    public static boolean checkEventException(Activity activity, OperationEvent event)
+    public static boolean checkEventException(FragmentActivity activity, OperationEvent event)
     {
         if (event.hasException)
         {
@@ -201,6 +246,21 @@ public final class AlfrescoExceptionHelper
             return true;
         }
         return false;
+    }
+
+    public static void displayErrorStackTrace(Activity activity, Exception e)
+    {
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(activity).title("Error Informations")
+                .cancelListener(new DialogInterface.OnCancelListener()
+                {
+                    @Override
+                    public void onCancel(DialogInterface dialog)
+                    {
+                        dialog.dismiss();
+                    }
+                }).content(Log.getStackTraceString(e)).negativeText(R.string.share).positiveText(R.string.cancel);
+        builder.show();
+        return;
     }
 
 }

@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.extension.scansnap;
 
 import java.util.ArrayList;
@@ -25,13 +25,13 @@ import org.alfresco.mobile.android.application.extension.scansnap.presets.PhotoP
 import org.alfresco.mobile.android.application.extension.scansnap.presets.ScanSnapPreset;
 import org.alfresco.mobile.android.platform.extensions.ScanSnapManager;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
-import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
+import org.alfresco.mobile.android.ui.holder.SingleLineViewHolder;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -74,7 +74,7 @@ public class ScanSnapPresetsDialogFragment extends DialogFragment
         List<ScanSnapPreset> presets = new ArrayList<>();
         presets.add(new DefaultPreset(getActivity().getApplicationContext().getPackageName()));
         presets.add(new PhotoPreset(getActivity().getApplicationContext().getPackageName()));
-        ScanSnapPresetAdapter adapter = new ScanSnapPresetAdapter(getActivity(), R.layout.sdk_list_row, presets);
+        ScanSnapPresetAdapter adapter = new ScanSnapPresetAdapter(getActivity(), R.layout.row_single_line, presets);
         lv.setAdapter(adapter);
         return new AlertDialog.Builder(getActivity()).setTitle(R.string.scan_preset).setView(v).create();
     }
@@ -82,16 +82,17 @@ public class ScanSnapPresetsDialogFragment extends DialogFragment
     /**
      * Inner class responsible to manage the list of File Types available.
      */
-    public class ScanSnapPresetAdapter extends BaseListAdapter<ScanSnapPreset, GenericViewHolder>
+    public class ScanSnapPresetAdapter extends BaseListAdapter<ScanSnapPreset, SingleLineViewHolder>
     {
 
-        public ScanSnapPresetAdapter(Activity context, int textViewResourceId, List<ScanSnapPreset> listItems)
+        public ScanSnapPresetAdapter(FragmentActivity context, int textViewResourceId, List<ScanSnapPreset> listItems)
         {
             super(context, textViewResourceId, listItems);
+            this.vhClassName = SingleLineViewHolder.class.getCanonicalName();
         }
 
         @Override
-        protected void updateTopText(GenericViewHolder vh, ScanSnapPreset item)
+        protected void updateTopText(SingleLineViewHolder vh, ScanSnapPreset item)
         {
             if (item != null)
             {
@@ -100,16 +101,12 @@ public class ScanSnapPresetsDialogFragment extends DialogFragment
         }
 
         @Override
-        protected void updateBottomText(GenericViewHolder vh, ScanSnapPreset item)
+        protected void updateBottomText(SingleLineViewHolder vh, ScanSnapPreset item)
         {
-            if (item != null)
-            {
-                vh.bottomText.setVisibility(View.GONE);
-            }
         }
 
         @Override
-        protected void updateIcon(GenericViewHolder vh, ScanSnapPreset item)
+        protected void updateIcon(SingleLineViewHolder vh, ScanSnapPreset item)
         {
             if (item != null)
             {

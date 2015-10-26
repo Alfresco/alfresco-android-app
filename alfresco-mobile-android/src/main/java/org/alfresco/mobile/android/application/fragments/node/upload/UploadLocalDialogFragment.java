@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.fragments.node.upload;
 
 import java.io.File;
@@ -26,20 +26,20 @@ import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.EditText;
+
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.rengwuxian.materialedittext.MaterialEditText;
 
 /**
  * This Fragment is responsible to prompt user for file name during import.<br/>
@@ -56,6 +56,9 @@ public class UploadLocalDialogFragment extends DialogFragment
 
     public static final String ARGUMENT_FILE = "file";
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // CONSTRUCTOR
+    // ///////////////////////////////////////////////////////////////////////////
     public static UploadLocalDialogFragment newInstance(AlfrescoAccount account, File f)
     {
         UploadLocalDialogFragment fragment = new UploadLocalDialogFragment();
@@ -73,6 +76,9 @@ public class UploadLocalDialogFragment extends DialogFragment
         return fragment;
     }
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // LIFECYCLE
+    // ///////////////////////////////////////////////////////////////////////////
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
         final AlfrescoAccount currentAccount = (AlfrescoAccount) getArguments().get(ARGUMENT_ACCOUNT);
@@ -83,17 +89,11 @@ public class UploadLocalDialogFragment extends DialogFragment
 
         LayoutInflater inflater = LayoutInflater.from(getActivity());
         final View v = inflater.inflate(R.layout.app_create_document, (ViewGroup) this.getView());
-
         v.findViewById(R.id.document_extension).setVisibility(View.GONE);
-
-        final EditText textName = ((EditText) v.findViewById(R.id.document_name));
-        final Button validate = UIUtils.initValidation(v, R.string.create);
-        validate.setEnabled(false);
-        final Button cancel = UIUtils.initCancel(v, R.string.cancel);
-
+        final MaterialEditText textName = ((MaterialEditText) v.findViewById(R.id.document_name));
         textName.setText(file.getName());
-        validate.setEnabled(true);
-        validate.setText(R.string.action_import);
+        textName.setFloatingLabelText(getString(R.string.content_name));
+
         // This Listener is responsible to enable or not the validate button and
         // error message.
         textName.addTextChangedListener(new TextWatcher()
@@ -102,12 +102,14 @@ public class UploadLocalDialogFragment extends DialogFragment
             {
                 if (s.length() > 0)
                 {
-                    validate.setEnabled(true);
+                    ((MaterialDialog) getDialog()).getActionButton(DialogAction.POSITIVE).setEnabled(true);
                     textName.setError(null);
+                    textName.setFloatingLabelText(getString(R.string.content_name));
                 }
                 else
                 {
-                    validate.setEnabled(false);
+                    textName.setHint(R.string.create_document_name_hint);
+                    ((MaterialDialog) getDialog()).getActionButton(DialogAction.POSITIVE).setEnabled(false);
                 }
             }
 
@@ -120,46 +122,46 @@ public class UploadLocalDialogFragment extends DialogFragment
             }
         });
 
-        cancel.setOnClickListener(new OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                getActivity().finish();
-            }
-        });
-
-        validate.setOnClickListener(new OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                String fileName = textName.getText().toString();
-
-                File newFile = new File(folderStorage, fileName);
-
-                if (newFile.exists())
+        MaterialDialog dialog = new MaterialDialog.Builder(getActivity()).iconRes(R.drawable.ic_application_logo)
+                .title(R.string.import_document_name).customView(v, true).positiveText(R.string.action_import)
+                .negativeText(R.string.cancel).callback(new MaterialDialog.ButtonCallback()
                 {
-                    // If the file already exist, we prompt a warning message.
-                    textName.setError(getString(R.string.create_document_filename_error));
-                    return;
-                }
-                else
-                {
-                    UIUtils.hideKeyboard(getActivity());
+                    @Override
+                    public void onPositive(MaterialDialog dialog)
+                    {
+                        String fileName = textName.getText().toString();
 
-                    DataProtectionManager.getInstance(getActivity()).copyAndEncrypt(file, newFile);
+                        File newFile = new File(folderStorage, fileName);
 
-                    if (getActivity() instanceof PublicDispatcherActivity)
+                        if (newFile.exists())
+                        {
+                            // If the file already exist, we prompt a warning
+                            // message.
+                            textName.setError(getString(R.string.create_document_filename_error));
+                            return;
+                        }
+                        else
+                        {
+                            UIUtils.hideKeyboard(getActivity());
+
+                            DataProtectionManager.getInstance(getActivity()).copyAndEncrypt(file, newFile);
+
+                            if (getActivity() instanceof PublicDispatcherActivity)
+                            {
+                                getActivity().finish();
+                            }
+                        }
+                        dialog.dismiss();
+                    }
+
+                    @Override
+                    public void onNegative(MaterialDialog dialog)
                     {
                         getActivity().finish();
                     }
-                }
-                dismiss();
-            }
-        });
+                }).build();
 
-        return new AlertDialog.Builder(getActivity()).setTitle(R.string.import_document_name).setView(v).create();
+        return dialog;
     }
 
     @Override

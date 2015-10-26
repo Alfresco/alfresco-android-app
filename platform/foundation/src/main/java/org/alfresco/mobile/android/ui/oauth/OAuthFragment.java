@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.ui.oauth;
 
 import org.alfresco.mobile.android.api.constants.OAuthConstant;
@@ -29,10 +29,11 @@ import org.alfresco.mobile.android.foundation.R;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.EventBusManager;
 
-import android.app.Activity;
-import android.app.DialogFragment;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,11 +54,11 @@ public abstract class OAuthFragment extends DialogFragment
 
     private String apiSecret;
 
-    private String callback;
+    protected String callback;
 
     private String scope;
 
-    private int layout_id = R.layout.app_webview;
+    protected int layout_id = R.layout.app_webview;
 
     private String baseOAuthUrl = OAuthConstant.PUBLIC_API_HOSTNAME;
 
@@ -66,6 +67,8 @@ public abstract class OAuthFragment extends DialogFragment
     private OnOAuthWebViewListener onOAuthWebViewListener;
 
     private boolean isLoaded;
+
+    protected WebView webview;
 
     public OAuthFragment()
     {
@@ -116,10 +119,10 @@ public abstract class OAuthFragment extends DialogFragment
             this.scope = getText(R.string.oauth_scope).toString();
         }
 
-        final WebView webview = (WebView) v.findViewById(R.id.webview);
+        webview = (WebView) v.findViewById(R.id.webview);
         webview.getSettings().setJavaScriptEnabled(true);
 
-        final Activity activity = getActivity();
+        final FragmentActivity activity = getActivity();
         webview.setWebChromeClient(new WebChromeClient()
         {
             public void onProgressChanged(WebView view, int progress)
@@ -201,7 +204,7 @@ public abstract class OAuthFragment extends DialogFragment
             // authorization complete hide webview for now & retrieve
             // the acces token
             String code = OAuthHelper.retrieveCode(url);
-            if (code != null)
+            if (!TextUtils.isEmpty(code))
             {
                 retrieveAccessToken(code);
             }
@@ -289,5 +292,11 @@ public abstract class OAuthFragment extends DialogFragment
 
         void onReceivedError(WebView view, int errorCode, String description, String failingUrl);
 
+    }
+
+    protected void reload()
+    {
+        OAuthHelper helper = new OAuthHelper(baseOAuthUrl);
+        webview.loadUrl(helper.getAuthorizationUrl(apiKey, callback, scope));
     }
 }

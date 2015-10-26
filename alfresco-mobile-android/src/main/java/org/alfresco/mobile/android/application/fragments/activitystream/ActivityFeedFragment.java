@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+ * Copyright (C) 2005-2015 Alfresco Software Limited.
  *
  * This file is part of Alfresco Mobile for Android.
  *
@@ -24,6 +24,7 @@ import org.alfresco.mobile.android.api.constants.CloudConstant;
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.model.ActivityEntry;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.configuration.model.view.ActivitiesConfigModel;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.MenuFragmentHelper;
@@ -31,17 +32,22 @@ import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmen
 import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsFragment;
 import org.alfresco.mobile.android.application.fragments.user.UserProfileFragment;
 import org.alfresco.mobile.android.async.activitystream.ActivityStreamEvent;
+import org.alfresco.mobile.android.ui.activitystream.ActivityStreamFragment;
 
-import android.app.Activity;
-import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.squareup.otto.Subscribe;
 
-public class ActivityFeedFragment extends org.alfresco.mobile.android.ui.activitystream.ActivityStreamFragment
+public class ActivityFeedFragment extends ActivityStreamFragment
 {
     public static final String TAG = ActivityFeedFragment.class.getName();
 
@@ -55,6 +61,7 @@ public class ActivityFeedFragment extends org.alfresco.mobile.android.ui.activit
         super();
         displayAsList = true;
         setHasOptionsMenu(true);
+
     }
 
     public static ActivityFeedFragment newInstanceByTemplate(Bundle b)
@@ -66,6 +73,26 @@ public class ActivityFeedFragment extends org.alfresco.mobile.android.ui.activit
     }
 
     // /////////////////////////////////////////////////////////////
+    // LIFECYCLE
+    // ////////////////////////////////////////////////////////////
+    @Override
+    protected void prepareEmptyView(View ev, ImageView emptyImageView, TextView firstEmptyMessage,
+            TextView secondEmptyMessage)
+    {
+        emptyImageView.setLayoutParams(DisplayUtils.resizeLayout(getActivity(), 275, 275));
+        emptyImageView.setImageResource(R.drawable.ic_empty_activities);
+        firstEmptyMessage.setText(R.string.activities_list_empty_title);
+        secondEmptyMessage.setVisibility(View.VISIBLE);
+        secondEmptyMessage.setText(R.string.activities_list_empty_description);
+    }
+
+    @Override
+    public String onPrepareTitle()
+    {
+        return getString(ActivitiesConfigModel.LABEL_ID);
+    }
+
+    // /////////////////////////////////////////////////////////////
     // ITEM SELECTION
     // ////////////////////////////////////////////////////////////
     protected void onItemUnselected(ActivityEntry unSelectedObject)
@@ -74,6 +101,12 @@ public class ActivityFeedFragment extends org.alfresco.mobile.android.ui.activit
         {
             FragmentDisplayer.with(getActivity()).remove(DisplayUtils.getCentralFragmentId(getActivity()));
         }
+    }
+
+    @Override
+    public void onListItemClick(GridView g, View v, int position, long id)
+    {
+        onItemSelected((ActivityEntry) g.getItemAtPosition(position));
     }
 
     protected void onItemSelected(ActivityEntry item)
@@ -127,10 +160,11 @@ public class ActivityFeedFragment extends org.alfresco.mobile.android.ui.activit
     // REQUEST & RESULT
     // ///////////////////////////////////////////////////////////////////////////
     @Override
-    protected ArrayAdapter<?> onAdapterCreation()
+    protected ArrayAdapter<ActivityEntry> onAdapterCreation()
     {
-        return new ActivityFeedAdapter(this, getSession(), R.layout.app_grid_row_activities,
-                new ArrayList<ActivityEntry>(0), selectedItems);
+        return new ActivityFeedAdapter(this, R.layout.row_two_lines_caption_divider_circle,
+                new ArrayList<ActivityEntry>(0),
+                selectedEntry);
     }
 
     @Subscribe
@@ -144,18 +178,13 @@ public class ActivityFeedFragment extends org.alfresco.mobile.android.ui.activit
     // ///////////////////////////////////////////////////////////////////////////
     public static class Builder extends AlfrescoFragmentBuilder
     {
-        public static final int ICON_ID = R.drawable.ic_activities_dark;
-
-        public static final int LABEL_ID = R.string.menu_browse_activities;
-
         // ///////////////////////////////////////////////////////////////////////////
         // CONSTRUCTORS
         // ///////////////////////////////////////////////////////////////////////////
-        public Builder(Activity appActivity, Map<String, Object> configuration)
+        public Builder(FragmentActivity appActivity, Map<String, Object> configuration)
         {
             super(appActivity, configuration);
-            menuIconId = ICON_ID;
-            menuTitleId = LABEL_ID;
+            viewConfigModel = new ActivitiesConfigModel();
             templateArguments = new String[] { ARGUMENT_SITE_SHORTNAME, ARGUMENT_USERNAME };
         }
 

@@ -1,35 +1,46 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.fragments.site.browser;
 
 import java.util.Map;
 
+import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.configuration.model.view.SitesConfigModel;
+import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.builder.ListingFragmentBuilder;
+import org.alfresco.mobile.android.application.fragments.site.search.SearchSitesFragment;
+import org.alfresco.mobile.android.async.OperationRequest;
 import org.alfresco.mobile.android.async.site.SiteFavoriteEvent;
 import org.alfresco.mobile.android.async.site.SitesEvent;
 import org.alfresco.mobile.android.async.site.member.CancelPendingMembershipEvent;
 import org.alfresco.mobile.android.async.site.member.SiteMembershipEvent;
+import org.alfresco.mobile.android.async.site.search.SiteSearchEvent;
+import org.alfresco.mobile.android.async.site.search.SiteSearchRequest;
+import org.alfresco.mobile.android.platform.utils.BundleUtils;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 
-import android.app.Activity;
-import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.squareup.otto.Subscribe;
 
@@ -43,6 +54,10 @@ public class SitesFragment extends CommonBrowserSitesFragment
 {
     public static final String TAG = SitesFragment.class.getName();
 
+    private static final String ARGUMENT_KEYWORD = "siteKeywords";
+
+    protected String keywords;
+
     // //////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // //////////////////////////////////////////////////////////////////////
@@ -50,6 +65,7 @@ public class SitesFragment extends CommonBrowserSitesFragment
     {
         super();
         retrieveDataOnCreation = true;
+        loadState = LOAD_VISIBLE;
     }
 
     public static SitesFragment newInstanceByTemplate(Bundle b)
@@ -72,6 +88,54 @@ public class SitesFragment extends CommonBrowserSitesFragment
             isFavoriteListing = favorite;
             isMemberSite = !favorite;
         }
+        keywords = BundleUtils.getString(bundle, ARGUMENT_KEYWORD);
+
+    }
+
+    @Override
+    protected void prepareEmptyView(View ev, ImageView emptyImageView, TextView firstEmptyMessage,
+            TextView secondEmptyMessage)
+    {
+        if (keywords == null)
+        {
+            emptyImageView.setImageResource(
+                    isFavoriteListing ? R.drawable.ic_empty_sites_favorite : R.drawable.ic_empty_sites_my);
+            emptyImageView.setLayoutParams(DisplayUtils.resizeLayout(getActivity(), 275, 275));
+            firstEmptyMessage
+                    .setText(isFavoriteListing ? R.string.sites_favorites_empty_title : R.string.sites_my_empty_title);
+            secondEmptyMessage.setVisibility(View.VISIBLE);
+            secondEmptyMessage.setText(isFavoriteListing ? R.string.sites_favorites_empty_description
+                    : R.string.sites_my_empty_description);
+        }
+        else
+        {
+            emptyImageView.setLayoutParams(DisplayUtils.resizeLayout(getActivity(), 275, 275));
+            emptyImageView.setImageResource(R.drawable.ic_empty_search_sites);
+            firstEmptyMessage.setVisibility(View.VISIBLE);
+            firstEmptyMessage.setText(R.string.sites_search_empty_title);
+            secondEmptyMessage.setVisibility(View.VISIBLE);
+            secondEmptyMessage.setText(R.string.sites_search_empty_description);
+        }
+    }
+
+    @Override
+    protected OperationRequest.OperationBuilder onCreateOperationRequest(ListingContext listingContext)
+    {
+        if (keywords == null)
+        {
+            return super.onCreateOperationRequest(listingContext);
+        }
+        else
+        {
+            return new SiteSearchRequest.Builder(keywords).setListingContext(listingContext);
+        }
+    }
+
+    @Override
+    public String onPrepareTitle()
+    {
+        if (keywords != null) { return String.format(getString(R.string.search_title), keywords); }
+        return super.onPrepareTitle();
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -90,6 +154,12 @@ public class SitesFragment extends CommonBrowserSitesFragment
     // ///////////////////////////////////////////////////////////////////////////
     // EVENTS
     // ///////////////////////////////////////////////////////////////////////////
+    @Subscribe
+    public void onResult(SiteSearchEvent event)
+    {
+        displayData(event);
+    }
+
     @Override
     @Subscribe
     public void onResult(SitesEvent event)
@@ -118,28 +188,28 @@ public class SitesFragment extends CommonBrowserSitesFragment
     // ///////////////////////////////////////////////////////////////////////////
     // BUILDER
     // ///////////////////////////////////////////////////////////////////////////
-    public static Builder with(Activity activity)
+    public static Builder with(FragmentActivity activity)
     {
         return new Builder(activity);
     }
 
     public static class Builder extends ListingFragmentBuilder
     {
+        boolean showFinder = false;
 
         // ///////////////////////////////////////////////////////////////////////////
         // CONSTRUCTORS & HELPERS
         // ///////////////////////////////////////////////////////////////////////////
-        public Builder(Activity activity)
+        public Builder(FragmentActivity activity)
         {
             super(activity);
             extraConfiguration = new Bundle();
         }
 
-        public Builder(Activity activity, Map<String, Object> configuration)
+        public Builder(FragmentActivity activity, Map<String, Object> configuration)
         {
             super(activity, configuration);
-            menuIconId = R.drawable.ic_site_dark;
-            menuTitleId = R.string.menu_browse_sites;
+            viewConfigModel = new SitesConfigModel(configuration);
         }
 
         @Override
@@ -156,6 +226,10 @@ public class SitesFragment extends CommonBrowserSitesFragment
                 {
                     b.putBoolean(ARGUMENT_SHOW, true);
                 }
+                else if (SHOW_FINDER.equals(show))
+                {
+                    showFinder = true;
+                }
             }
         }
 
@@ -168,12 +242,25 @@ public class SitesFragment extends CommonBrowserSitesFragment
             return this;
         }
 
+        public Builder keywords(String keywords)
+        {
+            extraConfiguration.putString(ARGUMENT_KEYWORD, keywords);
+            return this;
+        }
+
         // ///////////////////////////////////////////////////////////////////////////
         // CLICK
         // ///////////////////////////////////////////////////////////////////////////
         protected Fragment createFragment(Bundle b)
         {
-            return SitesFragment.newInstanceByTemplate(b);
+            if (showFinder)
+            {
+                return SearchSitesFragment.newInstanceByTemplate(b);
+            }
+            else
+            {
+                return SitesFragment.newInstanceByTemplate(b);
+            }
         }
     }
 }

@@ -26,9 +26,9 @@ import org.alfresco.mobile.android.application.extension.samsung.R;
 import org.alfresco.mobile.android.application.extension.samsung.utils.SNoteUtils;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.intent.BaseActionUtils;
+import org.alfresco.mobile.android.ui.activity.AlfrescoActivity;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -42,6 +42,8 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -82,7 +84,7 @@ import com.samsung.android.sdk.pen.settingui.SpenSettingPenLayout;
 import com.samsung.android.sdk.pen.settingui.SpenSettingSelectionLayout;
 import com.samsung.android.sdk.pen.settingui.SpenSettingTextLayout;
 
-public class SNoteEditorActivity extends Activity
+public class SNoteEditorActivity extends AlfrescoActivity
 {
     protected static final String TAG = SNoteEditorActivity.class.getName();
 
@@ -127,13 +129,21 @@ public class SNoteEditorActivity extends Activity
     // ///////////////////////////////////////////////////////////////////////////
     // LIFECYCLE
     // ///////////////////////////////////////////////////////////////////////////
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     @Override
-    protected void onCreate(Bundle savedInstanceState)
+    public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.snote_editor);
         context = this;
+
+        // TOOLBAR
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        if (toolbar != null)
+        {
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
+        }
 
         // Retrieve information
         String action = getIntent().getAction();
@@ -281,7 +291,7 @@ public class SNoteEditorActivity extends Activity
     @Override
     protected void onStart()
     {
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         super.onStart();
     }
 
@@ -676,7 +686,7 @@ public class SNoteEditorActivity extends Activity
             if (dm == null)
             {
                 dm = new DisplayMetrics();
-                ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(dm);
+                ((FragmentActivity) context).getWindowManager().getDefaultDisplay().getMetrics(dm);
             }
             imageBitmap = SNoteUtils.decodeFile(new File(spenNoteDoc.getAttachedFile(attachmentKey)),
                     spenSurfaceView.getCanvasWidth(), dm.densityDpi);
@@ -896,7 +906,7 @@ public class SNoteEditorActivity extends Activity
             case SNoteMenuActionItem.MENU_EDITOR_PAGE_MOVE:
                 SNotePagesDialogFragment df = new SNotePagesDialogFragment();
                 df.setInfo(spenNoteDoc.getPageIndexById(spenPageDoc.getId()), spenNoteDoc.getPageCount());
-                df.show(getFragmentManager(), SNotePagesDialogFragment.TAG);
+                df.show(getSupportFragmentManager(), SNotePagesDialogFragment.TAG);
                 return true;
             case SNoteMenuActionItem.MENU_EDITOR_PAGE_ADD:
                 spenSurfaceView.closeControl();

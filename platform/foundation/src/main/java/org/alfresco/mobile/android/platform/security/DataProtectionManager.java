@@ -32,7 +32,7 @@ import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.io.IOUtils;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
-import org.alfresco.mobile.android.sync.FavoritesSyncManager;
+import org.alfresco.mobile.android.sync.SyncContentManager;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -210,7 +210,7 @@ public class DataProtectionManager extends Manager
     {
         return (f.getPath().startsWith(
                 AlfrescoStorageManager.getInstance(appContext).getDownloadFolder(account).getPath()) || f.getPath()
-                .startsWith(FavoritesSyncManager.getInstance(appContext).getSynchroFolder(account).getPath()));
+                .startsWith(SyncContentManager.getInstance(appContext).getSynchroFolder(account).getPath()));
     }
 
     // ////////////////////////////////////////////////////

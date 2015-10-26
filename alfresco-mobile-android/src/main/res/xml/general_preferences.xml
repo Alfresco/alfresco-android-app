@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   Copyright (C) 2005-2013 Alfresco Software Limited.
   
   This file is part of Alfresco Mobile for Android.
@@ -18,9 +17,9 @@
 
 -->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    android:title="@string/settings" >
-
-    <PreferenceCategory android:title="@string/settings_enterprise" >
+    android:key="generalPreferences"
+    android:title="@string/settings">
+    <PreferenceCategory android:title="@string/settings_enterprise">
         <Preference
             android:key="privatefoldersbutton"
             android:summary="@string/settings_privatefolder_summary"
@@ -29,49 +28,12 @@
             android:key="@string/passcode_title"
             android:title="@string/passcode_preference" />
     </PreferenceCategory>
-    <PreferenceCategory android:key="@string/favorite_sync_group" android:title="@string/settings_favorite" >
-        <CheckBoxPreference
-            android:key="@string/favorite_sync"
-            android:title="@string/settings_favorite_sync"
-            android:summary="@string/settings_favorite_sync_summary"/>
-        <CheckBoxPreference
-            android:dependency="@string/favorite_sync"
-            android:key="@string/favorite_sync_wifi"
-            android:summary="@string/settings_favorite_sync_data_all"
-            android:title="@string/settings_favorite_sync_data" />
-    </PreferenceCategory>
-    <PreferenceCategory android:key="@string/custom_menu_group" android:title="@string/settings_custom_menu" >
+    <PreferenceCategory
+        android:key="@string/custom_menu_group"
+        android:title="@string/settings_custom_menu">
         <Preference
             android:key="@string/custom_menu_manage"
-            android:title="@string/settings_custom_menu_manage"
             android:summary="@string/settings_custom_menu_summary"
-            />
+            android:title="@string/settings_custom_menu_manage" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/settings_links" >
-        <Preference
-            android:key="web"
-            android:summary="@string/settings_links_website_summary"
-            android:title="@string/settings_links_website" >
-            <intent
-                android:action="android.intent.action.VIEW"
-                android:data="@string/settings_links_website_url" />
-        </Preference>
-        <Preference
-            android:key="rate"
-            android:summary="@string/settings_rating_summary"
-            android:title="@string/settings_rating" >
-            <intent
-                android:action="android.intent.action.VIEW"
-                android:data="@string/settings_rating_url" />
-        </Preference>
-        <Preference
-            android:key="like"
-            android:summary="@string/settings_links_facebook_summary"
-            android:title="@string/settings_links_facebook" >
-            <intent
-                android:action="android.intent.action.VIEW"
-                android:data="@string/settings_links_facebook_url" />
-        </Preference>
-    </PreferenceCategory>
-
 </PreferenceScreen>

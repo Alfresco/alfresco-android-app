@@ -20,9 +20,9 @@
     android:shape="rectangle" >
 
     <size
-        android:height="2dp"
+        android:height="1dp"
         android:width="10000dp" />
 
-    <solid android:color="@color/grey_light" />
+    <solid android:color="@color/divider_translucent" />
 
 </shape>

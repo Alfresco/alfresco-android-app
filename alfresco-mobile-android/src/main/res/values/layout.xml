@@ -17,8 +17,9 @@
 -->
 <resources>
 
-    <item name="app_main" type="layout">@layout/app_main_one_pane</item>
-    <item name="app_details" type="layout">@layout/app_details_extra</item>
+    <item name="app_main" type="layout">@layout/activity_main_one_panel</item>
+    <item name="app_details" type="layout">@layout/app_pager_tab</item>
+    <item name="fr_details_summary" type="bool">true</item>
     <item name="app_import" type="layout">@layout/app_import_spinner</item>
     <item name="app_start_process" type="layout">@layout/app_start_process_onepanel</item>
     <item name="app_task_complete" type="layout">@layout/app_task_complete_button</item>
@@ -26,5 +27,7 @@
     <item name="app_passcode" type="layout">@layout/app_passcode_simple</item>
 
     <item name="dialog_min_width_minor" format="float" type="dimen">0.95</item>
+    <item name="form_read_row" type="layout">@layout/row_single_line_inverse</item>
+
 
 </resources>

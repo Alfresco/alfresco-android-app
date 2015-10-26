@@ -1,4 +1,21 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~  Copyright (C) 2005-2015 Alfresco Software Limited.
+  ~
+  ~  This file is part of Alfresco Mobile for Android.
+  ~
+  ~  Licensed under the Apache License, Version 2.0 (the "License");
+  ~  you may not use this file except in compliance with the License.
+  ~  You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~  limitations under the License.
+  -->
+
 <resources>
 
     <!-- ************************** -->
@@ -230,44 +247,49 @@
     <string name="error_unable_open_file">No se puede abrir este fichero</string>
     <string name="error_unable_share_link">No se puede compartir el enlace</string>
     <string name="error_unable_share_content">No se puede compartir el contenido</string>
+    <string name="error_unable_open_map">No se puede abrir el mapa</string>
 
     <!-- SESSION ERROR -->
     <string name="retry_account_loading">Intentar de nuevo</string>
     <string name="error_session_creation_title">Guardar cuenta</string>
     <string name="error_session_creation_message">Error de conexión</string>
-    <string name="error_session_creation">No se puede autenticar. Compruebe la configuración de la cuenta.</string>
-    <string name="error_session_hostname"><![CDATA[El valor del <b>nombre de host</b> parece ser incorrecto<br/> o puede ser necesario <b>activar la VPN</b>.<br/> Compruebe la configuración de la cuenta.]]></string>
+    <string name="error_session_creation">No se puede autenticar. Compruebe la configuración de su cuenta de Alfresco.</string>
+    <string name="error_session_hostname_short">El <b>valor del nombre de host</b> parece ser incorrecto.</string>
+    <string name="error_session_hostname"><![CDATA[El valor del <b>nombre de host</b> parece ser incorrecto o puede ser necesario <b>activar la VPN</b>.<br/> Compruebe la configuración de los valores.]]></string>
+    <string name="error_session_nodata_short">El dispositivo no tiene conexión de datos.</string>
     <string name="error_session_nodata"><![CDATA[<p><b>El dispositivo no tiene conexión de datos.</b><br/></p> Compruebe la configuración del dispositivo y active la conexión de datos.]]></string>
-    <string name="error_session_unauthorized"><![CDATA[No tiene permiso para acceder a este servidor.<br/> Compruebe la configuración de la cuenta <b>(nombre de usuario/contraseña)</b>.]]></string>
-    <string name="error_session_service_url"><![CDATA[El valor de <b>url del servicio</b> es incorrecto.<br/> Compruebe la configuración de la cuenta.]]></string>
+    <string name="error_session_unauthorized"><![CDATA[No tiene permiso para acceder a este servidor.<br/> Compruebe la configuración de su cuenta de Alfresco <b>(nombre de usuario/contraseña)</b>.]]></string>
+    <string name="error_session_service_url"><![CDATA[El valor de <b>url del servicio</b> es incorrecto.<br/> Compruebe la configuración de su cuenta de Alfresco.]]></string>
     <string name="error_session_service_unavailable"><![CDATA[El servidor no está disponible temporalmente para el servicio que ha solicitado debido a un tiempo de inactividad para mantenimiento o problemas de capacidad.<br/> Inténtelo más tarde.]]></string>
-    <string name="error_session_notfound"><![CDATA[No se pudo acceder al servidor.<br/> Compruebe la configuración de la cuenta.]]></string>
-    <string name="error_session_port"><![CDATA[El valor de <b>puerto</b> es incorrecto.<br/> Compruebe la configuración de la cuenta.]]></string>
+    <string name="error_session_notfound"><![CDATA[No se pudo acceder al servidor.<br/> Compruebe la configuración de su cuenta de Alfresco.]]></string>
+    <string name="error_session_port"><![CDATA[El valor de <b>puerto</b> es incorrecto.<br/> Compruebe la configuración de su cuenta de Alfresco.]]></string>
     <string name="error_session_certificate">
-<![CDATA[<p><b>El certificado de seguridad del servidor no es de confianza.</b><br/></p>		La organización externa que emitió el certificado de destino del servidor no ha sido reconocida por el dispositivo.<br/>		Para que Alfresco Mobile verifique que se está conectando al servidor adecuado, su certificado debe ser de una organización de confianza.<br/>		Si su servidor tiene un certificado autofirmado, añádalo a su dispositivo para conectarse correctamente.<br/> 
-
-
-]]>
+<![CDATA[<p><b>El certificado de seguridad del servidor no es de confianza.</b><br/></p>
+		La organización externa que emitió el certificado de destino del servidor no ha sido reconocida por el dispositivo.<br/>
+		Para que Alfresco Mobile verifique que se está conectando al servidor adecuado, su certificado debe ser de una organización de confianza.<br/>
+		Si su servidor tiene un certificado autofirmado, añádalo a su dispositivo para conectarse correctamente.<br/> ]]>
     </string>
     <string name="error_session_certificate_expired">
-<![CDATA[<p><b>El certificado de seguridad del servidor ha caducado o aún no es válido.</b><br/></p>		Compruebe la fecha y hora establecida en su dispositivo.<br/> Si el problema persiste, póngase en contacto con su administrador. ]]>
-
+<![CDATA[<p><b>El certificado de seguridad del servidor ha caducado o aún no es válido.</b><br/></p>
+		Compruebe la fecha y hora establecida en su dispositivo.<br/> Si el problema persiste, póngase en contacto con su administrador. ]]>
     </string>
     <string name="error_session_ssl">
-<![CDATA[<p><b>Se ha producido un error con el protocolo SSL.</b><br/></p>        Compruebe la configuración de la cuenta y vuelva a intentarlo.<br/> Si el problema persiste, póngase en contacto con su administrador.]]>
-
+<![CDATA[<p><b>Se ha producido un error con el protocolo SSL.</b><br/></p>
+        Compruebe la configuración de su cuenta de Alfresco y vuelva a intentarlo.<br/> Si el problema persiste, póngase en contacto con su administrador.]]>
     </string>
     <string name="error_session_cloud_unavailable">
-<![CDATA[<p><b>Alfresco en la nube tiene una carga muy grande ahora mismo.</b><br/></p>        Vuelva a intentarlo en unos minutos.<br/>]]>
-
+<![CDATA[<p><b>Alfresco en la nube tiene una carga muy grande ahora mismo.</b><br/></p>
+        Vuelva a intentarlo en unos minutos.<br/>]]>
     </string>
     <string name="error_session_expired">Su sesión ha caducado. Vuelva a iniciar una sesión.</string>
     <string name="error_session_refresh">Actualizando sesión.</string>
     <string name="error_chunk_transfert"><![CDATA[El servidor no es compatible con transferencias en bloques.<br/> Vuelva a cargar su cuenta</b>.]]></string>
+
+    <string name="error_account_url">La URL es incorrecta. Compruebe la configuración de su cuenta de Alfresco.</string>
+    <string name="error_unknown_filepath">Error al encontrar el recurso.</string>
     <string name="error_name_already_exist">No se pudo cambiar el nombre del fichero. Es posible que ya exista otro fichero con el mismo nombre.</string>
     <string name="error_unknown_exception">Se ha producido un error: %s</string>
     <string name="error_unknown">Se ha producido un error: %s</string>
-
 
     <!-- Share -->
     <string name="share_url">Compartir enlace</string>
@@ -360,7 +382,7 @@
     <!-- Favorites -->
     <string name="menu_favorites_folder">Carpetas favoritas</string>
     <string name="menu_favorites">Favoritos</string>
-    <string name="synced_documents">Contenido sincronizado</string>
+    <string name="synced_content">Contenido sincronizado</string>
     <string name="empty_favorites">Ningún favorito</string>
     <string name="favorites_document">Favorito</string>
     <string name="error_retrieve_favorite">La información de favoritos para este contenido no se pudo recuperar.</string>

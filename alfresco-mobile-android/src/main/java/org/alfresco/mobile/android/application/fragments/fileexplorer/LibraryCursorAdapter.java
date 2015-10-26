@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.fragments.fileexplorer;
 
 import java.io.File;
@@ -25,38 +25,39 @@ import java.util.List;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.activity.MainActivity;
+import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.managers.ActionUtils;
 import org.alfresco.mobile.android.application.managers.RenditionManagerImpl;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.mimetype.MimeTypeManager;
-import org.alfresco.mobile.android.platform.utils.AndroidVersion;
 import org.alfresco.mobile.android.ui.ListingModeFragment;
 import org.alfresco.mobile.android.ui.fragments.BaseCursorLoader;
-import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
+import org.alfresco.mobile.android.ui.holder.HolderUtils;
+import org.alfresco.mobile.android.ui.holder.TwoLinesViewHolder;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
-import android.app.Fragment;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnDismissListener;
 import android.widget.PopupMenu.OnMenuItemClickListener;
+import android.widget.RelativeLayout;
 
 /**
  * @since 1.3
  * @author Jean Marie Pascal
  */
-public class LibraryCursorAdapter extends BaseCursorLoader<GenericViewHolder> implements OnMenuItemClickListener
+public class LibraryCursorAdapter extends BaseCursorLoader<TwoLinesViewHolder>implements OnMenuItemClickListener
 {
     private List<File> selectedItems;
 
@@ -74,22 +75,24 @@ public class LibraryCursorAdapter extends BaseCursorLoader<GenericViewHolder> im
 
     private RenditionManagerImpl renditionManager;
 
-    public LibraryCursorAdapter(Fragment fr, Cursor c, int layoutId, List<File> selectedItems, int mediaTypeId, int mode)
+    public LibraryCursorAdapter(Fragment fr, Cursor c, int layoutId, List<File> selectedItems, int mediaTypeId,
+            int mode)
     {
         super(fr.getActivity(), c, layoutId);
         this.fragmentRef = new WeakReference<Fragment>(fr);
         this.selectedItems = selectedItems;
         this.sdcardPath = Environment.getExternalStorageDirectory().getPath();
-        File f = AlfrescoStorageManager.getInstance(context).getDownloadFolder(
-                ((BaseActivity) fr.getActivity()).getCurrentAccount());
+        File f = AlfrescoStorageManager.getInstance(context)
+                .getDownloadFolder(((BaseActivity) fr.getActivity()).getCurrentAccount());
         this.downloadPath = (f != null) ? f.getPath() : sdcardPath;
         this.mediaTypeId = mediaTypeId;
         this.mode = mode;
         this.renditionManager = RenditionManagerImpl.getInstance(fr.getActivity());
+        this.vhClassName = TwoLinesViewHolder.class.getCanonicalName();
     }
 
     @Override
-    protected void updateTopText(GenericViewHolder vh, Cursor cursor)
+    protected void updateTopText(TwoLinesViewHolder vh, Cursor cursor)
     {
         String topText = cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.TITLE));
         if (topText != null)
@@ -104,7 +107,7 @@ public class LibraryCursorAdapter extends BaseCursorLoader<GenericViewHolder> im
     }
 
     @Override
-    protected void updateBottomText(GenericViewHolder vh, Cursor cursor)
+    protected void updateBottomText(TwoLinesViewHolder vh, Cursor cursor)
     {
         String data = cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.DATA));
         long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Files.FileColumns._ID));
@@ -131,19 +134,21 @@ public class LibraryCursorAdapter extends BaseCursorLoader<GenericViewHolder> im
             }
         }
 
+        HolderUtils.makeMultiLine(vh.bottomText, 3);
+
         if (selectedItems != null && selectedItems.contains(f))
         {
-            UIUtils.setBackground(((LinearLayout) vh.icon.getParent().getParent()),
+            UIUtils.setBackground(((RelativeLayout) vh.icon.getParent()),
                     context.getResources().getDrawable(R.drawable.list_longpressed_holo));
         }
         else
         {
-            UIUtils.setBackground(((LinearLayout) vh.icon.getParent().getParent()), null);
+            UIUtils.setBackground(((RelativeLayout) vh.icon.getParent()), null);
         }
     }
 
     @Override
-    protected void updateIcon(GenericViewHolder vh, Cursor cursor)
+    protected void updateIcon(TwoLinesViewHolder vh, Cursor cursor)
     {
         String data = cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.DATA));
         File f = new File(data);
@@ -152,8 +157,8 @@ public class LibraryCursorAdapter extends BaseCursorLoader<GenericViewHolder> im
         {
             case MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE:
                 vh.icon.setImageResource(R.drawable.mime_img);
-                renditionManager.getPicasso().load(f).resize(150, 150).centerCrop()
-                        .placeholder(R.drawable.mime_256_img).error(R.drawable.mime_256_img).into(vh.icon);
+                renditionManager.getPicasso().load(f).resize(150, 150).centerCrop().placeholder(R.drawable.mime_256_img)
+                        .error(R.drawable.mime_256_img).into(vh.icon);
                 break;
             case MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO:
                 vh.icon.setImageResource(R.drawable.mime_video);
@@ -169,9 +174,10 @@ public class LibraryCursorAdapter extends BaseCursorLoader<GenericViewHolder> im
 
         if (mode == FileExplorerFragment.MODE_LISTING && fragmentRef.get().getActivity() instanceof MainActivity)
         {
-            UIUtils.setBackground(vh.choose,
-                    context.getResources().getDrawable(R.drawable.quickcontact_badge_overlay_light));
-
+            vh.choose.setImageResource(R.drawable.ic_more_options);
+            vh.choose.setBackgroundResource(R.drawable.alfrescohololight_list_selector_holo_light);
+            int d_16 = DisplayUtils.getPixels(context, R.dimen.d_16);
+            vh.choose.setPadding(d_16, d_16, d_16, d_16);
             vh.choose.setVisibility(View.VISIBLE);
             vh.choose.setTag(R.id.node_action, f);
             vh.choose.setOnClickListener(new OnClickListener()
@@ -185,18 +191,14 @@ public class LibraryCursorAdapter extends BaseCursorLoader<GenericViewHolder> im
                     selectedOptionItems.add(item);
                     PopupMenu popup = new PopupMenu(context, v);
                     getMenu(popup.getMenu(), item);
-
-                    if (AndroidVersion.isICSOrAbove())
+                    popup.setOnDismissListener(new OnDismissListener()
                     {
-                        popup.setOnDismissListener(new OnDismissListener()
+                        @Override
+                        public void onDismiss(PopupMenu menu)
                         {
-                            @Override
-                            public void onDismiss(PopupMenu menu)
-                            {
-                                selectedOptionItems.clear();
-                            }
-                        });
-                    }
+                            selectedOptionItems.clear();
+                        }
+                    });
 
                     popup.setOnMenuItemClickListener(LibraryCursorAdapter.this);
 
@@ -243,11 +245,11 @@ public class LibraryCursorAdapter extends BaseCursorLoader<GenericViewHolder> im
         {
             case R.id.menu_upload:
                 onMenuItemClick = true;
-                ActionUtils.actionSendDocumentToAlfresco((Activity) context, selectedOptionItems.get(0));
+                ActionUtils.actionSendDocumentToAlfresco((FragmentActivity) context, selectedOptionItems.get(0));
                 break;
             case R.id.menu_action_share:
                 onMenuItemClick = true;
-                ActionUtils.actionShareContent((Activity) context, selectedOptionItems.get(0));
+                ActionUtils.actionShareContent((FragmentActivity) context, selectedOptionItems.get(0));
                 break;
             case R.id.menu_action_delete:
                 onMenuItemClick = true;

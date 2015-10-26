@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.configuration;
 
 import java.lang.ref.WeakReference;
@@ -32,7 +32,7 @@ import org.alfresco.mobile.android.application.fragments.builder.FragmentBuilder
 import org.alfresco.mobile.android.ui.template.ViewTemplate;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
-import android.app.Activity;
+import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -52,7 +52,7 @@ public class MainMenuConfigManager extends BaseConfigManager
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS & HELPERS
     // ///////////////////////////////////////////////////////////////////////////
-    public MainMenuConfigManager(Activity activity, ConfigService configService, ViewGroup vRoot)
+    public MainMenuConfigManager(FragmentActivity activity, ConfigService configService, ViewGroup vRoot)
     {
         super(activity, configService);
         if (configService != null)
@@ -76,8 +76,14 @@ public class MainMenuConfigManager extends BaseConfigManager
     // ///////////////////////////////////////////////////////////////////////////
     public void createMenu()
     {
-        if (rootMenuViewConfig == null) { return; }
+        if (rootMenuViewConfig == null)
+        {
+            vRoot.removeAllViews();
+            vRoot.invalidate();
+            return;
+        }
         vRoot.removeAllViews();
+        vRoot.invalidate();
         createMenu(rootMenuViewConfig, vRoot, LayoutInflater.from(getActivity()));
     }
 
@@ -129,7 +135,7 @@ public class MainMenuConfigManager extends BaseConfigManager
             }
             AlfrescoFragmentBuilder fragmentBuilder = FragmentBuilderFactory.createViewConfig(getActivity(),
                     config.getType(), parameters);
-            fragmentBuilder.createMenuItem(buttonView);
+            fragmentBuilder.createMenuItem(config, buttonView);
             if (!TextUtils.isEmpty(label))
             {
                 buttonView.setText(label);

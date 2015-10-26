@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.fragments.workflow.task;
 
 import java.util.Collection;
@@ -25,11 +25,10 @@ import org.alfresco.mobile.android.api.services.WorkflowService;
 import org.alfresco.mobile.android.api.services.impl.publicapi.PublicAPIWorkflowServiceImpl;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.workflow.process.ProcessesFragment;
+import org.alfresco.mobile.android.ui.activity.AlfrescoActivity;
 
-import android.app.ActionBar;
-import android.app.ActionBar.OnNavigationListener;
-import android.app.Activity;
 import android.content.SharedPreferences;
+import android.support.v7.app.ActionBar;
 
 public final class TasksHelper
 {
@@ -44,19 +43,20 @@ public final class TasksHelper
     {
     }
 
-    public static void displayNavigationMode(final Activity activity)
+    public static void displayNavigationMode(final AlfrescoActivity activity)
     {
         SharedPreferences prefs = activity.getSharedPreferences(TASK_FILTER_PREFS, 0);
         int currentSelection = prefs.getInt(TASK_FILTER_DEFAULT, 0);
         displayNavigationMode(activity, true, currentSelection);
     }
 
-    public static void displayNavigationMode(final Activity activity, final boolean backStack, int menuId)
+    public static void displayNavigationMode(final AlfrescoActivity activity, final boolean backStack, int menuId)
     {
-        activity.getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+        ActionBar bar = activity.getAppActionBar();
+        bar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
         TasksShortCutAdapter adapter = new TasksShortCutAdapter(activity);
 
-        OnNavigationListener mOnNavigationListener = new OnNavigationListener()
+        ActionBar.OnNavigationListener mOnNavigationListener = new ActionBar.OnNavigationListener()
         {
             @Override
             public boolean onNavigationItemSelected(int itemPosition, long itemId)
@@ -99,7 +99,7 @@ public final class TasksHelper
 
                 if (!backStack)
                 {
-                    activity.getFragmentManager().popBackStack();
+                    activity.getSupportFragmentManager().popBackStack();
                 }
 
                 if (isProcessFragment)
@@ -121,8 +121,8 @@ public final class TasksHelper
                 return true;
             }
         };
-        activity.getActionBar().setListNavigationCallbacks(adapter, mOnNavigationListener);
-        activity.getActionBar().setSelectedNavigationItem(menuId);
+        bar.setListNavigationCallbacks(adapter, mOnNavigationListener);
+        bar.setSelectedNavigationItem(menuId);
     }
 
     public static ListingFilter createFilter(Collection<Integer> selectedItems)

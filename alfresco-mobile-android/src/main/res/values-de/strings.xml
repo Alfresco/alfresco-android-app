@@ -20,18 +20,40 @@
     <string name="app_name">Alfresco</string>
     <string name="empty_accounts">Kein Alfresco Account verfügbar</string>
 
-    <!-- HOME SCREEN -->
-    <string name="home_login">Anmelden</string>
+    <!-- SIGN IN & CREATE ACCOUNT SCREEN -->
+    <string name="general_login_server_title">Geben Sie den Hostnamen Ihres Alfresco Servers ein.</string>
+    <string name="general_login_server_hostname">Hostname</string>
+    <string name="general_login_server_next">Weiter</string>
+    <string name="general_login_server_done">Fertig</string>
+    <string name="general_login_credentials_title">Geben Sie Ihre Anmeldedaten ein.</string>
+    <string name="general_login_credentials_username">Benutzername</string>
+    <string name="general_login_credentials_password">Passwort</string>
+    <string name="general_login_credentials_show_password">Passwort anzeigen</string>
+    <string name="general_login_credentials_sign_in">activiti.alfresco.com</string>
+    <string name="general_login_credentials_or">oder</string>
+    <string name="general_login_credentials_connect">Activiti vor Ort</string>
+    <string name="general_login_signed_in_title">Erfolgreich angemeldet!</string>
+    <string name="general_login_account_added">Account hinzugefügt!</string>
+    <string name="general_login_account_name">Geben Sie diesem Account einen Namen (optional)</string>
+    <string name="general_login_account_name_title">Eines noch&#8230;</string>
+    <string name="prompt_url">URL</string>
+    <string name="general_login_check_server">Server-Validierung</string>
+
+    <string name="settings_userinfo">Account</string>
+    <string name="settings_userinfo_account">Details</string>
+    <string name="settings_userinfo_account_summary">Benutzer- und Serverangaben bearbeiten</string>
+    <string name="settings_userinfo_account_name">Name</string>
+    <string name="settings_userinfo_account_name_summary">Account-Namen bearbeiten</string>
+    <string name="settings_account">Account-Einstellungen</string>
+
+    <string name="home_signin">Anmelden</string>
     <string name="home_account">Ich habe bereits einen Account.</string>
     <string name="home_helper">Wenn Sie mehr über Alfresco Mobile erfahren möchten, dann sehen Sie sich <a href="alfresco://view_help_guide/">unseren Leitfaden</a> im Hilfebereich an.</string>
 
-    <!-- AlfrescoAccount WIZARD SCRE STEP 1 -->
-    <string name="account_wizard_alfresco_server">Alfresco Server</string>
-    <string name="account_wizard_alfresco_server_description">Verbindung zu einem Alfresco Server herstellen</string>
+    <string name="account_wizard_alfresco_server">Alfresco One</string>
+    <string name="account_wizard_or">oder</string>
     <string name="account_wizard_alfresco_cloud">Alfresco Cloud</string>
-    <string name="account_wizard_alfresco_cloud_description">Auf Ihren Alfresco Cloud-Account zugreifen</string>
 
-    <!-- AlfrescoAccount WIZARD SCREEN STEP 2 -->
     <string name="account">Account</string>
     <string name="action_add_account">Account hinzufügen</string>
     <string name="account_username">Benutzername</string>
@@ -39,8 +61,8 @@
     <string name="account_password">Passwort</string>
     <string name="account_password_required_hint">Passwort (erforderlich)</string>
     <string name="account_hostname">Hostname</string>
-    <string name="account_hostname_required_hint">Hostname wie www.example.com (erforderlich)</string>
-    <string name="account_hostname_hint">www.example.com (erforderlich)</string>
+    <string name="account_hostname_required_hint">Hostname wie www.beispiel.com (erforderlich)</string>
+    <string name="account_hostname_hint">www.beispiel.com (erforderlich)</string>
     <string name="account_description">Beschreibung</string>
     <string name="account_description_optional_hint">Beschreibung (optional). Standardmäßig ist dies Alfresco Server.</string>
     <string name="account_description_hint">Alfresco Server (optional)</string>
@@ -49,78 +71,15 @@
     <string name="account_https">HTTPS</string>
     <string name="account_https_on_hint">HTTPS ein</string>
     <string name="account_https_off_hint">HTTPS aus</string>
-    <string name="account_port">Port</string>
-    <string name="account_port_hint">Port (optional)</string>
-    <string name="account_servicedocument">Dienst-URL</string>
-    <string name="account_servicedocument_hint">Dienst-URL (optional). </string>
-    <string name="account_wizard_step2_title">Informationen zur Account-Authentifizierung</string>
-    <string name="account_verify">Alfresco Account-Informationen werden verifiziert...</string>
-    <string name="account_validate">Speichern</string>
-    <string name="account_validate_hint">Alfresco Account-Informationen speichern</string>
-    <string name="account_validate_disable_hint">Füllen Sie die Felder "Benutzername", "Passwort" und "Hostname" aus.</string>
-    <string name="account_validate_disable_url_hint">Der von Ihnen angegebene Wert für den Hostname und die Dienst-URL ist anscheinend falsch. Überprüfen Sie die Alfresco Account-Einstellungen.</string>
-
-
-    <!-- AlfrescoAccount WIZARD SCREEN STEP 3 -->
-    <string name="account_wizard_alldone_description">Sie können Ihren Alfresco Account jetzt verwenden.</string>
-
-    <!-- AlfrescoAccount WIZARD SCREEN STEP -->
-    <string name="account_wizard_step1">Schritt 1 von 2</string>
-    <string name="account_wizard_step1_description">Account auswählen</string>
-    <string name="account_wizard_step2">Schritt 2 von 2</string>
-    <string name="account_wizard_step2_description">Account-Informationen</string>
+    <string name="account_verify">Alfresco Account-Informationen werden verifiziert&#8230;</string>
 
     <!-- ACCOUNTS -->
-    <string name="account_not_activated">Ihr Alfresco Account ist nicht aktiviert. Überprüfen Sie den Bildschirm für das Account-Management.</string>
     <string name="account_default_cloud">Alfresco Cloud</string>
     <string name="account_default_onpremise">Alfresco Server</string>
-    <string name="account_edit_hint">Informationen für Alfresco Account "%s" bearbeiten</string>
-    <string name="account_delete_hint">Account "%s" löschen</string>
-
 
     <!-- WAITING SESSION -->
     <string name="wait_title">Bitte warten</string>
-    <string name="wait_message">Verbindung mit dem Server wird hergestellt...</string>
-
-    <!-- SESSION ERROR -->
-    <string name="retry_account_loading">Wiederholen</string>
-    <string name="error_session_creation_title">Account speichern</string>
-    <string name="error_session_creation_message">Verbindungsfehler</string>
-    <string name="error_session_creation">Fehler bei der Authentifizierung. Überprüfen Sie die Alfresco Account-Einstellungen.</string>
-    <string name="error_session_hostname"><![CDATA[Der Wert Ihres <b>Hostnamens</b> ist anscheinend falsch<br/> oder Sie müssen <b>Ihr VPN aktivieren</b>.<br/> Überprüfen Sie die Alfresco Account-Einstellungen.]]></string>
-    <string name="error_session_nodata"><![CDATA[<p><b>Ihr Gerät hat keine Datenverbindung.</b><br/></p> Überprüfen Sie Ihre Geräteeinstellungen und stellen Sie eine Datenverbindung her.]]></string>
-    <string name="error_session_unauthorized"><![CDATA[Sie dürfen nicht auf diesen Server zugreifen.<br/> Überprüfen Sie Ihre Alfresco Account-Einstellungen <b>(Benutzername/Passwort)</b>.]]></string>
-    <string name="error_session_service_url"><![CDATA[Der Wert Ihrer <b>Dienst-URL</b> ist falsch.<br/> Überprüfen Sie Ihre Alfresco Account-Einstellungen.]]></string>
-    <string name="error_session_service_unavailable"><![CDATA[Der Server kann Ihrer Anfrage aufgrund eines wartungsbedingten Ausfalls oder aufgrund von Kapazitätsproblemen derzeit nicht nachkommen.<br/> Bitte versuchen Sie es später erneut.]]></string>
-    <string name="error_session_notfound"><![CDATA[Ihr Server konnte nicht erreicht werden.<br/> Überprüfen Sie Ihre Alfresco Account-Einstellungen.]]></string>
-    <string name="error_session_port"><![CDATA[Der Wert Ihres <b>Ports</b> ist falsch.<br/> Überprüfen Sie Ihre Alfresco Account-Einstellungen.]]></string>
-    <string name="error_session_certificate">
-<![CDATA[<p><b>Das Sicherheitszertifikat des Servers ist nicht vertrauenswürdig!</b><br/></p>
-		Der Drittanbieter, der das Server-Zielzertifikat ausgestellt hat, wird von Ihrem Gerät nicht erkannt.<br/>
-		Damit Alfresco Mobile verifizieren kann, dass Sie eine Verbindung zum entsprechenden Server herstellen, muss sein Zertifikat von einem vertrauenswürdigen Unternehmen stammen.<br/>
-		Falls Ihr Server ein selbstsigniertes Zertifikat besitzt, fügen Sie dieses Ihrem Gerät hinzu, um eine Verbindung herstellen zu können.<br/> ]]>
-    </string>
-    <string name="error_session_certificate_expired">
-<![CDATA[<p><b>Das Sicherheitszertifikat des Servers ist abgelaufen oder noch nicht gültig!</b><br/></p>
-		Überprüfen Sie das Datum und die Uhrzeit, die für Ihr Gerät eingestellt sind.<br/> Kontaktieren Sie Ihren Administrator, falls das Problem weiterhin besteht. ]]>
-    </string>
-    <string name="error_session_ssl">
-<![CDATA[<p><b>Beim SSL-Protokoll ist ein Fehler aufgetreten.</b><br/></p>
-        Überprüfen Sie Ihre Alfresco Account-Einstellungen und versuchen Sie es erneut.<br/> Kontaktieren Sie Ihren Administrator, falls das Problem weiterhin besteht.]]>
-    </string>
-    <string name="error_session_cloud_unavailable">
-<![CDATA[<p><b>Alfresco in der Cloud ist derzeit überlastet!</b><br/></p>
-        Bitte versuchen Sie es in einigen Minuten erneut.<br/>]]>
-    </string>
-    <string name="error_session_expired">Ihre Sitzung ist abgelaufen. Melden Sie sich erneut an.</string>
-    <string name="error_session_refresh">Sitzung wird aktualisiert.</string>
-    <string name="error_chunk_transfert"><![CDATA[Der Server unterstützt keine Blockübertragungen.<br/> Laden Sie Ihren Account erneut</b>.]]></string>
-
-    <!-- MESSAGE ERROR -->
-    <string name="error_general_title">Es ist ein Fehler aufgetreten.</string>
-    <string name="error_general">Es ist ein Fehler aufgetreten. Versuchen Sie es erneut.</string>
-    <string name="error_account_url">Die URL ist nicht korrekt. Überprüfen Sie die Alfresco Account-Einstellungen.</string>
-    <string name="error_unknown_filepath">Die Ressource wurde nicht gefunden.</string>
+    <string name="wait_message">Verbindung mit dem Server wird hergestellt&#8230;</string>
 
     <!-- DETAILS -->
     <string name="geolocation">Ortungsdienste</string>
@@ -147,6 +106,7 @@
     <string name="menu_browse_sites">Sites</string>
     <string name="menu_browse_userhome">Meine Dateien</string>
     <string name="menu_browse_shared">Freigegebene Dateien</string>
+    <string name="menu_browse_site_finder">Site-Suche</string>
     <string name="menu_browse_all_sites">Alle Sites</string>
     <string name="menu_browse_my_sites">Meine Sites</string>
     <string name="menu_browse_favorite_sites">Favoriten-Sites</string>
@@ -178,8 +138,8 @@
 
     <!-- NETWORKS -->
     <string name="cloud_networks_empty">Keine Netzwerke verfügbar</string>
-    <string name="manage_accounts">Accounts verwalten...</string>
-    <string name="cloud_networks_switch">Netzwerke wechseln...</string>
+    <string name="manage_accounts">Accounts verwalten&#8230;</string>
+    <string name="cloud_networks_switch">Netzwerke wechseln&#8230;</string>
 
 
     <!-- AUTHENTICATION -->
@@ -190,9 +150,9 @@
     <!-- NOTIFICATION -->
     <string name="upload">Hochladen </string>
     <string name="upload_complete">Upload abgeschlossen.</string>
-    <string name="upload_in_progress">Upload wird durchgeführt...</string>
+    <string name="upload_in_progress">Upload wird durchgeführt&#8230;</string>
     <string name="update_complete">Update abgeschlossen.</string>
-    <string name="update_in_progress">Update wird durchgeführt...</string>
+    <string name="update_in_progress">Update wird durchgeführt&#8230;</string>
     <string name="error_unable_open_file_title">Die Datei konnte nicht geöffnet werden.</string>
     <string name="error_unable_open_file">Dieses Dateiformat wird nicht unterstützt. Sie müssen eine App installieren, die dieses Format lesen kann.</string>
 
@@ -208,11 +168,12 @@
     <string name="docs_prefix" />
 
     <!-- About Message -->
+    <string name="version_number">Version</string>
     <string name="buildnumber_version">Version: </string>
     <string name="sdknumber_version">SDK: </string>
     <string name="about_description">
 <![CDATA[
-<p>Alfresco Mobile stellt eine Verbindung zu Alfresco in der Cloud und zu Alfresco auf den Servern vor Ort (3.4 und höher) her, um unterwegs einen sicheren Zugriff auf Unternehmensinhalte zu ermöglichen.</p> 
+<p>Alfresco Mobile stellt eine Verbindung zu Alfresco in der Cloud und zu den lokalen Alfresco Servern (3.4 und höher) her, um unterwegs einen sicheren Zugriff auf Unternehmensinhalte zu ermöglichen.</p> 
 
 <p>Alfresco Mobile stellt mithilfe Ihrer Alfresco Anmeldeinformationen eine Verbindung zu Ihrem Alfresco Repository (über HTTP oder HTTPS) her und verwaltet den Benutzerzugriff basierend auf deren Berechtigungen.</p>
 ]]>
@@ -232,7 +193,7 @@
     </plurals>
 
     <string name="delete_description_data_protection">Datenschutzmodus ist aktiv.\n\nWenn Sie diesen Account löschen, werden Ihre Inhalte in ihren ungeschützten Zustand zurückversetzt.\n\nMöchten Sie \"%s\" wirklich löschen?</string>
-    <string name="delete_in_progress">Löschvorgang wird durchgeführt...</string>
+    <string name="delete_in_progress">Löschvorgang wird durchgeführt&#8230;</string>
     <string name="delete_complete">Löschvorgang abgeschlossen</string>
     <string name="delete_sucess">\"%s\" wurde erfolgreich gelöscht.</string>
 
@@ -258,7 +219,7 @@
     <string name="loginfirst">Melden Sie sich zunächst bei einem Alfresco Account an.</string>
 
     <!-- Comment -->
-    <string name="comment_add_hint">Kommentar hier eingeben...</string>
+    <string name="comment_add_hint">Kommentar hier eingeben&#8230;</string>
 
     <!-- DATA PROTECTION -->
     <string name="data_protection">Datenschutzmodus</string>
@@ -266,19 +227,20 @@
     <string name="decryption_failed">Entschlüsselung fehlgeschlagen</string>
     <string name="protect_question"><![CDATA[<p><b>Möchten Sie alle heruntergeladenen Alfresco Inhalte jetzt schützen?</b><p> Dieser Schutz wird auf alle Inhalte angewandt, die Sie von all Ihren Alfresco Accounts heruntergeladen haben. Das bedeutet, dass diese Inhalte nicht von anderen Apps, sondern nur von der Alfresco App gelesen werden können.]]></string>
     <string name="unprotect_question"><![CDATA[<p><b>Möchten Sie den Schutz für alle heruntergeladenen Alfresco Inhalte jetzt aufheben?</b><p> Dieser Vorgang wird auf alle Inhalte angewandt, die Sie aus all Ihren Alfresco Accounts heruntergeladen haben.]]></string>
-    <string name="decryption_title">Datenschutzmodus wird deaktiviert...</string>
+    <string name="decryption_title">Datenschutzmodus wird deaktiviert&#8230;</string>
     <string name="encryption_title">Datenschutzmodus wird aktiviert&#8230;</string>
     <string name="encrypt_action">Verschlüsseln</string>
     <string name="decrypt_action">Entschlüsseln</string>
 
     <!-- OPEN AS.. -->
-    <string name="open_as_title">Öffnen als...</string>
+    <string name="open_as_title">Öffnen als&#8230;</string>
     <string name="open_as_image">Bild</string>
     <string name="open_as_audio">Audio</string>
     <string name="open_as_video">Video</string>
     <string name="open_as_txt">Textdokument</string>
 
     <!-- SITES ACTION -->
+    <string name="sites_empty_title">Keine Sites gefunden</string>
     <string name="action_join_site">Beitreten</string>
     <string name="action_join_request_site">Beitritt beantragen</string>
     <string name="action_leave_site">Abmelden</string>
@@ -365,11 +327,13 @@
     <string name="settings_links_website_url">http://www.alfresco.com/products/mobile</string>
     <string name="settings_rating">Bewertung verfassen</string>
     <string name="settings_rating_summary">Alfresco Mobile auf Google Play bewerten</string>
+    <string name="settings_rating_packagename">org.alfresco.mobile.android.application</string>
     <string name="settings_rating_url">market://details?id=org.alfresco.mobile.android.application</string>
     <string name="settings_links_facebook">"Gefällt mir" für Alfresco auf Facebook</string>
     <string name="settings_links_facebook_summary">"Gefällt mir" auf Facebook</string>
     <string name="settings_links_facebook_url">http://www.facebook.com/alfrescosoftware</string>
     <string name="settings_favorite">Favoriten</string>
+    <string name="settings_synced_content">Synchronisierter Inhalt</string>
     <string name="settings_favorite_sync">Synchronisierung aktivieren</string>
     <string name="settings_favorite_sync_summary">Synchronisierung für \"%s\" aktivieren</string>
     <string name="settings_favorite_sync_data">Datennutzung</string>
@@ -400,7 +364,8 @@
     <!-- Favorites -->
     <string name="menu_favorites_folder">Favoritenordner</string>
     <string name="menu_favorites">Favoriten</string>
-    <string name="synced_documents">Synchronisierter Inhalt</string>
+    <string name="sync_mark">Als synchronisiert markieren</string>
+    <string name="synced_content">Synchronisierter Inhalt</string>
     <string name="empty_favorites">Keine Favoriten</string>
     <string name="favorites_document">Favorit</string>
     <string name="error_retrieve_favorite">Favoriten-Info für diesen Inhalt konnte nicht geladen werden.</string>
@@ -409,7 +374,7 @@
     <string name="favorites_deactivate">Synchronisierung deaktivieren</string>
     <string name="favorites_deactivate_description"><![CDATA[<p>Möchten Sie die Synchronisierung deaktivieren?</p> Alle synchronisierten Inhalte werden von Ihrem Gerät gelöscht.]]></string>
     <string name="sync_error_title">Synchronisierungsfehler</string>
-    <string name="sync_error_node_unfavorited"><![CDATA[<p>Sie haben die Auswahl von <b>%s</b> als Favorit aufgehoben, da Sie begonnen haben, dieses Element zu bearbeiten. <br/> <b>Synchronisieren</b> Sie Ihre bearbeitete Version auf dem Server oder <b>speichern</b> Sie diese im Ordner \"Downloads\". </p>]]></string>
+    <string name="sync_error_node_unfavorited"><![CDATA[<p>Sie haben die Synchronisierung von <b>%s</b> aufgehoben, da Sie begonnen haben, dieses Element zu bearbeiten. <br/> <b>Synchronisieren</b> Sie Ihre bearbeitete Version auf dem Server oder <b>speichern</b> Sie diese im Ordner \"Downloads\". </p>]]></string>
     <string name="sync_error_node_deleted"><![CDATA[<p> <b>%s</b> wurde auf dem Server gelöscht, jedoch wurde eine Kopie im Ordner \"Downloads\" gespeichert.</p>]]></string>
     <string name="sync_error_no_permission"><![CDATA[<p> Sie besitzen nicht die erforderliche Berechtigung, um Ihre bearbeitete Version von <b>%s</b> hochzuladen. Sie können diese in Ihrem Ordner \"Downloads\" <b>speichern</b> oder mit der Serverversion <b>überschreiben</b>. Dadurch werden Ihre Bearbeitungen verworfen.]]></string>
     <string name="sync_error_node_local_modification">Synchronisierungsfehler</string>
@@ -418,10 +383,31 @@
     <string name="sync_save_action">Speichern</string>
     <string name="sync_resolve_conflict">Konflikt lösen</string>
     <string name="sync_complete">Synchronisierung abgeschlossen</string>
-    <string name="sync_in_progress">Synchronisierung wird durchgeführt...</string>
-    <string name="upload_await">Auf Upload wird gewartet...</string>
-    <string name="download_await">Auf Download wird gewartet...</string>
+    <string name="sync_in_progress">Synchronisierung wird durchgeführt&#8230;</string>
+    <string name="upload_await">Auf Upload wird gewartet&#8230;</string>
+    <string name="download_await">Auf Download wird gewartet&#8230;</string>
+
+    <!-- Sync -->
+    <string name="sync_title">Synchronisierter Inhalt</string>
+    <string name="sync">Synchronisieren</string>
+    <string name="unsync">Synchronisierung aufheben</string>
     <string name="sync_favorites">Favoriten</string>
+    <string name="sync_empty_title">Dateien synchroniseren</string>
+    <string name="sync_empty_description">Ihre synchronisierten Dateien können Sie auch offline anzeigen und bearbeiten.</string>
+
+    <string name="sync_info_one_title">Die Synchronisierung wurde geändert.</string>
+    <string name="sync_info_one_first_text">Sie können jetzt verschiedene Dateien auf verschiedenen Geräten synchronisieren. Suchen Sie einfach eine Datei und synchronisieren Sie sie.</string>
+    <string name="sync_info_one_second_text">Ihre synchronisierten Dateien können Sie auch offline anzeigen und bearbeiten. Wenn Sie wieder online sind, werden sie automatisch mit Alfresco synchronisiert.</string>
+    <string name="sync_info_two_title">Was ist mit den Dateien, die ich zu meinen Favoriten hinzugefügt habe?</string>
+    <string name="sync_info_two_first_text">Kein Problem. Die bleiben alle synchronisiert.</string>
+    <string name="sync_info_two_second_text">Wenn Sie künftig Dateien zu Ihren Favoriten hinzufügen, werden sie auf der Registerkarte \'Favoriten\' gespeichert. Sie müssen sie aber synchronisieren, wenn Sie offline darauf zugreifen möchten.</string>
+    <string name="sync_info_third_title">Wo finde ich synchronisierte Dateien?</string>
+    <string name="sync_info_third_first_text">Sie finden alle Ihre synchronisierten Dateien in der neuen Ansicht \'Synchronisierter Inhalt\'.</string>
+    <string name="sync_info_third_second_text">Synchronisierter Inhalt</string>
+    <string name="sync_info_validation">Alles klar.</string>
+    <string name="sync_info_more_information">Mehr dazu</string>
+    <string name="sync_info_skip">Überspringen</string>
+    <string name="sync_info_next">Weiter</string>
 
 
     <plurals name="sync_complete_description">
@@ -602,7 +588,7 @@
     <string name="tasks_due">Fällig</string>
     <string name="tasks_due_today">Heute</string>
     <string name="tasks_due_tomorrow">Morgen</string>
-    <string name="tasks_due_week">In den nächsten 7 Tagen</string>
+    <string name="tasks_due_week">In den nächsten 7 Tagen</string>
     <string name="tasks_due_over">Überfällig</string>
     <string name="tasks_due_no_date">Kein Datum</string>
     <string name="tasks_priority">Priorität</string>
@@ -665,10 +651,10 @@
     <string name="task_review_documents">Bitte diesen Inhalt überprüfen</string>
     <string name="task_assignees_plurals">{0,choice,0#Keine zugewiesenen Personen|1#1 zugewiesene Person|1&lt;{0} zugewiesene Personen}</string>
     <string name="task_assignees">Zugewiesene Personen</string>
-    <string name="task_assignees_selection">Zugewiesene Personen auswählen...</string>
+    <string name="task_assignees_selection">Zugewiesene Personen auswählen&#8230;</string>
     <string name="process_approvers_plurals">{0,choice,0#Keine genehmigende Personen|1#1 von 1 genehmigende Person|1&lt;%s von {0} genehmigenden Personen}</string>
     <string name="task_attachments_plurals">{0,choice,0#Keine Anhänge|1#1 Anhang|1&lt;{0} Anhänge}</string>
-    <string name="task_attachments_selection">Anhänge auswählen...</string>
+    <string name="task_attachments_selection">Anhänge auswählen&#8230;</string>
     <string name="task_attachments">Anhänge</string>
     <string name="process_no_description">(Keine Nachricht)</string>
 
@@ -684,7 +670,7 @@
     <string name="task_todo_description">Einer Person eine Aufgabe zuweisen</string>
     <string name="task_review_approve">Überprüfen und genehmigen</string>
     <string name="task_review_approve_description">Weisen Sie einer oder mehreren Personen eine Aufgabe zu, um Inhalt zu überprüfen und zu genehmigen.</string>
-    <string name="task_delegate_in_progress">Erneute Zuweisung wird durchgeführt...</string>
+    <string name="task_delegate_in_progress">Erneute Zuweisung wird durchgeführt&#8230;</string>
     <string name="task_delegate_complete">Erneute Zuweisung abgeschlossen</string>
     <string name="picker_assignees">Zugewiesene Personen auswählen</string>
     <string name="picker_due_date">Fälligkeitsdatum auswählen</string>
@@ -704,6 +690,7 @@
     <string name="search_person">Personen</string>
     <string name="search_documents">Dateien</string>
     <string name="search_folders">Ordner</string>
+    <string name="search_site">Site</string>
     <string name="search_advanced">Erweiterte Suche</string>
 
     <!-- DOCUMENT PICKER -->
@@ -743,7 +730,8 @@
 
 
     <!-- Storage Access Framework -->
-    <string name="menu_browse_favorites_folder">Favoriten-Ordner</string>
+    <string name="menu_browse_sync_content_folder">Synchronisierter Inhalt</string>
+    <string name="menu_browse_favorites_folder">Ordner "Favoriten"</string>
     <string name="account_alfresco">Alfresco</string>
     <string name="account_alfresco_cloud">Alfresco Cloud</string>
     <string name="account_alfresco_onpremise">Alfresco vor Ort</string>
@@ -796,5 +784,124 @@
     <string name="shortcut_alfresco">Alfresco</string>
     <string name="error_offline"><![CDATA[<p><b>Sie können nicht auf die Alfresco Mobile-Hilfe zugreifen, da Sie offline sind.</b><br/></p> Versuchen Sie es erneut, wenn Sie wieder online sind.]]></string>
     <string name="feature_disable">Diese Funktion wird nicht unterstützt oder wurde auf Ihrem Gerät deaktiviert.</string>
+
+    <!-- ANDROID FOR WORK -->
+    <!-- AlfrescoUserName restriction -->
+    <string name="title_alfresco_username">Benutzername</string>
+    <string name="description_alfresco_username">Ihr Benutzername für die Verbindung zum Alfresco Server</string>
+    <!-- AlfrescoRepositoryURL restriction -->
+    <string name="title_alfresco_repository_url">URL zum Alfresco Repository</string>
+    <string name="description_alfresco_repository_url">Alfresco Server für Verbindung</string>
+    <!-- AlfrescoShareURL restriction -->
+    <string name="title_alfresco_share_url">URL zu Alfresco Share</string>
+    <string name="description_alfresco_share_url">Alfresco Share Server für Verbindung</string>
+    <!-- AlfrescoDisplayName restriction -->
+    <string name="title_alfresco_display_name">Anzeigename des Accounts</string>
+    <string name="description_alfresco_display_name">Name des mit dem Server verbundenen Repositorys.</string>
+    <string name="default_alfresco_display_name" translatable="false">Alfresco Server</string>
+
+
+    <!-- Empty -->
+    <string name="nodebrowser_empty_ro_title">Dieser Ordner ist leer</string>
+    <string name="nodebrowser_empty_rw_title">@string/nodebrowser_empty_ro_title</string>
+    <string name="nodebrowser_empty_rw_description">Klicken Sie auf das Plussymbol (+), um Dateien zu diesem Ordner hinzuzufügen.</string>
+    <string name="favorites_empty_title">Keine Favoriten gefunden</string>
+    <string name="favorites_empty_description">Sie können Dateien und Ordner zu Ihren Favoriten hinzufügen, um schneller darauf zugreifen zu können.</string>
+    <string name="sites_my_empty_title">Sie haben noch keine Sites hinzugefügt</string>
+    <string name="sites_my_empty_description">Über die Site-Suche können Sie nach Sites suchen und sie hinzufügen.</string>
+    <string name="sites_favorites_empty_title">Keine Favoriten gefunden</string>
+    <string name="sites_favorites_empty_description">Sie können Sites zu Ihren Favoriten hinzufügen, um schneller darauf zugreifen zu können.</string>
+    <string name="sites_search_empty_title">Keine Sites gefunden</string>
+    <string name="sites_search_empty_description">Versuchen Sie es mit einem anderen Suchbegriff.</string>
+    <string name="tasks_list_empty_title">Sie haben im Moment keine Aufgaben</string>
+    <string name="tasks_list_empty_description">Erstellen Sie eine Aufgabe für sich selbst oder um sie jemand anders zuzuweisen.</string>
+    <string name="activities_list_empty_title">Es gibt keine Aktivitäten zum Anzeigen</string>
+    <string name="activities_list_empty_description">Treten Sie Alfresco Sites bei, um die Aktivitäten Ihrer Kollegen zu sehen.</string>
+    <string name="node_search_empty_title">Keine Ergebnisse gefunden</string>
+    <string name="node_search_empty_description">Versuchen Sie es mit einem anderen Suchbegriff.</string>
+    <string name="people_search_empty_title">Keine Benutzer gefunden</string>
+    <string name="people_search_empty_description">Versuchen Sie es mit einem anderen Suchbegriff.</string>
+
+
+    <string name="empty_site">Keine Sites verfügbar</string>
+    <string name="empty_version">Keine Versionshistorie verfügbar</string>
+    <string name="empty_session">Keine Sitzung verfügbar</string>
+    <string name="empty_actvity">Keine Aktivitäten gefunden</string>
+    <string name="empty_tag">Kein Tag gefunden</string>
+    <string name="empty_comment">Keine Kommentare gefunden</string>
+    <string name="empty_search">Keine Dateien gefunden</string>
+    <string name="action_sign_in_short">Anmelden</string>
+
+
+    <!-- DATA PROTECTION -->
+    <string name="general_login_data_protection_title">Datenschutzmodus verfügbar</string>
+    <string name="general_login_data_protection_description">Hierdurch wird der gesamte heruntergeladene Alfresco Inhalt für jeden Account verschlüsselt. Das bedeutet, dass dieser Inhalt nicht von anderen Apps, sondern nur von der Alfresco App gelesen werden kann.</string>
+
+    <!-- ERRORS -->
+    <string name="error_invalid_email">Diese E-Mail-Adresse ist ungültig</string>
+    <string name="error_invalid_password">Dieses Passwort ist zu kurz</string>
+    <string name="error_incorrect_password">Dieses Passwort ist falsch</string>
+    <string name="error_field_required">Dieses Feld ist erforderlich</string>
+    <string name="error_invalid_url">Dieser Hostname ist ungültig</string>
+
+
+    <!-- CONFIG VALUES -->
+    <string name="config_view_config_editor">Displays Menu Configuration Editor.</string>
+    <string name="config_view_activities">Displays user\'s activities.</string>
+    <string name="config_view_people">Displays a list of users.</string>
+    <string name="config_view_person_profile">Displays person profile details.</string>
+    <string name="config_view_local">Displays a list of most important local folder available inside the device.</string>
+    <string name="config_view_local_files">Displays files local to the client.</string>
+    <string name="config_view_search">Displays a search view.</string>
+    <string name="config_view_search_advanced">Displays an advanced search view.</string>
+    <string name="config_view_site_browser">Displays a sites view.</string>
+    <string name="config_view_sites">Displays a list of sites.</string>
+    <string name="config_view_document_details">Displays the details of a repository document.</string>
+    <string name="config_view_folder_details">Displays the details of a repository folder or document.</string>
+    <string name="config_view_repository">Displays a folder from the repository.</string>
+    <string name="config_view_repository_search">Displays a list of nodes based on a query.</string>
+    <string name="config_view_tasks">Displays a list of tasks.</string>
+    <string name="config_view_favorites">Displays list of favorite files and folders.</string>
+    <string name="config_view_sync">Displays list of synced content.</string>
+
+    <string name="config_view_activities_username">Displays activities stream for a specific user.</string>
+    <string name="config_view_activities_siteshortname">Displays activities stream for a specific site.</string>
+    <string name="config_view_people_keywords">Displays a search view for users with the matching keywords.</string>
+    <string name="config_view_people_siteshortname">Displays list of members for a specific site.</string>
+    <string name="config_view_people_path">Absolute path to the specified folder.</string>
+    <string name="config_view_people_shortcut">Display Up path selector.</string>
+    <string name="config_view_person_profile_username">Displays the profile for the specified username.</string>
+    <string name="config_view_advanced_search_type">Values: person|document|folder.</string>
+    <string name="config_view_sites_show">Values: favorites|my|all|finder.</string>
+    <string name="config_view_sites_keywords">keywords to search</string>
+    <string name="config_view_doc_details_path">Absolute path to the specified document</string>
+    <string name="config_view_doc_details_noderef">NodeRef associated to a document</string>
+    <string name="config_view_folder_details_path">Absolute path to the specified folder</string>
+    <string name="config_view_folder_details_noderef">NodeRef associated to a folder</string>
+    <string name="config_view_repository_path">Displays a folder defined by its absolute path</string>
+    <string name="config_view_repository_noderef">Displays a folder retrieved by its nodeRef</string>
+    <string name="config_view_repository_siteShortName">Displays the document library folder associated to the specified site</string>
+    <string name="config_view_repository_folderTypeId">Displays the system folder shared|userhome</string>
+    <string name="config_view_repository_search_keywords">keywords to search</string>
+    <string name="config_view_repository_search_isExact">Requires : keywords</string>
+    <string name="config_view_repository_search_fullText">Requires : keywords</string>
+    <string name="config_view_repository_search_searchFolderOnly">Requires : keywords</string>
+    <string name="config_view_repository_search_statement">CMIS query</string>
+
+    <!-- FORM -->
+    <!-- ################################################################################## -->
+    <string name="form_message_title">Formular</string>
+    <string name="form_default_outcome_complete">Abgeschlossen</string>
+    <string name="form_default_outcome_start_process">Prozess starten</string>
+    <string name="form_message_empty">(leer)</string>
+    <string name="form_error_message_required">%s ist erforderlich</string>
+    <string name="form_message_validation">Einige Felder sind erforderlich.</string>
+    <string name="form_message_unsupported_field_summary">Wiedergabe nicht unterstützt</string>
+    <string name="form_message_unsupported_field">Diese Art Eingabefeld wird auf Mobilgeräten nicht unterstützt</string>
+    <string name="form_message_unsupported_title">Nicht unterstütztes Formular</string>
+    <string name="form_message_unsupported_description"><![CDATA[<p>Dieses Formular enthält mindestens ein erforderliches Feld, das auf Mobilgeräten derzeit nicht unterstützt wird.</p> Bitte nutzen Sie die Web-App, um diesen Schritt abzuschließen.]]></string>
+    <string name="form_message_link_error_title">Link nicht unterstützt</string>
+    <string name="form_message_link_error"><![CDATA[<p>Dieser Inhalt stammt nicht aus einer unterstützten Quelle.</p> Bitte wählen Sie etwas anderes.]]></string>
+
 
 </resources>

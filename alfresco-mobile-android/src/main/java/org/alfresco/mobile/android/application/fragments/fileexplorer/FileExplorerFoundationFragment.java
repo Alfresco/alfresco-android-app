@@ -34,11 +34,9 @@ import android.widget.ArrayAdapter;
 
 import com.squareup.otto.Subscribe;
 
-public abstract class FileExplorerFoundationFragment extends BaseGridFragment
+public abstract class FileExplorerFoundationFragment extends BaseGridFragment implements FileExplorerFragmentTemplate
 {
     public static final String TAG = FileExplorerFoundationFragment.class.getName();
-
-    protected static final String ARGUMENT_FILE = "file";
 
     protected List<File> selectedItems = new ArrayList<File>(1);
 
@@ -53,7 +51,6 @@ public abstract class FileExplorerFoundationFragment extends BaseGridFragment
     {
         emptyListMessageId = R.string.empty_child;
         requiredSession = false;
-        enableTitle = true;
     }
 
     // //////////////////////////////////////////////////////////////////////
@@ -64,7 +61,7 @@ public abstract class FileExplorerFoundationFragment extends BaseGridFragment
         path = bundle.getString(FileExplorerFragmentTemplate.ARGUMENT_PATH);
         File tmpParent = (File) bundle.getSerializable(ARGUMENT_FILE);
 
-        //By default if nothing provided we open the app download folder.
+        // By default if nothing provided we open the app download folder.
         if (path == null && tmpParent == null)
         {
             parent = AlfrescoStorageManager.getInstance(getActivity()).getDownloadFolder(getAccount());
@@ -79,21 +76,39 @@ public abstract class FileExplorerFoundationFragment extends BaseGridFragment
         {
             parent = tmpParent;
         }
+    }
+
+    @Override
+    public String onPrepareTitle()
+    {
+        switch (getMode())
+        {
+            case MODE_LISTING:
+                title = getString(R.string.menu_local_files);
+                break;
+            case MODE_PICK:
+                title = getString(R.string.upload_pick_document);
+                break;
+            default:
+                break;
+        }
 
         if (path != null)
         {
-            mTitle = path.substring(path.lastIndexOf("/") + 1, path.length());
+            title = path.substring(path.lastIndexOf("/") + 1, path.length());
         }
         else if (parent != null)
         {
-            mTitle = parent.getName();
+            title = parent.getName();
         }
+        return title;
     }
 
     @Override
     protected ArrayAdapter<?> onAdapterCreation()
     {
-        return new FileExplorerAdapter(this, R.layout.sdk_grid_row, getMode(), new ArrayList<File>(0), selectedItems);
+        return new FileExplorerAdapter(this, R.layout.row_two_lines_progress, getMode(), new ArrayList<File>(0),
+                selectedItems);
     }
 
     @Override
@@ -111,20 +126,6 @@ public abstract class FileExplorerFoundationFragment extends BaseGridFragment
     // //////////////////////////////////////////////////////////////////////
     // INTERNALS
     // //////////////////////////////////////////////////////////////////////
-    private void retrieveTitle()
-    {
-        switch (getMode())
-        {
-            case MODE_LISTING:
-                titleId = R.string.menu_local_files;
-                break;
-            case MODE_PICK:
-                titleId = R.string.upload_pick_document;
-                break;
-            default:
-                break;
-        }
-    }
 
     public int getMode()
     {

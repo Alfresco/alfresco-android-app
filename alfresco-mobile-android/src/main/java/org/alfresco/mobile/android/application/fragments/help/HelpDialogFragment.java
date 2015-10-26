@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.fragments.help;
 
 import java.util.Map;
@@ -24,13 +24,16 @@ import org.alfresco.mobile.android.application.fragments.MenuFragmentHelper;
 import org.alfresco.mobile.android.application.fragments.builder.LeafFragmentBuilder;
 import org.alfresco.mobile.android.platform.utils.ConnectivityUtils;
 import org.alfresco.mobile.android.ui.RefreshFragment;
+import org.alfresco.mobile.android.ui.activity.AlfrescoActivity;
+import org.alfresco.mobile.android.ui.activity.AlfrescoAppCompatActivity;
 
-import android.app.Activity;
-import android.app.DialogFragment;
-import android.app.Fragment;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Message;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -91,7 +94,7 @@ public class HelpDialogFragment extends DialogFragment implements RefreshFragmen
         emptyTextView = (TextView) v.findViewById(org.alfresco.mobile.android.foundation.R.id.empty_text);
         emptyTextView.setText(Html.fromHtml(getString(R.string.error_offline)));
 
-        final Activity activity = getActivity();
+        final FragmentActivity activity = getActivity();
 
         defaultUrl = activity.getString(R.string.help_user_guide_default_url);
 
@@ -104,8 +107,11 @@ public class HelpDialogFragment extends DialogFragment implements RefreshFragmen
             {
                 super.onPageStarted(view, url, favicon);
                 hasError = false;
-                getActivity().setProgressBarIndeterminateVisibility(true);
-                refreshIcon.setVisible(false);
+                displayProgress(true);
+                if (refreshIcon != null)
+                {
+                    refreshIcon.setVisible(false);
+                }
             }
 
             @Override
@@ -133,6 +139,7 @@ public class HelpDialogFragment extends DialogFragment implements RefreshFragmen
             @Override
             public void onPageFinished(WebView view, String url)
             {
+                if (getActivity() == null) { return; }
                 super.onPageFinished(view, url);
                 if (hasError)
                 {
@@ -142,8 +149,11 @@ public class HelpDialogFragment extends DialogFragment implements RefreshFragmen
                 {
                     view.setVisibility(View.VISIBLE);
                 }
-                getActivity().setProgressBarIndeterminateVisibility(false);
-                refreshIcon.setVisible(true);
+                displayProgress(false);
+                if (refreshIcon != null)
+                {
+                    refreshIcon.setVisible(true);
+                }
             }
 
             public void onFormResubmission(WebView view, Message dontResend, Message resend)
@@ -181,10 +191,20 @@ public class HelpDialogFragment extends DialogFragment implements RefreshFragmen
         return v;
     }
 
+    @Override
+    public void onStop()
+    {
+        super.onStop();
+        if (webView != null)
+        {
+            webView.stopLoading();
+        }
+    }
+
     // ///////////////////////////////////////////////////////////////////////////
     // UTILS
     // ///////////////////////////////////////////////////////////////////////////
-    private String getUrl(Activity activity)
+    private String getUrl(FragmentActivity activity)
     {
         String prefix = activity.getString(R.string.docs_prefix);
         String urlValue = null;
@@ -234,10 +254,22 @@ public class HelpDialogFragment extends DialogFragment implements RefreshFragmen
         return false;
     }
 
+    private void displayProgress(boolean show)
+    {
+        if (getActivity() instanceof AppCompatActivity)
+        {
+            ((AlfrescoAppCompatActivity) getActivity()).setSupportProgressBarIndeterminate(show);
+        }
+        else if (getActivity() instanceof AlfrescoActivity)
+        {
+            ((AlfrescoActivity) getActivity()).setSupportProgressBarIndeterminate(show);
+        }
+    }
+
     // ///////////////////////////////////////////////////////////////////////////
     // BUILDER
     // ///////////////////////////////////////////////////////////////////////////
-    public static Builder with(Activity activity)
+    public static Builder with(FragmentActivity activity)
     {
         return new Builder(activity);
     }
@@ -247,13 +279,13 @@ public class HelpDialogFragment extends DialogFragment implements RefreshFragmen
         // ///////////////////////////////////////////////////////////////////////////
         // CONSTRUCTORS
         // ///////////////////////////////////////////////////////////////////////////
-        public Builder(Activity activity)
+        public Builder(FragmentActivity activity)
         {
             super(activity);
             this.extraConfiguration = new Bundle();
         }
 
-        public Builder(Activity appActivity, Map<String, Object> configuration)
+        public Builder(FragmentActivity appActivity, Map<String, Object> configuration)
         {
             super(appActivity, configuration);
         }

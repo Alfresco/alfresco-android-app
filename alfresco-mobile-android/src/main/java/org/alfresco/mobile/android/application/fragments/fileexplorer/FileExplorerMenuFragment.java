@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.fragments.fileexplorer;
 
 import java.io.File;
@@ -24,17 +24,18 @@ import java.util.Map;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.BaseActivity;
+import org.alfresco.mobile.android.application.configuration.model.view.LocalConfigModel;
 import org.alfresco.mobile.android.application.fragments.MenuFragmentHelper;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
-import android.app.Activity;
-import android.app.Fragment;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -51,6 +52,12 @@ public class FileExplorerMenuFragment extends AlfrescoFragment
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
+    public FileExplorerMenuFragment()
+    {
+        requiredSession = false;
+        checkSession = false;
+    }
+
     public static FileExplorerMenuFragment newInstanceByTemplate(Bundle b)
     {
         FileExplorerMenuFragment cbf = new FileExplorerMenuFragment();
@@ -62,6 +69,12 @@ public class FileExplorerMenuFragment extends AlfrescoFragment
     // ///////////////////////////////////////////////////////////////////////////
     // LIFECYCLE
     // ///////////////////////////////////////////////////////////////////////////
+    @Override
+    public String onPrepareTitle()
+    {
+        return getString(R.string.menu_local_files);
+    }
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState)
     {
@@ -76,13 +89,6 @@ public class FileExplorerMenuFragment extends AlfrescoFragment
         initClickListener(rootView);
 
         return rootView;
-    }
-
-    @Override
-    public void onResume()
-    {
-        UIUtils.displayTitle(getActivity(), getString(R.string.menu_local_files));
-        super.onResume();
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -123,8 +129,8 @@ public class FileExplorerMenuFragment extends AlfrescoFragment
             switch (v.getId())
             {
                 case R.id.shortcut_alfresco_downloads:
-                    currentLocation = AlfrescoStorageManager.getInstance(getActivity()).getDownloadFolder(
-                            ((BaseActivity) getActivity()).getCurrentAccount());
+                    currentLocation = AlfrescoStorageManager.getInstance(getActivity())
+                            .getDownloadFolder(((BaseActivity) getActivity()).getCurrentAccount());
                     break;
                 case R.id.shortcut_local_sdcard:
                     currentLocation = Environment.getExternalStorageDirectory();
@@ -150,10 +156,8 @@ public class FileExplorerMenuFragment extends AlfrescoFragment
 
             if (currentSelectedButton != null)
             {
-                UIUtils.setBackground(
-                        currentSelectedButton,
-                        FileExplorerMenuFragment.this.getResources().getDrawable(
-                                R.drawable.btn_default_holo_light_underline));
+                UIUtils.setBackground(currentSelectedButton, FileExplorerMenuFragment.this.getResources()
+                        .getDrawable(R.drawable.btn_default_holo_light_underline));
             }
 
             if (currentLocation != null)
@@ -165,10 +169,8 @@ public class FileExplorerMenuFragment extends AlfrescoFragment
                 LibraryFragment.with(getActivity()).mediaType(mediatype).display();
             }
 
-            UIUtils.setBackground(
-                    v,
-                    FileExplorerMenuFragment.this.getResources().getDrawable(
-                            R.drawable.alfrescohololight_btn_default_holo_light));
+            UIUtils.setBackground(v, FileExplorerMenuFragment.this.getResources()
+                    .getDrawable(R.drawable.alfrescohololight_btn_default_holo_light));
             currentSelectedButton = v;
         }
     };
@@ -184,7 +186,7 @@ public class FileExplorerMenuFragment extends AlfrescoFragment
     // ///////////////////////////////////////////////////////////////////////////
     // BUILDER
     // ///////////////////////////////////////////////////////////////////////////
-    public static Builder with(Activity appActivity)
+    public static Builder with(FragmentActivity appActivity)
     {
         return new Builder(appActivity);
     }
@@ -194,17 +196,17 @@ public class FileExplorerMenuFragment extends AlfrescoFragment
         // ///////////////////////////////////////////////////////////////////////////
         // CONSTRUCTORS
         // ///////////////////////////////////////////////////////////////////////////
-        public Builder(Activity activity)
+        public Builder(FragmentActivity activity)
         {
             super(activity);
             this.extraConfiguration = new Bundle();
         }
 
-        public Builder(Activity appActivity, Map<String, Object> configuration)
+        public Builder(FragmentActivity appActivity, Map<String, Object> configuration)
         {
             super(appActivity, configuration);
-            menuIconId = R.drawable.ic_download_dark;
-            menuTitleId = R.string.menu_local_files;
+            sessionRequired = false;
+            viewConfigModel = new LocalConfigModel(configuration);
             templateArguments = new String[] {};
         }
 

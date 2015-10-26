@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.fragments.node.browser;
 
 import java.io.File;
@@ -36,6 +36,9 @@ import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.activity.PrivateDialogActivity;
 import org.alfresco.mobile.android.application.activity.PublicDispatcherActivity;
+import org.alfresco.mobile.android.application.capture.DeviceCapture;
+import org.alfresco.mobile.android.application.capture.DeviceCaptureHelper;
+import org.alfresco.mobile.android.application.configuration.model.view.RepositoryConfigModel;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.GridAdapterHelper;
@@ -69,6 +72,8 @@ import org.alfresco.mobile.android.async.node.delete.DeleteNodeEvent;
 import org.alfresco.mobile.android.async.node.download.DownloadEvent;
 import org.alfresco.mobile.android.async.node.favorite.FavoriteNodeEvent;
 import org.alfresco.mobile.android.async.node.favorite.FavoriteNodeRequest;
+import org.alfresco.mobile.android.async.node.sync.SyncNodeEvent;
+import org.alfresco.mobile.android.async.node.sync.SyncNodeRequest;
 import org.alfresco.mobile.android.async.node.update.UpdateContentEvent;
 import org.alfresco.mobile.android.async.node.update.UpdateNodeEvent;
 import org.alfresco.mobile.android.async.utils.ContentFileProgressImpl;
@@ -78,10 +83,11 @@ import org.alfresco.mobile.android.platform.extensions.ScanSnapManager;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
-import org.alfresco.mobile.android.platform.utils.AndroidVersion;
 import org.alfresco.mobile.android.platform.utils.BundleUtils;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
-import org.alfresco.mobile.android.sync.FavoritesSyncManager;
+import org.alfresco.mobile.android.sync.SyncContentManager;
+import org.alfresco.mobile.android.sync.SyncContentScanEvent;
+import org.alfresco.mobile.android.ui.SelectableFragment;
 import org.alfresco.mobile.android.ui.activity.AlfrescoActivity;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 import org.alfresco.mobile.android.ui.node.browse.NodeBrowserFragment;
@@ -90,27 +96,29 @@ import org.alfresco.mobile.android.ui.operation.OperationWaitingDialogFragment;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 
-import android.app.ActionBar;
-import android.app.ActionBar.OnNavigationListener;
-import android.app.Activity;
-import android.app.Fragment;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.SubMenu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.SpinnerAdapter;
+import android.widget.TextView;
 
+import com.cocosw.bottomsheet.BottomSheet;
 import com.squareup.otto.Subscribe;
 
 /**
@@ -119,7 +127,7 @@ import com.squareup.otto.Subscribe;
  * 
  * @author Jean Marie Pascal
  */
-public class DocumentFolderBrowserFragment extends NodeBrowserFragment
+public class DocumentFolderBrowserFragment extends NodeBrowserFragment implements SelectableFragment
 {
     public static final String TAG = DocumentFolderBrowserFragment.class.getName();
 
@@ -152,6 +160,8 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
     private String fieldId;
 
     private boolean doFavorite;
+
+    private Permissions permission;
 
     // //////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
@@ -218,11 +228,11 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
         if (getActivity() instanceof PublicDispatcherActivity || getActivity() instanceof PrivateDialogActivity
                 || getActivity() instanceof BaseShortcutActivity)
         {
-            v = inflater.inflate(R.layout.app_browser_import, container, false);
-            init(v, emptyListMessageId);
+            setRootView(inflater.inflate(R.layout.app_browser_import, container, false));
+            init(getRootView(), emptyListMessageId);
 
-            validationButton = (Button) v.findViewById(R.id.action_validation);
-            GridView gridView = (GridView) v.findViewById(R.id.gridview);
+            validationButton = (Button) viewById(R.id.action_validation);
+            GridView gridView = (GridView) viewById(R.id.gridview);
             if (getActivity() instanceof PrivateDialogActivity)
             {
                 validationButton.setText(R.string.done);
@@ -238,6 +248,8 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
                 gridView.setChoiceMode(GridView.CHOICE_MODE_SINGLE);
             }
             gridView.setClickable(true);
+
+            v = getRootView();
         }
         else
         {
@@ -251,6 +263,49 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
         }
 
         return v;
+    }
+
+    protected void prepareEmptyInitialView(View ev, ImageView emptyImageView, TextView firstEmptyMessage,
+            TextView secondEmptyMessage)
+    {
+        prepareEmptyView(ev, emptyImageView, firstEmptyMessage, secondEmptyMessage);
+    }
+
+    @Override
+    protected void prepareEmptyView(View ev, ImageView emptyImageView, TextView firstEmptyMessage,
+            TextView secondEmptyMessage)
+    {
+
+        Permissions permission;
+        int iconId = R.drawable.ic_empty_folder_ro;
+        int titleId = R.string.nodebrowser_empty_ro_title;
+        int descriptionId = -1;
+        try
+        {
+            if (parentFolder != null)
+            {
+                permission = getSession().getServiceRegistry().getDocumentFolderService().getPermissions(parentFolder);
+                if (permission.canAddChildren())
+                {
+                    iconId = R.drawable.ic_empty_folder_rw;
+                    titleId = R.string.nodebrowser_empty_rw_title;
+                    descriptionId = R.string.nodebrowser_empty_rw_description;
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            // DO Nothing
+        }
+
+        emptyImageView.setImageResource(iconId);
+        emptyImageView.setLayoutParams(DisplayUtils.resizeLayout(getActivity(), 275, 275));
+        firstEmptyMessage.setText(titleId);
+        if (descriptionId != -1)
+        {
+            secondEmptyMessage.setVisibility(View.VISIBLE);
+            secondEmptyMessage.setText(descriptionId);
+        }
     }
 
     @Override
@@ -310,10 +365,10 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
             createFile(tmpFile);
         }
 
-        if (getActivity().getActionBar() != null)
+        if (getActionBar() != null)
         {
-            getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
-            getActivity().getActionBar().setDisplayShowCustomEnabled(false);
+            getActionBar().setDisplayHomeAsUpEnabled(true);
+            getActionBar().setDisplayShowCustomEnabled(false);
             getActivity().setTitle(titleId);
             AccessibilityUtils.sendAccessibilityEvent(getActivity());
             if (shortcutAlreadyVisible)
@@ -357,11 +412,25 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
     // //////////////////////////////////////////////////////////////////////
     private void displayPathShortcut()
     {
+        displayPathShortcut(false);
+    }
+
+    private void displayPathShortcut(boolean force)
+    {
         // /QUICK PATH
-        if (parentFolder != null && getActivity().getActionBar() != null)
+        if (parentFolder != null && getActionBar() != null)
         {
-            //
-            getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+            // If tablet & right panel displayed show nothing
+            if (DisplayUtils.hasCentralPane(getActivity()) && !force)
+            {
+                Fragment sideFragment = getFragmentManager()
+                        .findFragmentById(DisplayUtils.getCentralFragmentId(getActivity()));
+                if (sideFragment != null) { return; }
+            }
+
+            ((ViewGroup) getActionBar().getCustomView()).setVisibility(View.GONE);
+            getActionBar().setDisplayUseLogoEnabled(false);
+            getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
             String pathValue = parentFolder.getName();
             if (parentFolder.getProperty(PropertyIds.PATH) != null)
             {
@@ -375,11 +444,10 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
             }
 
             List<String> listFolder = getPath(pathValue, fromSite);
+            SpinnerAdapter adapter = new FolderPathAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item,
+                    listFolder);
 
-            SpinnerAdapter adapter = new FolderPathAdapter(getActivity(),
-                    android.R.layout.simple_spinner_dropdown_item, listFolder);
-
-            OnNavigationListener mOnNavigationListener = new OnNavigationListener()
+            ActionBar.OnNavigationListener mOnNavigationListener = new android.support.v7.app.ActionBar.OnNavigationListener()
             {
 
                 @Override
@@ -421,7 +489,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
 
             };
 
-            getActivity().getActionBar().setListNavigationCallbacks(adapter, mOnNavigationListener);
+            getActionBar().setListNavigationCallbacks(adapter, mOnNavigationListener);
 
             shortcutAlreadyVisible = true;
         }
@@ -539,6 +607,8 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
             {
                 nActions.finish();
             }
+            getActivity().supportInvalidateOptionsMenu();
+            displayPathShortcut(true);
         }
         else if (nActions == null || (nActions != null && !nActions.hasMultiSelectionEnabled()))
         {
@@ -569,9 +639,8 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
         boolean b;
         if (n instanceof NodePlaceHolder)
         {
-            getActivity().startActivity(
-                    new Intent(PrivateIntent.ACTION_DISPLAY_OPERATIONS).putExtra(PrivateIntent.EXTRA_ACCOUNT_ID,
-                            SessionUtils.getAccount(getActivity()).getId()));
+            getActivity().startActivity(new Intent(PrivateIntent.ACTION_DISPLAY_OPERATIONS)
+                    .putExtra(PrivateIntent.EXTRA_ACCOUNT_ID, SessionUtils.getAccount(getActivity()).getId()));
             b = false;
         }
         else
@@ -585,6 +654,11 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
             }
         }
         return b;
+    }
+
+    public boolean hasActionMode()
+    {
+        return nActions != null;
     }
 
     private boolean startSelection(Node item)
@@ -601,11 +675,28 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
             @Override
             public void onFinish()
             {
+                if (fab != null)
+                {
+                    fab.hide(true);
+                    if (permission.canAddChildren())
+                    {
+                        fab.setImageResource(R.drawable.ic_content_add);
+                        fab.setOnClickListener(onPrepareFabClickListener());
+                        fab.show(true);
+                    }
+                }
                 nActions = null;
                 unselect();
                 refreshListView();
             }
         });
+        if (fab != null)
+        {
+            fab.hide(true);
+            fab.setImageResource(R.drawable.ic_done_all_white);
+            fab.setOnClickListener(onMultiSelectionFabClickListener());
+            fab.show(true);
+        }
         getActivity().startActionMode(nActions);
         return true;
     }
@@ -667,10 +758,10 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
         if (mode == MODE_PICK && adapter == null)
         {
             pickedNodes = fragmentPick.getNodeSelected(fieldId);
-            return new ProgressNodeAdapter(getActivity(), GridAdapterHelper.getDisplayItemLayout(getActivity(), gv,
-                    displayMode), parentFolder, new ArrayList<Node>(0), pickedNodes);
+            return new ProgressNodeAdapter(this, GridAdapterHelper.getDisplayItemLayout(getActivity(), gv, displayMode),
+                    parentFolder, new ArrayList<Node>(0), pickedNodes, mode);
         }
-        else if (adapter == null) { return new ProgressNodeAdapter(getActivity(),
+        else if (adapter == null) { return new ProgressNodeAdapter(this,
                 GridAdapterHelper.getDisplayItemLayout(getActivity(), gv, displayMode), parentFolder,
                 new ArrayList<Node>(0), selectedItems, mode); }
         return null;
@@ -701,8 +792,8 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
                         // Error case : Unable to find the file path associated
                         // to user pick.
                         // Sample : Picasa image case
-                        ActionUtils.actionDisplayError(this, new AlfrescoAppException(
-                                getString(R.string.error_unknown_filepath), true));
+                        ActionUtils.actionDisplayError(this,
+                                new AlfrescoAppException(getString(R.string.error_unknown_filepath), true));
                     }
                 }
                 else if (data != null && data.getExtras() != null && data.getExtras().containsKey(Intent.EXTRA_STREAM))
@@ -726,7 +817,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
         // Create and show the dialog.
         AddContentDialogFragment newFragment = AddContentDialogFragment.newInstance(importFolder, f,
                 (createFile != null));
-        newFragment.show(getActivity().getFragmentManager(), AddContentDialogFragment.TAG);
+        newFragment.show(getActivity().getSupportFragmentManager(), AddContentDialogFragment.TAG);
         tmpFile = null;
         createFile = null;
     }
@@ -745,7 +836,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
             {
                 requestsBuilder.add(new CreateDocumentRequest.Builder(importFolder, file.getName(),
                         new ContentFileProgressImpl(file))
-                        .setNotificationVisibility(OperationRequest.VISIBILITY_NOTIFICATIONS));
+                                .setNotificationVisibility(OperationRequest.VISIBILITY_NOTIFICATIONS));
             }
             Operator.with(getActivity(), getAccount()).load(requestsBuilder);
 
@@ -763,16 +854,12 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
         FragmentDisplayer.with(getActivity()).remove(CreateFolderDialogFragment.TAG);
 
         // Create and show the dialog.
-        AddFolderDialogFragment.newInstance(parentFolder).show(getActivity().getFragmentManager().beginTransaction(),
-                CreateFolderDialogFragment.TAG);
+        AddFolderDialogFragment.newInstance(parentFolder)
+                .show(getActivity().getSupportFragmentManager().beginTransaction(), CreateFolderDialogFragment.TAG);
     }
 
     public void refresh()
     {
-        if (parentFolder == null)
-        {
-            parentFolder = SessionUtils.getSession(getActivity()).getRootFolder();
-        }
         super.refresh();
 
         // Display Refresh Progress
@@ -798,13 +885,12 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
         }
         else if (getActivity() instanceof PublicDispatcherActivity || getActivity() instanceof BaseShortcutActivity)
         {
-            Permissions permission = getSession().getServiceRegistry().getDocumentFolderService()
-                    .getPermissions(parentFolder);
+            permission = getSession().getServiceRegistry().getDocumentFolderService().getPermissions(parentFolder);
 
             if (permission.canAddChildren())
             {
                 MenuItem mi = menu.add(Menu.NONE, R.id.menu_create_folder, Menu.FIRST, R.string.folder_create);
-                mi.setIcon(R.drawable.ic_add_folder);
+                mi.setIcon(R.drawable.ic_repository_light);
                 mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
             }
         }
@@ -817,7 +903,6 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
         MenuItem mi;
 
         if (parentFolder == null) { return; }
-        Permissions permission;
         try
         {
             permission = session.getServiceRegistry().getDocumentFolderService().getPermissions(parentFolder);
@@ -833,32 +918,79 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
 
         if (permission.canAddChildren())
         {
-            mi = menu.add(Menu.NONE, R.id.menu_create_folder, Menu.FIRST, R.string.folder_create);
-            mi.setIcon(R.drawable.ic_add_folder);
-            mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+            displayFab();
+        }
+    }
 
-            SubMenu createMenu = menu.addSubMenu(Menu.NONE, R.id.menu_create, Menu.FIRST + 30, R.string.add_menu);
-            createMenu.setIcon(android.R.drawable.ic_menu_add);
-            createMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+    @Override
+    protected OnClickListener onPrepareFabClickListener()
+    {
+        if (permission == null || !permission.canAddChildren()) { return null; }
 
-            createMenu.add(Menu.NONE, R.id.menu_upload, Menu.FIRST + 30, R.string.upload_title);
-
-            createMenu.add(Menu.NONE, R.id.menu_create_document, Menu.FIRST + 1, R.string.create_document);
-
-            createMenu.add(Menu.NONE, R.id.menu_device_capture_camera_photo, Menu.FIRST + 1, R.string.take_photo);
-
-            if (AndroidVersion.isICSOrAbove())
+        return new OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
             {
-                createMenu.add(Menu.NONE, R.id.menu_device_capture_camera_video, Menu.FIRST + 2, R.string.make_video);
+                BottomSheet.Builder builder = new BottomSheet.Builder(getActivity(), R.style.M_StyleDialog)
+                        .title(R.string.add_menu);
+                builder.sheet(R.id.menu_create_folder, R.drawable.ic_repository_light, R.string.folder_create);
+                builder.sheet(R.id.menu_upload, R.drawable.ic_upload, R.string.upload_title);
+                builder.sheet(R.id.menu_create_document, R.drawable.ic_doc_light, R.string.create_document);
+                builder.sheet(R.id.menu_device_capture_camera_photo, R.drawable.ic_camera, R.string.take_photo);
+                builder.sheet(R.id.menu_device_capture_camera_video, R.drawable.ic_videos, R.string.make_video);
+                builder.sheet(R.id.menu_device_capture_mic_audio, R.drawable.ic_microphone, R.string.record_audio);
+                if (ScanSnapManager.getInstance(getActivity()) != null
+                        && ScanSnapManager.getInstance(getActivity()).hasScanSnapApplication())
+                {
+                    builder.sheet(R.id.menu_scan_document, R.drawable.ic_camera, R.string.scan);
+                }
+                builder.grid().listener(new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        onOptionMenuItemSelected(which);
+                    }
+                }).show();
             }
+        };
+    }
 
-            createMenu.add(Menu.NONE, R.id.menu_device_capture_mic_audio, Menu.FIRST + 3, R.string.record_audio);
-
-            if (ScanSnapManager.getInstance(getActivity()) != null
-                    && ScanSnapManager.getInstance(getActivity()).hasScanSnapApplication())
+    protected OnClickListener onMultiSelectionFabClickListener()
+    {
+        return new OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
             {
-                createMenu.add(Menu.NONE, R.id.menu_scan_document, Menu.FIRST + 4, R.string.scan);
+                selectAll();
             }
+        };
+    }
+
+    protected OnClickListener onCancelMultiSelectionFabClickListener()
+    {
+        return new OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                if (nActions != null)
+                {
+                    nActions.finish();
+                }
+            }
+        };
+    }
+
+    private void displayFab()
+    {
+        if (fab != null && fab.getVisibility() == View.GONE)
+        {
+            fab.setVisibility(View.VISIBLE);
+            fab.setOnClickListener(onPrepareFabClickListener());
+            fab.show(true);
         }
     }
 
@@ -874,7 +1006,12 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        switch (item.getItemId())
+        return !onOptionMenuItemSelected(item.getItemId()) ? false : super.onOptionsItemSelected(item);
+    }
+
+    private boolean onOptionMenuItemSelected(int itemId)
+    {
+        switch (itemId)
         {
             case R.id.menu_search_from_folder:
                 search();
@@ -891,17 +1028,32 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
                 startActivityForResult(i, RequestCode.FILEPICKER);
                 return true;
             case R.id.menu_create_document:
-                DocumentTypesDialogFragment dialogft = DocumentTypesDialogFragment.newInstance(
-                        SessionUtils.getAccount(getActivity()), TAG);
+                DocumentTypesDialogFragment dialogft = DocumentTypesDialogFragment
+                        .newInstance(SessionUtils.getAccount(getActivity()), TAG);
                 dialogft.show(getFragmentManager(), DocumentTypesDialogFragment.TAG);
                 return true;
             case R.id.menu_gallery:
                 CarouselPreviewFragment.with(getActivity()).display();
                 return true;
+            case R.id.menu_device_capture_camera_photo:
+            case R.id.menu_device_capture_camera_video:
+            case R.id.menu_device_capture_mic_audio:
+                DeviceCapture capture = DeviceCaptureHelper.createDeviceCapture((BaseActivity) getActivity(), itemId);
+                if (getActivity() instanceof MainActivity)
+                {
+                    ((MainActivity) getActivity()).setCapture(capture);
+                }
+                return true;
+            case R.id.menu_scan_document:
+                if (ScanSnapManager.getInstance(getActivity()) != null)
+                {
+                    ScanSnapManager.getInstance(getActivity()).startPresetChooser(getActivity());
+                }
+                return true;
             default:
                 break;
         }
-        return super.onOptionsItemSelected(item);
+        return false;
     }
 
     // //////////////////////////////////////////////////////////////////////
@@ -927,12 +1079,21 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
         }
     }
 
+    @Override
     public void selectAll()
     {
         if (nActions != null && adapter != null)
         {
             nActions.selectNodes(((ProgressNodeAdapter) adapter).getNodes());
             adapter.notifyDataSetChanged();
+        }
+
+        if (fab != null)
+        {
+            fab.toggle(true);
+            fab.setImageResource(R.drawable.ic_close_dark);
+            fab.setOnClickListener(onCancelMultiSelectionFabClickListener());
+            fab.toggle(true);
         }
     }
 
@@ -1041,9 +1202,9 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
         }
         else if (mode == MODE_PICK && selectedItems != null)
         {
-            validationButton.setText(String.format(
-                    MessageFormat.format(getString(R.string.picker_attach_document), pickedNodes.size()),
-                    pickedNodes.size()));
+            validationButton.setText(
+                    String.format(MessageFormat.format(getString(R.string.picker_attach_document), pickedNodes.size()),
+                            pickedNodes.size()));
             validationButton.setEnabled(!pickedNodes.isEmpty());
             validationButton.setOnClickListener(new OnClickListener()
             {
@@ -1066,6 +1227,12 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
         {
             return false;
         }
+    }
+
+    @Override
+    public void displayTitle()
+    {
+        displayPathShortcut();
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -1110,6 +1277,10 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
     {
         if (event.data == null) { return; }
         remove(event.data);
+        if (adapter.getCount() == 0)
+        {
+            setListShown(true);
+        }
     }
 
     @Subscribe
@@ -1125,10 +1296,16 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
     @Subscribe
     public void onDocumentCreated(CreateDocumentEvent event)
     {
-        if (event.hasException) { return; }
+        if (event.hasException || adapter == null) { return; }
+        boolean hasEmptyAdapter = true;
+        hasEmptyAdapter = (adapter.getCount() == 0);
         if (parentFolder != null && parentFolder.getIdentifier().equals(event.parentFolder.getIdentifier()))
         {
             ((ProgressNodeAdapter) adapter).replaceNode(event.data);
+        }
+        if (hasEmptyAdapter)
+        {
+            displayDataView();
         }
     }
 
@@ -1137,7 +1314,13 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
     {
         Node node = event.data;
         if (node == null) { return; }
+        boolean hasEmptyAdapter = true;
+        hasEmptyAdapter = (adapter.getCount() == 0);
         ((ProgressNodeAdapter) adapter).replaceNode(node);
+        if (hasEmptyAdapter)
+        {
+            displayDataView();
+        }
         if (getActivity() instanceof BaseActivity)
         {
             ((BaseActivity) getActivity()).removeWaitingDialog();
@@ -1148,14 +1331,35 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
     public void onFavoriteNodeEvent(FavoriteNodeEvent event)
     {
         if (event.hasException) { return; }
-        if (FavoritesSyncManager.getInstance(getActivity()).canSync(SessionUtils.getAccount(getActivity())))
+        if (adapter != null)
         {
-            FavoritesSyncManager.getInstance(getActivity()).sync(SessionUtils.getAccount(getActivity()),
+            ((ProgressNodeAdapter) adapter).refreshOperations();
+            refreshListView();
+        }
+        favorite(nodesToFavorite, doFavorite, true);
+    }
+
+    @Subscribe
+    public void onSyncCompleted(SyncContentScanEvent event)
+    {
+        if (adapter != null)
+        {
+            ((ProgressNodeAdapter) adapter).refreshOperations();
+            refreshListView();
+        }
+    }
+
+    @Subscribe
+    public void onSyncNodeEvent(SyncNodeEvent event)
+    {
+        if (event.hasException) { return; }
+        if (SyncContentManager.getInstance(getActivity()).canSync(SessionUtils.getAccount(getActivity())))
+        {
+            SyncContentManager.getInstance(getActivity()).sync(SessionUtils.getAccount(getActivity()),
                     event.node.getIdentifier());
             ((ProgressNodeAdapter) adapter).refreshOperations();
         }
         refreshListView();
-        favorite(nodesToFavorite, doFavorite, true);
     }
 
     /**
@@ -1187,108 +1391,119 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
                 titleId = R.string.favorite;
                 iconId = R.drawable.ic_favorite_light;
             }
-            OperationWaitingDialogFragment.newInstance(FavoriteNodeRequest.TYPE_ID, iconId,
-                    getActivity().getString(titleId), null, parentFolder, selectedItems.size(), false).show(
-                    getActivity().getFragmentManager(), OperationWaitingDialogFragment.TAG);
+            OperationWaitingDialogFragment
+                    .newInstance(FavoriteNodeRequest.TYPE_ID, iconId, getActivity().getString(titleId), null,
+                            parentFolder, selectedItems.size(), false)
+                    .show(getActivity().getSupportFragmentManager(), OperationWaitingDialogFragment.TAG);
+        }
+    }
+
+    public void sync(List<Node> selectedItems, boolean doSync, boolean update)
+    {
+        if (selectedItems == null || selectedItems.isEmpty())
+        {
+            ((AlfrescoActivity) getActivity()).removeWaitingDialog();
+            return;
+        }
+
+        List<OperationBuilder> requestsBuilder = new ArrayList<>(selectedItems.size());
+        for (Node node : selectedItems)
+        {
+            requestsBuilder.add(new SyncNodeRequest.Builder(parentFolder, node, doSync, true)
+                    .setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG));
+        }
+        String operationId = Operator.with(getActivity(), SessionUtils.getAccount(getActivity())).load(requestsBuilder);
+
+        if (!update)
+        {
+            int titleId = R.string.unsync;
+            int iconId = R.drawable.ic_sync_light;
+            if (doSync)
+            {
+                titleId = R.string.sync;
+                iconId = R.drawable.ic_sync_light;
+            }
+            OperationWaitingDialogFragment
+                    .newInstance(SyncNodeRequest.TYPE_ID, iconId, getActivity().getString(titleId), null, parentFolder,
+                            selectedItems.size(), operationId)
+                    .show(getActivity().getSupportFragmentManager(), OperationWaitingDialogFragment.TAG);
         }
     }
 
     // ///////////////////////////////////////////////////////////////////////////
     // BUILDER
     // ///////////////////////////////////////////////////////////////////////////
-    public static Builder with(Activity appActivity)
+    public static Builder with(FragmentActivity appActivity)
     {
         return new Builder(appActivity);
     }
 
     public static class Builder extends ListingFragmentBuilder
     {
-        public static final int ICON_ID_REPOSITORY = R.drawable.ic_repository_dark;
-
-        public static final int LABEL_ID_REPOSITORY = R.string.menu_browse_root;
-
-        public static final int ICON_ID_SHARED = R.drawable.ic_shared_dark;
-
-        public static final int LABEL_ID_SHARED = R.string.menu_browse_shared;
-
-        public static final int ICON_ID_USERHOME = R.drawable.ic_myfiles_dark;
-
-        public static final int LABEL_ID_USERHOME = R.string.menu_browse_userhome;
-
         // ///////////////////////////////////////////////////////////////////////////
         // CONSTRUCTORS
         // ///////////////////////////////////////////////////////////////////////////
-        public Builder(Activity activity)
+        public Builder(FragmentActivity activity)
         {
             super(activity);
             this.extraConfiguration = new Bundle();
         }
 
         /** By Folder Object. */
-        public Builder(Activity activity, Folder folder)
+        public Builder(FragmentActivity activity, Folder folder)
         {
             this(activity, folder, null, null, null);
         }
 
         /** By Folder PATH. */
-        public Builder(Activity activity, String folderPath)
+        public Builder(FragmentActivity activity, String folderPath)
         {
             this(activity, null, folderPath, null, null);
         }
 
         /** By SITE Object. */
-        public Builder(Activity activity, Site site)
+        public Builder(FragmentActivity activity, Site site)
         {
             this(activity, null, null, site, null);
         }
 
         /** By Folder Type ID. */
-        public Builder(Activity activity, int folderId)
+        public Builder(FragmentActivity activity, int folderId)
         {
             this(activity, null, null, null, folderId);
         }
 
-        protected Builder(Activity activity, Folder parentFolder, String pathFolder, Site site, Integer folderId)
+        protected Builder(FragmentActivity activity, Folder parentFolder, String pathFolder, Site site,
+                Integer folderId)
         {
             this(activity);
             BundleUtils.addIfNotEmpty(extraConfiguration, createBundleArgs(parentFolder, pathFolder, site));
             BundleUtils.addIfNotNull(extraConfiguration, ARGUMENT_FOLDER_TYPE_ID, folderId);
         }
 
-        public Builder(Activity appActivity, Map<String, Object> configuration)
+        public Builder(FragmentActivity appActivity, Map<String, Object> configuration)
         {
             super(appActivity, configuration);
+            viewConfigModel = new RepositoryConfigModel(configuration);
             this.extraConfiguration = new Bundle();
-
-            this.menuIconId = ICON_ID_REPOSITORY;
-            this.menuTitleId = LABEL_ID_REPOSITORY;
-            if (configuration != null && configuration.containsKey(ARGUMENT_SITE_SHORTNAME))
-            {
-                this.menuIconId = R.drawable.ic_site_dark;
-            }
-
             if (configuration != null && configuration.containsKey(NodeBrowserTemplate.ARGUMENT_FOLDER_TYPE_ID))
             {
                 String folderTypeValue = JSONConverter.getString(configuration,
                         NodeBrowserTemplate.ARGUMENT_FOLDER_TYPE_ID);
                 if (NodeBrowserTemplate.FOLDER_TYPE_SHARED.equalsIgnoreCase(folderTypeValue))
                 {
-                    this.menuIconId = ICON_ID_SHARED;
-                    this.menuTitleId = LABEL_ID_SHARED;
                     extraConfiguration.putSerializable(ARGUMENT_FOLDER_TYPE_ID, NodeChildrenRequest.FOLDER_SHARED);
                     shortcut(true);
                 }
                 else if (NodeBrowserTemplate.FOLDER_TYPE_USERHOME.equalsIgnoreCase(folderTypeValue))
                 {
-                    this.menuIconId = ICON_ID_USERHOME;
-                    this.menuTitleId = LABEL_ID_USERHOME;
                     extraConfiguration.putSerializable(ARGUMENT_FOLDER_TYPE_ID, NodeChildrenRequest.FOLDER_USER_HOMES);
                     shortcut(true);
                 }
             }
-            else if (configuration != null
-                    && (configuration.containsKey(NodeBrowserTemplate.ARGUMENT_LABEL) && configuration.size() > 1)
-                    || (!configuration.containsKey(NodeBrowserTemplate.ARGUMENT_LABEL) && configuration.size() > 0))
+            else if (configuration != null && ((configuration.containsKey(NodeBrowserTemplate.ARGUMENT_LABEL)
+                    && configuration.size() > 1)
+                    || (!configuration.containsKey(NodeBrowserTemplate.ARGUMENT_LABEL) && configuration.size() > 0)))
             {
                 shortcut(true);
             }

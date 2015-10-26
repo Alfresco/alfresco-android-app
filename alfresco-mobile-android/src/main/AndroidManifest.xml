@@ -1,4 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~  Copyright (C) 2005-2015 Alfresco Software Limited.
+  ~
+  ~  This file is part of Alfresco Mobile for Android.
+  ~
+  ~  Licensed under the Apache License, Version 2.0 (the "License");
+  ~  you may not use this file except in compliance with the License.
+  ~  You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~  limitations under the License.
+  -->
+
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="org.alfresco.mobile.android.application">
@@ -20,6 +38,7 @@
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
 
     <application
+        tools:replace="android:allowBackup"
         android:name="org.alfresco.mobile.android.application.AlfrescoApplication"
         android:allowBackup="false"
         android:configChanges="locale|keyboardHidden|orientation|screenSize"
@@ -28,7 +47,7 @@
         android:label="@string/app_name"
         android:largeHeap="true"
         android:logo="@drawable/ic_application_logo"
-        android:theme="@style/MainTheme">
+        android:theme="@style/AlfrescoMaterialTheme">
 
         <!-- *************************************************************** -->
         <!-- ALFRESCO APP -->
@@ -37,6 +56,7 @@
             android:name="org.alfresco.mobile.android.application.activity.WelcomeActivity"
             android:configChanges="locale|keyboardHidden|orientation|screenSize"
             android:label="@string/app_name"
+            android:theme="@style/AlfrescoMaterialTheme"
             android:launchMode="singleInstance"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
@@ -58,7 +78,6 @@
             android:configChanges="locale|keyboardHidden|orientation|screenSize"
             android:exported="true"
             android:launchMode="singleTop"
-            android:logo="@drawable/ic_application_logo"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -124,6 +143,12 @@
             android:exported="false"
             android:label="@string/app_name" />
 
+        <activity
+            android:name=".activity.InfoActivity"
+            android:exported="false"
+            android:label="@string/app_name"
+            android:theme="@style/AlfrescoMaterialTheme.Dialog" />
+
         <!-- Private : Text Editor Activity -->
         <activity
             android:name="org.alfresco.mobile.android.application.editors.text.TextEditorActivity"
@@ -172,7 +197,7 @@
             android:icon="@drawable/ic_application_icon"
             android:label="@string/app_name"
             android:logo="@drawable/ic_application_icon"
-            android:theme="@style/MainTheme.Dialog"
+            android:theme="@style/AlfrescoMaterialTheme.Dialog"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
@@ -196,7 +221,7 @@
             android:icon="@drawable/ic_application_icon"
             android:label="@string/app_name"
             android:logo="@drawable/ic_application_icon"
-            android:theme="@style/MainTheme.Dialog"
+            android:theme="@style/AlfrescoMaterialTheme.Dialog"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="org.alfresco.mobile.android.intent.ACTION_DISPLAY_SETTINGS" />
@@ -244,7 +269,7 @@
         </activity>
         <activity
             android:name="org.alfresco.mobile.android.application.widgets.ActionShortcutActivity"
-            android:theme="@style/MainTheme.Dialog"
+            android:theme="@style/AlfrescoMaterialTheme.Dialog"
             android:label="@string/shortcut_actions_title"
             android:enabled="@bool/widgetEnabled">
             <intent-filter>
@@ -256,7 +281,7 @@
 
         <activity
             android:name="org.alfresco.mobile.android.application.widgets.FolderShortcutActivity"
-            android:theme="@style/MainTheme.Dialog"
+            android:theme="@style/AlfrescoMaterialTheme.Dialog"
             android:label="@string/shortcut_title"
             android:enabled="@bool/widgetEnabled">
             <intent-filter>
@@ -284,10 +309,16 @@
         <!-- CONTENT PROVIDER -->
         <!-- *************************************************************** -->
         <provider
-            android:name="org.alfresco.mobile.android.application.providers.FavoritesSyncProviderImpl"
-            android:authorities="${PROVIDER_AUTHORITY}.sync"
+            android:name=".providers.FavoritesProviderImpl"
+            android:authorities="${PROVIDER_AUTHORITY}.favorites"
             android:exported="false"
             android:label="@string/sync_favorites"
+            android:syncable="true" />
+        <provider
+            android:name=".providers.SyncProviderImpl"
+            android:authorities="${PROVIDER_AUTHORITY}.sync"
+            android:exported="true"
+            android:label="@string/sync_title"
             android:syncable="true" />
         <provider
             android:name="org.alfresco.mobile.android.application.providers.MimeTypeProviderImpl"
@@ -317,7 +348,7 @@
         <!-- SERVICES -->
         <!-- *************************************************************** -->
         <service
-            android:name="org.alfresco.mobile.android.sync.FavoritesSyncService"
+            android:name="org.alfresco.mobile.android.sync.SyncContentService"
             android:exported="true"
             tools:ignore="ExportedService">
             <intent-filter>
@@ -326,8 +357,23 @@
 
             <meta-data
                 android:name="android.content.SyncAdapter"
-                android:resource="@xml/favorites_sync_adapter" />
+                android:resource="@xml/sync_adapter" />
         </service>
+
+
+        <service
+            android:name="org.alfresco.mobile.android.platform.favorite.FavoritesService"
+            android:exported="true"
+            tools:ignore="ExportedService">
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.content.SyncAdapter"
+                android:resource="@xml/favorites_adapter" />
+        </service>
+
 
         <!-- Used For AlfrescoAccount Authentication -->
         <service

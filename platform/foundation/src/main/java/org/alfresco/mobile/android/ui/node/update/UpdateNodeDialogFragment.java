@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.ui.node.update;
 
 import java.io.Serializable;
@@ -27,26 +27,26 @@ import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.impl.RepositoryVersionHelper;
 import org.alfresco.mobile.android.async.node.update.UpdateNodeRequest;
 import org.alfresco.mobile.android.foundation.R;
-import org.alfresco.mobile.android.platform.EventBusManager;
-import org.alfresco.mobile.android.platform.mimetype.MimeTypeManager;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.utils.Formatter;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.inputmethod.EditorInfo;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
+
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.rengwuxian.materialedittext.MaterialEditText;
 
 public abstract class UpdateNodeDialogFragment extends AlfrescoFragment
 {
@@ -55,6 +55,8 @@ public abstract class UpdateNodeDialogFragment extends AlfrescoFragment
     protected static final String ARGUMENT_NODE = "node";
 
     protected Node node;
+
+    private MaterialEditText tv, desc, tags;
 
     // //////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
@@ -74,42 +76,39 @@ public abstract class UpdateNodeDialogFragment extends AlfrescoFragment
     // LIFE CYCLE
     // //////////////////////////////////////////////////////////////////////
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    public Dialog onCreateDialog(Bundle savedInstanceState)
     {
         node = (Node) getArguments().getSerializable(ARGUMENT_NODE);
 
-        getDialog().setTitle(R.string.edit_metadata);
-        getDialog().requestWindowFeature(Window.FEATURE_LEFT_ICON);
+        return new MaterialDialog.Builder(getActivity()).iconRes(R.drawable.ic_application_logo)
+                .title(R.string.edit_metadata).customView(createView(LayoutInflater.from(getActivity()), null), true)
+                .positiveText(R.string.update).negativeText(R.string.cancel)
+                .callback(new MaterialDialog.ButtonCallback()
+                {
+                    @Override
+                    public void onPositive(MaterialDialog dialog)
+                    {
+                        updateNode(tv, desc);
+                    }
 
-        View v = inflater.inflate(R.layout.sdk_create_content_props, container, false);
-        if (getSession() == null) { return v; }
+                    @Override
+                    public void onNegative(MaterialDialog dialog)
+                    {
+                        dialog.dismiss();
+                    }
+                }).show();
+    }
 
-        final EditText tv = (EditText) v.findViewById(R.id.content_name);
-        final EditText desc = (EditText) v.findViewById(R.id.content_description);
-        TextView tsize = (TextView) v.findViewById(R.id.content_size);
+    private View createView(LayoutInflater inflater, ViewGroup container)
+    {
+        View rootView = inflater.inflate(R.layout.sdk_create_content_props, container, false);
+        tv = (MaterialEditText) rootView.findViewById(R.id.content_name);
+        desc = (MaterialEditText) rootView.findViewById(R.id.content_description);
+        tags = (MaterialEditText) rootView.findViewById(R.id.content_tags);
+        tags.setVisibility(View.GONE);
+        TextView tsize = (TextView) rootView.findViewById(R.id.content_size);
 
-        v.findViewById(R.id.tags_line).setVisibility(View.GONE);
         desc.setImeOptions(EditorInfo.IME_ACTION_DONE);
-
-        Button button = (Button) v.findViewById(R.id.cancel);
-        button.setOnClickListener(new OnClickListener()
-        {
-            public void onClick(View v)
-            {
-                UpdateNodeDialogFragment.this.dismiss();
-            }
-        });
-
-        final Button bCreate = (Button) v.findViewById(R.id.validate_action);
-        bCreate.setText(R.string.update);
-        bCreate.setOnClickListener(new OnClickListener()
-        {
-            public void onClick(View v)
-            {
-                updateNode(tv, desc, bCreate);
-            }
-        });
-
         desc.setOnEditorActionListener(new OnEditorActionListener()
         {
             @Override
@@ -118,7 +117,7 @@ public abstract class UpdateNodeDialogFragment extends AlfrescoFragment
                 boolean handled = false;
                 if (actionId == EditorInfo.IME_ACTION_DONE)
                 {
-                    updateNode(tv, desc, bCreate);
+                    updateNode(tv, desc);
                     handled = true;
                 }
                 return handled;
@@ -144,9 +143,6 @@ public abstract class UpdateNodeDialogFragment extends AlfrescoFragment
             {
                 desc.setText(node.getProperty(ContentModel.PROP_DESCRIPTION).getValue().toString());
             }
-
-            bCreate.setEnabled(true);
-
         }
         else
         {
@@ -161,11 +157,11 @@ public abstract class UpdateNodeDialogFragment extends AlfrescoFragment
             {
                 if (s.length() > 0)
                 {
-                    bCreate.setEnabled(true);
+                    ((MaterialDialog) getDialog()).getActionButton(DialogAction.POSITIVE).setEnabled(true);
                     if (UIUtils.hasInvalidName(s.toString().trim()))
                     {
                         tv.setError(getString(R.string.filename_error_character));
-                        bCreate.setEnabled(false);
+                        ((MaterialDialog) getDialog()).getActionButton(DialogAction.POSITIVE).setEnabled(false);
                     }
                     else
                     {
@@ -174,7 +170,7 @@ public abstract class UpdateNodeDialogFragment extends AlfrescoFragment
                 }
                 else
                 {
-                    bCreate.setEnabled(false);
+                    ((MaterialDialog) getDialog()).getActionButton(DialogAction.POSITIVE).setEnabled(false);
                     tv.setError(null);
                 }
             }
@@ -188,37 +184,13 @@ public abstract class UpdateNodeDialogFragment extends AlfrescoFragment
             }
         });
 
-        return v;
-    }
-
-    @Override
-    public void onStart()
-    {
-        if (node != null)
-        {
-            int iconId = R.drawable.mime_folder;
-            if (node.isDocument())
-            {
-                iconId = MimeTypeManager.getInstance(getActivity()).getIcon(node.getName());
-            }
-            getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, iconId);
-        }
-        super.onStart();
-
-        EventBusManager.getInstance().register(this);
-    }
-
-    @Override
-    public void onStop()
-    {
-        super.onStop();
-        EventBusManager.getInstance().unregister(this);
+        return rootView;
     }
 
     // //////////////////////////////////////////////////////////////////////
     // INTERNALS
     // //////////////////////////////////////////////////////////////////////
-    protected void updateNode(EditText tv, EditText desc, Button bcreate)
+    protected void updateNode(EditText tv, EditText desc)
     {
         Map<String, Serializable> props = new HashMap<>(2);
         props.put(ContentModel.PROP_NAME, tv.getText().toString());
@@ -228,6 +200,5 @@ public abstract class UpdateNodeDialogFragment extends AlfrescoFragment
         }
 
         new UpdateNodeRequest.Builder(node, props);
-        bcreate.setEnabled(false);
     }
 }

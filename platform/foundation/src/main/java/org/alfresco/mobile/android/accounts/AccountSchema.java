@@ -23,7 +23,7 @@ import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.database.DatabaseVersionNumber;
 import org.alfresco.mobile.android.platform.utils.BundleUtils;
-import org.alfresco.mobile.android.sync.FavoritesSyncManager;
+import org.alfresco.mobile.android.sync.SyncContentManager;
 
 import android.accounts.AccountManager;
 import android.content.Context;
@@ -163,7 +163,7 @@ public final class AccountSchema
             String accountName;
             AccountManager mAccountManager = AccountManager.get(context);
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
-            FavoritesSyncManager syncManager = FavoritesSyncManager.getInstance(context);
+            SyncContentManager syncManager = SyncContentManager.getInstance(context);
             for (Account account : accounts)
             {
                 // Check Account Name

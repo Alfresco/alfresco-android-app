@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.fragments.about;
 
 import java.util.Map;
@@ -24,17 +24,19 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.builder.LeafFragmentBuilder;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.Fragment;
+import android.content.Context;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 
 public class AboutFragment extends AlfrescoFragment
 {
@@ -64,7 +66,8 @@ public class AboutFragment extends AlfrescoFragment
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
         LayoutInflater inflater = LayoutInflater.from(getActivity());
-        return new AlertDialog.Builder(getActivity()).setView(createView(inflater, null)).create();
+        return new MaterialDialog.Builder(getActivity()).backgroundColorRes(R.color.secondary_background)
+                .customView(createView(inflater, null), true).show();
     }
 
     @Override
@@ -84,20 +87,7 @@ public class AboutFragment extends AlfrescoFragment
 
         // Version Number
         TextView tv = (TextView) v.findViewById(R.id.about_buildnumber);
-        String versionNumber;
-        try
-        {
-            StringBuilder sb = new StringBuilder(getText(R.string.buildnumber_version))
-                    .append(" ")
-                    .append(getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0).versionName)
-                    .append(".").append(getText(R.string.bamboo_buildnumber));
-            versionNumber = sb.toString();
-        }
-        catch (NameNotFoundException e)
-        {
-            versionNumber = "X.x.x.x";
-        }
-        tv.setText(versionNumber);
+        tv.setText(getVersionNumber(getActivity()));
 
         // SDK Version Number
         tv = (TextView) v.findViewById(R.id.about_sdknumber);
@@ -107,10 +97,27 @@ public class AboutFragment extends AlfrescoFragment
         return v;
     }
 
+    public static String getVersionNumber(Context context)
+    {
+        String versionNumber;
+        try
+        {
+            StringBuilder sb = new StringBuilder(context.getString(R.string.buildnumber_version)).append(" ")
+                    .append(context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName)
+                    .append(".").append(context.getString(R.string.bamboo_buildnumber));
+            versionNumber = sb.toString();
+        }
+        catch (NameNotFoundException e)
+        {
+            versionNumber = "X.x.x.x";
+        }
+        return versionNumber;
+    }
+
     // ///////////////////////////////////////////////////////////////////////////
     // BUILDER
     // ///////////////////////////////////////////////////////////////////////////
-    public static Builder with(Activity appActivity)
+    public static Builder with(FragmentActivity appActivity)
     {
         return new Builder(appActivity);
     }
@@ -120,13 +127,13 @@ public class AboutFragment extends AlfrescoFragment
         // ///////////////////////////////////////////////////////////////////////////
         // CONSTRUCTORS
         // ///////////////////////////////////////////////////////////////////////////
-        public Builder(Activity activity)
+        public Builder(FragmentActivity activity)
         {
             super(activity);
             this.extraConfiguration = new Bundle();
         }
 
-        public Builder(Activity appActivity, Map<String, Object> configuration)
+        public Builder(FragmentActivity appActivity, Map<String, Object> configuration)
         {
             super(appActivity, configuration);
             this.extraConfiguration = new Bundle();

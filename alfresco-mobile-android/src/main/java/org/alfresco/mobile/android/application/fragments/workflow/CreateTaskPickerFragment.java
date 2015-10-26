@@ -110,12 +110,13 @@ public class CreateTaskPickerFragment extends AlfrescoFragment
 
         if (mode == MODE_PERSON)
         {
-            ((ListView) viewById(R.id.listView)).setAdapter(new UserAdapter(this, R.layout.app_item_row, assignees,
+            ((ListView) viewById(R.id.listView)).setAdapter(new UserAdapter(this, R.layout.row_two_lines, assignees,
                     true));
         }
         else if (mode == MODE_DOCUMENT)
         {
-            ((ListView) viewById(R.id.listView)).setAdapter(new NodeAdapter(this, R.layout.app_task_progress_row, docs,
+            ((ListView) viewById(R.id.listView)).setAdapter(new NodeAdapter(this, R.layout.row_two_lines_progress,
+                    docs,
                     true));
         }
 

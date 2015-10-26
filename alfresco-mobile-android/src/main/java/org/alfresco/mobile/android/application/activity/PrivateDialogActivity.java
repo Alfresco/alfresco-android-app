@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.activity;
 
 import java.util.ArrayList;
@@ -26,6 +26,7 @@ import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
+import org.alfresco.mobile.android.application.fragments.help.HelpDialogFragment;
 import org.alfresco.mobile.android.application.fragments.node.update.EditPropertiesFragment;
 import org.alfresco.mobile.android.application.fragments.operation.OperationsFragment;
 import org.alfresco.mobile.android.application.fragments.preferences.GeneralPreferences;
@@ -35,17 +36,19 @@ import org.alfresco.mobile.android.application.ui.form.picker.DocumentPickerFrag
 import org.alfresco.mobile.android.async.file.encryption.AccountProtectionEvent;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 
-import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.squareup.otto.Subscribe;
 
 /**
  * @author Jean Marie Pascal
  */
-public class PrivateDialogActivity extends BaseActivity
+public class PrivateDialogActivity extends BaseAppCompatActivity
 {
     private static final String TAG = PrivateDialogActivity.class.getName();
 
@@ -66,14 +69,33 @@ public class PrivateDialogActivity extends BaseActivity
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
-        displayAsDialogActivity();
-        setContentView(R.layout.app_left_panel);
-
         action = getIntent().getAction();
-        if (PrivateIntent.ACTION_DISPLAY_SETTINGS.equals(action))
+
+        if (PrivateIntent.ACTION_DISPLAY_HELP.equals(action))
         {
-            GeneralPreferences.with(this).back(false).display();
+            setTheme(R.style.AlfrescoMaterialTheme);
+        }
+        else
+        {
+            displayAsDialogActivity();
+            setTheme(R.style.AlfrescoMaterialTheme);
+        }
+
+        setContentView(R.layout.activitycompat_left_panel);
+
+        // TOOLBAR
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        if (toolbar != null)
+        {
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
+        }
+
+        if (PrivateIntent.ACTION_DISPLAY_SETTINGS.equals(action) && getFragment(GeneralPreferences.TAG) == null)
+        {
+            FragmentDisplayer.with(this).load(GeneralPreferences.with(this).createFragment()).back(false).animate(null)
+                    .into(FragmentDisplayer.PANEL_LEFT);
             return;
         }
 
@@ -86,6 +108,11 @@ public class PrivateDialogActivity extends BaseActivity
 
         if (ACTION_EDIT_NODE.equals(action))
         {
+            if (getSupportActionBar() != null)
+            {
+                getSupportActionBar().hide();
+            }
+
             Folder folder = (Folder) getIntent().getExtras().get(PrivateIntent.EXTRA_FOLDER);
             Node node = (Node) getIntent().getExtras().get(PrivateIntent.EXTRA_NODE);
 
@@ -105,20 +132,30 @@ public class PrivateDialogActivity extends BaseActivity
             else if (getIntent().getExtras() != null
                     && getIntent().getExtras().containsKey(PrivateIntent.EXTRA_DOCUMENTS))
             {
-                docs.addAll((Collection<? extends Document>) getIntent().getExtras().get(PrivateIntent.EXTRA_DOCUMENTS));
+                docs.addAll(
+                        (Collection<? extends Document>) getIntent().getExtras().get(PrivateIntent.EXTRA_DOCUMENTS));
                 getIntent().removeExtra(PrivateIntent.EXTRA_DOCUMENTS);
             }
 
-            Fragment f = docs.isEmpty() ? new CreateTaskTypePickerFragment() : CreateTaskTypePickerFragment
-                    .newInstance(docs);
+            Fragment f = docs.isEmpty() ? new CreateTaskTypePickerFragment()
+                    : CreateTaskTypePickerFragment.newInstance(docs);
             FragmentDisplayer.with(this).load(f).back(false).animate(null).into(FragmentDisplayer.PANEL_LEFT);
+        }
+
+        if (PrivateIntent.ACTION_DISPLAY_HELP.equals(action))
+        {
+            FragmentDisplayer.with(this).load(HelpDialogFragment.with(this).createFragment()).back(false).animate(null)
+                    .into(FragmentDisplayer.PANEL_LEFT);
         }
     }
 
     @Override
     protected void onStart()
     {
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null)
+        {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         super.onStart();
     }
 
@@ -165,11 +202,11 @@ public class PrivateDialogActivity extends BaseActivity
     {
         if (action != null && ACTION_EDIT_NODE.equals(action))
         {
-            return (onPickDocumentFragment) getFragmentManager().findFragmentByTag(EditPropertiesFragment.TAG);
+            return (onPickDocumentFragment) getSupportFragmentManager().findFragmentByTag(EditPropertiesFragment.TAG);
         }
         else
         {
-            return (onPickDocumentFragment) getFragmentManager().findFragmentByTag(CreateTaskFragment.TAG);
+            return (onPickDocumentFragment) getSupportFragmentManager().findFragmentByTag(CreateTaskFragment.TAG);
         }
     }
 
@@ -181,6 +218,11 @@ public class PrivateDialogActivity extends BaseActivity
     public void setFieldId(String fieldId)
     {
         this.fieldId = fieldId;
+    }
+
+    public void doCancel(View v)
+    {
+        finish();
     }
 
     // ///////////////////////////////////////////////////////////////////////////

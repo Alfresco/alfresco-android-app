@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.ui.activity;
 
 import java.util.ArrayList;
@@ -31,30 +31,31 @@ import org.alfresco.mobile.android.platform.exception.AlfrescoAppException;
 import org.alfresco.mobile.android.platform.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.platform.extensions.HockeyAppManager;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
-import org.alfresco.mobile.android.ui.fragments.SimpleAlertDialogFragment;
 import org.alfresco.mobile.android.ui.fragments.WaitingDialogFragment;
 import org.alfresco.mobile.android.ui.operation.OperationWaitingDialogFragment;
 import org.alfresco.mobile.android.ui.rendition.RenditionManager;
 
-import android.app.Activity;
-import android.app.DialogFragment;
-import android.app.Fragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 
 import com.mattprecious.telescope.EmailDeviceInfoLens;
 import com.mattprecious.telescope.TelescopeLayout;
 
 /**
  * Base class for all activities.
- * 
+ *
  * @author Jean Marie Pascal
  */
-public abstract class AlfrescoActivity extends Activity
+public abstract class AlfrescoActivity extends AppCompatActivity
 {
     protected LocalBroadcastManager broadcastManager;
 
@@ -67,8 +68,6 @@ public abstract class AlfrescoActivity extends Activity
     protected List<BroadcastReceiver> receivers = new ArrayList<BroadcastReceiver>(2);
 
     protected List<BroadcastReceiver> publicReceivers = new ArrayList<BroadcastReceiver>(2);
-
-    protected AlfrescoAccount currentAccount;
 
     protected RenditionManager renditionManager;
 
@@ -84,7 +83,6 @@ public abstract class AlfrescoActivity extends Activity
         sessionManager = SessionManager.getInstance(this);
 
         IntentFilter filters = new IntentFilter();
-        filters.addAction(PrivateIntent.ACTION_DISPLAY_DIALOG);
         filters.addAction(PrivateIntent.ACTION_DISPLAY_ERROR);
         utilsReceiver = new UtilsReceiver();
         receivers.add(utilsReceiver);
@@ -162,33 +160,34 @@ public abstract class AlfrescoActivity extends Activity
     // ///////////////////////////////////////////////////////////////////////////
     public Fragment getFragment(String tag)
     {
-        return getFragmentManager().findFragmentByTag(tag);
+        return getSupportFragmentManager().findFragmentByTag(tag);
     }
 
     protected boolean isVisible(String tag)
     {
-        return getFragmentManager().findFragmentByTag(tag) != null
-                && getFragmentManager().findFragmentByTag(tag).isAdded();
+        return getSupportFragmentManager().findFragmentByTag(tag) != null
+                && getSupportFragmentManager().findFragmentByTag(tag).isAdded();
     }
 
     public void displayWaitingDialog()
     {
-        if (getFragmentManager().findFragmentByTag(WaitingDialogFragment.TAG) == null)
+        if (getSupportFragmentManager().findFragmentByTag(WaitingDialogFragment.TAG) == null)
         {
-            new WaitingDialogFragment().show(getFragmentManager(), WaitingDialogFragment.TAG);
+            new WaitingDialogFragment().show(getSupportFragmentManager(), WaitingDialogFragment.TAG);
         }
     }
 
     public void removeWaitingDialog()
     {
-        if (getFragmentManager().findFragmentByTag(WaitingDialogFragment.TAG) != null)
+        if (getSupportFragmentManager().findFragmentByTag(WaitingDialogFragment.TAG) != null)
         {
-            ((DialogFragment) getFragmentManager().findFragmentByTag(WaitingDialogFragment.TAG)).dismiss();
+            ((DialogFragment) getSupportFragmentManager().findFragmentByTag(WaitingDialogFragment.TAG)).dismiss();
         }
 
-        if (getFragmentManager().findFragmentByTag(OperationWaitingDialogFragment.TAG) != null)
+        if (getSupportFragmentManager().findFragmentByTag(OperationWaitingDialogFragment.TAG) != null)
         {
-            ((DialogFragment) getFragmentManager().findFragmentByTag(OperationWaitingDialogFragment.TAG)).dismiss();
+            ((DialogFragment) getSupportFragmentManager().findFragmentByTag(OperationWaitingDialogFragment.TAG))
+                    .dismiss();
         }
     }
 
@@ -203,17 +202,22 @@ public abstract class AlfrescoActivity extends Activity
 
     public void setCurrentAccount(AlfrescoAccount account)
     {
-        this.currentAccount = account;
+        sessionManager.saveAccount(account);
     }
 
     public void setCurrentAccount(long accountId)
     {
-        this.currentAccount = AlfrescoAccountManager.getInstance(this).retrieveAccount(accountId);
+        sessionManager.saveAccount(AlfrescoAccountManager.getInstance(this).retrieveAccount(accountId));
     }
 
     public AlfrescoAccount getCurrentAccount()
     {
-        return currentAccount;
+        if (sessionManager == null)
+        {
+            sessionManager = SessionManager.getInstance(this);
+        }
+
+        return sessionManager.getCurrentAccount();
     }
 
     public AlfrescoSession getCurrentSession()
@@ -224,12 +228,7 @@ public abstract class AlfrescoActivity extends Activity
             return null;
         }
 
-        if (sessionManager != null && currentAccount == null)
-        {
-            currentAccount = sessionManager.getCurrentAccount();
-        }
-
-        return currentAccount != null ? sessionManager.getSession(currentAccount.getId()) : null;
+        return getCurrentAccount() != null ? sessionManager.getSession(getCurrentAccount().getId()) : null;
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -243,6 +242,11 @@ public abstract class AlfrescoActivity extends Activity
     public void setRenditionManager(RenditionManager renditionManager)
     {
         this.renditionManager = renditionManager;
+    }
+
+    public ActionBar getAppActionBar()
+    {
+        return getSupportActionBar();
     }
 
     // ////////////////////////////////////////////////////////
@@ -280,7 +284,7 @@ public abstract class AlfrescoActivity extends Activity
     /**
      * Register a broadcast receiver to this specific activity. If used this
      * methods is responsible to unregister the receiver during on stop().
-     * 
+     *
      * @param receiver
      * @param filter
      */
@@ -306,7 +310,7 @@ public abstract class AlfrescoActivity extends Activity
      * Utility BroadcastReceiver for displaying dialog after an error or to
      * display custom message. Use ACTION_DISPLAY_DIALOG or ACTION_DISPLAY_ERROR
      * Action inside an Intent and send it with localBroadcastManager instance.
-     * 
+     *
      * @author Jean Marie Pascal
      */
     private class UtilsReceiver extends BroadcastReceiver
@@ -314,19 +318,9 @@ public abstract class AlfrescoActivity extends Activity
         @Override
         public void onReceive(Context context, Intent intent)
         {
-            Activity activity = AlfrescoActivity.this;
+            FragmentActivity activity = AlfrescoActivity.this;
 
             if (activity.isFinishing() || activity.isChangingConfigurations()) { return; }
-
-            //
-            if (PrivateIntent.ACTION_DISPLAY_DIALOG.equals(intent.getAction()))
-            {
-                removeWaitingDialog();
-
-                SimpleAlertDialogFragment.newInstance(intent.getExtras()).show(activity.getFragmentManager(),
-                        SimpleAlertDialogFragment.TAG);
-                return;
-            }
 
             // Intent for Display Errors
             if (PrivateIntent.ACTION_DISPLAY_ERROR.equals(intent.getAction()))

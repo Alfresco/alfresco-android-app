@@ -1,28 +1,25 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.fragments.node.details;
 
-import android.app.Activity;
-import android.app.Fragment;
-import android.content.Intent;
-import android.view.ActionMode;
-import android.view.Menu;
-import android.view.MenuItem;
+import java.io.Serializable;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 
 import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.model.Document;
@@ -40,9 +37,12 @@ import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.sync.utils.NodeSyncPlaceHolder;
 import org.apache.chemistry.opencmis.commons.enums.Action;
 
-import java.io.Serializable;
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
+import android.content.Intent;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.view.ActionMode;
+import android.view.Menu;
+import android.view.MenuItem;
 
 public class NodeDetailsActionMode extends AbstractActions<Node>
 {
@@ -52,9 +52,9 @@ public class NodeDetailsActionMode extends AbstractActions<Node>
     // ///////////////////////////////////////////////////////////////////////////
     public NodeDetailsActionMode(Fragment f, Node selectedNode)
     {
-        this.fragmentRef = new WeakReference<Fragment>(f);
-        this.activityRef = new WeakReference<Activity>(f.getActivity());
-        this.selectedItems = new ArrayList<Node>(1);
+        this.fragmentRef = new WeakReference<>(f);
+        this.activityRef = new WeakReference<>(f.getActivity());
+        this.selectedItems = new ArrayList<>(1);
         addNode(selectedNode);
         this.multiSelectionEnable = false;
     }
@@ -73,7 +73,7 @@ public class NodeDetailsActionMode extends AbstractActions<Node>
         return title;
     }
 
-    protected void getMenu(Activity activity, Menu menu)
+    protected void getMenu(FragmentActivity activity, Menu menu)
     {
         if (selectedItems.isEmpty() || selectedItems.size() > 1) { return; }
 

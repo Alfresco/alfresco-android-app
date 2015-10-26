@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.fragments.fileexplorer;
 
 import java.io.File;
@@ -28,28 +28,28 @@ import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.MenuFragmentHelper;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.fileexplorer.FileActions.onFinishModeListerner;
-import org.alfresco.mobile.android.application.managers.ActionUtils;
-import org.alfresco.mobile.android.platform.intent.BaseActionUtils.ActionManagerListener;
 import org.alfresco.mobile.android.ui.ListingModeFragment;
+import org.alfresco.mobile.android.ui.activity.AlfrescoActivity;
 import org.alfresco.mobile.android.ui.fragments.BaseCursorGridFragment;
-import org.alfresco.mobile.android.ui.fragments.SimpleAlertDialogFragment;
 
-import android.app.Activity;
-import android.app.Fragment;
-import android.content.ActivityNotFoundException;
-import android.content.CursorLoader;
 import android.content.Intent;
-import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
+import android.text.Html;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 
 public class LibraryFragment extends BaseCursorGridFragment
 {
@@ -90,15 +90,24 @@ public class LibraryFragment extends BaseCursorGridFragment
     // LIFECYCLE
     // ///////////////////////////////////////////////////////////////////////////
     @Override
-    public void onActivityCreated(Bundle savedInstanceState)
+    public void displayTitle()
     {
-        super.onActivityCreated(savedInstanceState);
-        if (getDialog() == null && isShortCut)
+        if (isShortCut)
         {
-            getActivity().getActionBar().show();
-            FileExplorerHelper.displayNavigationMode(getActivity(), getMode(), false, menuId);
-            getActivity().getActionBar().setDisplayShowTitleEnabled(false);
+            getActionBar().show();
+            FileExplorerHelper.displayNavigationMode((AlfrescoActivity) getActivity(), getMode(), false, menuId);
+            getActionBar().setDisplayShowTitleEnabled(true);
         }
+        else
+        {
+            super.displayTitle();
+        }
+    }
+
+    @Override
+    public String onPrepareTitle()
+    {
+        return getString(R.string.menu_local_files);
     }
 
     @Override
@@ -132,7 +141,8 @@ public class LibraryFragment extends BaseCursorGridFragment
     @Override
     protected BaseAdapter onAdapterCreation()
     {
-        return new LibraryCursorAdapter(this, null, R.layout.sdk_grid_row, selectedItems, mediaTypeId, getMode());
+        return new LibraryCursorAdapter(this, null, R.layout.row_two_lines_caption_divider, selectedItems, mediaTypeId,
+                getMode());
     }
 
     @Override
@@ -161,7 +171,7 @@ public class LibraryFragment extends BaseCursorGridFragment
             {
                 Intent pickResult = new Intent();
                 pickResult.setData(Uri.fromFile(selectedFile));
-                getActivity().setResult(Activity.RESULT_OK, pickResult);
+                getActivity().setResult(FragmentActivity.RESULT_OK, pickResult);
                 getActivity().finish();
             }
             return;
@@ -197,19 +207,10 @@ public class LibraryFragment extends BaseCursorGridFragment
         }
         else if (nActions == null)
         {
-            // Show properties
-            ActionUtils.actionView(this, selectedFile, new ActionManagerListener()
-            {
-                @Override
-                public void onActivityNotFoundException(ActivityNotFoundException e)
-                {
-                    Bundle b = new Bundle();
-                    b.putInt(SimpleAlertDialogFragment.ARGUMENT_TITLE, R.string.error_unable_open_file_title);
-                    b.putInt(SimpleAlertDialogFragment.ARGUMENT_MESSAGE, R.string.error_unable_open_file);
-                    b.putInt(SimpleAlertDialogFragment.ARGUMENT_POSITIVE_BUTTON, android.R.string.ok);
-                    ActionUtils.actionDisplayDialog(getActivity(), b);
-                }
-            });
+            new MaterialDialog.Builder(getActivity()).iconRes(R.drawable.ic_application_logo)
+                    .title(R.string.error_unable_open_file_title)
+                    .content(Html.fromHtml(getString(R.string.error_unable_open_file)))
+                    .positiveText(android.R.string.ok).show();
             selectedItems.clear();
         }
         adapter.notifyDataSetChanged();
@@ -313,7 +314,7 @@ public class LibraryFragment extends BaseCursorGridFragment
     // ///////////////////////////////////////////////////////////////////////////
     // BUILDER
     // ///////////////////////////////////////////////////////////////////////////
-    public static Builder with(Activity activity)
+    public static Builder with(FragmentActivity activity)
     {
         return new Builder(activity);
     }
@@ -323,15 +324,16 @@ public class LibraryFragment extends BaseCursorGridFragment
         // ///////////////////////////////////////////////////////////////////////////
         // CONSTRUCTORS
         // ///////////////////////////////////////////////////////////////////////////
-        public Builder(Activity activity)
+        public Builder(FragmentActivity activity)
         {
             super(activity);
             this.extraConfiguration = new Bundle();
         }
 
-        public Builder(Activity appActivity, Map<String, Object> configuration)
+        public Builder(FragmentActivity appActivity, Map<String, Object> configuration)
         {
             super(appActivity, configuration);
+            sessionRequired = false;
             menuIconId = R.drawable.ic_download_dark;
             menuTitleId = R.string.menu_local_files;
         }

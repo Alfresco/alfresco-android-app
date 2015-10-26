@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.ui.fragments;
 
 import java.lang.ref.WeakReference;
@@ -25,9 +25,14 @@ import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
+import org.alfresco.mobile.android.ui.activity.AlfrescoActivity;
+import org.alfresco.mobile.android.ui.utils.UIUtils;
 
-import android.app.DialogFragment;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,6 +60,8 @@ public abstract class AlfrescoFragment extends DialogFragment
 
     /** Root View */
     private WeakReference<View> vRoot;
+
+    protected String title;
 
     // /////////////////////////////////////////////////////////////
     // LIFECYCLE
@@ -85,6 +92,13 @@ public abstract class AlfrescoFragment extends DialogFragment
             EventBusManager.getInstance().register(this);
         }
         super.onStart();
+    }
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        displayTitle();
     }
 
     @Override
@@ -165,6 +179,11 @@ public abstract class AlfrescoFragment extends DialogFragment
         return vRoot.get();
     }
 
+    protected Fragment getFragmentByTag(String tag)
+    {
+        return getActivity().getSupportFragmentManager().findFragmentByTag(tag);
+    }
+
     protected void setRootView(View rootView)
     {
         this.vRoot = new WeakReference<View>(rootView);
@@ -188,5 +207,35 @@ public abstract class AlfrescoFragment extends DialogFragment
         if (getRootView() == null) { return; }
         if (getRootView().findViewById(id) == null) { return; }
         getRootView().findViewById(id).setVisibility(View.VISIBLE);
+    }
+
+    protected ActionBar getActionBar()
+    {
+        if (getActivity() instanceof AlfrescoActivity)
+        {
+            return ((AlfrescoActivity) getActivity()).getAppActionBar();
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    // /////////////////////////////////////////////////////////////
+    // TITLE
+    // ////////////////////////////////////////////////////////////
+    /**
+     * Used to refresh Title & ActionBar content after sliding menu event.
+     */
+    public void displayTitle()
+    {
+        title = TextUtils.isEmpty(title) ? onPrepareTitle() : title;
+        if (TextUtils.isEmpty(title)) { return; }
+        UIUtils.displayTitle(getActivity(), title);
+    }
+
+    public String onPrepareTitle()
+    {
+        return title;
     }
 }

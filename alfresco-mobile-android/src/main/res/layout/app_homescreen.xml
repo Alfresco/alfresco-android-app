@@ -35,7 +35,6 @@
         <Button
             android:id="@+id/homescreen_login"
             style="?MainTheme.Button.Large"
-            android:text="@string/home_login"
             android:contentDescription="@string/home_account" />
 
         <LinearLayout

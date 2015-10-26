@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.fragments.node.upload;
 
 import java.io.BufferedWriter;
@@ -46,10 +46,10 @@ import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
 import org.alfresco.mobile.android.platform.utils.AndroidVersion;
 import org.alfresco.mobile.android.ui.activity.AlfrescoActivity;
+import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.annotation.TargetApi;
-import android.app.Fragment;
 import android.content.ClipData;
 import android.content.ClipData.Item;
 import android.content.Intent;
@@ -73,18 +73,15 @@ import android.widget.Spinner;
  * 
  * @author Jean Marie Pascal
  */
-public class UploadFormFragment extends Fragment
+public class UploadFormFragment extends AlfrescoFragment
 {
-
     public static final String TAG = "ImportFormFragment";
-
-    private AlfrescoAccount selectedAccount;
 
     private String fileName;
 
     private File file;
 
-    private View rootView;
+    private AlfrescoAccount selectedAccount;
 
     private Integer folderImportId;
 
@@ -103,6 +100,15 @@ public class UploadFormFragment extends Fragment
 
     private Spinner spinnerAccount;
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // CONSTUCTORS
+    // ///////////////////////////////////////////////////////////////////////////
+    public UploadFormFragment()
+    {
+        requiredSession = false;
+        checkSession = false;
+    }
+
     public static UploadFormFragment newInstance(Bundle b)
     {
         UploadFormFragment fr = new UploadFormFragment();
@@ -119,17 +125,17 @@ public class UploadFormFragment extends Fragment
     {
         UIUtils.displayTitle(getActivity(), R.string.import_document_title);
 
-        rootView = inflater.inflate(R.layout.app_import, container, false);
-        if (rootView.findViewById(R.id.listView) != null)
+        setRootView(inflater.inflate(R.layout.app_import, container, false));
+        if (viewById(R.id.listView) != null)
         {
-            initDocumentList(rootView);
+            initDocumentList(getRootView());
         }
         else
         {
-            initiDocumentSpinner(rootView);
+            initiDocumentSpinner(getRootView());
         }
 
-        spinnerAccount = (Spinner) rootView.findViewById(R.id.accounts_spinner);
+        spinnerAccount = (Spinner) viewById(R.id.accounts_spinner);
         spinnerAccount.setOnItemSelectedListener(new OnItemSelectedListener()
         {
 
@@ -145,7 +151,7 @@ public class UploadFormFragment extends Fragment
                 // Do nothing
             }
         });
-        return rootView;
+        return getRootView();
     }
 
     @Override
@@ -153,7 +159,7 @@ public class UploadFormFragment extends Fragment
     {
         super.onActivityCreated(savedInstanceState);
         List<AlfrescoAccount> list = AlfrescoAccountManager.retrieveAccounts(getActivity());
-        spinnerAccount.setAdapter(new AccountsAdapter(getActivity(), list, R.layout.app_account_list_row, null));
+        spinnerAccount.setAdapter(new AccountsAdapter(getActivity(), list, R.layout.row_two_lines, null));
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -298,7 +304,7 @@ public class UploadFormFragment extends Fragment
 
         if (adapter == null && files != null)
         {
-            adapter = new FileExplorerAdapter(this, R.layout.app_list_progress_row, files);
+            adapter = new FileExplorerAdapter(this, R.layout.row_two_lines_progress, files);
             if (lv != null)
             {
                 lv.setAdapter(adapter);
@@ -309,7 +315,7 @@ public class UploadFormFragment extends Fragment
             }
         }
 
-        Button b = UIUtils.initCancel(rootView, R.string.cancel);
+        Button b = UIUtils.initCancel(getRootView(), R.string.cancel);
         b.setOnClickListener(new OnClickListener()
         {
             @Override
@@ -319,7 +325,7 @@ public class UploadFormFragment extends Fragment
             }
         });
 
-        b = UIUtils.initValidation(rootView, R.string.next);
+        b = UIUtils.initValidation(getRootView(), R.string.next);
         b.setOnClickListener(new OnClickListener()
         {
             @Override
@@ -385,8 +391,8 @@ public class UploadFormFragment extends Fragment
 
     private void refreshImportFolder()
     {
-        Spinner spinner = (Spinner) rootView.findViewById(R.id.import_folder_spinner);
-        UploadFolderAdapter upLoadadapter = new UploadFolderAdapter(getActivity(), R.layout.sdk_list_row,
+        Spinner spinner = (Spinner) viewById(R.id.import_folder_spinner);
+        UploadFolderAdapter upLoadadapter = new UploadFolderAdapter(getActivity(), R.layout.row_single_line,
                 IMPORT_FOLDER_LIST);
         spinner.setAdapter(upLoadadapter);
         spinner.setOnItemSelectedListener(new OnItemSelectedListener()
@@ -461,7 +467,7 @@ public class UploadFormFragment extends Fragment
                 if (files.size() == 1)
                 {
                     UploadLocalDialogFragment fr = UploadLocalDialogFragment.newInstance(tmpAccount, file);
-                    fr.show(getActivity().getFragmentManager(), UploadLocalDialogFragment.TAG);
+                    fr.show(getActivity().getSupportFragmentManager(), UploadLocalDialogFragment.TAG);
                 }
                 else
                 {

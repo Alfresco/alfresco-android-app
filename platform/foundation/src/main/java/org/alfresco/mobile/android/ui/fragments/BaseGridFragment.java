@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 /*******************************************************************************
  * 
  * This file is part of the Alfresco Mobile SDK.
@@ -42,13 +42,19 @@ import org.alfresco.mobile.android.async.OperationEvent;
 import org.alfresco.mobile.android.async.OperationRequest.OperationBuilder;
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.foundation.R;
-import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
 import org.alfresco.mobile.android.platform.utils.ConnectivityUtils;
 
 import android.annotation.TargetApi;
 import android.os.Bundle;
+import android.text.Html;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
 
 @TargetApi(11)
 public abstract class BaseGridFragment extends CommonGridFragment
@@ -120,6 +126,9 @@ public abstract class BaseGridFragment extends CommonGridFragment
                     gv.invalidateViews();
                     gv.setAdapter(null);
                 }
+                prepareEmptyView(ev, (ImageView) ev.findViewById(R.id.empty_picture),
+                        (TextView) ev.findViewById(R.id.empty_text),
+                        (TextView) ev.findViewById(R.id.empty_text_description));
             }
             else
             {
@@ -167,7 +176,7 @@ public abstract class BaseGridFragment extends CommonGridFragment
         super.onRetrieveParameters(bundle);
         if (bundle.containsKey(ARGUMENT_LABEL))
         {
-            mTitle = bundle.getString(ARGUMENT_LABEL);
+            title = bundle.getString(ARGUMENT_LABEL);
         }
     }
 
@@ -215,8 +224,9 @@ public abstract class BaseGridFragment extends CommonGridFragment
             {
                 refreshHelper.setRefreshComplete();
             }
-            AlfrescoNotificationManager.getInstance(getActivity()).showInfoCrouton(getActivity(),
-                    getString(R.string.error_session_nodata));
+            Crouton.cancelAllCroutons();
+            Crouton.showText(getActivity(), Html.fromHtml(getString(R.string.error_session_nodata)), Style.INFO,
+                    (ViewGroup) (getRootView().getParent()));
             return;
         }
 

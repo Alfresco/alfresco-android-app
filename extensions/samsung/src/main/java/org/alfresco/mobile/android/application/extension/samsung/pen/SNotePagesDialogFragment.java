@@ -20,9 +20,9 @@ package org.alfresco.mobile.android.application.extension.samsung.pen;
 import org.alfresco.mobile.android.application.extension.samsung.R;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
-import android.app.DialogFragment;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;

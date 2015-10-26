@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.async;
 
 /**
@@ -47,12 +47,16 @@ public interface OperationRequestIds
 
     int OPERATION_COMPLETE = 7;
 
+    int OPERATION_SEARCH = 8;
+
     // ///////////////////////////////////////////////////////////////////////////
     // ACCOUNTS
     // ///////////////////////////////////////////////////////////////////////////
     int FAMILY_ACCOUNT = 0;
 
     int ID_ACCOUNT_CREATE = FAMILY_ACCOUNT + OPERATION_CREATE;
+
+    int ID_ACCOUNT_CHECK = FAMILY_ACCOUNT + OPERATION_READ;
 
     // ///////////////////////////////////////////////////////////////////////////
     // SESSION
@@ -96,6 +100,17 @@ public interface OperationRequestIds
     int ID_FAVORITE_CREATE = FAMILY_FAVORITE + OPERATION_CREATE;
 
     // ///////////////////////////////////////////////////////////////////////////
+    // FAVORITE
+    // ///////////////////////////////////////////////////////////////////////////
+    int FAMILY_SYNC = 210;
+
+    int ID_SYNC_NODE_BROWSE = FAMILY_SYNC + OPERATION_LIST;
+
+    int ID_SYNC_NODE_READ = FAMILY_SYNC + OPERATION_READ;
+
+    int ID_SYNC_CREATE = FAMILY_SYNC + OPERATION_CREATE;
+
+    // ///////////////////////////////////////////////////////////////////////////
     // LIKE
     // ///////////////////////////////////////////////////////////////////////////
     int FAMILY_LIKE = 250;
@@ -134,6 +149,8 @@ public interface OperationRequestIds
     int FAMILY_SITE = 400;
 
     int ID_SITE_LIST = FAMILY_SITE + OPERATION_LIST;
+
+    int ID_SITE_SEARCH = FAMILY_SITE + OPERATION_SEARCH;
 
     int ID_SITE_FAVORITE_UPDATE = FAMILY_SITE + OPERATION_UPDATE;
 

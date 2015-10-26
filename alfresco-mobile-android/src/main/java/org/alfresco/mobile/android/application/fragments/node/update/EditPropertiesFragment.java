@@ -1,25 +1,24 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.fragments.node.update;
 
 import java.io.Serializable;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.model.Folder;
@@ -27,7 +26,7 @@ import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.builder.LeafFragmentBuilder;
-import org.alfresco.mobile.android.application.ui.form.BaseField;
+import org.alfresco.mobile.android.application.ui.form.fields.BaseField;
 import org.alfresco.mobile.android.application.ui.form.picker.AllowablePickerFragment.onPickAllowableValuesFragment;
 import org.alfresco.mobile.android.application.ui.form.picker.DatePickerFragment.onPickDateFragment;
 import org.alfresco.mobile.android.application.ui.form.picker.DocumentPickerFragment;
@@ -39,11 +38,12 @@ import org.alfresco.mobile.android.async.definition.TypeDefinitionEvent;
 import org.alfresco.mobile.android.async.node.update.UpdateNodeRequest;
 import org.alfresco.mobile.android.platform.utils.BundleUtils;
 
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -65,6 +65,11 @@ public class EditPropertiesFragment extends EditNodePropertiesFragment implement
     // //////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // //////////////////////////////////////////////////////////////////////
+    public EditPropertiesFragment()
+    {
+        setRetainInstance(true);
+    }
+
     public static EditPropertiesFragment newInstanceByTemplate(Bundle b)
     {
         EditPropertiesFragment adf = new EditPropertiesFragment();
@@ -109,14 +114,6 @@ public class EditPropertiesFragment extends EditNodePropertiesFragment implement
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState)
-    {
-        HashMap<String, Serializable> props = formManager.prepareProperties();
-        outState.putSerializable("props", props);
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
     public void onConfigurationChanged(Configuration newConfig)
     {
         super.onConfigurationChanged(newConfig);
@@ -135,8 +132,15 @@ public class EditPropertiesFragment extends EditNodePropertiesFragment implement
     // //////////////////////////////////////////////////////////////////////
     protected void updateNode()
     {
+        if (!formManager.checkValidation())
+        {
+            Snackbar.make(getActivity().findViewById(R.id.left_pane_body), R.string.form_message_validation,
+                    Snackbar.LENGTH_LONG).show();
+            return;
+        }
+
         bcreate.setEnabled(false);
-        Map<String, Serializable> props = formManager.prepareProperties();
+        Map<String, Serializable> props = formManager.getValues();
         Operator.with(getActivity()).load(new UpdateNodeRequest.Builder(folder, node, props));
 
         if (getDialog() != null)
@@ -165,7 +169,7 @@ public class EditPropertiesFragment extends EditNodePropertiesFragment implement
     @Override
     public void onDatePicked(String fieldId, GregorianCalendar gregorianCalendar)
     {
-        formManager.setPropertyValue(fieldId, gregorianCalendar);
+        formManager.setPropertyValue(fieldId, gregorianCalendar.getTime());
     }
 
     @Override
@@ -237,7 +241,7 @@ public class EditPropertiesFragment extends EditNodePropertiesFragment implement
     public void onNodeSelected(String fieldId, Map<String, Node> items)
     {
         formManager.setPropertyValue(fieldId, items);
-        getActivity().getFragmentManager().popBackStackImmediate(DocumentPickerFragment.TAG,
+        getActivity().getSupportFragmentManager().popBackStackImmediate(DocumentPickerFragment.TAG,
                 FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 
@@ -276,7 +280,7 @@ public class EditPropertiesFragment extends EditNodePropertiesFragment implement
     // ///////////////////////////////////////////////////////////////////////////
     // BUILDER
     // ///////////////////////////////////////////////////////////////////////////
-    public static Builder with(Activity activity)
+    public static Builder with(FragmentActivity activity)
     {
         return new Builder(activity);
     }
@@ -286,13 +290,13 @@ public class EditPropertiesFragment extends EditNodePropertiesFragment implement
         // ///////////////////////////////////////////////////////////////////////////
         // CONSTRUCTORS & HELPERS
         // ///////////////////////////////////////////////////////////////////////////
-        public Builder(Activity activity)
+        public Builder(FragmentActivity activity)
         {
             super(activity);
             this.extraConfiguration = new Bundle();
         }
 
-        public Builder(Activity appActivity, Map<String, Object> configuration)
+        public Builder(FragmentActivity appActivity, Map<String, Object> configuration)
         {
             super(appActivity, configuration);
             templateArguments = new String[] {};

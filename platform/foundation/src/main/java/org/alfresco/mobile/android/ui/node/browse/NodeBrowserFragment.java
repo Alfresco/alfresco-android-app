@@ -105,7 +105,8 @@ public class NodeBrowserFragment extends BaseGridFragment implements RefreshFrag
 
         if (pathParameter != null)
         {
-            mTitle = (pathParameter.equals("/") ? "/" : pathParameter.substring(pathParameter.lastIndexOf("/") + 1,
+            title = (pathParameter.equals("/") ? "/"
+                    : pathParameter.substring(pathParameter.lastIndexOf("/") + 1,
                     pathParameter.length()));
             request = new NodeChildrenRequest.Builder(ARGUMENT_PATH, pathParameter);
         }
@@ -115,12 +116,12 @@ public class NodeBrowserFragment extends BaseGridFragment implements RefreshFrag
         }
         else if (site != null && folderParameter == null)
         {
-            mTitle = site.getTitle();
+            title = site.getTitle();
             request = new NodeChildrenRequest.Builder(site);
         }
         else if (folderParameter != null)
         {
-            mTitle = folderParameter.getName();
+            title = folderParameter.getName();
             request = new NodeChildrenRequest.Builder(folderParameter);
         }
         else if (folderTypeId != -1)
@@ -128,13 +129,13 @@ public class NodeBrowserFragment extends BaseGridFragment implements RefreshFrag
             switch (folderTypeId)
             {
                 case NodeChildrenRequest.FOLDER_SHARED:
-                    mTitle = getString(R.string.menu_browse_shared);
+                    title = getString(R.string.menu_browse_shared);
                     break;
                 case NodeChildrenRequest.FOLDER_USER_HOMES:
-                    mTitle = getString(R.string.menu_browse_userhome);
+                    title = getString(R.string.menu_browse_userhome);
                     break;
                 default:
-                    mTitle = "";
+                    title = "";
                     break;
             }
             request = new NodeChildrenRequest.Builder(folderTypeId);
@@ -145,7 +146,7 @@ public class NodeBrowserFragment extends BaseGridFragment implements RefreshFrag
         }
         else
         {
-            mTitle = getSession().getRootFolder().getName();
+            title = getSession().getRootFolder().getName();
             request = new NodeChildrenRequest.Builder(getSession().getRootFolder());
         }
 

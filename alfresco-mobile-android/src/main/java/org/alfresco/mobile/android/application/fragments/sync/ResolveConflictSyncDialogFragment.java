@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.fragments.sync;
 
 import java.io.File;
@@ -25,21 +25,21 @@ import org.alfresco.mobile.android.async.OperationSchema;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.io.IOUtils;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
-import org.alfresco.mobile.android.sync.FavoritesSyncManager;
-import org.alfresco.mobile.android.sync.FavoritesSyncSchema;
-import org.alfresco.mobile.android.sync.operations.FavoriteSyncStatus;
+import org.alfresco.mobile.android.sync.SyncContentManager;
+import org.alfresco.mobile.android.sync.SyncContentSchema;
+import org.alfresco.mobile.android.sync.operations.SyncContentStatus;
 
-import android.app.AlertDialog.Builder;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.ContentValues;
-import android.content.DialogInterface;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.text.Html;
 import android.view.Gravity;
 import android.widget.TextView;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 
 public class ResolveConflictSyncDialogFragment extends DialogFragment
 {
@@ -47,11 +47,13 @@ public class ResolveConflictSyncDialogFragment extends DialogFragment
 
     private OnChangeListener onFavoriteChangeListener;
 
-    private static final String ARGUMENT_FAVORITEID = "favoriteId";
+    private static final String ARGUMENT_SYNCID = "syncId";
 
-    private Cursor favoriteCursor;
+    private Cursor syncCursor;
 
-    private long favoriteId;
+    private long syncId;
+
+    private SyncFragment syncF;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTOR
@@ -64,7 +66,7 @@ public class ResolveConflictSyncDialogFragment extends DialogFragment
     {
         ResolveConflictSyncDialogFragment frag = new ResolveConflictSyncDialogFragment();
         Bundle b = new Bundle();
-        b.putLong(ARGUMENT_FAVORITEID, favoriteId);
+        b.putLong(ARGUMENT_SYNCID, favoriteId);
         frag.setArguments(b);
         return frag;
     }
@@ -75,81 +77,102 @@ public class ResolveConflictSyncDialogFragment extends DialogFragment
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
-        if (getArguments() == null || !getArguments().containsKey(ARGUMENT_FAVORITEID)) { return createErrorDialog(); }
+        if (getArguments() == null || !getArguments().containsKey(ARGUMENT_SYNCID)) { return createErrorDialog(); }
 
-        favoriteId = getArguments().getLong(ARGUMENT_FAVORITEID);
-        favoriteCursor = getActivity().getContentResolver().query(FavoritesSyncManager.getUri(favoriteId),
-                FavoritesSyncSchema.COLUMN_ALL, null, null, null);
+        syncId = getArguments().getLong(ARGUMENT_SYNCID);
+        syncCursor = getActivity().getContentResolver().query(SyncContentManager.getUri(syncId),
+                SyncContentSchema.COLUMN_ALL, null, null, null);
 
-        if (favoriteCursor.getCount() != 1) { return createErrorDialog(); }
+        syncF = (SyncFragment) getActivity().getSupportFragmentManager().findFragmentByTag(SyncFragment.TAG);
 
-        if (!favoriteCursor.moveToFirst()) { return createErrorDialog(); }
+        if (syncCursor.getCount() != 1) { return createErrorDialog(); }
+
+        if (!syncCursor.moveToFirst()) { return createErrorDialog(); }
         // Messages informations
         int titleId = R.string.sync_error_title;
         int iconId = R.drawable.ic_application_logo;
-        int messageId = R.string.sync_error_node_unfavorited;
-        int positiveId = android.R.string.yes;
+        int messageId = R.string.sync_error_node_deleted;
+        int positiveId = android.R.string.ok;
         int negativeId = -1;
 
-        int reason = favoriteCursor.getInt(FavoritesSyncSchema.COLUMN_REASON_ID);
+        int reason = syncCursor.getInt(SyncContentSchema.COLUMN_REASON_ID);
 
         switch (reason)
         {
-            case FavoriteSyncStatus.REASON_NODE_DELETED:
+            case SyncContentStatus.REASON_NODE_DELETED:
                 messageId = R.string.sync_error_node_deleted;
                 positiveId = android.R.string.ok;
                 onFavoriteChangeListener = deletedFavoriteListener;
                 break;
-            case FavoriteSyncStatus.REASON_NO_PERMISSION:
+            case SyncContentStatus.REASON_NO_PERMISSION:
                 messageId = R.string.sync_error_no_permission;
                 positiveId = R.string.sync_save_action;
                 negativeId = R.string.sync_override_action;
                 onFavoriteChangeListener = overrideListener;
                 break;
-            case FavoriteSyncStatus.REASON_LOCAL_MODIFICATION:
-            case FavoriteSyncStatus.REASON_NODE_UNFAVORITED:
+            case SyncContentStatus.REASON_LOCAL_MODIFICATION:
+                messageId = R.string.sync_error_node_deleted;
+                positiveId = android.R.string.ok;
+                onFavoriteChangeListener = deletedFavoriteListener;
+                break;
+            case SyncContentStatus.REASON_NODE_UNFAVORITED:
                 messageId = R.string.sync_error_node_unfavorited;
                 positiveId = R.string.sync_save_action;
                 negativeId = R.string.sync_action;
                 onFavoriteChangeListener = unfavoriteListener;
                 break;
             default:
+                onFavoriteChangeListener = deletedFavoriteListener;
                 break;
         }
 
-        String message = String.format(getString(messageId),
-                favoriteCursor.getString(FavoritesSyncSchema.COLUMN_TITLE_ID));
+        String message = String.format(getString(messageId), syncCursor.getString(SyncContentSchema.COLUMN_TITLE_ID));
 
-        Builder builder = new Builder(getActivity()).setIcon(iconId).setTitle(titleId)
-                .setMessage(Html.fromHtml(message)).setCancelable(false)
-                .setPositiveButton(positiveId, new DialogInterface.OnClickListener()
-                {
-                    public void onClick(DialogInterface dialog, int whichButton)
-                    {
-                        if (onFavoriteChangeListener != null)
-                        {
-                            onFavoriteChangeListener.onPositive(favoriteCursor);
-                        }
-                        dialog.dismiss();
-                    }
-                });
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity()).iconRes(iconId).title(titleId)
+                .cancelable(false).content(Html.fromHtml(message)).positiveText(positiveId);
 
         if (negativeId != -1)
         {
-            builder.setNegativeButton(negativeId, new DialogInterface.OnClickListener()
+            builder.negativeText(negativeId).callback(new MaterialDialog.ButtonCallback()
             {
-                public void onClick(DialogInterface dialog, int whichButton)
+                @Override
+                public void onNegative(MaterialDialog dialog)
                 {
                     if (onFavoriteChangeListener != null)
                     {
-                        onFavoriteChangeListener.onNegative(favoriteCursor);
+                        onFavoriteChangeListener.onNegative(syncCursor);
+                    }
+                    dialog.dismiss();
+                }
+
+                @Override
+                public void onPositive(MaterialDialog dialog)
+                {
+                    if (onFavoriteChangeListener != null)
+                    {
+                        onFavoriteChangeListener.onPositive(syncCursor);
+                    }
+                    dialog.dismiss();
+                }
+            });
+        }
+        else
+        {
+            builder.callback(new MaterialDialog.ButtonCallback()
+            {
+                @Override
+                public void onPositive(MaterialDialog dialog)
+                {
+                    if (onFavoriteChangeListener != null)
+                    {
+                        onFavoriteChangeListener.onPositive(syncCursor);
                     }
                     dialog.dismiss();
                 }
             });
         }
 
-        return builder.create();
+        return builder.show();
     }
 
     @Override
@@ -157,8 +180,11 @@ public class ResolveConflictSyncDialogFragment extends DialogFragment
     {
         if (getDialog() != null)
         {
-            TextView messageText = (TextView) getDialog().findViewById(android.R.id.message);
-            messageText.setGravity(Gravity.CENTER);
+            TextView messageText = ((MaterialDialog) getDialog()).getContentView();
+            if (messageText != null)
+            {
+                messageText.setGravity(Gravity.CENTER);
+            }
             getDialog().show();
         }
         super.onResume();
@@ -223,26 +249,28 @@ public class ResolveConflictSyncDialogFragment extends DialogFragment
     // ///////////////////////////////////////////////////////////////////////////
     private void download(Cursor c)
     {
-        String nodeIdentifier = c.getString(FavoritesSyncSchema.COLUMN_NODE_ID_ID);
+        String nodeIdentifier = c.getString(SyncContentSchema.COLUMN_NODE_ID_ID);
 
-        FavoritesSyncManager.getInstance(getActivity()).sync(SessionUtils.getAccount(getActivity()), nodeIdentifier);
+        SyncContentManager.getInstance(getActivity()).sync(SessionUtils.getAccount(getActivity()), nodeIdentifier);
 
         ContentValues cValues = new ContentValues();
-        cValues.put(OperationSchema.COLUMN_STATUS, FavoriteSyncStatus.STATUS_PENDING);
-        getActivity().getContentResolver().update(FavoritesSyncManager.getUri(favoriteId), cValues, null, null);
+        cValues.put(OperationSchema.COLUMN_STATUS, SyncContentStatus.STATUS_PENDING);
+        getActivity().getContentResolver().update(SyncContentManager.getUri(syncId), cValues, null, null);
+        refreshSyncFragment();
 
         c.close();
     }
 
     private void update(Cursor c)
     {
-        String nodeIdentifier = c.getString(FavoritesSyncSchema.COLUMN_NODE_ID_ID);
+        String nodeIdentifier = c.getString(SyncContentSchema.COLUMN_NODE_ID_ID);
 
         ContentValues cValues = new ContentValues();
-        cValues.put(OperationSchema.COLUMN_REASON, FavoriteSyncStatus.STATUS_TO_UPDATE);
-        getActivity().getContentResolver().update(FavoritesSyncManager.getUri(favoriteId), cValues, null, null);
+        cValues.put(OperationSchema.COLUMN_REASON, SyncContentStatus.STATUS_TO_UPDATE);
+        getActivity().getContentResolver().update(SyncContentManager.getUri(syncId), cValues, null, null);
 
-        FavoritesSyncManager.getInstance(getActivity()).sync(SessionUtils.getAccount(getActivity()), nodeIdentifier);
+        SyncContentManager.getInstance(getActivity()).sync(SessionUtils.getAccount(getActivity()), nodeIdentifier);
+        refreshSyncFragment();
 
         c.close();
     }
@@ -251,43 +279,53 @@ public class ResolveConflictSyncDialogFragment extends DialogFragment
     {
         ContentValues cValues = new ContentValues();
         cValues.put(OperationSchema.COLUMN_STATUS, Operation.STATUS_RUNNING);
-        getActivity().getContentResolver().update(FavoritesSyncManager.getUri(favoriteId), cValues, null, null);
+        getActivity().getContentResolver().update(SyncContentManager.getUri(syncId), cValues, null, null);
 
         // Current File
-        Uri localFileUri = Uri.parse(c.getString(FavoritesSyncSchema.COLUMN_LOCAL_URI_ID));
+        Uri localFileUri = Uri.parse(c.getString(SyncContentSchema.COLUMN_LOCAL_URI_ID));
         File localFile = new File(localFileUri.getPath());
-        String nodeIdentifier = c.getString(FavoritesSyncSchema.COLUMN_NODE_ID_ID);
+        String nodeIdentifier = c.getString(SyncContentSchema.COLUMN_NODE_ID_ID);
 
         // New File
-        File parentFolder = AlfrescoStorageManager.getInstance(getActivity()).getDownloadFolder(
-                SessionUtils.getAccount(getActivity()));
-        File newLocalFile = new File(parentFolder, c.getString(FavoritesSyncSchema.COLUMN_TITLE_ID));
+        File parentFolder = AlfrescoStorageManager.getInstance(getActivity())
+                .getDownloadFolder(SessionUtils.getAccount(getActivity()));
+        File newLocalFile = new File(parentFolder, c.getString(SyncContentSchema.COLUMN_TITLE_ID));
         newLocalFile = IOUtils.createFile(newLocalFile);
 
         // Move to "Download"
         cValues.clear();
         if (localFile.renameTo(newLocalFile))
         {
-            getActivity().getContentResolver().delete(FavoritesSyncManager.getUri(favoriteId), null, null);
+            getActivity().getContentResolver().delete(SyncContentManager.getUri(syncId), null, null);
         }
         else
         {
-            cValues.put(OperationSchema.COLUMN_STATUS, FavoriteSyncStatus.STATUS_FAILED);
-            getActivity().getContentResolver().update(FavoritesSyncManager.getUri(favoriteId), cValues, null, null);
+            cValues.put(OperationSchema.COLUMN_STATUS, SyncContentStatus.STATUS_FAILED);
+            getActivity().getContentResolver().update(SyncContentManager.getUri(syncId), cValues, null, null);
         }
 
-        FavoritesSyncManager.getInstance(getActivity()).sync(SessionUtils.getAccount(getActivity()), nodeIdentifier);
+        SyncContentManager.getInstance(getActivity()).sync(SessionUtils.getAccount(getActivity()), nodeIdentifier);
 
         // Encrypt file if necessary
         AlfrescoStorageManager.getInstance(getActivity()).manageFile(newLocalFile);
+        refreshSyncFragment();
 
         c.close();
     }
 
     private void remove(Cursor c)
     {
-        getActivity().getContentResolver().delete(FavoritesSyncManager.getUri(favoriteId), null, null);
+        getActivity().getContentResolver().delete(SyncContentManager.getUri(syncId), null, null);
+        refreshSyncFragment();
         c.close();
+    }
+
+    private void refreshSyncFragment()
+    {
+        if (syncF != null)
+        {
+            syncF.onSyncNodeEvent(null);
+        }
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -296,8 +334,9 @@ public class ResolveConflictSyncDialogFragment extends DialogFragment
     private Dialog createErrorDialog()
     {
         // Error !
-        Builder builder = new Builder(getActivity()).setIcon(R.drawable.ic_application_logo)
-                .setTitle(R.string.sync_error_title).setMessage(R.string.error_general);
-        return builder.create();
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity())
+                .iconRes(R.drawable.ic_application_logo).title(R.string.sync_error_title)
+                .content(R.string.error_general).positiveText(android.R.string.ok);
+        return builder.show();
     }
 }

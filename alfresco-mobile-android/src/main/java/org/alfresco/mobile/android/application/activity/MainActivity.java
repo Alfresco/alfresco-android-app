@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+ * Copyright (C) 2005-2015 Alfresco Software Limited.
  *
  * This file is part of Alfresco Mobile for Android.
  *
@@ -28,14 +28,11 @@ import org.alfresco.mobile.android.api.services.ServiceRegistry;
 import org.alfresco.mobile.android.api.services.impl.AlfrescoServiceRegistry;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.accounts.AccountOAuthHelper;
 import org.alfresco.mobile.android.application.capture.DeviceCapture;
-import org.alfresco.mobile.android.application.capture.DeviceCaptureHelper;
 import org.alfresco.mobile.android.application.configuration.ConfigurationConstant;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.about.AboutFragment;
-import org.alfresco.mobile.android.application.fragments.account.AccountOAuthFragment;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.builder.FragmentBuilderFactory;
 import org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerFragment;
@@ -44,9 +41,10 @@ import org.alfresco.mobile.android.application.fragments.menu.MainMenuFragment;
 import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsFragment;
 import org.alfresco.mobile.android.application.fragments.preferences.GeneralPreferences;
+import org.alfresco.mobile.android.application.fragments.signin.AccountOAuthFragment;
 import org.alfresco.mobile.android.application.fragments.sync.SyncFragment;
+import org.alfresco.mobile.android.application.fragments.sync.SyncMigrationFragment;
 import org.alfresco.mobile.android.application.intent.RequestCode;
-import org.alfresco.mobile.android.application.managers.ActionUtils;
 import org.alfresco.mobile.android.application.managers.ConfigManager;
 import org.alfresco.mobile.android.application.managers.RenditionManagerImpl;
 import org.alfresco.mobile.android.application.security.DataProtectionUserDialogFragment;
@@ -61,6 +59,7 @@ import org.alfresco.mobile.android.async.session.LoadSessionCallBack.LoadAccount
 import org.alfresco.mobile.android.async.session.LoadSessionCallBack.LoadAccountStartedEvent;
 import org.alfresco.mobile.android.async.session.LoadSessionCallBack.LoadInactiveAccountEvent;
 import org.alfresco.mobile.android.async.session.RequestSessionEvent;
+import org.alfresco.mobile.android.async.session.oauth.AccountOAuthHelper;
 import org.alfresco.mobile.android.async.session.oauth.RetrieveOAuthDataEvent;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.EventBusManager;
@@ -68,21 +67,19 @@ import org.alfresco.mobile.android.platform.SessionManager;
 import org.alfresco.mobile.android.platform.accounts.AccountsPreferences;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
-import org.alfresco.mobile.android.platform.extensions.ScanSnapManager;
+import org.alfresco.mobile.android.platform.favorite.FavoritesManager;
 import org.alfresco.mobile.android.platform.intent.AlfrescoIntentAPI;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.mdm.MDMManager;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
-import org.alfresco.mobile.android.platform.utils.AndroidVersion;
 import org.alfresco.mobile.android.platform.utils.ConnectivityUtils;
-import org.alfresco.mobile.android.sync.FavoritesSyncManager;
+import org.alfresco.mobile.android.sync.SyncContentManager;
 import org.alfresco.mobile.android.ui.RefreshFragment;
-import org.alfresco.mobile.android.ui.fragments.SimpleAlertDialogFragment;
+import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.node.browse.NodeBrowserTemplate;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.annotation.TargetApi;
-import android.app.FragmentManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -93,15 +90,20 @@ import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.squareup.otto.Subscribe;
 
 /**
@@ -139,6 +141,8 @@ public class MainActivity extends BaseActivity
 
     private int fragmentQueue = -1;
 
+    private Boolean displaySync;
+
     // SLIDING MENU
     private static DrawerLayout mDrawerLayout;
 
@@ -160,8 +164,16 @@ public class MainActivity extends BaseActivity
         super.onCreate(savedInstanceState);
 
         // Loading progress
-        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.app_main);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        if (toolbar != null)
+        {
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
+        }
+
         mdmManager = MDMManager.getInstance(this);
 
         if (capture != null) capture.setActivity(this);
@@ -169,7 +181,7 @@ public class MainActivity extends BaseActivity
         if (savedInstanceState != null)
         {
             MainActivityHelper helper = new MainActivityHelper(savedInstanceState.getBundle(MainActivityHelper.TAG));
-            currentAccount = helper.getCurrentAccount();
+            setCurrentAccount(helper.getCurrentAccount());
             importParent = helper.getFolder();
             fragmentQueue = helper.getFragmentQueue();
 
@@ -185,10 +197,10 @@ public class MainActivity extends BaseActivity
         }
 
         // After account creation via welcome screen
-        if (currentAccount != null)
+        if (getCurrentAccount() != null)
         {
             requestSwapAccount = true;
-            if (currentAccount.getIsPaidAccount()
+            if (getCurrentAccount().getIsPaidAccount()
                     && !prefs.getBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, false))
             {
 
@@ -198,24 +210,46 @@ public class MainActivity extends BaseActivity
                     // This is needed on new AlfrescoAccount creation, as the
                     // Activity gets
                     // re-created after the AlfrescoAccount is created.
-                    DataProtectionUserDialogFragment.newInstance(true).show(getFragmentManager(),
+                    DataProtectionUserDialogFragment.newInstance(true).show(getSupportFragmentManager(),
                             DataProtectionUserDialogFragment.TAG);
                     prefs.edit().putBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, true).commit();
                 }
             }
         }
 
+        FragmentTransaction t2 = getSupportFragmentManager().beginTransaction();
+        t2.replace(R.id.sliding_menu, MainMenuFragment.with(this).createFragment(), MainMenuFragment.SLIDING_TAG);
+        t2.commit();
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawer = (ViewGroup) findViewById(R.id.left_drawer);
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open_in, R.string.cancel)
         {
 
-            /** Called when a drawer has settled in a completely closed state. */
+            /**
+             * Called when a drawer has settled in a completely closed state.
+             */
             public void onDrawerClosed(View view)
             {
                 super.onDrawerClosed(view);
                 invalidateOptionsMenu();
+
+                // Refresh Title from Fragments
+                AlfrescoFragment fr = (AlfrescoFragment) getSupportFragmentManager()
+                        .findFragmentById(DisplayUtils.getLeftFragmentId(MainActivity.this));
+                if (fr != null)
+                {
+                    fr.displayTitle();
+                    if (DisplayUtils.hasCentralPane(MainActivity.this))
+                    {
+                        fr = (AlfrescoFragment) getSupportFragmentManager()
+                                .findFragmentById(DisplayUtils.getCentralFragmentId(MainActivity.this));
+                        if (fr != null)
+                        {
+                            fr.displayTitle();
+                        }
+                    }
+                }
             }
 
             /** Called when a drawer has settled in a completely open state. */
@@ -228,17 +262,15 @@ public class MainActivity extends BaseActivity
                 }
                 super.onDrawerOpened(drawerView);
                 invalidateOptionsMenu();
+                UIUtils.displayTitle(R.string.app_name, MainActivity.this);
             }
         };
 
         // Set the drawer toggle as the DrawerListener
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        if (AndroidVersion.isICSOrAbove())
-        {
-            getActionBar().setHomeButtonEnabled(true);
-        }
+        getAppActionBar().setDisplayHomeAsUpEnabled(true);
+        getAppActionBar().setHomeButtonEnabled(true);
     }
 
     @Override
@@ -248,7 +280,7 @@ public class MainActivity extends BaseActivity
 
         super.onStart();
         AccountOAuthHelper.requestRefreshToken(getCurrentSession(), this);
-        FavoritesSyncManager.getInstance(this).cronSync(currentAccount);
+        SyncContentManager.getInstance(this).cronSync(getCurrentAccount());
     }
 
     @Override
@@ -259,8 +291,8 @@ public class MainActivity extends BaseActivity
 
         if (getFragment(MainMenuFragment.TAG) != null && requestSwapAccount)
         {
-            EventBusManager.getInstance().post(
-                    new LoadAccountCompletedEvent(LoadAccountCompletedEvent.SWAP, currentAccount));
+            EventBusManager.getInstance()
+                    .post(new LoadAccountCompletedEvent(LoadAccountCompletedEvent.SWAP, getCurrentAccount()));
             requestSwapAccount = false;
         }
 
@@ -272,7 +304,7 @@ public class MainActivity extends BaseActivity
     protected void onPause()
     {
         super.onPause();
-        FavoritesSyncManager.getInstance(this).saveSyncPrepareTimestamp();
+        SyncContentManager.getInstance(this).saveSyncPrepareTimestamp();
     }
 
     @Override
@@ -283,15 +315,46 @@ public class MainActivity extends BaseActivity
         if (requestCode == RequestCode.DECRYPTED)
         {
             File requiredProtectionFile = DataProtectionManager.getInstance(this).getRequiredDataProtectionFile();
-            if (!FavoritesSyncManager.getInstance(this).isSyncFile(requiredProtectionFile))
+            if (!SyncContentManager.getInstance(this).isSyncFile(requiredProtectionFile))
             {
                 DataProtectionManager.getInstance(this).checkEncrypt(getCurrentAccount(), requiredProtectionFile);
+            }
+        }
+
+        // Default is Cancelled as we dont provide anything back
+        // If OK it means we request the helpfragment
+        if (requestCode == SyncMigrationFragment.REQUEST_CODE)
+        {
+            displaySync = false;
+            if (resultCode == RESULT_OK)
+            {
+                HelpDialogFragment.with(this).back(true).display();
             }
         }
 
         if (capture != null && requestCode == capture.getRequestCode())
         {
             capture.capturedCallback(requestCode, resultCode, data);
+        }
+
+        if (requestCode == RequestCode.SETTINGS)
+        {
+            if (resultCode == RequestCode.RESULT_REFRESH_SESSION)
+            {
+                // Refresh Accounts
+                EventBusManager.getInstance().post(new RequestSessionEvent(getCurrentAccount(), true));
+            }
+            else
+            {
+                // Refresh Accounts
+                ((MainMenuFragment) getFragment(MainMenuFragment.TAG)).refreshAccount();
+                ((MainMenuFragment) getFragment(MainMenuFragment.SLIDING_TAG)).refreshAccount();
+
+                // Send Event
+                ConfigManager.getInstance(this).loadAndUseCustom(getCurrentAccount());
+                EventBusManager.getInstance()
+                        .post(new ConfigManager.ConfigurationMenuEvent(getCurrentAccount().getId()));
+            }
         }
     }
 
@@ -358,7 +421,7 @@ public class MainActivity extends BaseActivity
     {
         super.onSaveInstanceState(outState);
         outState.putBundle(MainActivityHelper.TAG,
-                MainActivityHelper.createBundle(outState, currentAccount, capture, fragmentQueue, importParent));
+                MainActivityHelper.createBundle(outState, getCurrentAccount(), capture, fragmentQueue, importParent));
     }
 
     public void openShortcut(Intent intent)
@@ -470,24 +533,24 @@ public class MainActivity extends BaseActivity
                 type = ConfigurationConstant.KEY_TASKS;
                 break;
             case R.id.menu_downloads:
-                if (currentAccount == null)
+                if (getCurrentAccount() == null)
                 {
                     AlfrescoNotificationManager.getInstance(this).showLongToast(getString(R.string.loginfirst));
                 }
                 else
                 {
-                    type = ConfigurationConstant.KEY_LOCALFILES;
+                    type = ConfigurationConstant.KEY_LOCAL_FILES;
                 }
                 break;
             case R.id.menu_notifications:
-                if (currentAccount == null)
+                if (getCurrentAccount() == null)
                 {
                     AlfrescoNotificationManager.getInstance(this).showLongToast(getString(R.string.loginfirst));
                 }
                 else
                 {
-                    startActivity(new Intent(PrivateIntent.ACTION_DISPLAY_OPERATIONS).putExtra(
-                            PrivateIntent.EXTRA_ACCOUNT_ID, currentAccount.getId()));
+                    startActivity(new Intent(PrivateIntent.ACTION_DISPLAY_OPERATIONS)
+                            .putExtra(PrivateIntent.EXTRA_ACCOUNT_ID, getCurrentAccount().getId()));
                 }
                 break;
             default:
@@ -551,12 +614,10 @@ public class MainActivity extends BaseActivity
         switch (sessionState)
         {
             case SESSION_ERROR:
-                Bundle b = new Bundle();
-                b.putInt(SimpleAlertDialogFragment.ARGUMENT_ICON, R.drawable.ic_application_logo);
-                b.putInt(SimpleAlertDialogFragment.ARGUMENT_TITLE, R.string.error_session_creation_message);
-                b.putInt(SimpleAlertDialogFragment.ARGUMENT_MESSAGE, sessionStateErrorMessageId);
-                b.putInt(SimpleAlertDialogFragment.ARGUMENT_POSITIVE_BUTTON, android.R.string.ok);
-                ActionUtils.actionDisplayDialog(this, b);
+                new MaterialDialog.Builder(this).iconRes(R.drawable.ic_application_logo)
+                        .title(R.string.error_session_creation_message)
+                        .content(Html.fromHtml(getString(sessionStateErrorMessageId))).positiveText(android.R.string.ok)
+                        .show();
                 return false;
             case SESSION_LOADING:
                 displayWaitingDialog();
@@ -565,39 +626,20 @@ public class MainActivity extends BaseActivity
             default:
                 if (!ConnectivityUtils.hasNetwork(this))
                 {
-                    Bundle ba = new Bundle();
-                    ba.putInt(SimpleAlertDialogFragment.ARGUMENT_ICON, R.drawable.ic_application_logo);
-                    ba.putInt(SimpleAlertDialogFragment.ARGUMENT_TITLE, R.string.error_session_creation_message);
-                    ba.putInt(SimpleAlertDialogFragment.ARGUMENT_MESSAGE, R.string.error_session_nodata);
-                    ba.putInt(SimpleAlertDialogFragment.ARGUMENT_POSITIVE_BUTTON, android.R.string.ok);
-                    ActionUtils.actionDisplayDialog(this, ba);
+                    new MaterialDialog.Builder(this).iconRes(R.drawable.ic_application_logo)
+                            .title(R.string.error_session_creation_message)
+                            .content(Html.fromHtml(getString(R.string.error_session_nodata)))
+                            .positiveText(android.R.string.ok).show();
                     return false;
                 }
                 else if (getCurrentAccount() != null && getCurrentAccount().getActivation() != null)
                 {
-                    AlfrescoNotificationManager.getInstance(this).showToast(R.string.account_not_activated);
+                    // AlfrescoNotificationManager.getInstance(this).showToast(R.string.account_not_activated);
                     return false;
                 }
                 break;
         }
         return true;
-    }
-
-    // ///////////////////////////////////////////////////////////////////////////
-    // FRAGMENTS
-    // ///////////////////////////////////////////////////////////////////////////
-    public void displayPreferences()
-    {
-        if (DisplayUtils.hasCentralPane(this))
-        {
-            Intent i = new Intent(PrivateIntent.ACTION_DISPLAY_SETTINGS);
-            i.putExtra(PrivateIntent.EXTRA_ACCOUNT_ID, getCurrentAccount().getId());
-            startActivity(i);
-        }
-        else
-        {
-            GeneralPreferences.with(this).display();
-        }
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -625,27 +667,16 @@ public class MainActivity extends BaseActivity
             case R.id.menu_account_reload:
                 sessionManager.loadSession(getCurrentAccount());
                 return true;
-            case R.id.menu_device_capture_camera_photo:
-            case R.id.menu_device_capture_camera_video:
-            case R.id.menu_device_capture_mic_audio:
-                capture = DeviceCaptureHelper.createDeviceCapture(this, item.getItemId());
-                return true;
-
-            case R.id.menu_scan_document:
-                if (ScanSnapManager.getInstance(this) != null)
-                {
-                    ScanSnapManager.getInstance(this).startPresetChooser(this);
-                }
-                return true;
             case R.id.menu_refresh:
-                if (getFragmentManager().findFragmentById(DisplayUtils.getLeftFragmentId(this)) instanceof RefreshFragment)
+                if (getSupportFragmentManager()
+                        .findFragmentById(DisplayUtils.getLeftFragmentId(this)) instanceof RefreshFragment)
                 {
-                    ((RefreshFragment) getFragmentManager().findFragmentById(DisplayUtils.getLeftFragmentId(this)))
-                            .refresh();
+                    ((RefreshFragment) getSupportFragmentManager()
+                            .findFragmentById(DisplayUtils.getLeftFragmentId(this))).refresh();
                 }
                 return true;
             case R.id.menu_settings:
-                displayPreferences();
+                MainMenuFragment.displayPreferences(this, getCurrentAccount().getId());
                 hideSlideMenu();
                 return true;
             case R.id.menu_help:
@@ -685,6 +716,11 @@ public class MainActivity extends BaseActivity
     // ///////////////////////////////////////////////////////////////////////////
     // UTILS
     // ///////////////////////////////////////////////////////////////////////////
+    public void setCapture(DeviceCapture deviceCapture)
+    {
+        capture = deviceCapture;
+    }
+
     public Node getCurrentNode()
     {
         return currentNode;
@@ -717,6 +753,7 @@ public class MainActivity extends BaseActivity
     @Subscribe
     public void onRetrieveOAuthDataEvent(RetrieveOAuthDataEvent event)
     {
+        setCurrentAccount(event.accountId);
         AccountOAuthHelper.onNewOauthData(this, event);
     }
 
@@ -739,7 +776,7 @@ public class MainActivity extends BaseActivity
             }
             else
             {
-                DataProtectionUserDialogFragment.newInstance(true).show(getFragmentManager(),
+                DataProtectionUserDialogFragment.newInstance(true).show(getSupportFragmentManager(),
                         DataProtectionUserDialogFragment.TAG);
                 prefs.edit().putBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, true).commit();
             }
@@ -751,28 +788,28 @@ public class MainActivity extends BaseActivity
         // Change activity state to loading.
         setSessionState(SESSION_LOADING);
 
-        this.currentAccount = currentAccount;
+        setCurrentAccount(currentAccount);
 
         if (getFragment(MainMenuFragment.TAG) != null)
         {
-            ((MainMenuFragment) getFragment(MainMenuFragment.TAG)).displayFavoriteStatut();
+            ((MainMenuFragment) getFragment(MainMenuFragment.TAG)).displaySyncStatut();
             ((MainMenuFragment) getFragment(MainMenuFragment.TAG)).hideWorkflowMenu(currentAccount);
         }
 
         if (getFragment(MainMenuFragment.SLIDING_TAG) != null)
         {
-            ((MainMenuFragment) getFragment(MainMenuFragment.SLIDING_TAG)).displayFavoriteStatut();
+            ((MainMenuFragment) getFragment(MainMenuFragment.SLIDING_TAG)).displaySyncStatut();
             ((MainMenuFragment) getFragment(MainMenuFragment.SLIDING_TAG)).hideWorkflowMenu(currentAccount);
         }
 
         // Return to root screen
-        getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
         // Display progress
-        setProgressBarIndeterminateVisibility(true);
+        setSupportProgressBarIndeterminateVisibility(true);
 
         // Add accountName in actionBar
-        UIUtils.displayTitle(this, getString(R.string.app_name));
+        UIUtils.displayTitle(R.string.app_name, MainActivity.this);
     }
 
     boolean fromSessionRequested = false;
@@ -792,12 +829,12 @@ public class MainActivity extends BaseActivity
             ((MainMenuFragment) getFragment(MainMenuFragment.TAG)).refreshData();
         }
         setSessionState(SESSION_LOADING);
-        setProgressBarIndeterminateVisibility(true);
+        setSupportProgressBarIndeterminateVisibility(true);
         invalidateOptionsMenu();
         setCurrentAccount(event.account);
-        if (event != null)
+        if (event != null && event.account != null)
         {
-            AlfrescoNotificationManager.getInstance(this).showLongToast(event.account.getTitle());
+            Snackbar.make(findViewById(R.id.left_pane_body), event.account.getTitle(), Snackbar.LENGTH_LONG).show();
         }
     }
 
@@ -847,8 +884,8 @@ public class MainActivity extends BaseActivity
         if (!isCurrentAccountToLoad(event)) { return; }
 
         setSessionState(SESSION_ACTIVE);
-        setProgressBarIndeterminateVisibility(false);
-        UIUtils.displayTitle(this, getString(R.string.app_name), false);
+        setSupportProgressBarIndeterminateVisibility(false);
+        UIUtils.displayTitle(R.string.app_name, this, false);
 
         // Retrieve Rendition Manager associated to this account
         RenditionManagerImpl.getInstance(this).setSession(getCurrentSession());
@@ -856,7 +893,8 @@ public class MainActivity extends BaseActivity
         // Remove OAuthFragment if one
         if (getFragment(AccountOAuthFragment.TAG) != null)
         {
-            getFragmentManager().popBackStack(AccountOAuthFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            getSupportFragmentManager().popBackStack(AccountOAuthFragment.TAG,
+                    FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
 
         removeWaitingDialog();
@@ -869,7 +907,7 @@ public class MainActivity extends BaseActivity
         fragmentQueue = -1;
 
         // Save latest position as default future one
-        AccountsPreferences.setDefaultAccount(this, currentAccount.getId());
+        AccountsPreferences.setDefaultAccount(this, getCurrentAccount().getId());
 
         // Check Last cloud session creation ==> prevent oauth token
         // expiration
@@ -885,7 +923,7 @@ public class MainActivity extends BaseActivity
         // NB : temporary code ?
         // Check to see if we have an old AlfrescoAccount that needs its paid
         // network flag setting.
-        if (!currentAccount.getIsPaidAccount())
+        if (!getCurrentAccount().getIsPaidAccount())
         {
             boolean paidNetwork = false;
             if (getCurrentSession() instanceof CloudSession)
@@ -910,23 +948,29 @@ public class MainActivity extends BaseActivity
                 }
                 else
                 {
-                    DataProtectionUserDialogFragment.newInstance(true).show(getFragmentManager(),
+                    DataProtectionUserDialogFragment.newInstance(true).show(getSupportFragmentManager(),
                             DataProtectionUserDialogFragment.TAG);
                 }
 
-                currentAccount = AlfrescoAccountManager.getInstance(this).update(currentAccount.getId(),
-                        currentAccount.getTitle(), currentAccount.getUrl(), currentAccount.getUsername(),
-                        currentAccount.getPassword(), currentAccount.getRepositoryId(), currentAccount.getTypeId(),
-                        currentAccount.getActivation(), currentAccount.getAccessToken(),
-                        currentAccount.getRefreshToken(), 1);
+                AlfrescoAccountManager.getInstance(this).update(getCurrentAccount().getId(),
+                        AlfrescoAccount.ACCOUNT_IS_PAID_ACCOUNT, "true");
             }
         }
 
-        // Start Sync if active
-        if (FavoritesSyncManager.getInstance(this).hasDisplayedActivateSync(currentAccount))
+        // NB : temporary code ?
+        // Display Sync Migration
+        if (displaySync == null)
         {
-            FavoritesSyncManager.getInstance(this).sync(currentAccount);
+            displaySync = SyncContentManager.displaySyncInfo(this);
         }
+        if (displaySync)
+        {
+            startActivityForResult(new Intent(this, InfoActivity.class), SyncMigrationFragment.REQUEST_CODE);
+        }
+
+        // Activate Automatic Sync for Sync Content & Favorite
+        SyncContentManager.getInstance(this).setActivateSync(getCurrentAccount(), true);
+        FavoritesManager.getInstance(this).setActivateSync(getCurrentAccount(), true);
 
         invalidateOptionsMenu();
     }
@@ -934,13 +978,13 @@ public class MainActivity extends BaseActivity
     @Subscribe
     public void onCloudAccountErrorEvent(LoadSessionCallBack.CloudAccountErrorEvent event)
     {
-        if (currentAccount == null || currentAccount.getId() != event.data) { return; }
+        if (getCurrentAccount() == null || getCurrentAccount().getId() != event.data) { return; }
 
         // Display OAuth Authentication
         AccountOAuthFragment.with(MainActivity.this).account(event.account).isCreation(false).display();
 
         // Stop progress indication
-        setProgressBarIndeterminateVisibility(false);
+        setSupportProgressBarIndeterminateVisibility(false);
 
         invalidateOptionsMenu();
     }
@@ -949,22 +993,18 @@ public class MainActivity extends BaseActivity
     public void onAccountErrorEvent(LoadAccountErrorEvent event)
     {
         // Display error dialog message
-        Bundle b = new Bundle();
-        b.putInt(SimpleAlertDialogFragment.ARGUMENT_ICON, R.drawable.ic_application_logo);
-        b.putInt(SimpleAlertDialogFragment.ARGUMENT_TITLE, R.string.error_session_creation_message);
-        b.putInt(SimpleAlertDialogFragment.ARGUMENT_MESSAGE, event.messageId);
-        b.putInt(SimpleAlertDialogFragment.ARGUMENT_POSITIVE_BUTTON, android.R.string.ok);
-        ActionUtils.actionDisplayDialog(this, b);
+        new MaterialDialog.Builder(this).iconRes(R.drawable.ic_application_logo)
+                .title(R.string.error_session_creation_message).content(Html.fromHtml(getString(event.messageId)))
+                .positiveText(android.R.string.ok).show();
 
         // Change status
         setSessionErrorMessageId(event.messageId);
 
         // Reset currentAccount & references
-        currentAccount = AlfrescoAccountManager.getInstance(this).retrieveAccount(event.data);
-        sessionManager.removeAccount(currentAccount.getId());
+        setCurrentAccount(AlfrescoAccountManager.getInstance(this).retrieveAccount(event.data));
 
         // Stop progress indication
-        setProgressBarIndeterminateVisibility(false);
+        setSupportProgressBarIndeterminateVisibility(false);
 
         invalidateOptionsMenu();
     }
@@ -972,12 +1012,12 @@ public class MainActivity extends BaseActivity
     @Subscribe
     public void onAccountInactiveEvent(LoadInactiveAccountEvent event)
     {
-        if (currentAccount.getId() != event.account.getId()) { return; }
+        if (getCurrentAccount() == null || getCurrentAccount().getId() != event.account.getId()) { return; }
 
         setSessionState(SESSION_INACTIVE);
-        setProgressBarIndeterminateVisibility(false);
+        setSupportProgressBarIndeterminateVisibility(false);
         invalidateOptionsMenu();
-        AlfrescoNotificationManager.getInstance(this).showLongToast(getString(R.string.account_not_activated));
+        // AlfrescoNotificationManager.getInstance(this).showLongToast(getString(R.string.account_not_activated));
     }
 
     @Subscribe
@@ -1017,17 +1057,24 @@ public class MainActivity extends BaseActivity
                         SessionManager.getInstance(MainActivity.this).loadSession(getCurrentAccount());
                     }
                     invalidateOptionsMenu();
+
+                    if (getCurrentAccount() != null && SyncContentManager.hasPendingSync(context, getCurrentAccount()))
+                    {
+                        SyncContentManager.getInstance(context).sync(getCurrentAccount());
+                    }
+
                 }
             }
             catch (Exception e)
             {
                 // Nothing special
+                Log.d(TAG, Log.getStackTraceString(e));
             }
         }
     }
 
     private boolean isCurrentAccountToLoad(LoadAccountCompletedEvent event)
     {
-        return currentAccount != null && event != null && (currentAccount.getId() == event.account.getId());
+        return getCurrentAccount() != null && event != null && (getCurrentAccount().getId() == event.account.getId());
     }
 }

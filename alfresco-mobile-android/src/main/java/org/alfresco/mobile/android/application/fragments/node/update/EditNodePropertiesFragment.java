@@ -17,9 +17,6 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.node.update;
 
-import java.io.Serializable;
-import java.util.HashMap;
-
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.ModelDefinition;
@@ -28,9 +25,8 @@ import org.alfresco.mobile.android.api.model.config.ConfigTypeIds;
 import org.alfresco.mobile.android.api.services.ConfigService;
 import org.alfresco.mobile.android.api.session.RepositorySession;
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.configuration.FormConfigManager;
 import org.alfresco.mobile.android.application.managers.ConfigManager;
-import org.alfresco.mobile.android.platform.EventBusManager;
+import org.alfresco.mobile.android.application.ui.form.FormManager;
 import org.alfresco.mobile.android.platform.mimetype.MimeTypeManager;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 
@@ -58,13 +54,13 @@ public abstract class EditNodePropertiesFragment extends AlfrescoFragment
 
     protected ModelDefinition modelDefinition;
 
-    protected FormConfigManager formManager;
+    protected FormManager formManager;
 
     protected ConfigService configService;
 
     protected View resultView;
 
-    protected HashMap<String, Serializable> props;
+    protected Boolean refresh = false;
 
     // //////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
@@ -87,11 +83,6 @@ public abstract class EditNodePropertiesFragment extends AlfrescoFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        if (savedInstanceState != null)
-        {
-            props = (HashMap<String, Serializable>) savedInstanceState.get("props");
-        }
-
         node = (Node) getArguments().getSerializable(ARGUMENT_NODE);
 
         if (getDialog() != null)
@@ -127,15 +118,22 @@ public abstract class EditNodePropertiesFragment extends AlfrescoFragment
         bcreate = (Button) viewById(R.id.validate_action);
         bcreate.setText(R.string.update);
 
-        // PROPERTIES
-        if (configurationManager == null)
+        if (formManager == null)
         {
-            configurationManager = ConfigManager.getInstance(getActivity());
+            // PROPERTIES
+            if (configurationManager == null)
+            {
+                configurationManager = ConfigManager.getInstance(getActivity());
+            }
+            if (configurationManager != null && getAccount() != null)
+            {
+                configService = configurationManager.getConfig(getAccount().getId(), ConfigTypeIds.FORMS);
+                configure(inflater);
+            }
         }
-        if (configurationManager != null && getAccount() != null)
+        else
         {
-            configService = configurationManager.getConfig(getAccount().getId(), ConfigTypeIds.FORMS);
-            configure(inflater);
+            refresh = true;
         }
 
         return getRootView();
@@ -156,16 +154,16 @@ public abstract class EditNodePropertiesFragment extends AlfrescoFragment
                 getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, iconId);
             }
         }
+
+        if (refresh)
+        {
+            // We do the refreshEditionView to display the latest value inside
+            // the BaseField
+            formManager.refreshViews();
+            refresh = false;
+        }
+
         super.onStart();
-
-        EventBusManager.getInstance().register(this);
-    }
-
-    @Override
-    public void onStop()
-    {
-        super.onStop();
-        EventBusManager.getInstance().unregister(this);
     }
 
     // //////////////////////////////////////////////////////////////////////
@@ -241,8 +239,9 @@ public abstract class EditNodePropertiesFragment extends AlfrescoFragment
 
             // Generating the form can be long depending on complexity of the
             // configuration & evaluator
-            formManager = new FormConfigManager(EditNodePropertiesFragment.this, configService, rootPropertiesView);
-            return formManager.displayEditForm(modelDefinition, node, props);
+            formManager = new FormManager(EditNodePropertiesFragment.this, configService, rootPropertiesView);
+            formManager.prepare(modelDefinition, node);
+            return formManager.displayEditForm();
         }
 
         @Override

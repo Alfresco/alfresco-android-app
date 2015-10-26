@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.platform.exception;
 
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
@@ -28,16 +28,15 @@ import org.alfresco.mobile.android.async.session.oauth.RetrieveOAuthDataRequest;
 import org.alfresco.mobile.android.foundation.R;
 import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
-import org.alfresco.mobile.android.platform.intent.BaseActionUtils;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
-import org.alfresco.mobile.android.ui.fragments.SimpleAlertDialogFragment;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisConnectionException;
 import org.apache.http.HttpStatus;
 
-import android.app.Activity;
 import android.content.Context;
-import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 
 public final class CloudExceptionUtils
 {
@@ -82,13 +81,11 @@ public final class CloudExceptionUtils
             }
             else
             {
-                Bundle b = new Bundle();
-                b.putInt(SimpleAlertDialogFragment.ARGUMENT_ICON, R.drawable.ic_application_logo);
-                b.putInt(SimpleAlertDialogFragment.ARGUMENT_TITLE, R.string.error_general_title);
-                b.putInt(SimpleAlertDialogFragment.ARGUMENT_POSITIVE_BUTTON, android.R.string.ok);
-                b.putInt(SimpleAlertDialogFragment.ARGUMENT_MESSAGE,
-                        AlfrescoExceptionHelper.getMessageId(context, exception));
-                BaseActionUtils.actionDisplayDialog(context, b);
+                new MaterialDialog.Builder(context).iconRes(R.drawable.ic_application_logo)
+                        .title(R.string.error_general_title)
+                        .content(Html
+                                .fromHtml(context.getString(AlfrescoExceptionHelper.getMessageId(context, exception))))
+                        .positiveText(android.R.string.ok).show();
                 return;
             }
         }
@@ -117,10 +114,10 @@ public final class CloudExceptionUtils
         }
     }
 
-    public static void handleCloudException(Activity activity, Exception exception, boolean forceRefresh)
+    public static void handleCloudException(Context context, Exception exception, boolean forceRefresh)
     {
         Long accountId = null;
-        handleCloudException(activity, accountId, exception, forceRefresh, "");
+        handleCloudException(context, accountId, exception, forceRefresh, "");
     }
 
     private static void requestOAuthAuthentication(Context context, long accountId, String taskId, boolean forceRefresh)

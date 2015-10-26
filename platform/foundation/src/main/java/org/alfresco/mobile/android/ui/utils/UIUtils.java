@@ -1,22 +1,23 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.ui.utils;
 
+import java.io.File;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,13 +29,14 @@ import org.alfresco.mobile.android.platform.utils.AndroidVersion;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 
 import android.annotation.TargetApi;
-import android.app.ActionBar;
-import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -60,6 +62,7 @@ public class UIUtils
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public static void setBackground(View v, Drawable background)
     {
+        if (v == null) { return; }
         if (AndroidVersion.isJBOrAbove())
         {
             v.setBackground(background);
@@ -76,8 +79,7 @@ public class UIUtils
      * @param activity
      * @return
      */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-    public static int[] getScreenDimension(Activity activity)
+    public static int[] getScreenDimension(FragmentActivity activity)
     {
         int width = 0;
         int height = 0;
@@ -108,61 +110,71 @@ public class UIUtils
         return matcher.matches();
     }
 
-    public static void displayTitle(Activity activity, int titleId)
+    public static void displayTitle(int titleId, AppCompatActivity activity)
+    {
+        displayTitle(activity, activity.getString(titleId));
+        ActionBar bar = activity.getSupportActionBar();
+        bar.setDisplayUseLogoEnabled(true);
+        bar.setLogo(R.drawable.ic_application_logo);
+    }
+
+    public static void displayTitle(int titleId, AppCompatActivity activity, boolean isUpEnable)
+    {
+        displayTitle(activity, activity.getString(titleId), isUpEnable);
+        ActionBar bar = activity.getSupportActionBar();
+        bar.setDisplayUseLogoEnabled(true);
+        bar.setLogo(R.drawable.ic_application_logo);
+    }
+
+    public static void displayTitle(FragmentActivity activity, int titleId)
     {
         displayTitle(activity, activity.getString(titleId));
     }
 
-    public static void displayTitle(Activity activity, int titleId, boolean isUpEnable)
+    public static void displayTitle(FragmentActivity activity, int titleId, boolean isUpEnable)
     {
         displayTitle(activity, activity.getString(titleId), isUpEnable);
     }
 
-    public static void displayTitle(Activity activity, String title)
+    public static void displayTitle(FragmentActivity activity, String title)
     {
         displayTitle(activity, title, true);
     }
 
-    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-    public static void displayTitle(Activity activity, String title, boolean isUpEnable)
+    public static void displayTitle(FragmentActivity activity, String title, boolean isUpEnable)
     {
-        if (activity.getActionBar() != null)
+        if (activity instanceof AppCompatActivity)
         {
-            ActionBar bar = activity.getActionBar();
+            ActionBar bar = ((AppCompatActivity) activity).getSupportActionBar();
 
             bar.setDisplayShowTitleEnabled(false);
             bar.setDisplayShowCustomEnabled(true);
             bar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME);
-            bar.setDisplayOptions(ActionBar.DISPLAY_USE_LOGO, ActionBar.DISPLAY_USE_LOGO);
+            bar.setDisplayUseLogoEnabled(false);
             bar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-
-            if (AndroidVersion.isICSOrAbove())
-            {
-                bar.setHomeButtonEnabled(isUpEnable);
-            }
+            bar.setHomeButtonEnabled(isUpEnable);
 
             // If MenuFragment is visible => up is disable.
-            Fragment fr = activity.getFragmentManager().findFragmentByTag(
-                    "org.alfresco.mobile.android.application.fragments.menu.MainMenuFragment");
+            Fragment fr = activity.getSupportFragmentManager()
+                    .findFragmentByTag("org.alfresco.mobile.android.application.fragments.menu.MainMenuFragment");
             if (fr != null && fr.isVisible())
             {
-                activity.getActionBar().setDisplayHomeAsUpEnabled(false);
-                if (AndroidVersion.isICSOrAbove())
-                {
-                    bar.setHomeButtonEnabled(false);
-                }
+                bar.setDisplayHomeAsUpEnabled(false);
+                bar.setHomeButtonEnabled(false);
             }
             else
             {
-                activity.getActionBar().setDisplayHomeAsUpEnabled(isUpEnable);
+                bar.setDisplayHomeAsUpEnabled(isUpEnable);
             }
 
             View v = bar.getCustomView();
             if (v == null)
             {
-                LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+                LayoutInflater inflater = (LayoutInflater) activity
+                        .getSystemService(FragmentActivity.LAYOUT_INFLATER_SERVICE);
                 v = inflater.inflate(R.layout.app_header_row, null);
             }
+            v.setVisibility(View.VISIBLE);
 
             TextView tv = (TextView) v.findViewById(R.id.toptext);
             if (SessionUtils.getAccount(activity) != null
@@ -204,7 +216,7 @@ public class UIUtils
 
     /**
      * Init the validation button form.
-     * 
+     *
      * @param vRoot
      * @param actionId
      * @return
@@ -257,22 +269,29 @@ public class UIUtils
         }
     }
 
-    public static void hideKeyboard(Activity activity)
+    public static void hideKeyboard(FragmentActivity activity)
     {
         if (activity.getWindow().getCurrentFocus() == null) { return; }
         InputMethodManager mgr = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
         mgr.hideSoftInputFromWindow(activity.getWindow().getCurrentFocus().getWindowToken(), 0);
     }
 
-    public static void showKeyboard(Activity activity, View v)
+    public static void showKeyboard(FragmentActivity activity, View v)
     {
         InputMethodManager mgr = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
         mgr.showSoftInput(v, 0);
     }
 
-    public static void hideKeyboard(Activity activity, View v)
+    public static void hideKeyboard(FragmentActivity activity, View v)
     {
         InputMethodManager mgr = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
         mgr.hideSoftInputFromWindow(v.getWindowToken(), 0);
+    }
+
+    public static String getParentDirPath(String fileOrDirPath)
+    {
+        boolean endsWithSlash = fileOrDirPath.endsWith(File.separator);
+        return fileOrDirPath.substring(0, fileOrDirPath.lastIndexOf(File.separatorChar,
+                endsWithSlash ? fileOrDirPath.length() - 2 : fileOrDirPath.length() - 1));
     }
 }

@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.fragments.workflow.process;
 
 import java.text.SimpleDateFormat;
@@ -26,20 +26,20 @@ import org.alfresco.mobile.android.api.model.Process;
 import org.alfresco.mobile.android.api.model.impl.ProcessImpl;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
-import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
+import org.alfresco.mobile.android.ui.holder.TwoLinesViewHolder;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
-import android.app.Activity;
 import android.content.Context;
+import android.support.v4.app.FragmentActivity;
 import android.text.Html;
 import android.view.View;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 /**
  * @author Jean Marie Pascal
  */
-public class ProcessesAdapter extends BaseListAdapter<Process, GenericViewHolder>
+public class ProcessesAdapter extends BaseListAdapter<Process, TwoLinesViewHolder>
 {
     private GregorianCalendar calendar = new GregorianCalendar();
 
@@ -47,23 +47,24 @@ public class ProcessesAdapter extends BaseListAdapter<Process, GenericViewHolder
 
     protected Context context;
 
-    public ProcessesAdapter(Activity context, int textViewResourceId, List<Process> listItems,
+    public ProcessesAdapter(FragmentActivity context, int textViewResourceId, List<Process> listItems,
             List<Process> selectedItems)
     {
         super(context, textViewResourceId, listItems);
+        this.vhClassName = TwoLinesViewHolder.class.getCanonicalName();
         this.context = context;
         this.selectedItems = selectedItems;
     }
 
     @Override
-    protected void updateTopText(GenericViewHolder vh, Process item)
+    protected void updateTopText(TwoLinesViewHolder vh, Process item)
     {
         vh.topText.setText(item.getDescription() != null ? item.getDescription() : context
                 .getString(R.string.process_no_description));
     }
 
     @Override
-    protected void updateBottomText(GenericViewHolder vh, Process item)
+    protected void updateBottomText(TwoLinesViewHolder vh, Process item)
     {
         StringBuilder bottomText = new StringBuilder(item.getName() != null ? item.getName() : getName(context,
                 item.getKey()));
@@ -95,17 +96,17 @@ public class ProcessesAdapter extends BaseListAdapter<Process, GenericViewHolder
 
         if (selectedItems != null && selectedItems.contains(item))
         {
-            UIUtils.setBackground(((LinearLayout) vh.icon.getParent().getParent()),
+            UIUtils.setBackground(((RelativeLayout) vh.icon.getParent()),
                     context.getResources().getDrawable(R.drawable.list_longpressed_holo));
         }
         else
         {
-            UIUtils.setBackground(((LinearLayout) vh.icon.getParent().getParent()), null);
+            UIUtils.setBackground(((RelativeLayout) vh.icon.getParent()), null);
         }
     }
 
     @Override
-    protected void updateIcon(GenericViewHolder vh, Process item)
+    protected void updateIcon(TwoLinesViewHolder vh, Process item)
     {
         vh.icon.setImageDrawable(getContext().getResources().getDrawable(getPriorityIconId(item.getPriority())));
         vh.choose.setVisibility(View.GONE);

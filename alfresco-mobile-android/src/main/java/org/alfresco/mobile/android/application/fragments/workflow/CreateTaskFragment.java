@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.fragments.workflow;
 
 import java.io.Serializable;
@@ -48,18 +48,17 @@ import org.alfresco.mobile.android.async.workflow.process.start.StartProcessEven
 import org.alfresco.mobile.android.async.workflow.process.start.StartProcessRequest;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.mimetype.MimeTypeManager;
-import org.alfresco.mobile.android.platform.utils.AndroidVersion;
 import org.alfresco.mobile.android.ui.ListingModeFragment;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.operation.OperationWaitingDialogFragment;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
@@ -70,7 +69,6 @@ import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Switch;
@@ -78,8 +76,8 @@ import android.widget.ToggleButton;
 
 import com.squareup.otto.Subscribe;
 
-public class CreateTaskFragment extends AlfrescoFragment implements UserPickerCallback, onPickDocumentFragment,
-        onPickDateFragment
+public class CreateTaskFragment extends AlfrescoFragment
+        implements UserPickerCallback, onPickDocumentFragment, onPickDateFragment
 {
     public static final String TAG = CreateTaskFragment.class.getName();
 
@@ -91,7 +89,7 @@ public class CreateTaskFragment extends AlfrescoFragment implements UserPickerCa
 
     private Map<String, Person> assignees = new HashMap<String, Person>(1);
 
-    private Map<String, Document> items = new HashMap<String, Document>(1);
+    private Map<String, Node> items = new HashMap<String, Node>(1);
 
     private int approvers = 0;
 
@@ -147,7 +145,7 @@ public class CreateTaskFragment extends AlfrescoFragment implements UserPickerCa
         {
             @SuppressWarnings("unchecked")
             List<Document> docs = (List<Document>) getArguments().get(PrivateIntent.EXTRA_DOCUMENTS);
-            for (Document document : docs)
+            for (Node document : docs)
             {
                 items.put(document.getIdentifier(), document);
             }
@@ -165,7 +163,7 @@ public class CreateTaskFragment extends AlfrescoFragment implements UserPickerCa
         {
             if (items.size() == 1)
             {
-                List<Document> attachments = new ArrayList<Document>(items.values());
+                List<Node> attachments = new ArrayList<Node>(items.values());
                 titleTask.setText(String.format(getString(R.string.task_review_document),
                         MimeTypeManager.getName(attachments.get(0).getName())));
             }
@@ -313,14 +311,7 @@ public class CreateTaskFragment extends AlfrescoFragment implements UserPickerCa
         });
 
         // Email Notification
-        if (AndroidVersion.isICSOrAbove())
-        {
-            emailNotification = viewById(R.id.action_send_notification);
-        }
-        else
-        {
-            emailNotification = viewById(R.id.action_send_notification);
-        }
+        emailNotification = viewById(R.id.action_send_notification);
 
         return getRootView();
     }
@@ -411,16 +402,17 @@ public class CreateTaskFragment extends AlfrescoFragment implements UserPickerCa
         List<Person> persons = new ArrayList<Person>(assignees.values());
 
         // Items
-        List<Document> attachments = new ArrayList<Document>(items.values());
+        List<Node> attachments = new ArrayList<>(items.values());
 
         // Start process
-        String operationId = Operator.with(getActivity(), getAccount()).load(
-                new StartProcessRequest.Builder(processDefinition, persons, variables, attachments));
+        String operationId = Operator.with(getActivity(), getAccount())
+                .load(new StartProcessRequest.Builder(processDefinition, persons, variables, attachments));
 
         // Display waiting dialog
-        OperationWaitingDialogFragment.newInstance(StartProcessRequest.TYPE_ID, R.drawable.ic_task_light,
-                getString(R.string.process_starting), null, null, 0, operationId).show(
-                getActivity().getFragmentManager(), OperationWaitingDialogFragment.TAG);
+        OperationWaitingDialogFragment
+                .newInstance(StartProcessRequest.TYPE_ID, R.drawable.ic_task_light,
+                        getString(R.string.process_starting), null, null, 0, operationId)
+                .show(getActivity().getSupportFragmentManager(), OperationWaitingDialogFragment.TAG);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -428,14 +420,7 @@ public class CreateTaskFragment extends AlfrescoFragment implements UserPickerCa
     // ///////////////////////////////////////////////////////////////////////////
     private boolean hasEmailNotification()
     {
-        if (AndroidVersion.isICSOrAbove())
-        {
-            return ((Switch) emailNotification).isChecked();
-        }
-        else
-        {
-            return ((CheckBox) emailNotification).isChecked();
-        }
+        return ((Switch) emailNotification).isChecked();
     }
 
     private double calculateApprovalPercent()
@@ -648,7 +633,7 @@ public class CreateTaskFragment extends AlfrescoFragment implements UserPickerCa
 
         // Update documents
         updateDocuments();
-        getActivity().getFragmentManager().popBackStackImmediate(DocumentPickerFragment.TAG,
+        getActivity().getSupportFragmentManager().popBackStackImmediate(DocumentPickerFragment.TAG,
                 FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 
@@ -712,7 +697,7 @@ public class CreateTaskFragment extends AlfrescoFragment implements UserPickerCa
     // ///////////////////////////////////////////////////////////////////////////
     // BUILDER
     // ///////////////////////////////////////////////////////////////////////////
-    public static Builder with(Activity activity)
+    public static Builder with(FragmentActivity activity)
     {
         return new Builder(activity);
     }
@@ -722,13 +707,13 @@ public class CreateTaskFragment extends AlfrescoFragment implements UserPickerCa
         // ///////////////////////////////////////////////////////////////////////////
         // CONSTRUCTORS
         // ///////////////////////////////////////////////////////////////////////////
-        public Builder(Activity activity)
+        public Builder(FragmentActivity activity)
         {
             super(activity);
             this.extraConfiguration = new Bundle();
         }
 
-        public Builder(Activity appActivity, Map<String, Object> configuration)
+        public Builder(FragmentActivity appActivity, Map<String, Object> configuration)
         {
             super(appActivity, configuration);
             this.extraConfiguration = new Bundle();

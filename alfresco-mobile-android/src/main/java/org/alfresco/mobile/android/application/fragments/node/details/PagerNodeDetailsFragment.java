@@ -1,23 +1,24 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.fragments.node.details;
 
 import java.lang.ref.WeakReference;
+import java.util.List;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.model.Folder;
@@ -35,18 +36,19 @@ import org.alfresco.mobile.android.async.node.download.DownloadEvent;
 import org.alfresco.mobile.android.async.node.favorite.FavoriteNodeEvent;
 import org.alfresco.mobile.android.async.node.favorite.FavoritedNodeEvent;
 import org.alfresco.mobile.android.async.node.like.LikeNodeEvent;
+import org.alfresco.mobile.android.async.node.sync.SyncNodeEvent;
 import org.alfresco.mobile.android.async.node.update.UpdateContentEvent;
 import org.alfresco.mobile.android.async.node.update.UpdateNodeEvent;
 import org.alfresco.mobile.android.sync.utils.NodeSyncPlaceHolder;
-import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v13.app.FragmentStatePagerAdapter;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 
@@ -81,14 +83,16 @@ public class PagerNodeDetailsFragment extends NodeDetailsFragment
     // LIFE CYCLE
     // //////////////////////////////////////////////////////////////////////
     @Override
+    public String onPrepareTitle()
+    {
+        return getString(R.string.details);
+    }
+
+    @Override
     public void onResume()
     {
         ((MainActivity) getActivity()).setCurrentNode(node);
         getActivity().invalidateOptionsMenu();
-        if (!DisplayUtils.hasCentralPane(getActivity()))
-        {
-            UIUtils.displayTitle(getActivity(), R.string.details);
-        }
         super.onResume();
     }
 
@@ -101,6 +105,7 @@ public class PagerNodeDetailsFragment extends NodeDetailsFragment
         // Retrieve pager & pager tabs
         ViewPager viewPager = (ViewPager) viewById(R.id.view_pager);
         PagerSlidingTabStrip tabs = (PagerSlidingTabStrip) viewById(R.id.tabs);
+        if (tabs == null) { return; }
 
         tabs.setBackgroundColor(getActivity().getResources().getColor(R.color.grey_lighter));
         NodeDetailsPagerAdapter adapter = new NodeDetailsPagerAdapter(getChildFragmentManager(), getActivity(), node,
@@ -109,6 +114,30 @@ public class PagerNodeDetailsFragment extends NodeDetailsFragment
         viewPager.setCurrentItem(0);
         tabs.setViewPager(viewPager);
         tabs.setTextColor(getResources().getColor(android.R.color.black));
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        // super.onActivityResult(requestCode, resultCode, data);
+
+        // notifying nested fragments (support library bug fix)
+        final FragmentManager childFragmentManager = getChildFragmentManager();
+
+        if (childFragmentManager != null)
+        {
+            final List<Fragment> nestedFragments = childFragmentManager.getFragments();
+
+            if (nestedFragments == null || nestedFragments.size() == 0) return;
+
+            for (Fragment childFragment : nestedFragments)
+            {
+                if (childFragment != null && !childFragment.isDetached() && !childFragment.isRemoving())
+                {
+                    childFragment.onActivityResult(requestCode, resultCode, data);
+                }
+            }
+        }
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -136,6 +165,12 @@ public class PagerNodeDetailsFragment extends NodeDetailsFragment
     public void onFavoriteEvent(FavoriteNodeEvent event)
     {
         super.onFavoriteNodeEvent(event);
+    }
+
+    @Subscribe
+    public void onSyncNodeEvent(SyncNodeEvent event)
+    {
+        super.onSyncNodeEvent(event);
     }
 
     @Subscribe
@@ -178,7 +213,7 @@ public class PagerNodeDetailsFragment extends NodeDetailsFragment
     // ///////////////////////////////////////////////////////////////////////////
     // BUILDER
     // ///////////////////////////////////////////////////////////////////////////
-    public static Builder with(Activity activity)
+    public static Builder with(FragmentActivity activity)
     {
         return new Builder(activity);
     }
@@ -188,12 +223,12 @@ public class PagerNodeDetailsFragment extends NodeDetailsFragment
         // //////////////////////////////////////////////////////////////////////////
         // CONSTRUCTORS
         // ///////////////////////////////////////////////////////////////////////////
-        public Builder(Activity activity)
+        public Builder(FragmentActivity activity)
         {
             super(activity);
         }
 
-        public Builder(Activity appActivity, Map<String, Object> configuration)
+        public Builder(FragmentActivity appActivity, Map<String, Object> configuration)
         {
             super(appActivity, configuration);
         }
@@ -221,7 +256,7 @@ class NodeDetailsPagerAdapter extends FragmentStatePagerAdapter
 
     protected static final int TAB_HISTORY = 3;
 
-    private WeakReference<Activity> activity;
+    private WeakReference<FragmentActivity> activity;
 
     private final Node node;
 
@@ -231,10 +266,11 @@ class NodeDetailsPagerAdapter extends FragmentStatePagerAdapter
 
     private boolean isTabletLayout = false;
 
-    public NodeDetailsPagerAdapter(FragmentManager fm, Activity activity, Node node, Folder parentFolder)
+    public NodeDetailsPagerAdapter(android.support.v4.app.FragmentManager fm, FragmentActivity activity, Node node,
+            Folder parentFolder)
     {
         super(fm);
-        this.activity = new WeakReference<Activity>(activity);
+        this.activity = new WeakReference<>(activity);
         this.node = node;
         this.parentFolder = parentFolder;
 
@@ -249,7 +285,7 @@ class NodeDetailsPagerAdapter extends FragmentStatePagerAdapter
             // Summary (without preview) / Comments
             numberOfFragment = 2;
         }
-        else if (DisplayUtils.hasCentralPane(activity))
+        else if (!activity.getResources().getBoolean(R.bool.fr_details_summary))
         {
             // Preview / Properties / Comments / Versions
             isTabletLayout = true;
@@ -269,7 +305,7 @@ class NodeDetailsPagerAdapter extends FragmentStatePagerAdapter
         Fragment fr = null;
         if (node instanceof NodeSyncPlaceHolder)
         {
-            if (DisplayUtils.hasCentralPane(activity.get()))
+            if (!activity.get().getResources().getBoolean(R.bool.fr_details_summary))
             {
                 fr = new NodePropertiesFragment.Builder(activity.get()).node(node).parentFolder(parentFolder)
                         .isFavorite(true).createFragment();
@@ -285,8 +321,16 @@ class NodeDetailsPagerAdapter extends FragmentStatePagerAdapter
             switch (position + 1)
             {
                 case TAB_METADATA:
-                    fr = new NodePropertiesFragment.Builder(activity.get()).node(node).parentFolder(parentFolder)
-                            .createFragment();
+                    if (activity.get().getResources().getBoolean(R.bool.fr_details_summary))
+                    {
+                        fr = new NodeSummaryFragment.Builder(activity.get()).node(node).parentFolder(parentFolder)
+                                .createFragment();
+                    }
+                    else
+                    {
+                        fr = new NodePropertiesFragment.Builder(activity.get()).node(node).parentFolder(parentFolder)
+                                .createFragment();
+                    }
                     break;
                 case TAB_COMMENTS:
                     fr = CommentsFragment.with(activity.get()).node(node).createFragment();
@@ -309,14 +353,14 @@ class NodeDetailsPagerAdapter extends FragmentStatePagerAdapter
                             .touchEnable(DisplayUtils.hasCentralPane(activity.get())).createFragment();
                     break;
                 case TAB_METADATA:
-                    if (DisplayUtils.hasCentralPane(activity.get()))
+                    if (activity.get().getResources().getBoolean(R.bool.fr_details_summary))
                     {
-                        fr = new NodePropertiesFragment.Builder(activity.get()).node(node).parentFolder(parentFolder)
+                        fr = new NodeSummaryFragment.Builder(activity.get()).node(node).parentFolder(parentFolder)
                                 .createFragment();
                     }
                     else
                     {
-                        fr = new NodeSummaryFragment.Builder(activity.get()).node(node).parentFolder(parentFolder)
+                        fr = new NodePropertiesFragment.Builder(activity.get()).node(node).parentFolder(parentFolder)
                                 .createFragment();
                     }
                     break;

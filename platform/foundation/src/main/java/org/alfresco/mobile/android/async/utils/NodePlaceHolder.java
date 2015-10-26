@@ -44,6 +44,13 @@ public class NodePlaceHolder implements Node
     /** Map of properties available for this Node. */
     private Map<String, Property> properties;
 
+    public NodePlaceHolder(String id, String name)
+    {
+        properties = new HashMap<String, Property>(4);
+        properties.put(GUID, new PropertyImpl(id));
+        properties.put(NAME, new PropertyImpl(name));
+    }
+
     public NodePlaceHolder(String name, int type, int status)
     {
         properties = new HashMap<String, Property>(4);

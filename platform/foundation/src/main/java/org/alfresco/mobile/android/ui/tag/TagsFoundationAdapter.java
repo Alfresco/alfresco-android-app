@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.ui.tag;
 
 import java.util.ArrayList;
@@ -23,9 +23,9 @@ import java.util.List;
 import org.alfresco.mobile.android.api.model.Tag;
 import org.alfresco.mobile.android.foundation.R;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
-import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
+import org.alfresco.mobile.android.ui.holder.TwoLinesViewHolder;
 
-import android.app.Activity;
+import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.Filter;
 
@@ -35,7 +35,7 @@ import android.widget.Filter;
  * 
  * @author Jean Marie Pascal
  */
-public class TagsFoundationAdapter extends BaseListAdapter<Tag, GenericViewHolder>
+public class TagsFoundationAdapter extends BaseListAdapter<Tag, TwoLinesViewHolder>
 {
 
     private List<Tag> selectedItems;
@@ -46,26 +46,29 @@ public class TagsFoundationAdapter extends BaseListAdapter<Tag, GenericViewHolde
 
     private final Object mLock = new Object();
 
-    public TagsFoundationAdapter(Activity context, int textViewResourceId, List<Tag> listItems)
+    public TagsFoundationAdapter(FragmentActivity context, int textViewResourceId, List<Tag> listItems)
     {
         this(context, textViewResourceId, listItems, new ArrayList<Tag>(0));
+        vhClassName = TwoLinesViewHolder.class.getCanonicalName();
     }
 
-    public TagsFoundationAdapter(Activity context, int textViewResourceId, List<Tag> listItems, List<Tag> selectedItems)
+    public TagsFoundationAdapter(FragmentActivity context, int textViewResourceId, List<Tag> listItems,
+            List<Tag> selectedItems)
     {
         super(context, textViewResourceId, listItems);
         this.selectedItems = selectedItems;
         mOriginalValues = listItems;
+        vhClassName = TwoLinesViewHolder.class.getCanonicalName();
     }
 
     @Override
-    protected void updateTopText(GenericViewHolder vh, Tag item)
+    protected void updateTopText(TwoLinesViewHolder vh, Tag item)
     {
         vh.topText.setText(item.getValue());
     }
 
     @Override
-    protected void updateBottomText(GenericViewHolder vh, Tag item)
+    protected void updateBottomText(TwoLinesViewHolder vh, Tag item)
     {
         if (vh.bottomText != null)
         {
@@ -82,7 +85,7 @@ public class TagsFoundationAdapter extends BaseListAdapter<Tag, GenericViewHolde
     }
 
     @Override
-    protected void updateIcon(GenericViewHolder vh, Tag item)
+    protected void updateIcon(TwoLinesViewHolder vh, Tag item)
     {
         vh.icon.setImageDrawable(getContext().getResources().getDrawable(R.drawable.mime_tags));
     }

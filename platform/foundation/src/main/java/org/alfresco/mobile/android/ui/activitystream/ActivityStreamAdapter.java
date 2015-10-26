@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+ * Copyright (C) 2005-2015 Alfresco Software Limited.
  *
  * This file is part of Alfresco Mobile for Android.
  *
@@ -27,18 +27,20 @@ import java.util.Map.Entry;
 import org.alfresco.mobile.android.api.constants.CloudConstant;
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.model.ActivityEntry;
-import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.foundation.R;
 import org.alfresco.mobile.android.platform.mimetype.MimeTypeManager;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
+import org.alfresco.mobile.android.ui.holder.HolderUtils;
+import org.alfresco.mobile.android.ui.holder.TwoLinesCaptionViewHolder;
 import org.alfresco.mobile.android.ui.rendition.RenditionManager;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
-import android.app.Activity;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.text.Html;
-import android.widget.LinearLayout;
+import android.view.View;
+import android.view.ViewGroup;
 
 /**
  * Provides access to activity entries and displays them as a view based on
@@ -46,69 +48,70 @@ import android.widget.LinearLayout;
  * 
  * @author Jean Marie Pascal
  */
-public class ActivityStreamAdapter extends BaseListAdapter<ActivityEntry, ActivityEventViewHolder>
+public class ActivityStreamAdapter extends BaseListAdapter<ActivityEntry, TwoLinesCaptionViewHolder>
 {
     protected List<ActivityEntry> selectedItems;
 
     protected RenditionManager renditionManager;
 
-    protected WeakReference<Activity> activityRef;
+    protected WeakReference<FragmentActivity> activityRef;
 
     protected List<ActivityEntry> selectedOptionItems = new ArrayList<>();
 
-    public ActivityStreamAdapter(Fragment fr, AlfrescoSession session, int textViewResourceId,
+    public ActivityStreamAdapter(Fragment fr, int textViewResourceId,
             List<ActivityEntry> listItems, List<ActivityEntry> selectedItems)
     {
         super(fr.getActivity(), textViewResourceId, listItems);
-        this.vhClassName = ActivityEventViewHolder.class.getCanonicalName();
+        this.vhClassName = TwoLinesCaptionViewHolder.class.getCanonicalName();
         this.selectedItems = selectedItems;
         this.activityRef = new WeakReference<>(fr.getActivity());
     }
 
     @Override
-    protected void updateTopText(ActivityEventViewHolder vh, ActivityEntry item)
+    protected void updateTopText(TwoLinesCaptionViewHolder vh, ActivityEntry item)
     {
         vh.topText.setText(getUser(item));
-        vh.content.setText(Html.fromHtml(getActivityTypeMessage(item)));
+        vh.bottomText.setText(Html.fromHtml(getActivityTypeMessage(item)));
+        HolderUtils.makeMultiLine(vh.bottomText, 3);
     }
 
     @Override
-    protected void updateBottomText(ActivityEventViewHolder vh, ActivityEntry item)
+    protected void updateBottomText(TwoLinesCaptionViewHolder vh, ActivityEntry item)
     {
         String s = "";
         if (item.getCreatedAt() != null)
         {
             s = formatDate(getContext(), item.getCreatedAt().getTime());
         }
-        vh.bottomText.setText(s);
+        vh.topTextRight.setText(s);
 
         if (selectedItems != null && selectedItems.contains(item))
         {
-            UIUtils.setBackground(((LinearLayout) vh.icon.getParent().getParent().getParent()), getContext()
-                    .getResources().getDrawable(R.drawable.list_longpressed_holo));
+            ((ViewGroup) vh.icon.getParent()).setBackgroundResource(R.drawable.list_longpressed_holo);
         }
         else
         {
-            UIUtils.setBackground(((LinearLayout) vh.icon.getParent().getParent().getParent()), null);
+            UIUtils.setBackground(((ViewGroup) vh.icon.getParent()), null);
         }
     }
 
     @Override
-    protected void updateIcon(ActivityEventViewHolder vh, ActivityEntry item)
+    protected void updateIcon(TwoLinesCaptionViewHolder vh, ActivityEntry item)
     {
         getCreatorAvatar(vh, item);
         AccessibilityUtils.addContentDescription(vh.icon,
                 String.format(getContext().getString(R.string.contact_card), getUser(item)));
     }
 
-    private void getCreatorAvatar(ActivityEventViewHolder vh, ActivityEntry item)
+    private void getCreatorAvatar(TwoLinesCaptionViewHolder vh, ActivityEntry item)
     {
         String type = item.getType();
         String tmp = null;
+        vh.icon.setVisibility(View.VISIBLE);
 
         if (type.startsWith(PREFIX_FILE))
         {
-            RenditionManager.with(activityRef.get()).loadAvatar(item.getCreatedBy()).placeHolder(R.drawable.ic_person)
+            RenditionManager.with(activityRef.get()).loadAvatar(item.getCreatedBy()).placeHolder(R.drawable.ic_person_light)
                     .into(vh.icon);
         }
         else if (type.startsWith(PREFIX_GROUP))
@@ -120,22 +123,23 @@ public class ActivityStreamAdapter extends BaseListAdapter<ActivityEntry, Activi
             tmp = getData(item, CloudConstant.MEMEBERUSERNAME_VALUE);
             if (tmp.isEmpty())
             {
-                tmp = null;
+                tmp = getData(item, CloudConstant.MEMEBERPERSONID_VALUE);
             }
-            RenditionManager.with(activityRef.get()).loadAvatar(tmp).placeHolder(R.drawable.ic_person).into(vh.icon);
+            RenditionManager.with(activityRef.get()).loadAvatar(tmp).placeHolder(R.drawable.ic_person_light).into(vh.icon);
         }
         else if (type.startsWith(PREFIX_SUBSCRIPTION))
         {
             tmp = getData(item, CloudConstant.FOLLOWERUSERNAME_VALUE);
             if (tmp.isEmpty())
             {
-                tmp = null;
+                tmp = item.getCreatedBy();
             }
-            RenditionManager.with(activityRef.get()).loadAvatar(tmp).placeHolder(R.drawable.ic_person).into(vh.icon);
+            RenditionManager.with(activityRef.get()).loadAvatar(tmp).placeHolder(R.drawable.ic_person_light).into(vh.icon);
         }
         else
         {
-            RenditionManager.with(activityRef.get()).loadAvatar(tmp).placeHolder(R.drawable.ic_person).into(vh.icon);
+            RenditionManager.with(activityRef.get()).loadAvatar(item.getCreatedBy())
+                    .placeHolder(R.drawable.ic_person_light).into(vh.icon);
         }
     }
 
@@ -196,7 +200,7 @@ public class ActivityStreamAdapter extends BaseListAdapter<ActivityEntry, Activi
             put(PREFIX_LINK, R.drawable.ic_menu_share);
             put(PREFIX_EVENT, R.drawable.ic_menu_today);
             put(PREFIX_WIKI, R.drawable.ic_menu_notif);
-            put(PREFIX_USER, R.drawable.ic_person);
+            put(PREFIX_USER, R.drawable.ic_person_light);
             put(PREFIX_DATALIST, R.drawable.ic_menu_notif);
             put(PREFIX_DISCUSSIONS, R.drawable.ic_action_dialog);
             put(PREFIX_FOLDER, R.drawable.ic_menu_archive);

@@ -19,21 +19,17 @@ package org.alfresco.mobile.android.async.node.favorite;
 
 import java.util.GregorianCalendar;
 
-import org.alfresco.mobile.android.api.constants.ContentModel;
-import org.alfresco.mobile.android.api.model.Folder;
-import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.async.LoaderResult;
 import org.alfresco.mobile.android.async.OperationAction;
+import org.alfresco.mobile.android.async.OperationStatus;
 import org.alfresco.mobile.android.async.OperationsDispatcher;
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.node.NodeOperation;
 import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
-import org.alfresco.mobile.android.platform.provider.CursorUtils;
-import org.alfresco.mobile.android.sync.FavoritesSyncManager;
-import org.alfresco.mobile.android.sync.FavoritesSyncProvider;
-import org.alfresco.mobile.android.sync.FavoritesSyncSchema;
-import org.alfresco.mobile.android.sync.operations.FavoriteSyncStatus;
+import org.alfresco.mobile.android.platform.favorite.FavoritesManager;
+import org.alfresco.mobile.android.platform.favorite.FavoritesProvider;
+import org.alfresco.mobile.android.platform.favorite.FavoritesSchema;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -46,8 +42,6 @@ public class FavoriteNodeOperation extends NodeOperation<Boolean>
     private Boolean value;
 
     private Boolean isFavorite = Boolean.FALSE;
-
-    private boolean hasSyncParent;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
@@ -77,40 +71,16 @@ public class FavoriteNodeOperation extends NodeOperation<Boolean>
             if (node == null)
             {
                 // Special error happen when the node identifier is wrong
-                cursorId = FavoritesSyncManager.getCursorForId(context, acc, nodeIdentifier);
+                cursorId = FavoritesManager.getCursorForId(context, acc, nodeIdentifier);
                 manageReferentialByRemoving(cursorId);
             }
             else
             {
                 nodeIdentifier = node.getIdentifier();
                 isFavorite = session.getServiceRegistry().getDocumentFolderService().isFavorite(node);
-                hasSyncParent = false;
 
                 // Retrieve local sync info.
-                cursorId = FavoritesSyncManager.getCursorForId(context, acc, nodeIdentifier);
-
-                // Check if parent is in sync or not
-                Cursor parentCursorId = null;
-                try
-                {
-                    if (parentFolder == null)
-                    {
-                        parentFolder = session.getServiceRegistry().getDocumentFolderService().getParentFolder(node);
-                    }
-                    parentCursorId = FavoritesSyncManager.getCursorForId(context, acc, parentFolder.getIdentifier());
-                    if (parentCursorId.getCount() == 1 && parentCursorId.moveToFirst())
-                    {
-                        hasSyncParent = true;
-                    }
-                }
-                catch (Exception e)
-                {
-                    hasSyncParent = true;
-                }
-                finally
-                {
-                    CursorUtils.closeCursor(parentCursorId);
-                }
+                cursorId = FavoritesManager.getCursorForId(context, acc, nodeIdentifier);
 
                 // CASE : UNFAVORITE
                 if ((value == null && isFavorite) || (value != null && !value && isFavorite))
@@ -162,46 +132,14 @@ public class FavoriteNodeOperation extends NodeOperation<Boolean>
     {
         // Special case where an error occured during sync
         // We remove all duplicate except the first one.
-        if (cursorId.getCount() > 1)
+        if (cursorId.getCount() >= 1)
         {
             cursorId.moveToNext();
-            for (int i = 1; i < cursorId.getCount(); i++)
+            for (int i = 0; i < cursorId.getCount(); i++)
             {
                 context.getContentResolver().delete(
-                        FavoritesSyncManager.getUri(cursorId.getLong(FavoritesSyncSchema.COLUMN_ID_ID)), null, null);
+                        FavoritesManager.getUri(cursorId.getLong(FavoritesSchema.COLUMN_ID_ID)), null, null);
                 cursorId.moveToNext();
-            }
-            cursorId = FavoritesSyncManager.getCursorForId(context, acc, nodeIdentifier);
-        }
-
-        if (cursorId.getCount() == 1 && cursorId.moveToFirst())
-        {
-            if (FavoritesSyncManager.getInstance(context).hasActivateSync(acc))
-            {
-                ContentValues cValues = new ContentValues();
-                cValues.put(FavoritesSyncSchema.COLUMN_PARENT_ID, parentFolder.getIdentifier());
-                if (cursorId.getInt(FavoritesSyncSchema.COLUMN_IS_FAVORITE_ID) > 0)
-                {
-                    // Unfavorite
-                    cValues.put(FavoritesSyncSchema.COLUMN_IS_FAVORITE, 0);
-                }
-
-                if (!hasSyncParent)
-                {
-                    cValues.put(FavoritesSyncSchema.COLUMN_STATUS, FavoriteSyncStatus.STATUS_HIDDEN);
-                }
-                context.getContentResolver().update(
-                        FavoritesSyncManager.getUri(cursorId.getLong(FavoritesSyncSchema.COLUMN_ID_ID)), cValues, null,
-                        null);
-            }
-            else
-            {
-                if (node.isFolder())
-                {
-                    prepareChildrenFolderDelete((Folder) node);
-                }
-                context.getContentResolver().delete(
-                        FavoritesSyncManager.getUri(cursorId.getLong(FavoritesSyncSchema.COLUMN_ID_ID)), null, null);
             }
         }
     }
@@ -214,61 +152,18 @@ public class FavoriteNodeOperation extends NodeOperation<Boolean>
             // First time creation
             // Update local sync referential.
             context.getContentResolver().insert(
-                    FavoritesSyncProvider.CONTENT_URI,
-                    FavoritesSyncManager.createFavoriteContentValues(context,
-                            AlfrescoAccountManager.getInstance(context).retrieveAccount(accountId), 456,
-                            parentFolderIdentifier, node, new GregorianCalendar().getTimeInMillis(), -1));
+                    FavoritesProvider.CONTENT_URI,
+                    FavoritesManager.createFavoriteContentValues(context, AlfrescoAccountManager.getInstance(context)
+                            .retrieveAccount(accountId), parentFolderIdentifier, node, new GregorianCalendar()
+                            .getTimeInMillis()));
         }
         else if (cursorId.getCount() == 1 && cursorId.moveToFirst())
         {
             ContentValues cValues = new ContentValues();
-
-            // Already present : Is it Hidden ?
-            if (cursorId.getInt(FavoritesSyncSchema.COLUMN_STATUS_ID) == FavoriteSyncStatus.STATUS_HIDDEN)
-            {
-                cValues.put(FavoritesSyncSchema.COLUMN_STATUS, FavoriteSyncStatus.STATUS_SUCCESSFUL);
-            }
-
-            // Already present in sync which means it's inside a
-            // synced folder
-            // We simply update the favorite
-            cValues.put(FavoritesSyncSchema.COLUMN_IS_FAVORITE, FavoritesSyncProvider.FLAG_FAVORITE);
+            cValues.put(FavoritesSchema.COLUMN_STATUS, OperationStatus.STATUS_SUCCESSFUL);
+            cValues.put(FavoritesSchema.COLUMN_IS_FAVORITE, FavoritesProvider.FLAG_FAVORITE);
             context.getContentResolver().update(
-                    FavoritesSyncManager.getUri(cursorId.getLong(FavoritesSyncSchema.COLUMN_ID_ID)), cValues, null,
-                    null);
-        }
-    }
-
-    private void prepareChildrenFolderDelete(Folder folder)
-    {
-        Cursor childrenCursor = null;
-        try
-        {
-            childrenCursor = context.getContentResolver().query(
-                    FavoritesSyncProvider.CONTENT_URI,
-                    FavoritesSyncSchema.COLUMN_ALL,
-                    FavoritesSyncProvider.getAccountFilter(acc) + " AND " + FavoritesSyncSchema.COLUMN_PARENT_ID
-                            + " == '" + NodeRefUtils.getCleanIdentifier(folder.getIdentifier()) + "'", null, null);
-
-            while (childrenCursor.moveToNext())
-            {
-                context.getContentResolver().delete(
-                        FavoritesSyncManager.getUri(childrenCursor.getLong(FavoritesSyncSchema.COLUMN_ID_ID)), null,
-                        null);
-                if (ContentModel.TYPE_FOLDER.equals(childrenCursor.getString(FavoritesSyncSchema.COLUMN_MIMETYPE_ID)))
-                {
-                    prepareChildrenFolderDelete(folder);
-                }
-            }
-
-        }
-        catch (Exception e)
-        {
-            // DO Nothing
-        }
-        finally
-        {
-            CursorUtils.closeCursor(childrenCursor);
+                    FavoritesManager.getUri(cursorId.getLong(FavoritesSchema.COLUMN_ID_ID)), cValues, null, null);
         }
     }
 

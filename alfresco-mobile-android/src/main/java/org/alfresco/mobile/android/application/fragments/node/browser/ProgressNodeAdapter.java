@@ -1,22 +1,23 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.fragments.node.browser;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,11 +28,11 @@ import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.Permissions;
 import org.alfresco.mobile.android.api.model.impl.publicapi.PublicAPIPropertyIds;
+import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
 import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsFragment;
-import org.alfresco.mobile.android.application.fragments.utils.ProgressViewHolder;
 import org.alfresco.mobile.android.async.Operation;
 import org.alfresco.mobile.android.async.OperationSchema;
 import org.alfresco.mobile.android.async.OperationsContentProvider;
@@ -39,27 +40,29 @@ import org.alfresco.mobile.android.async.node.create.CreateDocumentRequest;
 import org.alfresco.mobile.android.async.node.download.DownloadRequest;
 import org.alfresco.mobile.android.async.node.update.UpdateContentRequest;
 import org.alfresco.mobile.android.async.utils.NodePlaceHolder;
+import org.alfresco.mobile.android.platform.favorite.FavoritesProvider;
+import org.alfresco.mobile.android.platform.favorite.FavoritesSchema;
 import org.alfresco.mobile.android.platform.mimetype.MimeTypeManager;
 import org.alfresco.mobile.android.platform.provider.CursorUtils;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
-import org.alfresco.mobile.android.platform.utils.AndroidVersion;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
-import org.alfresco.mobile.android.sync.FavoritesSyncManager;
-import org.alfresco.mobile.android.sync.FavoritesSyncProvider;
-import org.alfresco.mobile.android.sync.FavoritesSyncSchema;
-import org.alfresco.mobile.android.sync.operations.FavoriteSyncStatus;
+import org.alfresco.mobile.android.sync.SyncContentManager;
+import org.alfresco.mobile.android.sync.SyncContentProvider;
+import org.alfresco.mobile.android.sync.SyncContentSchema;
+import org.alfresco.mobile.android.sync.operations.SyncContentStatus;
 import org.alfresco.mobile.android.ui.ListingModeFragment;
+import org.alfresco.mobile.android.ui.holder.TwoLinesProgressViewHolder;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.LoaderManager;
-import android.content.CursorLoader;
-import android.content.Loader;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -74,14 +77,16 @@ import android.widget.ProgressBar;
  * @since 1.2
  * @author Jean Marie Pascal
  */
-public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.LoaderCallbacks<Cursor>,
-        OnMenuItemClickListener
+public class ProgressNodeAdapter extends NodeAdapter
+        implements LoaderManager.LoaderCallbacks<Cursor>, OnMenuItemClickListener
 {
     private static final String TAG = ProgressNodeAdapter.class.getName();
 
     private static final int LOADER_OPERATION_ID = 1;
 
     private static final int LOADER_SYNC_ID = 2;
+
+    private static final int LOADER_FAVORITE_ID = 3;
 
     private static final int MAX_PROGRESS = 100;
 
@@ -91,39 +96,42 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
 
     private Map<String, Node> placeHolderMap = new HashMap<String, Node>();
 
-    private Map<String, FavoriteInfo> favoriteInfos;
+    private Map<String, SyncInfo> syncInfos;
 
-    private boolean hasFavorite = false;
+    private boolean hasSync = false, hasFavorited = false;
 
-    public ProgressNodeAdapter(Activity context, int textViewResourceId, Node parentNode, List<Node> listItems,
+    public ProgressNodeAdapter(Fragment fr, int textViewResourceId, Node parentNode, List<Node> listItems,
             List<Node> selectedItems, int mode)
     {
-        super(context, textViewResourceId, listItems, selectedItems, mode);
-        vhClassName = ProgressViewHolder.class.getCanonicalName();
+        super(fr, textViewResourceId, listItems, selectedItems, mode);
+        vhClassName = TwoLinesProgressViewHolder.class.getCanonicalName();
         this.parentNode = parentNode;
         if (parentNode != null)
         {
-            context.getLoaderManager().restartLoader(LOADER_OPERATION_ID, null, this);
-            context.getLoaderManager().restartLoader(LOADER_SYNC_ID, null, this);
+            fr.getActivity().getSupportLoaderManager().restartLoader(LOADER_OPERATION_ID, null, this);
+            fr.getActivity().getSupportLoaderManager().restartLoader(LOADER_SYNC_ID, null, this);
+            fr.getActivity().getSupportLoaderManager().restartLoader(LOADER_FAVORITE_ID, null, this);
             hasParentFavorite();
         }
     }
 
-    public ProgressNodeAdapter(Activity context, int textViewResourceId, List<Node> listItems)
+    public ProgressNodeAdapter(FragmentActivity context, int textViewResourceId, List<Node> listItems)
     {
         super(context, textViewResourceId, listItems);
     }
 
-    public ProgressNodeAdapter(Activity context, int textViewResourceId, Node parentNode, List<Node> listItems,
-            Map<String, Node> selectedItems)
+    public ProgressNodeAdapter(Fragment fr, int textViewResourceId, Node parentNode, List<Node> listItems,
+            Map<String, Node> selectedItems, int mode)
     {
-        super(context, textViewResourceId, listItems, selectedItems);
-        vhClassName = ProgressViewHolder.class.getCanonicalName();
+        super(fr.getActivity(), textViewResourceId, listItems, selectedItems);
+        fragmentRef = new WeakReference<>(fr);
+        vhClassName = TwoLinesProgressViewHolder.class.getCanonicalName();
         this.parentNode = parentNode;
         if (parentNode != null)
         {
-            context.getLoaderManager().restartLoader(LOADER_OPERATION_ID, null, this);
-            context.getLoaderManager().restartLoader(LOADER_SYNC_ID, null, this);
+            getActivity().getSupportLoaderManager().restartLoader(LOADER_OPERATION_ID, null, this);
+            getActivity().getSupportLoaderManager().restartLoader(LOADER_SYNC_ID, null, this);
+            getActivity().getSupportLoaderManager().restartLoader(LOADER_FAVORITE_ID, null, this);
             hasParentFavorite();
         }
     }
@@ -132,9 +140,9 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
     // ITEM LINE
     // ////////////////////////////////////////////////////////////
     @Override
-    protected void updateTopText(ProgressViewHolder vh, Node item)
+    protected void updateTopText(TwoLinesProgressViewHolder vh, Node item)
     {
-        ProgressBar progressView = (ProgressBar) ((View) vh.topText.getParent()).findViewById(R.id.status_progress);
+        ProgressBar progressView = vh.progress;
 
         if (item instanceof NodePlaceHolder)
         {
@@ -164,7 +172,8 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
 
                     if (percentage == MAX_PROGRESS)
                     {
-                        if ((Integer) item.getPropertyValue(PublicAPIPropertyIds.REQUEST_TYPE) == DownloadRequest.TYPE_ID)
+                        if ((Integer) item
+                                .getPropertyValue(PublicAPIPropertyIds.REQUEST_TYPE) == DownloadRequest.TYPE_ID)
                         {
                             progressView.setVisibility(View.GONE);
                             super.updateTopText(vh, item);
@@ -194,64 +203,75 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
     }
 
     @Override
-    protected void updateBottomText(ProgressViewHolder vh, Node item)
+    protected void updateBottomText(TwoLinesProgressViewHolder vh, Node item)
     {
-        if (hasFavorite && favoriteInfos.containsKey(item.getIdentifier()))
+        if (favoritesNodeIndex != null
+                && favoritesNodeIndex.contains(NodeRefUtils.getCleanIdentifier(item.getIdentifier())))
         {
-            FavoriteInfo favoriteInfo = favoriteInfos.get(item.getIdentifier());
-            if (favoriteInfo.isFavorite)
+            vh.favoriteIcon.setVisibility(View.VISIBLE);
+            vh.favoriteIcon.setImageResource(R.drawable.ic_favorite_light);
+        }
+        else
+        {
+            vh.favoriteIcon.setVisibility(View.GONE);
+        }
+
+        vh.syncIcon.setVisibility(View.GONE);
+        if (hasSync && syncInfos.containsKey(NodeRefUtils.getCleanIdentifier(item.getIdentifier())))
+        {
+            SyncInfo syncInfo = syncInfos.get(NodeRefUtils.getCleanIdentifier(item.getIdentifier()));
+
+            if (syncInfo.isRoot == 1)
             {
-                vh.favoriteIcon.setVisibility(View.VISIBLE);
-                vh.favoriteIcon.setImageResource(R.drawable.ic_favorite_light);
+                vh.syncIcon.setVisibility(View.VISIBLE);
+                vh.syncIcon.setImageResource(R.drawable.ic_sync_light);
             }
             else
             {
-                vh.favoriteIcon.setVisibility(View.GONE);
+                vh.syncIcon.setVisibility(View.GONE);
             }
 
-            if (FavoritesSyncManager.getInstance(getContext()).hasActivateSync(SessionUtils.getAccount(getContext())))
+            if (SyncContentManager.getInstance(getContext()).hasActivateSync(SessionUtils.getAccount(getContext())))
             {
-                switch (favoriteInfo.status)
+                switch (syncInfo.status)
                 {
-                    case FavoriteSyncStatus.STATUS_PENDING:
+                    case SyncContentStatus.STATUS_PENDING:
                         displayStatut(vh, R.drawable.sync_status_pending);
                         break;
-                    case FavoriteSyncStatus.STATUS_RUNNING:
+                    case SyncContentStatus.STATUS_RUNNING:
                         displayStatut(vh, R.drawable.sync_status_loading);
                         break;
-                    case FavoriteSyncStatus.STATUS_PAUSED:
+                    case SyncContentStatus.STATUS_PAUSED:
                         displayStatut(vh, R.drawable.sync_status_pending);
                         break;
-                    case FavoriteSyncStatus.STATUS_MODIFIED:
+                    case SyncContentStatus.STATUS_MODIFIED:
                         displayStatut(vh, R.drawable.sync_status_pending);
                         break;
-                    case FavoriteSyncStatus.STATUS_SUCCESSFUL:
+                    case SyncContentStatus.STATUS_SUCCESSFUL:
                         displayStatut(vh, R.drawable.sync_status_success);
                         break;
-                    case FavoriteSyncStatus.STATUS_FAILED:
+                    case SyncContentStatus.STATUS_FAILED:
                         displayStatut(vh, R.drawable.sync_status_failed);
                         break;
-                    case FavoriteSyncStatus.STATUS_CANCEL:
+                    case SyncContentStatus.STATUS_CANCEL:
                         displayStatut(vh, R.drawable.sync_status_failed);
                         break;
-                    case FavoriteSyncStatus.STATUS_REQUEST_USER:
+                    case SyncContentStatus.STATUS_REQUEST_USER:
                         displayStatut(vh, R.drawable.sync_status_failed);
                         break;
                     default:
-                        vh.favoriteIcon.setVisibility(View.GONE);
-                        vh.iconBottomRight.setVisibility(View.GONE);
+                        vh.iconRight.setVisibility(View.GONE);
                         break;
                 }
             }
             else
             {
-                vh.iconBottomRight.setVisibility(View.GONE);
+                vh.iconRight.setVisibility(View.GONE);
             }
         }
         else
         {
-            vh.favoriteIcon.setVisibility(View.GONE);
-            vh.iconBottomRight.setVisibility(View.GONE);
+            vh.iconRight.setVisibility(View.GONE);
         }
 
         if (item instanceof NodePlaceHolder)
@@ -290,7 +310,7 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
     }
 
     @Override
-    protected void updateIcon(ProgressViewHolder vh, Node item)
+    protected void updateIcon(TwoLinesProgressViewHolder vh, Node item)
     {
         if (item instanceof NodePlaceHolder)
         {
@@ -304,16 +324,31 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
             super.updateIcon(vh, item);
         }
 
-        if (item.isFolder())
+        if ((selectedItems != null && selectedItems.contains(item))
+                || (selectedMapItems != null && selectedMapItems.containsKey(item.getIdentifier())))
+        {
+            if (getFragment() != null && getFragment() instanceof DocumentFolderBrowserFragment
+                    && ((DocumentFolderBrowserFragment) getFragment()).hasActionMode())
+            {
+                vh.choose.setVisibility(View.VISIBLE);
+                vh.choose.setImageResource(R.drawable.ic_done_single_white);
+                int d_16 = DisplayUtils.getPixels(getContext(), R.dimen.d_16);
+                vh.choose.setPadding(d_16, d_16, d_16, d_16);
+                UIUtils.setBackground(vh.choose, null);
+                vh.choose.setOnClickListener(null);
+            }
+        }
+        else if (item.isFolder())
         {
             vh.icon.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.mime_256_folder));
 
             if (mode == ListingModeFragment.MODE_IMPORT) { return; }
             if (mode == ListingModeFragment.MODE_PICK) { return; }
 
-            UIUtils.setBackground(vh.choose,
-                    getActivity().getResources().getDrawable(R.drawable.quickcontact_badge_overlay_light));
-
+            vh.choose.setImageResource(R.drawable.ic_more_options);
+            vh.choose.setBackgroundResource(R.drawable.alfrescohololight_list_selector_holo_light);
+            int d_16 = DisplayUtils.getPixels(getContext(), R.dimen.d_16);
+            vh.choose.setPadding(d_16, d_16, d_16, d_16);
             vh.choose.setVisibility(View.VISIBLE);
             AccessibilityUtils.addContentDescription(vh.choose,
                     String.format(getActivity().getString(R.string.more_options_folder), item.getName()));
@@ -326,21 +361,19 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
                 public void onClick(View v)
                 {
                     Node item = (Node) v.getTag(R.id.node_action);
+                    if (item == null) { return; }
                     selectedOptionItems.add(item);
                     PopupMenu popup = new PopupMenu(getActivity(), v);
                     getMenu(popup.getMenu(), item);
 
-                    if (AndroidVersion.isICSOrAbove())
+                    popup.setOnDismissListener(new OnDismissListener()
                     {
-                        popup.setOnDismissListener(new OnDismissListener()
+                        @Override
+                        public void onDismiss(PopupMenu menu)
                         {
-                            @Override
-                            public void onDismiss(PopupMenu menu)
-                            {
-                                selectedOptionItems.clear();
-                            }
-                        });
-                    }
+                            selectedOptionItems.clear();
+                        }
+                    });
 
                     popup.setOnMenuItemClickListener(ProgressNodeAdapter.this);
 
@@ -351,6 +384,8 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
         else
         {
             UIUtils.setBackground(vh.choose, null);
+            vh.choose.setPadding(0, 0, 0, 0);
+            vh.choose.setVisibility(View.GONE);
         }
     }
 
@@ -364,16 +399,21 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
         {
             case LOADER_OPERATION_ID:
                 return new CursorLoader(getActivity(), OperationsContentProvider.CONTENT_URI,
-                        OperationSchema.COLUMN_ALL, OperationSchema.COLUMN_PARENT_ID + "=\""
-                                + parentNode.getIdentifier() + "\" AND " + OperationSchema.COLUMN_REQUEST_TYPE + " IN("
-                                + CreateDocumentRequest.TYPE_ID + " , " + DownloadRequest.TYPE_ID + " , "
-                                + UpdateContentRequest.TYPE_ID + ")", null, null);
+                        OperationSchema.COLUMN_ALL,
+                        OperationSchema.COLUMN_PARENT_ID + "=\"" + parentNode.getIdentifier() + "\" AND "
+                                + OperationSchema.COLUMN_REQUEST_TYPE + " IN(" + CreateDocumentRequest.TYPE_ID + " , "
+                                + DownloadRequest.TYPE_ID + " , " + UpdateContentRequest.TYPE_ID + ")",
+                        null, null);
 
             case LOADER_SYNC_ID:
-                return new CursorLoader(getActivity(), FavoritesSyncProvider.CONTENT_URI,
-                        FavoritesSyncSchema.COLUMN_ALL, FavoritesSyncSchema.COLUMN_PARENT_ID + " =\""
-                                + parentNode.getIdentifier() + "\" AND " + FavoritesSyncSchema.COLUMN_STATUS
-                                + " NOT IN (" + FavoriteSyncStatus.STATUS_HIDDEN + ")", null, null);
+                return new CursorLoader(getActivity(), SyncContentProvider.CONTENT_URI, SyncContentSchema.COLUMN_ALL,
+                        SyncContentSchema.COLUMN_PARENT_ID + " =\"" + parentNode.getIdentifier() + "\" AND "
+                                + SyncContentSchema.COLUMN_STATUS + " NOT IN (" + SyncContentStatus.STATUS_HIDDEN + ")",
+                        null, null);
+
+            case LOADER_FAVORITE_ID:
+                return new CursorLoader(getActivity(), FavoritesProvider.CONTENT_URI, FavoritesSchema.COLUMN_ALL,
+                        FavoritesSchema.COLUMN_PARENT_ID + " =\"" + parentNode.getIdentifier() + "\"", null, null);
         }
         return null;
     }
@@ -384,18 +424,37 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
         switch (loader.getId())
         {
             case LOADER_SYNC_ID:
-                hasFavorite = (cursor.getCount() > 0);
-                if (favoriteInfos == null)
+                hasSync = (cursor.getCount() > 0);
+                if (syncInfos == null)
                 {
-                    favoriteInfos = new HashMap<String, FavoriteInfo>(cursor.getCount());
+                    syncInfos = new HashMap<String, SyncInfo>(cursor.getCount());
                 }
-                favoriteInfos.clear();
-                if (hasFavorite)
+                syncInfos.clear();
+                if (hasSync)
                 {
                     while (cursor.moveToNext())
                     {
-                        favoriteInfos.put(cursor.getString(FavoritesSyncSchema.COLUMN_NODE_ID_ID), new FavoriteInfo(
-                                cursor));
+                        syncInfos.put(
+                                NodeRefUtils.getCleanIdentifier(cursor.getString(SyncContentSchema.COLUMN_NODE_ID_ID)),
+                                new SyncInfo(cursor));
+                    }
+                }
+                notifyDataSetChanged();
+                break;
+
+            case LOADER_FAVORITE_ID:
+                hasFavorited = (cursor.getCount() > 0);
+                if (favoritesNodeIndex == null)
+                {
+                    favoritesNodeIndex = new ArrayList<>(cursor.getCount());
+                }
+                favoritesNodeIndex.clear();
+                if (hasFavorited)
+                {
+                    while (cursor.moveToNext())
+                    {
+                        favoritesNodeIndex.add(
+                                NodeRefUtils.getCleanIdentifier(cursor.getString(FavoritesSchema.COLUMN_NODE_ID_ID)));
                     }
                 }
                 notifyDataSetChanged();
@@ -530,7 +589,8 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
                 break;
             case R.id.menu_action_delete_folder:
                 onMenuItemClick = true;
-                Fragment fr = getActivity().getFragmentManager().findFragmentByTag(DocumentFolderBrowserFragment.TAG);
+                Fragment fr = getActivity().getSupportFragmentManager()
+                        .findFragmentByTag(DocumentFolderBrowserFragment.TAG);
                 NodeActions.delete(getActivity(), fr, selectedOptionItems.get(0));
                 break;
             default:
@@ -546,12 +606,16 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
     // ///////////////////////////////////////////////////////////////////////////
     public void refreshOperations()
     {
-        getActivity().getLoaderManager().restartLoader(LOADER_OPERATION_ID, null, this);
-        getActivity().getLoaderManager().restartLoader(LOADER_SYNC_ID, null, this);
-        notifyDataSetChanged();
+        if (parentNode != null)
+        {
+            getActivity().getSupportLoaderManager().restartLoader(LOADER_OPERATION_ID, null, this);
+            getActivity().getSupportLoaderManager().restartLoader(LOADER_SYNC_ID, null, this);
+            getActivity().getSupportLoaderManager().restartLoader(LOADER_FAVORITE_ID, null, this);
+            notifyDataSetChanged();
+        }
     }
 
-    private static class FavoriteInfo
+    private static class SyncInfo
     {
         long id;
 
@@ -559,14 +623,14 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
 
         int status;
 
-        boolean isFavorite;
+        int isRoot;
 
-        public FavoriteInfo(Cursor favoriteCursor)
+        public SyncInfo(Cursor syncCursor)
         {
-            this.id = favoriteCursor.getLong(FavoritesSyncSchema.COLUMN_NODE_ID_ID);
-            this.nodeIdentifier = favoriteCursor.getString(FavoritesSyncSchema.COLUMN_NODE_ID_ID);
-            this.status = favoriteCursor.getInt(FavoritesSyncSchema.COLUMN_STATUS_ID);
-            this.isFavorite = favoriteCursor.getInt(FavoritesSyncSchema.COLUMN_IS_FAVORITE_ID) > 0;
+            this.id = syncCursor.getLong(SyncContentSchema.COLUMN_NODE_ID_ID);
+            this.nodeIdentifier = syncCursor.getString(SyncContentSchema.COLUMN_NODE_ID_ID);
+            this.status = syncCursor.getInt(SyncContentSchema.COLUMN_STATUS_ID);
+            this.isRoot = syncCursor.getInt(SyncContentSchema.COLUMN_IS_SYNC_ROOT_ID);
         }
     }
 
@@ -576,7 +640,7 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
         boolean isSyncFolder = false;
         try
         {
-            parentCursorId = FavoritesSyncManager.getCursorForId(getActivity(), SessionUtils.getAccount(getContext()),
+            parentCursorId = SyncContentManager.getCursorForId(getActivity(), SessionUtils.getAccount(getContext()),
                     parentNode.getIdentifier());
             if (parentCursorId.getCount() == 1 && parentCursorId.moveToFirst())
             {
@@ -594,12 +658,12 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
         return isSyncFolder;
     }
 
-    protected void displayStatut(ProgressViewHolder vh, int imageResource)
+    protected void displayStatut(TwoLinesProgressViewHolder vh, int imageResource)
     {
-        if (vh.iconBottomRight != null)
+        if (vh.iconRight != null)
         {
-            vh.iconBottomRight.setVisibility(View.VISIBLE);
-            vh.iconBottomRight.setImageResource(imageResource);
+            vh.iconRight.setVisibility(View.VISIBLE);
+            vh.iconRight.setImageResource(imageResource);
         }
     }
 

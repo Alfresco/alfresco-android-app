@@ -18,7 +18,7 @@
 package org.alfresco.mobile.android.platform.mimetype;
 
 import org.alfresco.mobile.android.ui.fragments.BaseCursorLoader;
-import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
+import org.alfresco.mobile.android.ui.holder.TwoLinesViewHolder;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -28,7 +28,7 @@ import android.view.View;
  * @since 1.4
  * @author Jean Marie Pascal
  */
-public class MimeTypeCursorAdapter extends BaseCursorLoader<GenericViewHolder>
+public class MimeTypeCursorAdapter extends BaseCursorLoader<TwoLinesViewHolder>
 {
     public MimeTypeCursorAdapter(Context context, Cursor c, int layoutId)
     {
@@ -36,19 +36,19 @@ public class MimeTypeCursorAdapter extends BaseCursorLoader<GenericViewHolder>
     }
 
     @Override
-    protected void updateTopText(GenericViewHolder vh, Cursor cursor)
+    protected void updateTopText(TwoLinesViewHolder vh, Cursor cursor)
     {
         vh.topText.setText(cursor.getString(MimeTypeSchema.COLUMN_DESCRIPTION_ID));
     }
 
     @Override
-    protected void updateBottomText(GenericViewHolder v, Cursor cursor)
+    protected void updateBottomText(TwoLinesViewHolder v, Cursor cursor)
     {
         v.bottomText.setVisibility(View.GONE);
     }
 
     @Override
-    protected void updateIcon(GenericViewHolder vh, Cursor cursor)
+    protected void updateIcon(TwoLinesViewHolder vh, Cursor cursor)
     {
     }
 }

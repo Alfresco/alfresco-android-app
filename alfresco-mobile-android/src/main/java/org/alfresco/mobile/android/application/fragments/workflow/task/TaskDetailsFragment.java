@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.fragments.workflow.task;
 
 import java.io.Serializable;
@@ -66,11 +66,11 @@ import org.alfresco.mobile.android.ui.utils.Formatter;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 import org.alfresco.mobile.android.ui.workflow.task.TasksFoundationAdapter;
 
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.text.Html;
 import android.text.format.DateFormat;
 import android.view.Gravity;
@@ -481,7 +481,7 @@ public class TaskDetailsFragment extends AlfrescoFragment implements UserPickerC
 
         OperationWaitingDialogFragment.newInstance(CompleteTaskRequest.TYPE_ID, R.drawable.ic_validate,
                 getString(R.string.task_completing), null, null, 0, operationId).show(
-                getActivity().getFragmentManager(), OperationWaitingDialogFragment.TAG);
+                getActivity().getSupportFragmentManager(), OperationWaitingDialogFragment.TAG);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -578,7 +578,8 @@ public class TaskDetailsFragment extends AlfrescoFragment implements UserPickerC
                 new ReassignTaskRequest.Builder(currentTask, getSession().getPersonIdentifier(), true));
 
         OperationWaitingDialogFragment.newInstance(StartProcessRequest.TYPE_ID, R.drawable.ic_reassign,
-                getString(R.string.task_reassign), null, null, 0, operationId).show(getActivity().getFragmentManager(),
+                getString(R.string.task_reassign), null, null, 0, operationId).show(
+                getActivity().getSupportFragmentManager(),
                 OperationWaitingDialogFragment.TAG);
     }
 
@@ -589,7 +590,8 @@ public class TaskDetailsFragment extends AlfrescoFragment implements UserPickerC
                 new ReassignTaskRequest.Builder(currentTask, getSession().getPersonIdentifier(), false));
 
         OperationWaitingDialogFragment.newInstance(StartProcessRequest.TYPE_ID, R.drawable.ic_reassign,
-                getString(R.string.task_reassign), null, null, 0, operationId).show(getActivity().getFragmentManager(),
+                getString(R.string.task_reassign), null, null, 0, operationId).show(
+                getActivity().getSupportFragmentManager(),
                 OperationWaitingDialogFragment.TAG);
     }
 
@@ -623,7 +625,8 @@ public class TaskDetailsFragment extends AlfrescoFragment implements UserPickerC
                 new ReassignTaskRequest.Builder(currentTask, delegatePerson));
 
         OperationWaitingDialogFragment.newInstance(StartProcessRequest.TYPE_ID, R.drawable.ic_reassign,
-                getString(R.string.task_reassign), null, null, 0, operationId).show(getActivity().getFragmentManager(),
+                getString(R.string.task_reassign), null, null, 0, operationId).show(
+                getActivity().getSupportFragmentManager(),
                 OperationWaitingDialogFragment.TAG);
     }
 
@@ -682,7 +685,7 @@ public class TaskDetailsFragment extends AlfrescoFragment implements UserPickerC
     // ///////////////////////////////////////////////////////////////////////////
     // BUILDER
     // ///////////////////////////////////////////////////////////////////////////
-    public static Builder with(Activity activity)
+    public static Builder with(FragmentActivity activity)
     {
         return new Builder(activity);
     }
@@ -692,13 +695,13 @@ public class TaskDetailsFragment extends AlfrescoFragment implements UserPickerC
         // ///////////////////////////////////////////////////////////////////////////
         // CONSTRUCTORS
         // ///////////////////////////////////////////////////////////////////////////
-        public Builder(Activity activity)
+        public Builder(FragmentActivity activity)
         {
             super(activity);
             this.extraConfiguration = new Bundle();
         }
 
-        public Builder(Activity appActivity, Map<String, Object> configuration)
+        public Builder(FragmentActivity appActivity, Map<String, Object> configuration)
         {
             super(appActivity, configuration);
             this.extraConfiguration = new Bundle();

@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.fragments.search;
 
 import java.util.ArrayList;
@@ -27,11 +27,13 @@ import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.configuration.model.view.SearchConfigModel;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.MenuFragmentHelper;
 import org.alfresco.mobile.android.application.fragments.actions.AbstractActions;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.node.search.DocumentFolderSearchFragment;
+import org.alfresco.mobile.android.application.fragments.site.browser.SitesFragment;
 import org.alfresco.mobile.android.application.fragments.user.UsersFragment;
 import org.alfresco.mobile.android.application.intent.RequestCode;
 import org.alfresco.mobile.android.application.managers.ActionUtils;
@@ -40,23 +42,20 @@ import org.alfresco.mobile.android.application.providers.search.HistorySearchCur
 import org.alfresco.mobile.android.application.providers.search.HistorySearchManager;
 import org.alfresco.mobile.android.application.providers.search.HistorySearchSchema;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
-import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseCursorGridFragment;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 
-import android.app.ActionBar;
-import android.app.ActionBar.OnNavigationListener;
-import android.app.Activity;
-import android.app.Fragment;
 import android.content.ActivityNotFoundException;
-import android.content.CursorLoader;
 import android.content.Intent;
-import android.content.Loader;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -113,7 +112,6 @@ public class SearchFragment extends BaseCursorGridFragment
     // ///////////////////////////////////////////////////////////////////////////
     public SearchFragment()
     {
-        titleId = R.string.search;
         requiredSession = true;
         checkSession = true;
         setHasOptionsMenu(true);
@@ -129,6 +127,12 @@ public class SearchFragment extends BaseCursorGridFragment
     // ///////////////////////////////////////////////////////////////////////////
     // LIFECYCLE
     // ///////////////////////////////////////////////////////////////////////////
+    @Override
+    public void displayTitle()
+    {
+        displaySearchOptionHeader();
+    }
+
     @Override
     protected void onRetrieveParameters(Bundle bundle)
     {
@@ -173,9 +177,9 @@ public class SearchFragment extends BaseCursorGridFragment
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
             {
-                if (event != null
-                        && (event.getAction() == KeyEvent.ACTION_DOWN)
-                        && ((actionId == EditorInfo.IME_ACTION_SEARCH) || (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)))
+                if (event != null && (event.getAction() == KeyEvent.ACTION_DOWN)
+                        && ((actionId == EditorInfo.IME_ACTION_SEARCH)
+                                || (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)))
                 {
                     if (searchForm.getText().length() > 0)
                     {
@@ -184,8 +188,8 @@ public class SearchFragment extends BaseCursorGridFragment
                     }
                     else
                     {
-                        AlfrescoNotificationManager.getInstance(getActivity()).showLongToast(
-                                getString(R.string.search_form_hint));
+                        AlfrescoNotificationManager.getInstance(getActivity())
+                                .showLongToast(getString(R.string.search_form_hint));
                     }
                     return true;
                 }
@@ -221,10 +225,10 @@ public class SearchFragment extends BaseCursorGridFragment
         super.onResume();
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
-        if (getActivity().getActionBar() != null)
+        if (getActionBar() != null)
         {
-            getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
-            getActivity().getActionBar().setDisplayShowCustomEnabled(false);
+            getActionBar().setDisplayHomeAsUpEnabled(true);
+            getActionBar().setDisplayShowCustomEnabled(false);
             displaySearchOptionHeader();
             refreshSilently();
         }
@@ -253,7 +257,7 @@ public class SearchFragment extends BaseCursorGridFragment
         {
             case RequestCode.TEXT_TO_SPEECH:
             {
-                if (resultCode == Activity.RESULT_OK && data != null)
+                if (resultCode == FragmentActivity.RESULT_OK && data != null)
                 {
                     ArrayList<String> text = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                     searchForm.setText(text.get(0));
@@ -274,7 +278,10 @@ public class SearchFragment extends BaseCursorGridFragment
     {
         super.onCreateOptionsMenu(menu, inflater);
         if (!MenuFragmentHelper.canDisplayFragmentMenu(getActivity())) { return; }
-        getMenu(menu);
+        if (optionPosition < 3)
+        {
+            getMenu(menu);
+        }
     }
 
     @Override
@@ -316,14 +323,18 @@ public class SearchFragment extends BaseCursorGridFragment
     private void displaySearchOptionHeader()
     {
         // /QUICK PATH
-        if (getActivity().getActionBar() != null)
+        if (getActionBar() != null)
         {
-            getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+            getActionBar().setNavigationMode(android.support.v7.app.ActionBar.NAVIGATION_MODE_LIST);
+            getActionBar().setDisplayUseLogoEnabled(false);
+            getActionBar().setDisplayUseLogoEnabled(false);
+            getActionBar().setDisplayShowTitleEnabled(false);
+            getActionBar().setDisplayShowCustomEnabled(false);
 
             optionAdapter = new SearchOptionAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item,
                     SearchOptionAdapter.getSearchOptions(getSession(), (tmpParentFolder != null)));
 
-            OnNavigationListener mOnNavigationListener = new OnNavigationListener()
+            android.support.v7.app.ActionBar.OnNavigationListener mOnNavigationListener = new android.support.v7.app.ActionBar.OnNavigationListener()
             {
 
                 @Override
@@ -332,11 +343,16 @@ public class SearchFragment extends BaseCursorGridFragment
                     if (itemPosition == optionPosition) { return true; }
                     optionPosition = itemPosition;
                     updateForm(optionAdapter.getItem(itemPosition));
+                    getActivity().supportInvalidateOptionsMenu();
                     return true;
                 }
             };
-            getActivity().getActionBar().setListNavigationCallbacks(optionAdapter, mOnNavigationListener);
-            getActivity().getActionBar().setSelectedNavigationItem(optionPosition);
+            getActionBar().setListNavigationCallbacks(optionAdapter, mOnNavigationListener);
+            getActionBar().setSelectedNavigationItem(optionPosition);
+        }
+        else
+        {
+            UIUtils.displayTitle(getActivity(), getString(R.string.search));
         }
     }
 
@@ -411,16 +427,25 @@ public class SearchFragment extends BaseCursorGridFragment
             case HistorySearch.TYPE_PERSON:
                 UsersFragment.with(getActivity()).keywords(keywords).display();
                 break;
+            case HistorySearch.TYPE_SITE:
+                SitesFragment.with(getActivity()).keywords(keywords).display();
+                break;
             default:
                 DocumentFolderSearchFragment.with(getActivity()).keywords(keywords).searchFolder(true).display();
                 break;
         }
 
+        if (search == null)
+        {
+            search = HistorySearchManager.retrieveHistorySearchByQuery(getActivity(), getAccount().getId(), searchKey,
+                    keywords);
+        }
+
         // Save history or update
         if (search == null)
         {
-            HistorySearchManager.createHistorySearch(getActivity(), SessionUtils.getAccount(getActivity()).getId(),
-                    searchKey, 0, getQueryDescription(keywords, tmpParentFolder, site), keywords, new Date().getTime());
+            HistorySearchManager.createHistorySearch(getActivity(), getAccount().getId(), searchKey, 0,
+                    getQueryDescription(keywords, tmpParentFolder, site), keywords, new Date().getTime());
         }
         else
         {
@@ -441,9 +466,8 @@ public class SearchFragment extends BaseCursorGridFragment
         {
             // If Site Documentlibrary we display the site name instead of
             // folder name
-            if (site != null
-                    && String.format(DOCUMENT_LIBRARY_PATTERN, site.getIdentifier()).equalsIgnoreCase(
-                            (String) folder.getPropertyValue(PropertyIds.PATH)))
+            if (site != null && String.format(DOCUMENT_LIBRARY_PATTERN, site.getIdentifier())
+                    .equalsIgnoreCase((String) folder.getPropertyValue(PropertyIds.PATH)))
             {
                 addParameter(builder, "in", site.getTitle());
             }
@@ -481,15 +505,15 @@ public class SearchFragment extends BaseCursorGridFragment
         {
             case HistorySearch.TYPE_PERSON:
                 hintId = R.string.search_person_hint;
-                // iconId = R.drawable.ic_person;
+                // iconResId = R.drawable.ic_person_light;
                 break;
             case HistorySearch.TYPE_DOCUMENT:
                 hintId = R.string.search_form_hint;
-                // iconId = R.drawable.ic_office;
+                // iconResId = R.drawable.ic_office;
                 break;
             case HistorySearch.TYPE_FOLDER:
                 hintId = R.string.search_form_hint;
-                // iconId = R.drawable.ic_repository_light;
+                // iconResId = R.drawable.ic_repository_light;
                 break;
             default:
                 break;
@@ -511,15 +535,16 @@ public class SearchFragment extends BaseCursorGridFragment
     @Override
     protected BaseAdapter onAdapterCreation()
     {
-        return new HistorySearchCursorAdapter(getActivity(), null, R.layout.sdk_list_row, selectedItems);
+        return new HistorySearchCursorAdapter(getActivity(), null, R.layout.row_single_line_divider, selectedItems);
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args)
     {
         return new CursorLoader(getActivity(), HistorySearchManager.CONTENT_URI, HistorySearchManager.COLUMN_ALL,
-                HistorySearchSchema.COLUMN_TYPE + " = " + searchKey, null,
-                HistorySearchSchema.COLUMN_LAST_REQUEST_TIMESTAMP + " DESC " + " LIMIT 20");
+                HistorySearchSchema.COLUMN_ACCOUNT_ID + " = " + getAccount().getId() + " AND "
+                        + HistorySearchSchema.COLUMN_TYPE + " = " + searchKey,
+                null, HistorySearchSchema.COLUMN_LAST_REQUEST_TIMESTAMP + " DESC " + " LIMIT 20");
     }
 
     @Override
@@ -642,32 +667,27 @@ public class SearchFragment extends BaseCursorGridFragment
     // ///////////////////////////////////////////////////////////////////////////
     // BUILDER
     // ///////////////////////////////////////////////////////////////////////////
-    public static Builder with(Activity activity)
+    public static Builder with(FragmentActivity activity)
     {
         return new Builder(activity);
     }
 
     public static class Builder extends AlfrescoFragmentBuilder
     {
-        public static final int ICON_ID = R.drawable.ic_search_dark;
-
-        public static final int LABEL_ID = R.string.menu_search;
-
         // ///////////////////////////////////////////////////////////////////////////
         // CONSTRUCTORS
         // ///////////////////////////////////////////////////////////////////////////
-        public Builder(Activity activity)
+        public Builder(FragmentActivity activity)
         {
             super(activity);
             this.extraConfiguration = new Bundle();
         }
 
-        public Builder(Activity appActivity, Map<String, Object> configuration)
+        public Builder(FragmentActivity appActivity, Map<String, Object> configuration)
         {
             super(appActivity, configuration);
             this.extraConfiguration = new Bundle();
-            this.menuIconId = ICON_ID;
-            this.menuTitleId = LABEL_ID;
+            viewConfigModel = new SearchConfigModel(configuration);
         }
 
         // ///////////////////////////////////////////////////////////////////////////

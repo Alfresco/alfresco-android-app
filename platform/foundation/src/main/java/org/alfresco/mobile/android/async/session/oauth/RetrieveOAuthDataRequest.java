@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.alfresco.mobile.android.api.session.CloudSession;
+import org.alfresco.mobile.android.api.session.authentication.OAuthData;
 import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
 import org.alfresco.mobile.android.async.OperationRequestIds;
 import org.alfresco.mobile.android.async.impl.BaseOperationRequest;
@@ -65,7 +66,11 @@ public class RetrieveOAuthDataRequest extends BaseOperationRequest
             String title, String mimeType, int requestTypeId, Bundle bundle, CloudSession session)
     {
         super(context, accountId, networkId, notificationVisibility, title, mimeType, requestTypeId);
-        checkValues(bundle);
+        if (bundle.containsKey(RetrieveOAuthDataRequest.ARGUMENT_OPERATION)
+                && bundle.getInt(RetrieveOAuthDataRequest.ARGUMENT_OPERATION) == OPERATION_ACCESS_TOKEN)
+        {
+            checkValues(bundle);
+        }
         this.bundle = bundle;
         this.session = session;
     }
@@ -109,8 +114,9 @@ public class RetrieveOAuthDataRequest extends BaseOperationRequest
     {
         for (String key : KEYS)
         {
-            if (!b.containsKey(key) || b.getString(key) == null || b.getString(key).isEmpty()) { throw new IllegalArgumentException(
-                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), key)); }
+            if (!b.containsKey(key) || b.getString(key) == null
+                    || b.getString(key).isEmpty()) { throw new IllegalArgumentException(
+                            String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), key)); }
         }
     }
 
@@ -145,6 +151,11 @@ public class RetrieveOAuthDataRequest extends BaseOperationRequest
         {
             this();
             this.session = session;
+            OAuthData data = session.getOAuthData();
+            this.operationKind = RetrieveOAuthDataRequest.OPERATION_REFRESH_TOKEN;
+            this.baseURL = session.getBaseUrl();
+            this.apiKey = data.getApiKey();
+            this.apiSecret = data.getApiSecret();
         }
 
         public Builder(int operationKind, String baseURL, String code, String apiKey, String apiSecret, String callBack)
@@ -156,7 +167,6 @@ public class RetrieveOAuthDataRequest extends BaseOperationRequest
             this.apiKey = apiKey;
             this.apiSecret = apiSecret;
             this.callBackURL = callBack;
-            this.baseURL = baseURL;
         }
 
         public RetrieveOAuthDataRequest build(Context context)

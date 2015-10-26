@@ -45,8 +45,8 @@ import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoSessionSettings;
 import org.alfresco.mobile.android.platform.provider.MapUtil;
 import org.alfresco.mobile.android.platform.utils.ConnectivityUtils;
-import org.alfresco.mobile.android.sync.FavoritesSyncManager;
-import org.alfresco.mobile.android.sync.FavoritesSyncSchema;
+import org.alfresco.mobile.android.sync.SyncContentManager;
+import org.alfresco.mobile.android.sync.SyncContentSchema;
 import org.alfresco.mobile.android.sync.utils.NodeSyncPlaceHolder;
 
 import android.database.Cursor;
@@ -124,12 +124,12 @@ public class RetrieveNodeOperation extends NodeOperation<Node>
         }
         catch (Exception e)
         {
-            FavoritesSyncManager syncManager = FavoritesSyncManager.getInstance(context);
+            SyncContentManager syncManager = SyncContentManager.getInstance(context);
             if (!ConnectivityUtils.hasInternetAvailable(context) && syncManager.isSynced(acc, identifier))
             {
                 // Retrieve Sync Cursor for the specified node
                 Uri localUri = syncManager.getUri(acc, identifier);
-                Cursor syncCursor = context.getContentResolver().query(localUri, FavoritesSyncSchema.COLUMN_ALL, null,
+                Cursor syncCursor = context.getContentResolver().query(localUri, SyncContentSchema.COLUMN_ALL, null,
                         null, null);
                 if (syncCursor.getCount() == 1 && syncCursor.moveToFirst())
                 {

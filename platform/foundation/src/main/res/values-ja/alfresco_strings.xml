@@ -1,4 +1,21 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~  Copyright (C) 2005-2015 Alfresco Software Limited.
+  ~
+  ~  This file is part of Alfresco Mobile for Android.
+  ~
+  ~  Licensed under the Apache License, Version 2.0 (the "License");
+  ~  you may not use this file except in compliance with the License.
+  ~  You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~  limitations under the License.
+  -->
+
 <resources>
 
     <!-- ************************** -->
@@ -35,8 +52,8 @@
     <string name="ok">OK</string>
     <string name="cancel">キャンセル</string>
     <!-- Listing -->
-    <string name="load_more">さらに読み込む...</string>
-    <string name="load_more_progress">読み込んでいます...</string>
+    <string name="load_more">さらに読み込む&#8230;</string>
+    <string name="load_more_progress">読み込んでいます&#8230;</string>
     <string name="listing_nodata">データがありません。</string>
     <!-- Dialog -->
     <string name="dialog_ok">OK</string>
@@ -177,7 +194,7 @@
     <!-- Create Folder -->
     <string name="folder_create">新しいフォルダを作成してください</string>
     <string name="folder_name">名前</string>
-    <string name="folder_name_hint">ここにフォルダ名を入力してください...</string>
+    <string name="folder_name_hint">ここにフォルダ名を入力してください&#8230;</string>
     <!-- Update Properties -->
     <string name="edit">編集</string>
     <string name="update">更新</string>
@@ -186,7 +203,7 @@
     <string name="download">ダウンロード</string>
     <string name="download_complete">ダウンロードが完了しました</string>
     <string name="download_error">ダウンロード中にエラーが発生しました。</string>
-    <string name="download_progress">ダウンロードしています...</string>
+    <string name="download_progress">ダウンロードしています&#8230;</string>
     <!-- Empty -->
     <string name="empty_users">ユーザーが見つかりません</string>
     <string name="empty_child">ファイルが見つかりません</string>
@@ -208,7 +225,7 @@
     <string name="search_hint">検索キーワードを入力してください</string>
     <!-- Comments -->
     <string name="comments">コメント</string>
-    <string name="comment_add_hint">ここにコメントを入力してください...</string>
+    <string name="comment_add_hint">ここにコメントを入力してください&#8230;</string>
     <!-- Actions -->
     <string name="create">作成</string>
     <string name="add">追加</string>
@@ -230,19 +247,22 @@
     <string name="error_unable_open_file">このファイルを開けません</string>
     <string name="error_unable_share_link">リンクを共有できません</string>
     <string name="error_unable_share_content">コンテンツを共有できません</string>
+    <string name="error_unable_open_map">マップを開けません</string>
 
     <!-- SESSION ERROR -->
     <string name="retry_account_loading">再試行</string>
     <string name="error_session_creation_title">アカウントの保存</string>
     <string name="error_session_creation_message">接続エラー</string>
-    <string name="error_session_creation">認証できません。 アカウントの設定を確認してください。</string>
-    <string name="error_session_hostname"><![CDATA[<b>ホスト名</b>の値に誤りがあるか<br/>、 <b>VPN を有効にする</b>必要があります。<br/>アカウントの設定を確認してください。]]></string>
+    <string name="error_session_creation">認証できません。 Alfresco アカウントの設定を確認してください。</string>
+    <string name="error_session_hostname_short">あなたの <b>ホスト名</b> の値が間違っている可能性があります。</string>
+    <string name="error_session_hostname"><![CDATA[<b>ホスト名</b>の値に誤りがあるか<br/>、 <b>VPN を有効にする</b>必要があります。<br/>値と設定を確認してください。]]></string>
+    <string name="error_session_nodata_short">デバイスにデータ接続がありません。</string>
     <string name="error_session_nodata"><![CDATA[<p><b>デバイスにデータ接続がありません。</b><br/></p> デバイスの設定を確認して、データ接続を有効にしてください。]]></string>
-    <string name="error_session_unauthorized"><![CDATA[このサーバーへのアクセス権がありません。<br/>アカウントの設定を確認してください<b> (ユーザー名/パスワード)</b>。]]></string>
-    <string name="error_session_service_url"><![CDATA[<b>サービス URL</b>の値に誤りがあります。<br/> アカウントの設定を確認してください。]]></string>
+    <string name="error_session_unauthorized"><![CDATA[このサーバーへのアクセス権がありません。<br/> Alfresco アカウントの設定 <b>(ユーザー名/パスワード)</b> を確認してください。]]></string>
+    <string name="error_session_service_url"><![CDATA[<b>サービス URL</b> の値に誤りがあります。<br/> Alfresco アカウントの設定を確認してください。]]></string>
     <string name="error_session_service_unavailable"><![CDATA[メンテナンス中によりサーバーがダウンしているか、容量に問題があるため、一時的に要求を処理できません。<br/> しばらくしてから、操作をやり直してください。]]></string>
-    <string name="error_session_notfound"><![CDATA[サーバーに接続できませんでした。<br/> アカウントの設定を確認してください。]]></string>
-    <string name="error_session_port"><![CDATA[<b>ポート</b>の値に誤りがあります。<br/> アカウントの設定を確認してください。]]></string>
+    <string name="error_session_notfound"><![CDATA[サーバーに接続できませんでした。<br/> Alfresco アカウントの設定を確認してください。]]></string>
+    <string name="error_session_port"><![CDATA[<b>ポート</b>の値に誤りがあります。<br/> Alfresco アカウントの設定を確認してください。]]></string>
     <string name="error_session_certificate">
 <![CDATA[<p><b>サーバーのセキュリティ証明書が信頼されていません。</b><br/></p>
 		サーバーの接続先の証明書を発行した第三者機関が、デバイスで認識された機関と一致しません。<br/>
@@ -255,19 +275,21 @@
     </string>
     <string name="error_session_ssl">
 <![CDATA[<p><b>SSL プロトコルにエラーが発生しました。</b><br/></p>
-        アカウントの設定を確認してから、もう一度やり直してください。<br/>問題が解決しない場合は、管理者に問い合わせてください。]]>
+        Alfresco アカウントの設定を確認してから、もう一度やり直してください。<br/>問題が解決しない場合は、管理者に問い合わせてください。]]>
     </string>
     <string name="error_session_cloud_unavailable">
-<![CDATA[<p><b>Alfresco in the Cloud は現在大量の処理を行っています。</b><br/></p>
+<![CDATA[<p><b>Alfresco Cloud は現在大量の処理を行っています。</b><br/></p>
         しばらくしてから、操作をやり直してください。<br/>]]>
     </string>
     <string name="error_session_expired">セッションの期限が切れています。 もう一度サインインしてください。</string>
     <string name="error_session_refresh">セッションを再読み込みしています。</string>
     <string name="error_chunk_transfert"><![CDATA[サーバーはチャンク転送に対応していません。<br/>アカウントを再読み込みしてください</b>。]]></string>
+
+    <string name="error_account_url">URL が正しくありません。 Alfresco アカウントの設定を確認してください。</string>
+    <string name="error_unknown_filepath">リソースが見つかりませんでした。</string>
     <string name="error_name_already_exist">ファイルの名前を変更できませんでした。 同じ名前のファイルが既に存在する可能性があります。</string>
     <string name="error_unknown_exception">エラーが発生しました : %s</string>
     <string name="error_unknown">エラーが発生しました : %s</string>
-
 
     <!-- Share -->
     <string name="share_url">リンクの共有</string>
@@ -286,7 +308,7 @@
 
     <!-- WAITING SESSION -->
     <string name="wait_title">お待ちください</string>
-    <string name="wait_message">サーバーに接続しています...</string>
+    <string name="wait_message">サーバーに接続しています&#8230;</string>
     <string name="session_loaded">セッション準備完了</string>
 
     <!-- Creation Folder -->
@@ -296,21 +318,21 @@
     <!-- Workflow FILTERS -->
     <string name="empty_tasks">タスクなし</string>
     <string name="tasks_assignee_unassigned">担当者なし</string>
-    <string name="task_delegate_in_progress">再割り当てしています...</string>
+    <string name="task_delegate_in_progress">再割り当てをしています&#8230;</string>
     <string name="task_delegate_complete">再割り当てが完了しました</string>
     <string name="update_sucess">\"%s\" の更新が完了しました。</string>
 
     <!-- Delete -->
-    <string name="delete_in_progress">削除しています...</string>
+    <string name="delete_in_progress">削除しています&#8230;</string>
     <string name="delete_complete">削除が完了しました</string>
 
     <!-- Quick Action Folder -->
-    <string name="like_in_progress">[いいね!] をつけています</string>
+    <string name="like_in_progress">[いいね !] をつけています</string>
     <string name="like_completed">[いいね!] が完了しました</string>
     <string name="like_complete">[いいね!] 完了</string>
 
     <!-- MEMBERS -->
-    <string name="members">メンバーリスト</string>
+    <string name="members">メンバーのリスト</string>
     <string name="members_of">%s のメンバー</string>
 
     <!-- MAIN MENU -->
@@ -341,8 +363,8 @@
 
     <!-- NETWORKS -->
     <string name="cloud_networks_empty">使用可能なネットワークはありません</string>
-    <string name="manage_accounts">アカウントの管理...</string>
-    <string name="cloud_networks_switch">ネットワークの切り替え...</string>
+    <string name="manage_accounts">アカウントの管理&#8230;</string>
+    <string name="cloud_networks_switch">ネットワークの切り替え&#8230;</string>
 
     <!-- PROFILES -->
     <string name="profiles_empty">使用可能なプロファイルはありません</string>
@@ -355,21 +377,21 @@
 
     <!-- BUG REPORT -->
     <string name="bug_report_title">[バグの報告] : </string>
-    <string name="waiting_operations">お待ちください...</string>
+    <string name="waiting_operations">お待ちください&#8230;</string>
 
     <!-- Favorites -->
     <string name="menu_favorites_folder">お気に入りのフォルダ</string>
     <string name="menu_favorites">お気に入り</string>
-    <string name="synced_documents">同期されているコンテンツ</string>
+    <string name="synced_content">同期されているコンテンツ</string>
     <string name="empty_favorites">お気に入りはありません</string>
     <string name="favorites_document">お気に入り</string>
-    <string name="error_retrieve_favorite">このコンテンツのお気に入り情報は取得できませんでした。</string>
-    <string name="favorites_activate">\"%s\"のコンテンツを同期</string>
-    <string name="favorites_activate_description">お気に入りのコンテンツを自動的にこのデバイスと同期しますか?</string>
+    <string name="error_retrieve_favorite">このコンテンツのお気に入り情報を取得できませんでした。</string>
+    <string name="favorites_activate">\"%s\" のコンテンツを同期します</string>
+    <string name="favorites_activate_description">お気に入りのコンテンツを自動的にこのデバイスと同期させますか?</string>
     <string name="favorites_deactivate">同期の無効化</string>
     <string name="favorites_deactivate_description"><![CDATA[<p>同期を無効にしますか?</p> 無効にすると、同期されているすべてのコンテンツがデバイスから削除されます。]]></string>
     <string name="sync_error_title">同期エラー</string>
-    <string name="sync_error_node_unfavorited"><![CDATA[<p>編集を開始したため、<b>%s</b>のお気に入りが解除されました。 <br/>編集済みのバージョンをサーバーと<b>同期</b>するか、\"ダウンロード\" フォルダに<b>保存</b>してください。 </p>]]></string>
+    <string name="sync_error_node_unfavorited"><![CDATA[<p>編集を開始したため、<b>%s</b> のお気に入りが解除されました。 <br/> 編集済みのバージョンをサーバーと<b>同期</b>させるか、\"ダウンロード\" フォルダに<b>保存</b>してください。 </p>]]></string>
     <string name="sync_error_node_deleted"><![CDATA[<p> <b>%s</b> はサーバーから削除されましたが、\"ダウンロード\" フォルダにコピーが保存されています。</p>]]></string>
     <string name="sync_error_no_permission"><![CDATA[<p> <b>%s</b> の編集済みバージョンをアップロードするのに必要な権限がありません。 \"ダウンロード\" フォルダに<b>保存</b>するか、サーバーにあるバージョンで<b>上書き</b>して編集済みバージョンを破棄することもできます。]]></string>
     <string name="sync_error_node_local_modification">同期エラー</string>
@@ -378,14 +400,14 @@
     <string name="sync_save_action">保存</string>
     <string name="sync_resolve_conflict">競合の解決</string>
     <string name="sync_complete">同期が完了しました</string>
-    <string name="sync_in_progress">同期しています...</string>
-    <string name="upload_await">アップロードを待っています...</string>
-    <string name="download_await">ダウンロードを待っています...</string>
+    <string name="sync_in_progress">同期しています&#8230;</string>
+    <string name="upload_await">アップロードを待っています&#8230;</string>
+    <string name="download_await">ダウンロードを待っています&#8230;</string>
     <string name="sync_favorites">お気に入り</string>
 
     <plurals name="sync_complete_description">
         <item quantity="zero">同期されたコンテンツはありません</item>
-        <item quantity="one">1 ファイル同期済み</item>
+        <item quantity="one">1 個のファイルが同期されました</item>
         <item quantity="other">%1$s 個のファイルが同期されました</item>
     </plurals>
     <plurals name="download_complete_description">
@@ -423,15 +445,15 @@
     <string name="sync_error">同期エラー</string>
     <string name="sync_warning_mobile_data"><![CDATA[<p>通信事業者の接続を経由して <b>%s</b> を同期しようとしています。</p> 続行しますか?]]></string>
     <string name="sync_error_storage"><![CDATA[<p> <b>%1$s</b> を同期しようとしていますが、容量が %2$s しかありません。</p> デバイスの空き容量を増やすか、一部のコンテンツのお気に入りを解除してください。]]></string>
-    <string name="sync_warning_storage"><![CDATA[<p> <b>%1$s</b> を同期しようとしていますが、デバイスの空き容量が%2$s しかありません。</p> 続行しますか?]]></string>
+    <string name="sync_warning_storage"><![CDATA[<p>通信事業者の接続を経由して <b>%s</b> を同期しようとしています。</p> 続行しますか?]]></string>
     <string name="sync_document_not_available">この文書はデバイスにありません。</string>
 
     <!-- NOTIFICATION -->
     <string name="upload">アップロード </string>
     <string name="upload_complete">アップロードが完了しました。</string>
-    <string name="upload_in_progress">アップロードしています...</string>
+    <string name="upload_in_progress">アップロードしています&#8230;</string>
     <string name="update_complete">更新が完了しました。</string>
-    <string name="update_in_progress">更新しています...</string>
+    <string name="update_in_progress">更新しています&#8230;</string>
 
     <!-- Fujitsu ScanSnap -->
     <string name="scan">スキャン</string>

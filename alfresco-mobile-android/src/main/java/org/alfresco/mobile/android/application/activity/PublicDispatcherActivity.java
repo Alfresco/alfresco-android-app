@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.activity;
 
 import java.io.File;
@@ -23,7 +23,6 @@ import java.util.List;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.configuration.ConfigurationConstant;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
-import org.alfresco.mobile.android.application.fragments.account.AccountOAuthFragment;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.builder.FragmentBuilderFactory;
 import org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerFragment;
@@ -31,6 +30,7 @@ import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFo
 import org.alfresco.mobile.android.application.fragments.node.favorite.FavoritesFragment;
 import org.alfresco.mobile.android.application.fragments.node.upload.UploadFormFragment;
 import org.alfresco.mobile.android.application.fragments.preferences.PasscodePreferences;
+import org.alfresco.mobile.android.application.fragments.signin.AccountOAuthFragment;
 import org.alfresco.mobile.android.application.fragments.sync.SyncFragment;
 import org.alfresco.mobile.android.application.security.PassCodeActivity;
 import org.alfresco.mobile.android.async.node.favorite.FavoriteNodesRequest;
@@ -39,10 +39,10 @@ import org.alfresco.mobile.android.async.session.RequestSessionEvent;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.ui.ListingModeFragment;
 
-import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -76,13 +76,21 @@ public class PublicDispatcherActivity extends BaseActivity
     {
         super.onCreate(savedInstanceState);
         displayAsDialogActivity();
-        setContentView(R.layout.app_left_panel);
+        setContentView(R.layout.activitycompat_left_panel);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        if (toolbar != null)
+        {
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
+        }
 
         String action = getIntent().getAction();
         if ((Intent.ACTION_SEND.equals(action) || Intent.ACTION_SEND_MULTIPLE.equals(action))
                 && getFragment(UploadFormFragment.TAG) == null)
         {
-            FragmentDisplayer.with(this).load(new UploadFormFragment()).back(false).into(FragmentDisplayer.PANEL_LEFT);
+            FragmentDisplayer.with(this).load(new UploadFormFragment()).back(false).animate(null).into(FragmentDisplayer.PANEL_LEFT);
             return;
         }
 
@@ -94,12 +102,14 @@ public class PublicDispatcherActivity extends BaseActivity
 
         if (PrivateIntent.ACTION_PICK_FILE.equals(action))
         {
-            File f = Environment.getExternalStorageDirectory();
+            File f;
             if (getIntent().hasExtra(PrivateIntent.EXTRA_FOLDER))
             {
                 f = (File) getIntent().getExtras().getSerializable(PrivateIntent.EXTRA_FOLDER);
-                FileExplorerFragment.with(this).file(f).mode(ListingModeFragment.MODE_PICK).isShortCut(true).menuId(1)
-                        .display();
+                FragmentDisplayer.with(this)
+                        .load(FileExplorerFragment.with(this).menuId(1).file(f).isShortCut(true)
+                                .mode(ListingModeFragment.MODE_PICK).createFragment())
+                        .back(false).into(FragmentDisplayer.PANEL_LEFT);
             }
         }
     }
@@ -107,7 +117,7 @@ public class PublicDispatcherActivity extends BaseActivity
     @Override
     protected void onStart()
     {
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getAppActionBar().setDisplayHomeAsUpEnabled(true);
         super.onStart();
         PassCodeActivity.requestUserPasscode(this);
         activateCheckPasscode = PasscodePreferences.hasPasscodeEnable(this);
@@ -212,12 +222,13 @@ public class PublicDispatcherActivity extends BaseActivity
         if (requestedAccountId != -1 && requestedAccountId != event.account.getId()) { return; }
         requestedAccountId = -1;
 
-        setProgressBarIndeterminateVisibility(false);
+        setSupportProgressBarIndeterminateVisibility(false);
 
         // Remove OAuthFragment if one
         if (getFragment(AccountOAuthFragment.TAG) != null)
         {
-            getFragmentManager().popBackStack(AccountOAuthFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            getSupportFragmentManager().popBackStack(AccountOAuthFragment.TAG,
+                    FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
 
         removeWaitingDialog();
@@ -230,12 +241,10 @@ public class PublicDispatcherActivity extends BaseActivity
         switch (uploadFolder)
         {
             case R.string.menu_browse_sites:
-                type = ConfigurationConstant.KEY_SITES;
-                // BrowserSitesFragment.with(this).display();
+                type = ConfigurationConstant.KEY_SITE_BROWSER;
                 break;
             case R.string.menu_browse_root:
                 type = ConfigurationConstant.KEY_REPOSITORY;
-                // DocumentFolderBrowserFragment.with(this).folder(getCurrentSession().getRootFolder()).display();
                 break;
             case R.string.menu_favorites_folder:
                 FavoritesFragment.with(this).setMode(FavoriteNodesRequest.MODE_FOLDERS).display();
@@ -256,7 +265,7 @@ public class PublicDispatcherActivity extends BaseActivity
     public void onSessionRequested(RequestSessionEvent event)
     {
         requestedAccountId = event.accountToLoad.getId();
-        currentAccount = event.accountToLoad;
+        setCurrentAccount(event.accountToLoad);
         displayWaitingDialog();
     }
 }

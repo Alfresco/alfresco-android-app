@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+ * Copyright (C) 2005-2015 Alfresco Software Limited.
  *
  * This file is part of Alfresco Mobile for Android.
  *
@@ -20,6 +20,7 @@ package org.alfresco.mobile.android.application.activity;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.preferences.PasscodePreferences;
 import org.alfresco.mobile.android.application.security.PassCodeActivity;
+import org.alfresco.mobile.android.platform.SessionManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.intent.AlfrescoIntentAPI;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
@@ -29,8 +30,10 @@ import org.alfresco.mobile.android.ui.utils.UIUtils;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.TypedValue;
-import android.view.Window;
+import android.view.ActionMode;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.ProgressBar;
 
 /**
  * Base class for all activities.
@@ -59,13 +62,32 @@ public abstract class BaseActivity extends AlfrescoActivity
         if (getIntent().hasExtra(PrivateIntent.EXTRA_ACCOUNT_ID))
         {
             long accountId = getIntent().getExtras().getLong(PrivateIntent.EXTRA_ACCOUNT_ID);
-            currentAccount = AlfrescoAccountManager.getInstance(this).retrieveAccount(accountId);
+            SessionManager.getInstance(this)
+                    .saveAccount(AlfrescoAccountManager.getInstance(this).retrieveAccount(accountId));
         }
 
         if (getIntent().hasExtra(AlfrescoIntentAPI.EXTRA_ACCOUNT_ID))
         {
             long accountId = getIntent().getExtras().getLong(AlfrescoIntentAPI.EXTRA_ACCOUNT_ID);
-            currentAccount = AlfrescoAccountManager.getInstance(this).retrieveAccount(accountId);
+            SessionManager.getInstance(this)
+                    .saveAccount(AlfrescoAccountManager.getInstance(this).retrieveAccount(accountId));
+        }
+    }
+
+    @Override
+    public void setSupportProgressBarIndeterminateVisibility(boolean indeterminate)
+    {
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.progress_spinner);
+
+        if (progressBar == null) { return; }
+
+        if (indeterminate)
+        {
+            progressBar.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            progressBar.setVisibility(View.GONE);
         }
     }
 
@@ -90,6 +112,7 @@ public abstract class BaseActivity extends AlfrescoActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PassCodeActivity.REQUEST_CODE_PASSCODE)
         {
             if (resultCode == RESULT_CANCELED)
@@ -103,6 +126,18 @@ public abstract class BaseActivity extends AlfrescoActivity
         }
     }
 
+    @Override
+    public ActionMode startActionMode(final ActionMode.Callback callback)
+    {
+        // Fix for bug https://code.google.com/p/android/issues/detail?id=159527
+        final ActionMode mode = super.startActionMode(callback);
+        if (mode != null)
+        {
+            mode.invalidate();
+        }
+        return mode;
+    }
+
     // ///////////////////////////////////////////////////////////////////////////
     // PASSCODE PROTECTION
     // ///////////////////////////////////////////////////////////////////////////
@@ -114,9 +149,9 @@ public abstract class BaseActivity extends AlfrescoActivity
     // ///////////////////////////////////////////////////////////////////////////
     // UTILS
     // ///////////////////////////////////////////////////////////////////////////
-    protected void displayAsDialogActivity()
+    protected void displayAsDialogActivity(double defaultCoefficient, double heightCoefficient)
     {
-        requestWindowFeature(Window.FEATURE_ACTION_BAR);
+        // supportRequestWindowFeature(Window.FEATURE_ACTION_BAR);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND, WindowManager.LayoutParams.FLAG_DIM_BEHIND);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
@@ -126,7 +161,7 @@ public abstract class BaseActivity extends AlfrescoActivity
         int height = values[1];
         int width = values[0];
 
-        double coefficient = 0.90f;
+        double coefficient = defaultCoefficient;
         try
         {
             TypedValue outValue = new TypedValue();
@@ -135,14 +170,19 @@ public abstract class BaseActivity extends AlfrescoActivity
         }
         catch (Exception e)
         {
-            coefficient = 0.90f;
+            coefficient = defaultCoefficient;
         }
 
-        params.height = (int) Math.round(height * 0.9);
+        params.height = (int) Math.round(height * heightCoefficient);
         params.width = (int) Math.round(width * coefficient);
 
         params.alpha = 1.0f;
         params.dimAmount = 0.5f;
         getWindow().setAttributes(params);
+    }
+
+    protected void displayAsDialogActivity()
+    {
+        displayAsDialogActivity(0.90f, 0.9);
     }
 }

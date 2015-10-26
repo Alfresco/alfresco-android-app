@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.platform.accounts;
 
 import java.util.ArrayList;
@@ -159,8 +159,8 @@ public class AlfrescoAccountManager extends Manager
         for (Account account : accounts)
         {
             String accountId = mAccountManager.getUserData(account, AlfrescoAccount.ACCOUNT_ID);
-            if (accountId != null && id == Long.parseLong(accountId)) { return AlfrescoAccount.parse(mAccountManager,
-                    account); }
+            if (accountId != null
+                    && id == Long.parseLong(accountId)) { return AlfrescoAccount.parse(mAccountManager, account); }
         }
         return null;
     }
@@ -204,7 +204,14 @@ public class AlfrescoAccountManager extends Manager
         AccountManager mAccountManager = AccountManager.get(appContext);
         Account[] accounts = mAccountManager.getAccountsByType(AlfrescoAccount.ACCOUNT_TYPE);
         if (accounts.length == 0) { return null; }
-        return AlfrescoAccount.parse(mAccountManager, accounts[0]);
+        try
+        {
+            return AlfrescoAccount.parse(mAccountManager, accounts[0]);
+        }
+        catch (Exception e)
+        {
+            return AlfrescoAccount.parse(mAccountManager, accounts[1]);
+        }
     }
 
     public String createUniqueAccountName(String defaultName)
@@ -322,6 +329,13 @@ public class AlfrescoAccountManager extends Manager
         manager.setUserData(acc, AlfrescoAccount.ACCOUNT_REFRESH_TOKEN, refreshToken);
         manager.setPassword(acc, pass);
         return retrieveAccount(accountId);
+    }
+
+    public void update(long accountId, String key, String value)
+    {
+        Account acc = getAndroidAccount(accountId);
+        AccountManager manager = AccountManager.get(appContext);
+        manager.setUserData(acc, key, value);
     }
 
     protected void getCount()

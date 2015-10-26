@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.ui.network;
 
 import java.util.List;
@@ -24,9 +24,9 @@ import org.alfresco.mobile.android.foundation.R;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
-import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
+import org.alfresco.mobile.android.ui.holder.TwoLinesViewHolder;
 
-import android.app.Activity;
+import android.support.v4.app.FragmentActivity;
 import android.view.View;
 
 /**
@@ -35,27 +35,28 @@ import android.view.View;
  * 
  * @author Jean Marie Pascal
  */
-public class CloudNetworkAdapter extends BaseListAdapter<CloudNetwork, GenericViewHolder>
+public class CloudNetworkAdapter extends BaseListAdapter<CloudNetwork, TwoLinesViewHolder>
 {
-    public CloudNetworkAdapter(Activity context, int textViewResourceId, List<CloudNetwork> listItems)
+    public CloudNetworkAdapter(FragmentActivity context, int textViewResourceId, List<CloudNetwork> listItems)
     {
         super(context, textViewResourceId, listItems);
+        this.vhClassName = TwoLinesViewHolder.class.getCanonicalName();
     }
 
     @Override
-    protected void updateTopText(GenericViewHolder vh, CloudNetwork item)
+    protected void updateTopText(TwoLinesViewHolder vh, CloudNetwork item)
     {
         vh.topText.setText(item.getIdentifier());
     }
 
     @Override
-    protected void updateBottomText(GenericViewHolder vh, CloudNetwork item)
+    protected void updateBottomText(TwoLinesViewHolder vh, CloudNetwork item)
     {
-        vh.bottomText.setVisibility(View.GONE);
+        vh.bottomText.setVisibility(View.INVISIBLE);
     }
 
     @Override
-    protected void updateIcon(GenericViewHolder vh, CloudNetwork item)
+    protected void updateIcon(TwoLinesViewHolder vh, CloudNetwork item)
     {
         vh.icon.setImageDrawable(getContext().getResources().getDrawable(R.drawable.ic_network));
         AlfrescoAccount currentAccount = AlfrescoAccountManager.getInstance(getContext()).getDefaultAccount();

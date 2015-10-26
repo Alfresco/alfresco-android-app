@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.ui.activitystream;
 
 import java.util.ArrayList;
@@ -26,18 +26,18 @@ import org.alfresco.mobile.android.async.OperationRequest.OperationBuilder;
 import org.alfresco.mobile.android.async.activitystream.ActivityStreamEvent;
 import org.alfresco.mobile.android.async.activitystream.ActivityStreamRequest;
 import org.alfresco.mobile.android.foundation.R;
-import org.alfresco.mobile.android.ui.fragments.SelectableGridFragment;
+import org.alfresco.mobile.android.ui.fragments.BaseGridFragment;
 
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 
 import com.squareup.otto.Subscribe;
 
-public class ActivityStreamFragment extends SelectableGridFragment<ActivityEntry> implements ActivityStreamTemplate
+public class ActivityStreamFragment extends BaseGridFragment implements ActivityStreamTemplate
 {
     public static final String TAG = ActivityStreamFragment.class.getName();
 
-    private List<ActivityEntry> selectedEntry = new ArrayList<>(1);
+    protected List<ActivityEntry> selectedEntry = new ArrayList<>(1);
 
     protected String siteShortName = null;
 
@@ -49,7 +49,6 @@ public class ActivityStreamFragment extends SelectableGridFragment<ActivityEntry
     public ActivityStreamFragment()
     {
         emptyListMessageId = R.string.empty_actvity;
-        enableTitle = true;
     }
 
     // //////////////////////////////////////////////////////////////////////
@@ -71,9 +70,9 @@ public class ActivityStreamFragment extends SelectableGridFragment<ActivityEntry
     // ///////////////////////////////////////////////////////////////////////////
     // LISTENER
     // ///////////////////////////////////////////////////////////////////////////
-    protected ArrayAdapter<?> onAdapterCreation()
+    protected ArrayAdapter<ActivityEntry> onAdapterCreation()
     {
-        return new ActivityStreamAdapter(ActivityStreamFragment.this, getSession(), R.layout.app_grid_row_activities,
+        return new ActivityStreamAdapter(ActivityStreamFragment.this, R.layout.row_two_lines_caption_divider,
                 new ArrayList<ActivityEntry>(0), selectedEntry);
     }
 

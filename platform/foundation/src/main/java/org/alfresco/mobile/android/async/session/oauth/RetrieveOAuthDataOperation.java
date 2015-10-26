@@ -83,6 +83,9 @@ public class RetrieveOAuthDataOperation extends BaseOperation<OAuthData>
                         break;
                 }
             }
+
+            // Save Oauth Data
+            acc = AccountOAuthHelper.saveNewOauthData(context, getAccount(), data);
         }
         catch (Exception e)
         {
@@ -101,6 +104,6 @@ public class RetrieveOAuthDataOperation extends BaseOperation<OAuthData>
     protected void onPostExecute(LoaderResult<OAuthData> result)
     {
         super.onPostExecute(result);
-        EventBusManager.getInstance().post(new RetrieveOAuthDataEvent(getRequestId(), result));
+        EventBusManager.getInstance().post(new RetrieveOAuthDataEvent(getRequestId(), result, accountId));
     }
 }

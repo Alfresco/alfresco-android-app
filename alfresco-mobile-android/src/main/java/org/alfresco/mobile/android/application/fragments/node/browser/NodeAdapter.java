@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2015 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.fragments.node.browser;
 
 import java.lang.ref.WeakReference;
@@ -30,8 +30,8 @@ import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.services.DocumentFolderService;
 import org.alfresco.mobile.android.api.utils.NodeComparator;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.GridAdapterHelper;
-import org.alfresco.mobile.android.application.fragments.utils.ProgressViewHolder;
 import org.alfresco.mobile.android.application.fragments.workflow.CreateTaskPickerFragment;
 import org.alfresco.mobile.android.application.managers.RenditionManagerImpl;
 import org.alfresco.mobile.android.platform.mimetype.MimeType;
@@ -40,26 +40,28 @@ import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
 import org.alfresco.mobile.android.ui.ListingModeFragment;
 import org.alfresco.mobile.android.ui.fragments.BaseGridFragment;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
+import org.alfresco.mobile.android.ui.holder.TwoLinesProgressViewHolder;
 import org.alfresco.mobile.android.ui.rendition.RenditionManager;
 import org.alfresco.mobile.android.ui.utils.Formatter;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
-import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 /**
  * Provides access to node (documents or folders) and displays them as a view
  * based on GenericViewHolder.
- * 
+ *
  * @author Jean Marie Pascal
  */
-public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
+public class NodeAdapter extends BaseListAdapter<Node, TwoLinesProgressViewHolder>
 {
     protected List<Node> originalNodes;
 
@@ -79,65 +81,71 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
 
     private BaseGridFragment gridFragment;
 
-    private Map<String, Node> selectedMapItems;
+    protected Map<String, Node> selectedMapItems;
 
-    protected WeakReference<Activity> activityRef;
+    protected WeakReference<FragmentActivity> activityRef;
+
+    protected boolean fromFavorites = false;
+
+    protected List<String> favoritesNodeIndex;
 
     // //////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // //////////////////////////////////////////////////////////////////////
-    public NodeAdapter(Activity activity, int textViewResourceId, List<Node> listItems, List<Node> selectedItems,
-            int mode)
+    public NodeAdapter(FragmentActivity activity, int textViewResourceId, List<Node> listItems)
     {
         super(activity, textViewResourceId, listItems);
-        originalNodes = Collections.synchronizedList(listItems);
-        this.selectedItems = selectedItems;
         this.renditionManager = RenditionManagerImpl.getInstance(activity);
-        this.mode = mode;
-        this.vhClassName = ProgressViewHolder.class.getCanonicalName();
-        this.activityRef = new WeakReference<Activity>(activity);
+        this.vhClassName = TwoLinesProgressViewHolder.class.getCanonicalName();
+        this.activityRef = new WeakReference<>(activity);
     }
 
-    public NodeAdapter(BaseGridFragment fr, int textViewResourceId, List<Node> listItems, List<Node> selectedItems,
-            int mode)
+    public NodeAdapter(Fragment fr, int textViewResourceId, List<Node> listItems, List<Node> selectedItems, int mode)
     {
         super(fr.getActivity(), textViewResourceId, listItems);
+        this.fragmentRef = new WeakReference<>(fr);
         originalNodes = Collections.synchronizedList(listItems);
         this.selectedItems = selectedItems;
         this.renditionManager = RenditionManagerImpl.getInstance(fr.getActivity());
         this.mode = mode;
-        this.vhClassName = ProgressViewHolder.class.getCanonicalName();
-        this.activityRef = new WeakReference<Activity>(fr.getActivity());
-        this.gridFragment = fr;
+        this.vhClassName = TwoLinesProgressViewHolder.class.getCanonicalName();
+        this.activityRef = new WeakReference<>(fr.getActivity());
+        this.gridFragment = (BaseGridFragment) fr;
     }
 
-    public NodeAdapter(Activity activity, int textViewResourceId, List<Node> listItems)
+    public NodeAdapter(FragmentActivity activity, int textViewResourceId, List<Node> listItems,
+            List<Node> selectedItems, int mode)
     {
         super(activity, textViewResourceId, listItems);
+        originalNodes = Collections.synchronizedList(listItems);
+        this.selectedItems = selectedItems;
         this.renditionManager = RenditionManagerImpl.getInstance(activity);
-        this.vhClassName = ProgressViewHolder.class.getCanonicalName();
-        this.activityRef = new WeakReference<Activity>(activity);
+        this.mode = mode;
+        this.vhClassName = TwoLinesProgressViewHolder.class.getCanonicalName();
+        this.activityRef = new WeakReference<>(activity);
+        this.fromFavorites = true;
     }
 
     public NodeAdapter(Fragment fr, int textViewResourceId, List<Node> listItems, boolean isEditable)
     {
         super(fr.getActivity(), textViewResourceId, listItems);
-        this.fragmentRef = new WeakReference<Fragment>(fr);
+        this.fragmentRef = new WeakReference<>(fr);
         this.renditionManager = RenditionManagerImpl.getInstance(fr.getActivity());
-        this.vhClassName = ProgressViewHolder.class.getCanonicalName();
+        this.vhClassName = TwoLinesProgressViewHolder.class.getCanonicalName();
         this.isEditable = isEditable;
-        this.activityRef = new WeakReference<Activity>(fr.getActivity());
+        this.activityRef = new WeakReference<>(fr.getActivity());
     }
 
-    public NodeAdapter(Activity activity, int textViewResourceId, List<Node> listItems, Map<String, Node> selectedItems)
+    public NodeAdapter(FragmentActivity activity, int textViewResourceId, List<Node> listItems,
+            Map<String, Node> selectedItems)
     {
         super(activity, textViewResourceId, listItems);
         originalNodes = listItems;
         this.selectedMapItems = selectedItems;
         this.renditionManager = RenditionManagerImpl.getInstance(activity);
         this.mode = ListingModeFragment.MODE_PICK;
-        this.vhClassName = ProgressViewHolder.class.getCanonicalName();
-        this.activityRef = new WeakReference<Activity>(activity);
+        this.vhClassName = TwoLinesProgressViewHolder.class.getCanonicalName();
+        this.activityRef = new WeakReference<>(activity);
     }
 
     // /////////////////////////////////////////////////////////////
@@ -167,7 +175,7 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
             return super.getView(position, convertView, parent);
         }
 
-        ProgressViewHolder vh = (ProgressViewHolder) v.getTag();
+        TwoLinesProgressViewHolder vh = (TwoLinesProgressViewHolder) v.getTag();
         Node item = getItem(position);
         updateControls(vh, item);
         return v;
@@ -214,7 +222,10 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
         }
         originalNodes.add(node);
         originalNodes.removeAll(Collections.singleton(null));
-        Collections.sort(originalNodes, new NodeComparator(true, DocumentFolderService.SORT_PROPERTY_NAME));
+        if (!originalNodes.isEmpty())
+        {
+            Collections.sort(originalNodes, new NodeComparator(true, DocumentFolderService.SORT_PROPERTY_NAME));
+        }
 
         List<Node> tmpNodes = new ArrayList<Node>(originalNodes);
         clear();
@@ -255,7 +266,7 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
     // ITEM LINE
     // ////////////////////////////////////////////////////////////
     @Override
-    protected void updateTopText(ProgressViewHolder vh, Node item)
+    protected void updateTopText(TwoLinesProgressViewHolder vh, Node item)
     {
         vh.topText.setText(item.getName());
         if (item.isDocument() && mode == ListingModeFragment.MODE_IMPORT)
@@ -268,17 +279,38 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
         }
     }
 
-    private LinearLayout getSelectionLayout(ProgressViewHolder vh)
+    private ViewGroup getSelectionLayout(TwoLinesProgressViewHolder vh)
     {
-        return (LinearLayout) vh.icon.getParent();
+        if (vh.icon.getParent() instanceof RelativeLayout)
+        {
+            return (RelativeLayout) vh.icon.getParent();
+        }
+        else
+        {
+            return (LinearLayout) vh.icon.getParent().getParent();
+        }
+
     }
 
     @Override
-    protected void updateBottomText(ProgressViewHolder vh, Node item)
+    protected void updateBottomText(TwoLinesProgressViewHolder vh, Node item)
     {
+        if (favoritesNodeIndex == null)
+        {
+            if (fromFavorites)
+            {
+                vh.favoriteIcon.setVisibility(View.VISIBLE);
+                vh.favoriteIcon.setImageResource(R.drawable.ic_favorite_light);
+            }
+            else
+            {
+                vh.favoriteIcon.setVisibility(View.GONE);
+            }
+        }
+
         vh.bottomText.setText(createContentBottomText(getContext(), item));
-        AccessibilityUtils
-                .addContentDescription(vh.bottomText, createContentDescriptionBottomText(getActivity(), item));
+        AccessibilityUtils.addContentDescription(vh.bottomText,
+                createContentDescriptionBottomText(getActivity(), item));
 
         if (mode == ListingModeFragment.MODE_PICK)
         {
@@ -352,12 +384,14 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
     }
 
     @Override
-    protected void updateIcon(ProgressViewHolder vh, final Node item)
+    protected void updateIcon(TwoLinesProgressViewHolder vh, final Node item)
     {
         if (isEditable)
         {
             vh.choose.setVisibility(View.VISIBLE);
             vh.choose.setScaleType(ScaleType.CENTER_INSIDE);
+            int d_16 = DisplayUtils.getPixels(getContext(), R.dimen.d_16);
+            vh.choose.setPadding(d_16, d_16, d_16, d_16);
             vh.choose.setImageResource(R.drawable.ic_cancel);
             vh.choose.setOnClickListener(new OnClickListener()
             {
@@ -379,17 +413,15 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
             MimeType mime = MimeTypeManager.getInstance(getActivity()).getMimetype(item.getName());
             if (!activateThumbnail)
             {
-                vh.icon.setImageResource(mime != null ? mime.getLargeIconId(getActivity()) : MimeTypeManager
-                        .getInstance(getActivity()).getIcon(item.getName(), true));
+                vh.icon.setImageResource(mime != null ? mime.getLargeIconId(getActivity())
+                        : MimeTypeManager.getInstance(getActivity()).getIcon(item.getName(), true));
             }
             else
             {
-                RenditionManager
-                        .with(getActivity())
-                        .loadNode(item)
-                        .placeHolder(
-                                mime != null ? mime.getLargeIconId(getActivity()) : MimeTypeManager.getInstance(
-                                        getActivity()).getIcon(item.getName(), true)).into(vh.icon);
+                RenditionManager.with(getActivity()).loadNode(item)
+                        .placeHolder(mime != null ? mime.getLargeIconId(getActivity())
+                                : MimeTypeManager.getInstance(getActivity()).getIcon(item.getName(), true))
+                        .into(vh.icon);
             }
             vh.choose.setVisibility(View.GONE);
             AccessibilityUtils.addContentDescription(vh.icon,
@@ -413,9 +445,9 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
     // /////////////////////////////////////////////////////////////
     // UTILITIES
     // ////////////////////////////////////////////////////////////
-    public void setContext(Activity activity)
+    public void setContext(FragmentActivity activity)
     {
-        this.activityRef = new WeakReference<Activity>(activity);
+        this.activityRef = new WeakReference<>(activity);
     }
 
     public Boolean hasActivateThumbnail()
@@ -428,7 +460,7 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
         this.activateThumbnail = activateThumbnail;
     }
 
-    protected Activity getActivity()
+    protected FragmentActivity getActivity()
     {
         return activityRef.get();
     }

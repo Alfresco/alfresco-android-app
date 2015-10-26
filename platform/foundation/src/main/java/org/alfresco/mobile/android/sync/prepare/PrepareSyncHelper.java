@@ -29,13 +29,14 @@ import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.async.Operation;
 import org.alfresco.mobile.android.async.OperationSchema;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
-import org.alfresco.mobile.android.sync.FavoritesSyncManager;
-import org.alfresco.mobile.android.sync.FavoritesSyncSchema;
-import org.alfresco.mobile.android.sync.operations.FavoriteSync;
-import org.alfresco.mobile.android.sync.operations.FavoriteSyncDelete;
-import org.alfresco.mobile.android.sync.operations.FavoriteSyncDownload;
-import org.alfresco.mobile.android.sync.operations.FavoriteSyncStatus;
-import org.alfresco.mobile.android.sync.operations.FavoriteSyncUpdate;
+import org.alfresco.mobile.android.sync.SyncContentManager;
+import org.alfresco.mobile.android.sync.SyncContentSchema;
+import org.alfresco.mobile.android.sync.operations.SyncContent;
+import org.alfresco.mobile.android.sync.operations.SyncContentCreate;
+import org.alfresco.mobile.android.sync.operations.SyncContentDelete;
+import org.alfresco.mobile.android.sync.operations.SyncContentDownload;
+import org.alfresco.mobile.android.sync.operations.SyncContentStatus;
+import org.alfresco.mobile.android.sync.operations.SyncContentUpdate;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -47,7 +48,7 @@ public class PrepareSyncHelper extends PrepareBaseHelper
 {
     private static final String TAG = PrepareSyncHelper.class.getName();
 
-    protected List<FavoriteSync> group;
+    protected List<SyncContent> group;
 
     public PrepareSyncHelper(Context context, AlfrescoAccount acc, AlfrescoSession session, int mode,
             long syncScanningTimeStamp, SyncResult syncResult, Node node)
@@ -55,23 +56,46 @@ public class PrepareSyncHelper extends PrepareBaseHelper
         super(context, acc, session, mode, syncScanningTimeStamp, syncResult, node);
 
         // Create the group
-        group = new ArrayList<FavoriteSync>();
+        group = new ArrayList<SyncContent>();
+    }
+
+    public PrepareSyncHelper(Context context, AlfrescoAccount acc, AlfrescoSession session, int mode,
+            long syncScanningTimeStamp, SyncResult syncResult, String nodeIdentifier)
+    {
+        super(context, acc, session, mode, syncScanningTimeStamp, syncResult, nodeIdentifier);
+
+        // Create the group
+        group = new ArrayList<SyncContent>();
     }
 
     @Override
-    public List<FavoriteSync> prepare()
+    public List<SyncContent> prepare()
     {
         scan();
         return group;
     }
 
-    protected void prepareCreation(Uri syncUri, Document doc)
+    protected void prepareRemoteCreation(Uri localUri, Long id)
     {
         // Execution
         try
         {
-            FavoriteSync.saveStatus(context, syncUri, FavoriteSyncStatus.STATUS_PENDING);
-            group.add(new FavoriteSyncDownload(context, acc, session, syncResult, doc, syncUri));
+            SyncContent.saveStatus(context, localUri, SyncContentStatus.STATUS_PENDING);
+            group.add(new SyncContentCreate(context, acc, session, syncResult, id, localUri));
+        }
+        catch (Exception e)
+        {
+            // DO Nothing
+        }
+    }
+
+    protected void prepareLocalCreation(Uri syncUri, Document doc)
+    {
+        // Execution
+        try
+        {
+            SyncContent.saveStatus(context, syncUri, SyncContentStatus.STATUS_PENDING);
+            group.add(new SyncContentDownload(context, acc, session, syncResult, doc, syncUri));
         }
         catch (Exception e)
         {
@@ -104,9 +128,9 @@ public class PrepareSyncHelper extends PrepareBaseHelper
         // Execution
         try
         {
-            FavoriteSync.saveStatus(context, syncUri, FavoriteSyncStatus.STATUS_PENDING);
-            group.add(new FavoriteSyncUpdate(context, acc, session, syncResult, cursorId
-                    .getString(FavoritesSyncSchema.COLUMN_PARENT_ID_ID), doc, new ContentFileImpl(localFile), syncUri,
+            SyncContent.saveStatus(context, syncUri, SyncContentStatus.STATUS_PENDING);
+            group.add(new SyncContentUpdate(context, acc, session, syncResult, cursorId
+                    .getString(SyncContentSchema.COLUMN_PARENT_ID_ID), doc, new ContentFileImpl(localFile), syncUri,
                     false));
         }
         catch (Exception e)
@@ -117,32 +141,34 @@ public class PrepareSyncHelper extends PrepareBaseHelper
 
     protected void prepareDelete(String id, Cursor cursorId)
     {
+        if (SyncContentStatus.STATUS_REQUEST_USER == cursorId.getInt(SyncContentSchema.COLUMN_STATUS_ID)) { return; }
+
         // If Synced document
         // Flag the item inside the referential
-        if (FavoriteSyncStatus.STATUS_MODIFIED != cursorId.getInt(FavoritesSyncSchema.COLUMN_STATUS_ID))
+        if (SyncContentStatus.STATUS_MODIFIED != cursorId.getInt(SyncContentSchema.COLUMN_STATUS_ID))
         {
             ContentValues cValues = new ContentValues();
-            cValues.put(FavoritesSyncSchema.COLUMN_STATUS, FavoriteSyncStatus.STATUS_HIDDEN);
-            cValues.put(FavoritesSyncSchema.COLUMN_TOTAL_SIZE_BYTES, 0);
-            cValues.put(FavoritesSyncSchema.COLUMN_DOC_SIZE_BYTES, 0);
-            if (!ContentModel.TYPE_FOLDER.equals(cursorId.getString(FavoritesSyncSchema.COLUMN_STATUS_ID)))
+            cValues.put(SyncContentSchema.COLUMN_STATUS, SyncContentStatus.STATUS_HIDDEN);
+            cValues.put(SyncContentSchema.COLUMN_TOTAL_SIZE_BYTES, 0);
+            cValues.put(SyncContentSchema.COLUMN_DOC_SIZE_BYTES, 0);
+            if (!ContentModel.TYPE_FOLDER.equals(cursorId.getString(SyncContentSchema.COLUMN_STATUS_ID)))
             {
-                cValues.put(FavoritesSyncSchema.COLUMN_DOC_SIZE_BYTES,
-                        -cursorId.getLong(FavoritesSyncSchema.COLUMN_BYTES_DOWNLOADED_SO_FAR_ID));
+                cValues.put(SyncContentSchema.COLUMN_DOC_SIZE_BYTES,
+                        -cursorId.getLong(SyncContentSchema.COLUMN_BYTES_DOWNLOADED_SO_FAR_ID));
             }
             context.getContentResolver().update(
-                    FavoritesSyncManager.getUri(cursorId.getLong(FavoritesSyncSchema.COLUMN_ID_ID)), cValues, null,
+                    SyncContentManager.getUri(cursorId.getLong(SyncContentSchema.COLUMN_ID_ID)), cValues, null,
                     null);
         }
 
         // Execute Delete
         try
         {
-            FavoriteSync.saveStatus(context,
-                    FavoritesSyncManager.getUri(cursorId.getLong(FavoritesSyncSchema.COLUMN_ID_ID)),
-                    FavoriteSyncStatus.STATUS_PENDING);
-            group.add(new FavoriteSyncDelete(context, acc, session, syncResult, id, FavoritesSyncManager
-                    .getUri(cursorId.getLong(FavoritesSyncSchema.COLUMN_ID_ID))));
+            SyncContent.saveStatus(context,
+                    SyncContentManager.getUri(cursorId.getLong(SyncContentSchema.COLUMN_ID_ID)),
+                    SyncContentStatus.STATUS_PENDING);
+            group.add(new SyncContentDelete(context, acc, session, syncResult, id, SyncContentManager.getUri(cursorId
+                    .getLong(SyncContentSchema.COLUMN_ID_ID))));
         }
         catch (Exception e)
         {
