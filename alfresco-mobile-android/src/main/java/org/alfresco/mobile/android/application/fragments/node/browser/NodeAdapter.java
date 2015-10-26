@@ -114,8 +114,7 @@ public class NodeAdapter extends BaseListAdapter<Node, TwoLinesProgressViewHolde
     }
 
     public NodeAdapter(FragmentActivity activity, int textViewResourceId, List<Node> listItems,
-            List<Node> selectedItems,
-            int mode)
+            List<Node> selectedItems, int mode)
     {
         super(activity, textViewResourceId, listItems);
         originalNodes = Collections.synchronizedList(listItems);
@@ -223,7 +222,10 @@ public class NodeAdapter extends BaseListAdapter<Node, TwoLinesProgressViewHolde
         }
         originalNodes.add(node);
         originalNodes.removeAll(Collections.singleton(null));
-        Collections.sort(originalNodes, new NodeComparator(true, DocumentFolderService.SORT_PROPERTY_NAME));
+        if (!originalNodes.isEmpty())
+        {
+            Collections.sort(originalNodes, new NodeComparator(true, DocumentFolderService.SORT_PROPERTY_NAME));
+        }
 
         List<Node> tmpNodes = new ArrayList<Node>(originalNodes);
         clear();
@@ -307,8 +309,8 @@ public class NodeAdapter extends BaseListAdapter<Node, TwoLinesProgressViewHolde
         }
 
         vh.bottomText.setText(createContentBottomText(getContext(), item));
-        AccessibilityUtils
-                .addContentDescription(vh.bottomText, createContentDescriptionBottomText(getActivity(), item));
+        AccessibilityUtils.addContentDescription(vh.bottomText,
+                createContentDescriptionBottomText(getActivity(), item));
 
         if (mode == ListingModeFragment.MODE_PICK)
         {
@@ -411,17 +413,15 @@ public class NodeAdapter extends BaseListAdapter<Node, TwoLinesProgressViewHolde
             MimeType mime = MimeTypeManager.getInstance(getActivity()).getMimetype(item.getName());
             if (!activateThumbnail)
             {
-                vh.icon.setImageResource(mime != null ? mime.getLargeIconId(getActivity()) : MimeTypeManager
-                        .getInstance(getActivity()).getIcon(item.getName(), true));
+                vh.icon.setImageResource(mime != null ? mime.getLargeIconId(getActivity())
+                        : MimeTypeManager.getInstance(getActivity()).getIcon(item.getName(), true));
             }
             else
             {
-                RenditionManager
-                        .with(getActivity())
-                        .loadNode(item)
-                        .placeHolder(
-                                mime != null ? mime.getLargeIconId(getActivity()) : MimeTypeManager.getInstance(
-                                        getActivity()).getIcon(item.getName(), true)).into(vh.icon);
+                RenditionManager.with(getActivity()).loadNode(item)
+                        .placeHolder(mime != null ? mime.getLargeIconId(getActivity())
+                                : MimeTypeManager.getInstance(getActivity()).getIcon(item.getName(), true))
+                        .into(vh.icon);
             }
             vh.choose.setVisibility(View.GONE);
             AccessibilityUtils.addContentDescription(vh.icon,

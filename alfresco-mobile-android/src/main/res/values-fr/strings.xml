@@ -106,7 +106,7 @@
     <string name="menu_browse_sites">Sites</string>
     <string name="menu_browse_userhome">Mes fichiers</string>
     <string name="menu_browse_shared">Fichiers partagés</string>
-    <string name="menu_browse_site_finder">Recherche de sites</string>
+    <string name="menu_browse_site_finder">Recherche</string>
     <string name="menu_browse_all_sites">Tous les sites</string>
     <string name="menu_browse_my_sites">Mes sites</string>
     <string name="menu_browse_favorite_sites">Sites favoris</string>
