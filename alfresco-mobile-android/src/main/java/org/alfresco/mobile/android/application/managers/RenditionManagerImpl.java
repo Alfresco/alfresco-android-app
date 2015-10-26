@@ -240,11 +240,19 @@ public class RenditionManagerImpl extends RenditionManager
                 thread.start();
             }
         }
+        else
+        {
+            request.iv.get().setImageResource(request.placeHolderId);
+        }
     }
 
     private void startPicasso(String url, final RenditionRequest request)
     {
-        if (request.iv == null || request.iv.get() == null || url == null) { return; }
+        if (request.iv == null || request.iv.get() == null) { return; }
+        if (url == null)
+        {
+            displayPlaceHolder(request.iv.get(), request.placeHolderId);
+        }
         picasso.cancelRequest(request.iv.get());
         try
         {
@@ -348,13 +356,15 @@ public class RenditionManagerImpl extends RenditionManager
 
                 if (url != null && request.iv.get() != null)
                 {
-                    if (isInterrupted()) { return; }
                     addReference(request.itemId, url.toString(), request.renditionTypeId);
+                    if (isInterrupted()) { return; }
                     ctxt.runOnUiThread(new urlDisplayer(url.toString(), request));
                 }
                 else if (url == null)
                 {
                     addReference(request.itemId, NO_RENDITION, request.renditionTypeId);
+                    if (isInterrupted()) { return; }
+                    ctxt.runOnUiThread(new urlDisplayer(null, request));
                 }
             }
             catch (Exception e)
@@ -416,10 +426,9 @@ public class RenditionManagerImpl extends RenditionManager
 
         public void run()
         {
-            if (url != null && request != null)
+            if (request != null)
             {
                 startPicasso(url, request);
-
             }
             else if (request.iv != null && request.iv.get() != null)
             {
@@ -518,7 +527,7 @@ public class RenditionManagerImpl extends RenditionManager
         try
         {
             Class.forName("org.alfresco.mobile.android.platform.network.MobileIronHttpInvoker");
-            //OKhttp compatible with MobileIron ?
+            // OKhttp compatible with MobileIron ?
             client = new OkHttpClient();
         }
         catch (ClassNotFoundException e)
