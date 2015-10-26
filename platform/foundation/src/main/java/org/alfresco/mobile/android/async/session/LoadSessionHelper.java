@@ -33,6 +33,7 @@ import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoSessionSettings;
 
 import android.content.Context;
+import android.util.Log;
 
 public class LoadSessionHelper
 {
@@ -84,10 +85,12 @@ public class LoadSessionHelper
 
         if (sessionSettings.isCloud)
         {
+            Log.d("[CLOUD]", "REQUEST CLOUD SESSION");
+
             // CLOUD
             oauthData = sessionSettings.oAuthData;
             originalOauthData = oauthData;
-            if (sessionSettings.requestNewOAuthToken)
+            if (sessionSettings.requestNewOAuthToken && AccountOAuthHelper.doesRequireRefreshToken(context))
             {
                 OAuthHelper helper = null;
                 if (settings.containsKey(BASE_URL))
@@ -98,6 +101,7 @@ public class LoadSessionHelper
                 {
                     helper = new OAuthHelper();
                 }
+                Log.d("[CLOUD]", "REFRESH TOKEN");
                 oauthData = helper.refreshToken(oauthData);
                 account = AccountOAuthHelper.saveNewOauthData(context, getAccount(), oauthData);
             }

@@ -128,7 +128,8 @@ public class OperationsFactory
                 ConfigUtils.FAMILY_OPERATION_CALLBACK, action.request.getClass().getSimpleName());
         if (s == null)
         {
-            Log.w("ApplicationManager", "No callback for : " + action.request.getClass().getSimpleName());
+            // Log.w("ApplicationManager", "No callback for : " +
+            // action.request.getClass().getSimpleName());
             return null;
         }
         return createCallBack(s, operator.getContext());
@@ -145,7 +146,7 @@ public class OperationsFactory
         }
         catch (Exception e)
         {
-            Log.w("ApplicationManager", "No callback for : " + className);
+            // Log.w("ApplicationManager", "No callback for : " + className);
         }
         return s;
     }
