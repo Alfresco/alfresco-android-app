@@ -216,7 +216,7 @@ public class ConfigManager extends Manager
         File configFile = new File(configFolder, ConfigConstants.CONFIG_FILENAME);
 
         // No file == No configuration
-        if (!configFile.exists()) { return null; }
+        if (!configFile.exists()) { return loadEmbedded(); }
 
         ConfigService configService = new LocalConfigServiceImpl(configFolder, configFile);
         // Check if the configuration is present
