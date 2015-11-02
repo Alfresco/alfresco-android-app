@@ -28,6 +28,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
+import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.activity.PublicDispatcherActivity;
@@ -36,6 +37,7 @@ import org.alfresco.mobile.android.application.fragments.account.AccountsAdapter
 import org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerAdapter;
 import org.alfresco.mobile.android.application.managers.ActionUtils;
 import org.alfresco.mobile.android.async.session.LoadSessionCallBack;
+import org.alfresco.mobile.android.async.session.oauth.AccountOAuthHelper;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.SessionManager;
@@ -198,8 +200,8 @@ public class UploadFormFragment extends AlfrescoFragment
                             {
                                 String timeStamp = new SimpleDateFormat(DeviceCapture.TIMESTAMP_PATTERN)
                                         .format(new Date());
-                                File localParentFolder = AlfrescoStorageManager.getInstance(getActivity()).getCacheDir(
-                                        "AlfrescoMobile/import");
+                                File localParentFolder = AlfrescoStorageManager.getInstance(getActivity())
+                                        .getCacheDir("AlfrescoMobile/import");
                                 File f = createFile(localParentFolder, timeStamp + ".txt", item.getText().toString());
                                 if (f.exists())
                                 {
@@ -237,8 +239,8 @@ public class UploadFormFragment extends AlfrescoFragment
                     }
                     else if (file == null || fileName == null)
                     {
-                        AlfrescoNotificationManager.getInstance(getActivity()).showLongToast(
-                                getString(R.string.import_unsupported_intent));
+                        AlfrescoNotificationManager.getInstance(getActivity())
+                                .showLongToast(getString(R.string.import_unsupported_intent));
                         getActivity().finish();
                         return;
                     }
@@ -262,8 +264,8 @@ public class UploadFormFragment extends AlfrescoFragment
                         else
                         {
                             String timeStamp = new SimpleDateFormat(DeviceCapture.TIMESTAMP_PATTERN).format(new Date());
-                            File localParentFolder = AlfrescoStorageManager.getInstance(getActivity()).getCacheDir(
-                                    "AlfrescoMobile/import");
+                            File localParentFolder = AlfrescoStorageManager.getInstance(getActivity())
+                                    .getCacheDir("AlfrescoMobile/import");
                             File f = createFile(localParentFolder, timeStamp + ".txt", item.getText().toString());
                             if (f.exists())
                             {
@@ -284,8 +286,8 @@ public class UploadFormFragment extends AlfrescoFragment
                 }
                 else if (file == null || fileName == null)
                 {
-                    AlfrescoNotificationManager.getInstance(getActivity()).showLongToast(
-                            getString(R.string.import_unsupported_intent));
+                    AlfrescoNotificationManager.getInstance(getActivity())
+                            .showLongToast(getString(R.string.import_unsupported_intent));
                     getActivity().finish();
                     return;
                 }
@@ -370,8 +372,8 @@ public class UploadFormFragment extends AlfrescoFragment
         {
             file = new File(tmpPath);
 
-            if (file == null || !file.exists()) { throw new AlfrescoAppException(
-                    getString(R.string.error_unknown_filepath), true); }
+            if (file == null || !file
+                    .exists()) { throw new AlfrescoAppException(getString(R.string.error_unknown_filepath), true); }
             fileName = file.getName();
 
             if (getActivity() instanceof PublicDispatcherActivity)
@@ -432,6 +434,7 @@ public class UploadFormFragment extends AlfrescoFragment
     private void next()
     {
         AlfrescoAccount tmpAccount = selectedAccount;
+        if (tmpAccount == null) { return; }
         switch (folderImportId)
         {
             case R.string.menu_browse_sites:
@@ -446,13 +449,29 @@ public class UploadFormFragment extends AlfrescoFragment
                 AlfrescoSession session = SessionManager.getInstance(getActivity()).getSession(tmpAccount.getId());
 
                 // Try to use Session used by the application
-                if (session != null)
+                if (session != null && session.getServiceRegistry() != null)
                 {
-                    ((BaseActivity) getActivity()).setCurrentAccount(tmpAccount);
-                    ((BaseActivity) getActivity()).setRenditionManager(null);
-                    EventBusManager.getInstance().post(
-                            new LoadSessionCallBack.LoadAccountCompletedEvent(null, tmpAccount));
-                    return;
+                    if (session instanceof CloudSession && AccountOAuthHelper.doesRequireRefreshToken(getActivity()))
+                    {
+                        // Enforce session creation if oauth token is obsolete
+                        SessionManager.getInstance(getActivity()).removeAccount(tmpAccount.getId());
+                        ((BaseActivity) getActivity()).setCurrentAccount(tmpAccount);
+                        SessionManager.getInstance(getActivity()).loadSession(tmpAccount);
+                        if (getActivity() instanceof AlfrescoActivity)
+                        {
+                            ((AlfrescoActivity) getActivity()).displayWaitingDialog();
+                        }
+                        return;
+                    }
+                    else
+                    {
+                        // elsewhere just use the current session
+                        ((BaseActivity) getActivity()).setCurrentAccount(tmpAccount);
+                        ((BaseActivity) getActivity()).setRenditionManager(null);
+                        EventBusManager.getInstance()
+                                .post(new LoadSessionCallBack.LoadAccountCompletedEvent(null, tmpAccount));
+                        return;
+                    }
                 }
 
                 // Session is not used by the application so create one.
