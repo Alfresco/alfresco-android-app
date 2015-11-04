@@ -71,9 +71,4 @@
         </LinearLayout>
     </com.nirhart.parallaxscroll.views.ParallaxScrollView>
 
-    <include
-        layout="@layout/app_progress_emtpy"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
 </FrameLayout>

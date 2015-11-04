@@ -393,6 +393,10 @@
             android:name="org.alfresco.mobile.android.platform.io.FileCleanerService"
             android:exported="false" />
 
+        <service
+            android:name="org.alfresco.mobile.android.async.UploadRetryService"
+            android:exported="false" />
+
         <!-- *************************************************************** -->
         <!-- EXTENSION : SAMSUNG -->
         <!-- *************************************************************** -->

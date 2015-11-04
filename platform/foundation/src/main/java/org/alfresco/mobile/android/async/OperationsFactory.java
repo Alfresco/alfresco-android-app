@@ -35,6 +35,28 @@ public class OperationsFactory
     // ////////////////////////////////////////////////////
     // REQUEST
     // ////////////////////////////////////////////////////
+    public static boolean canRetry(Context context, Uri operationUri)
+    {
+        Cursor cursor = null;
+        try
+        {
+            cursor = context.getContentResolver().query(operationUri, OperationSchema.COLUMN_ALL, null, null, null);
+            if (cursor.getCount() == 0) { return false; }
+            cursor.moveToFirst();
+            int status = cursor.getInt(OperationSchema.COLUMN_STATUS_ID);
+            return (status == Operation.STATUS_FAILED);
+        }
+        catch (Exception e)
+        {
+            Log.e("ApplicationManager", "Error during OperationRequest creation : " + operationUri);
+        }
+        finally
+        {
+            CursorUtils.closeCursor(cursor);
+        }
+        return false;
+    }
+
     public static OperationRequest getRequest(Context context, Uri operationUri)
     {
         Cursor cursor = null;
@@ -44,8 +66,7 @@ public class OperationsFactory
             cursor.moveToFirst();
             int operationId = cursor.getInt(OperationSchema.COLUMN_REQUEST_TYPE_ID);
 
-            String s = ConfigUtils.getString(context, ConfigUtils.FAMILY_OPERATION,
-                    Integer.toString(operationId));
+            String s = ConfigUtils.getString(context, ConfigUtils.FAMILY_OPERATION, Integer.toString(operationId));
             if (s == null)
             {
                 Log.e("ApplicationManager", "Error during OperationRequest creation : " + operationId);
@@ -93,8 +114,8 @@ public class OperationsFactory
                 action.request.getClass().getSimpleName());
         if (s == null)
         {
-            Log.e("ApplicationManager", "Error during Operation creation : "
-                    + action.request.getClass().getSimpleName());
+            Log.e("ApplicationManager",
+                    "Error during Operation creation : " + action.request.getClass().getSimpleName());
             return null;
         }
         return createTask(s, operator, dispatcher, action);
@@ -124,8 +145,8 @@ public class OperationsFactory
     public static OperationCallback getCallBack(Operator operator, OperationsDispatcher dispatcher,
             OperationAction action)
     {
-        String s = ConfigUtils.getString(operator.getContext(),
-                ConfigUtils.FAMILY_OPERATION_CALLBACK, action.request.getClass().getSimpleName());
+        String s = ConfigUtils.getString(operator.getContext(), ConfigUtils.FAMILY_OPERATION_CALLBACK,
+                action.request.getClass().getSimpleName());
         if (s == null)
         {
             // Log.w("ApplicationManager", "No callback for : " +

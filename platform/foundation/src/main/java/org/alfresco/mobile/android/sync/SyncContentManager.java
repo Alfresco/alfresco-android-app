@@ -426,14 +426,13 @@ public class SyncContentManager extends Manager
 
     public boolean canSync(AlfrescoAccount account)
     {
-        return hasActivateSync(account) && ((hasWifiOnlySync(account) && ConnectivityUtils.isWifiAvailable(appContext))
-                || !hasWifiOnlySync(account));
+        return hasActivateSync(account) && hasConnectivityToSync(account);
     }
 
     public boolean hasConnectivityToSync(AlfrescoAccount account)
     {
         return ((hasWifiOnlySync(account) && ConnectivityUtils.isWifiAvailable(appContext))
-                || !hasWifiOnlySync(account));
+                || (!hasWifiOnlySync(account) && ConnectivityUtils.hasInternetAvailable(appContext)));
     }
 
     /**

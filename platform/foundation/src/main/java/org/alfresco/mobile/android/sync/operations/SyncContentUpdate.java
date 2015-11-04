@@ -22,10 +22,15 @@ import java.io.File;
 import org.alfresco.cmis.client.AlfrescoDocument;
 import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.api.model.Document;
+import org.alfresco.mobile.android.api.model.Folder;
+import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.impl.AbstractAlfrescoSessionImpl;
 import org.alfresco.mobile.android.api.utils.IOUtils;
+import org.alfresco.mobile.android.async.LoaderResult;
 import org.alfresco.mobile.android.async.OperationSchema;
+import org.alfresco.mobile.android.async.node.update.UpdateNodeEvent;
+import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
 import org.alfresco.mobile.android.platform.security.EncryptionUtils;
@@ -54,6 +59,10 @@ public class SyncContentUpdate extends SyncContent
 
     private final Document document;
 
+    private Document workingDocument;
+
+    private Folder parentFolder;
+
     private final boolean doRemove;
 
     private File destFile;
@@ -75,13 +84,17 @@ public class SyncContentUpdate extends SyncContent
     // ///////////////////////////////////////////////////////////////////////////
     public void execute()
     {
-        Log.d("Alfresco", "update for doc[" + document.getName() + "]");
+        Log.d("Alfresco", "update for doc [" + document.getName() + "]");
         super.execute();
 
         try
         {
             if (contentFile != null)
             {
+                // check latest version
+                workingDocument = session.getServiceRegistry().getVersionService().getLatestVersion(document);
+                parentFolder = session.getServiceRegistry().getDocumentFolderService().getParentFolder(workingDocument);
+
                 // Disable data protection if necessary
                 if (DataProtectionManager.getInstance(context).isEncrypted(contentFile.getFile().getPath()))
                 {
@@ -90,7 +103,7 @@ public class SyncContentUpdate extends SyncContent
                 }
 
                 Session cmisSession = ((AbstractAlfrescoSessionImpl) session).getCmisSession();
-                AlfrescoDocument cmisDoc = (AlfrescoDocument) cmisSession.getObject(document.getIdentifier());
+                AlfrescoDocument cmisDoc = (AlfrescoDocument) cmisSession.getObject(workingDocument.getIdentifier());
 
                 String idpwc = cmisDoc.getVersionSeriesCheckedOutId();
 
@@ -198,6 +211,12 @@ public class SyncContentUpdate extends SyncContent
             cValues.put(SyncContentSchema.COLUMN_LOCAL_URI, Uri.fromFile(destFile).toString());
 
             context.getContentResolver().update(localUri, cValues, null, null);
+
+            LoaderResult<Node> result = new LoaderResult<>();
+            result.setData(updatedNode);
+
+            EventBusManager.getInstance().post(new UpdateNodeEvent("", result, workingDocument, parentFolder));
+
         }
     }
 }

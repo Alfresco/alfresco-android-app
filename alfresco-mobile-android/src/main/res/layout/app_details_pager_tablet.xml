@@ -37,6 +37,7 @@
     </LinearLayout>
 
     <include
+        android:id="@+id/pager_empty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         layout="@layout/app_progress_emtpy" />

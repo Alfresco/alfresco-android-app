@@ -346,7 +346,8 @@ public class AlfrescoNotificationManager extends Manager
             if (channelStatus[getIndex(channelId)])
             {
                 // Log.d(TAG, "Refresh");
-                downloadHandler.postDelayed(this, 1000);
+                downloadHandler.postDelayed(this,
+                        1000 * (channelAttempt[getIndex(channelId)] == 0 ? 1 : channelAttempt[getIndex(channelId)]));
             }
         }
     }
@@ -359,6 +360,10 @@ public class AlfrescoNotificationManager extends Manager
     private NotificationTimer[] channelTimers = new NotificationTimer[4];
 
     private Boolean[] channelStatus = { false, false, false, false };
+
+    private Long[] channelProgress = { 0L, 0L, 0L, 0L };
+
+    private int[] channelAttempt = { 0, 0, 0, 0 };
 
     private Integer getIndex(int channelId)
     {
@@ -405,6 +410,8 @@ public class AlfrescoNotificationManager extends Manager
         NotificationTimer notificationTimer = new NotificationTimer(channelId);
         channelTimers[getIndex(channelId)] = notificationTimer;
         channelStatus[getIndex(channelId)] = true;
+        channelProgress[getIndex(channelId)] = 0L;
+        channelAttempt[getIndex(channelId)] = 0;
 
         // start it with
         downloadHandler.post(notificationTimer);
@@ -441,6 +448,8 @@ public class AlfrescoNotificationManager extends Manager
         // Log.d(TAG, "[Refresh] STOP");
         channelStatus[getIndex(channelId)] = false;
         channelTimers[getIndex(channelId)] = null;
+        channelProgress[getIndex(channelId)] = 0L;
+        channelAttempt[getIndex(channelId)] = 0;
     }
 
     public void unMonitorChannel(int requestTypeId)
@@ -464,6 +473,8 @@ public class AlfrescoNotificationManager extends Manager
 
         channelStatus[getIndex(channelId)] = false;
         channelTimers[getIndex(channelId)] = null;
+        channelProgress[getIndex(channelId)] = 0L;
+        channelAttempt[getIndex(channelId)] = 0;
     }
 
     private void createNotificationChannel(int channelId)
@@ -568,8 +579,24 @@ public class AlfrescoNotificationManager extends Manager
             {
                 createIndeterminateNotification(channelId, title, description, contentInfo);
             }
-            Log.d(TAG, title + " " + description + " " + contentInfo + " " + downloadedSoFar + " " + totalSize + " "
-                    + (downloadedSoFar / totalSize) * 100 + " " + 100);
+            Log.d(TAG, title + " " + channelAttempt[getIndex(channelId)] + " " + channelProgress[getIndex(channelId)]
+                    + " " + downloadedSoFar + " " + totalSize + " " + (downloadedSoFar / totalSize) * 100 + " " + 100);
+
+            // Stop infinity loop
+            if (channelProgress[getIndex(channelId)] == downloadedSoFar)
+            {
+                if (channelAttempt[getIndex(channelId)] >= 20)
+                {
+                    cancelMonitorChannel(channelId);
+                    return;
+                }
+                channelAttempt[getIndex(channelId)] += 1;
+            }
+            else
+            {
+                channelAttempt[getIndex(channelId)] = 0;
+            }
+            channelProgress[getIndex(channelId)] = downloadedSoFar;
         }
         catch (Exception e)
         {
