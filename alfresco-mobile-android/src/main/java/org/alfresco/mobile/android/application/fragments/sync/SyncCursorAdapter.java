@@ -27,7 +27,6 @@ import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsFragment;
 import org.alfresco.mobile.android.async.OperationRequest.OperationBuilder;
-import org.alfresco.mobile.android.async.OperationStatus;
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.node.sync.SyncNodeRequest;
 import org.alfresco.mobile.android.platform.mimetype.MimeType;
@@ -244,7 +243,7 @@ public class SyncCursorAdapter extends BaseCursorLoader<TwoLinesProgressViewHold
 
         if (mode == SyncFragment.MODE_LISTING && fragmentRef.get().getActivity() instanceof MainActivity)
         {
-            if (status == OperationStatus.STATUS_SUCCESSFUL || status == OperationStatus.STATUS_PENDING)
+            if (status != SyncContentStatus.STATUS_REQUEST_USER)
             {
                 UIUtils.setBackground(vh.choose, null);
                 return;

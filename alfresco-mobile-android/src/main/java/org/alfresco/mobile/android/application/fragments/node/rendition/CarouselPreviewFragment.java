@@ -154,7 +154,6 @@ public class CarouselPreviewFragment extends AlfrescoFragment implements Details
         }
         else if (nodes.size() > 0 && frag != null)
         {
-            frag.unselect();
             frag.highLight(nodes.get(0));
         }
         viewPager.setOnPageChangeListener(new OnPageChangeListener()
@@ -165,7 +164,6 @@ public class CarouselPreviewFragment extends AlfrescoFragment implements Details
             {
                 if (frag != null)
                 {
-                    frag.unselect();
                     frag.highLight(nodes.get(location));
                 }
             }

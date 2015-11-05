@@ -46,6 +46,7 @@ import org.alfresco.mobile.android.application.fragments.builder.LeafFragmentBui
 import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.node.download.DownloadDialogFragment;
 import org.alfresco.mobile.android.application.fragments.node.rendition.PreviewFragment;
+import org.alfresco.mobile.android.application.fragments.sync.SyncFragment;
 import org.alfresco.mobile.android.application.fragments.utils.OpenAsDialogFragment;
 import org.alfresco.mobile.android.application.intent.RequestCode;
 import org.alfresco.mobile.android.application.managers.ActionUtils;
@@ -107,7 +108,9 @@ import org.apache.chemistry.opencmis.commons.enums.Action;
 import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -258,6 +261,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         super.onActivityResult(requestCode, resultCode, data);
         File tmpFile = null;
         isSynced = SyncContentManager.getInstance(getActivity()).isSynced(SessionUtils.getAccount(getActivity()), node);
+        downloadDateTime = getDownloadDateTime();
         boolean modified = false;
         Date d = null;
 
@@ -266,6 +270,9 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
             // Save Back : When a file has been opened by 3rd party app.
             case RequestCode.SAVE_BACK:
             case RequestCode.DECRYPTED:
+                removeDownloadDateTime();
+                // if (isSynced) { return; }
+
                 // File opened when user tap the preview
                 // Retrieve the File
                 if (replacementPreviewFragment != null)
@@ -495,6 +502,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         }
 
         View v = viewById(R.id.details_header);
+        if (v == null) { return; }
         TwoLinesViewHolder vh = HolderUtils.configure(v, topText, bottomText, -1);
         vh.topText.setId(UIUtils.generateViewId());
         vh.bottomText.setId(UIUtils.generateViewId());
@@ -518,6 +526,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
     {
         // BUTTONS
         ImageView b = (ImageView) viewById(R.id.action_openin);
+        if (b == null) { return; }
         if ((node instanceof Document && ((Document) node).getContentStreamLength() > 0 && !isRestrictable)
                 || (node instanceof NodeSyncPlaceHolder && !isRestrictable))
         {
@@ -692,7 +701,11 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
     protected void displayEmptyView()
     {
         show(R.id.empty);
-        hide(R.id.progressbar_group);
+        if (viewById(R.id.empty) != null)
+        {
+            viewById(R.id.empty).setBackgroundColor(getResources().getColor(R.color.secondary_background));
+        }
+        show(R.id.progressbar_group);
         hide(R.id.progressbar);
         hide(R.id.properties_details);
     }
@@ -917,7 +930,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
 
         // 3 cases
         SyncContentManager syncManager = SyncContentManager.getInstance(getActivity());
-        AlfrescoAccount acc = SessionUtils.getAccount(getActivity());
+        AlfrescoAccount acc = getAccount();
 
         if (syncManager.isSynced(SessionUtils.getAccount(getActivity()), node))
         {
@@ -928,6 +941,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
                         getString(R.string.sync_document_not_available));
                 return;
             }
+
             long datetime = syncFile.lastModified();
             setDownloadDateTime(new Date(datetime));
 
@@ -946,6 +960,10 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
             }
             else
             {
+                // Log.e(TAG, "[OBSERVER] CREATE");
+                // observer = new SyncedFileObserver(syncFile.getPath(),
+                // getActivity().getApplicationContext(), node, acc);
+                // observer.startWatching();
                 // If sync file + sync activate
                 ActionUtils.openIn(this, syncFile,
                         MimeTypeManager.getInstance(getActivity()).getMIMEType(syncFile.getName()),
@@ -966,6 +984,27 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
     public void setDownloadDateTime(Date downloadDateTime)
     {
         this.downloadDateTime = downloadDateTime;
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        sharedPref.edit().putLong("Dltime", downloadDateTime.getTime()).commit();
+    }
+
+    public Date getDownloadDateTime()
+    {
+        Date d = null;
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        long activationTime = sharedPref.getLong("Dltime", -1);
+        if (activationTime != -1)
+        {
+            d = new Date();
+            d.setTime(activationTime);
+        }
+        return d;
+    }
+
+    public void removeDownloadDateTime()
+    {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        sharedPref.edit().remove("Dltime").commit();
     }
 
     public void download()
@@ -1194,6 +1233,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
     public void onResult(RetrieveNodeEvent event)
     {
         if (getActivity() == null) { return; }
+        if (getRootView() == null) { return; }
         if (event.hasException)
         {
             displayEmptyView();
@@ -1333,22 +1373,20 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
             AccessibilityUtils.addContentDescription(syncButton, R.string.sync);
         }
 
-        if (SyncContentManager.getInstance(getActivity()).canSync(SessionUtils.getAccount(getActivity())))
+        if (!DisplayUtils.hasCentralPane(getActivity()))
         {
-            if (event.node != null)
+            if (SyncContentManager.getInstance(getActivity()).canSync(SessionUtils.getAccount(getActivity())))
             {
-                SyncContentManager.getInstance(getActivity()).sync(SessionUtils.getAccount(getActivity()),
-                        event.node.getIdentifier());
+                if (event.node != null)
+                {
+                    SyncContentManager.getInstance(getActivity()).sync(SessionUtils.getAccount(getActivity()),
+                            event.node.getIdentifier());
+                }
+                else
+                {
+                    SyncContentManager.getInstance(getActivity()).sync(SessionUtils.getAccount(getActivity()));
+                }
             }
-            else
-            {
-                SyncContentManager.getInstance(getActivity()).sync(SessionUtils.getAccount(getActivity()));
-            }
-        }
-
-        if (!DisplayUtils.hasCentralPane(getActivity()) && getFragment(DocumentFolderBrowserFragment.TAG) != null)
-        {
-            ((DocumentFolderBrowserFragment) getFragment(DocumentFolderBrowserFragment.TAG)).onSyncNodeEvent(event);
         }
     }
 
@@ -1366,36 +1404,49 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
     public void onDocumentUpdated(UpdateNodeEvent event)
     {
         if (AlfrescoExceptionHelper.checkEventException(getActivity(), event)) { return; }
-
         Node updatedNode = event.data;
 
-        if (!DisplayUtils.hasCentralPane(getActivity()))
-        {
-            if (getFragment(DocumentFolderBrowserFragment.TAG) != null)
-            {
-                ((DocumentFolderBrowserFragment) getFragment(DocumentFolderBrowserFragment.TAG))
-                        .onDocumentUpdated(event);
-            }
-            getActivity().getSupportFragmentManager().popBackStack(NodeDetailsFragment.getDetailsTag(),
-                    FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        }
-        else if (getActivity().getSupportFragmentManager().findFragmentByTag(DocumentFolderBrowserFragment.TAG) != null)
-        {
-            ((DocumentFolderBrowserFragment) getActivity().getSupportFragmentManager()
-                    .findFragmentByTag(DocumentFolderBrowserFragment.TAG)).select(updatedNode);
-        }
-        NodeDetailsFragment.with(getActivity()).node(updatedNode).parentFolder(event.parentFolder).display();
+        if (updatedNode == null || node == null) { return; }
+        if (updatedNode.getIdentifier() == null || node.getIdentifier() == null) { return; }
 
-        AlfrescoNotificationManager.getInstance(getActivity()).showInfoCrouton(getActivity(),
-                String.format(getResources().getString(R.string.update_sucess), event.initialNode.getName()));
+        if (NodeRefUtils.getCleanIdentifier(updatedNode.getIdentifier())
+                .equals(NodeRefUtils.getCleanIdentifier(node.getIdentifier())))
+        {
+            if (!DisplayUtils.hasCentralPane(getActivity()))
+            {
+                if (getFragment(DocumentFolderBrowserFragment.TAG) != null)
+                {
+                    ((DocumentFolderBrowserFragment) getFragment(DocumentFolderBrowserFragment.TAG))
+                            .onDocumentUpdated(event);
+                }
+                getActivity().getSupportFragmentManager().popBackStack(NodeDetailsFragment.getDetailsTag(),
+                        FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            }
+            else if (getActivity().getSupportFragmentManager()
+                    .findFragmentByTag(DocumentFolderBrowserFragment.TAG) != null)
+            {
+                ((DocumentFolderBrowserFragment) getActivity().getSupportFragmentManager()
+                        .findFragmentByTag(DocumentFolderBrowserFragment.TAG)).highLight(updatedNode);
+            }
+            else if (getActivity().getSupportFragmentManager().findFragmentByTag(SyncFragment.TAG) != null)
+            {
+                ((SyncFragment) getActivity().getSupportFragmentManager().findFragmentByTag(SyncFragment.TAG))
+                        .highLight(updatedNode);
+            }
+            NodeDetailsFragment.with(getActivity()).node(updatedNode).parentFolder(event.parentFolder).display();
+
+            AlfrescoNotificationManager.getInstance(getActivity()).showInfoCrouton(getActivity(),
+                    String.format(getResources().getString(R.string.update_sucess), event.initialNode.getName()));
+        }
     }
 
     @Subscribe
     public void onContentUpdated(UpdateContentEvent event)
     {
         if (AlfrescoExceptionHelper.checkEventException(getActivity(), event)) { return; }
-
         Node updatedNode = event.data;
+        if (updatedNode == null || node == null) { return; }
+        if (updatedNode.getIdentifier() == null || node.getIdentifier() == null) { return; }
 
         if (!DisplayUtils.hasCentralPane(getActivity()))
         {

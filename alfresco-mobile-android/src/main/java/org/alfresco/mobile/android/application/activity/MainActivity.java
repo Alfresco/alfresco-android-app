@@ -74,17 +74,21 @@ import org.alfresco.mobile.android.platform.mdm.MDMManager;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
 import org.alfresco.mobile.android.platform.utils.ConnectivityUtils;
 import org.alfresco.mobile.android.sync.SyncContentManager;
+import org.alfresco.mobile.android.sync.SyncContentProvider;
 import org.alfresco.mobile.android.ui.RefreshFragment;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.node.browse.NodeBrowserTemplate;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
+import android.accounts.Account;
 import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.SyncInfo;
 import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.os.Build;
@@ -970,7 +974,16 @@ public class MainActivity extends BaseActivity
 
         // Activate Automatic Sync for Sync Content & Favorite
         SyncContentManager.getInstance(this).setActivateSync(getCurrentAccount(), true);
+        if (SyncContentManager.getInstance(this).canSync(getCurrentAccount()))
+        {
+            SyncContentManager.getInstance(this).sync(getCurrentAccount());
+        }
+
         FavoritesManager.getInstance(this).setActivateSync(getCurrentAccount(), true);
+        if (FavoritesManager.getInstance(this).canSync(getCurrentAccount()))
+        {
+            FavoritesManager.getInstance(this).sync(getCurrentAccount());
+        }
 
         invalidateOptionsMenu();
     }
@@ -1058,9 +1071,15 @@ public class MainActivity extends BaseActivity
                     }
                     invalidateOptionsMenu();
 
-                    if (getCurrentAccount() != null && SyncContentManager.hasPendingSync(context, getCurrentAccount()))
+                    // If connectivity is better (or reopen) we can try to sync all pending request
+                    if (getCurrentSession() != null && SyncContentManager.hasPendingSync(context, getCurrentAccount()))
                     {
-                        SyncContentManager.getInstance(context).sync(getCurrentAccount());
+                        if (!isSyncActive(AlfrescoAccountManager.getInstance(context)
+                                .getAndroidAccount(getCurrentAccount().getId()), SyncContentProvider.AUTHORITY))
+                        {
+                            Log.e(TAG, "[Sync NETWORK]");
+                            SyncContentManager.getInstance(context).sync(getCurrentAccount());
+                        }
                     }
 
                 }
@@ -1071,6 +1090,15 @@ public class MainActivity extends BaseActivity
                 Log.d(TAG, Log.getStackTraceString(e));
             }
         }
+    }
+
+    private static boolean isSyncActive(Account account, String authority)
+    {
+        for (SyncInfo syncInfo : ContentResolver.getCurrentSyncs())
+        {
+            if (syncInfo.account.equals(account) && syncInfo.authority.equals(authority)) { return true; }
+        }
+        return false;
     }
 
     private boolean isCurrentAccountToLoad(LoadAccountCompletedEvent event)

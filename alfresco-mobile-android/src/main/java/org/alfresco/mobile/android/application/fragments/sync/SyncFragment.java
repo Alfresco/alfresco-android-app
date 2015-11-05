@@ -172,12 +172,13 @@ public class SyncFragment extends BaseCursorGridFragment
     {
         if (getFolderName() != null)
         {
-            return getFolderName();
+            title = getFolderName();
         }
         else
         {
-            return getString(R.string.synced_content);
+            title = getString(R.string.synced_content);
         }
+        return title;
     }
 
     @Override
@@ -457,6 +458,7 @@ public class SyncFragment extends BaseCursorGridFragment
         if (hideDetails)
         {
             selectedItems.clear();
+            displayTitle();
         }
         else if (nActions == null)
         {
@@ -731,6 +733,13 @@ public class SyncFragment extends BaseCursorGridFragment
     public void select(Node updatedNode)
     {
         selectedItems.add(updatedNode.getIdentifier());
+    }
+
+    public void highLight(Node updatedNode)
+    {
+        selectedItems.clear();
+        selectedItems.add(updatedNode.getIdentifier());
+        adapter.notifyDataSetChanged();
     }
 
     // ///////////////////////////////////////////////////////////////////////////

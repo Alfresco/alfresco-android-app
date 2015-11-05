@@ -1232,7 +1232,8 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
         Cursor syncCursor = null;
         try
         {
-            Log.v(TAG, "addSyncContentRow " + SyncContentManager.getUri(cid));
+            // Log.v(TAG, "addSyncContentRow " +
+            // SyncContentManager.getUri(cid));
             Cursor itemCursor = getContext().getContentResolver().query(SyncContentManager.getUri(cid),
                     SyncContentSchema.COLUMN_ALL, null, null, null);
 

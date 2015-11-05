@@ -59,6 +59,12 @@ public interface PrivateIntent
     // ACTION
     String ACTION_DISPLAY_OPERATIONS = "org.alfresco.mobile.android.intent.ACTION_DISPLAY_OPERATIONS";
 
+    String ACTION_RETRY_OPERATIONS = "org.alfresco.mobile.android.intent.ACTION_RETRY_OPERATIONS";
+
+    String EXTRA_OPERATION_ID = "org.alfresco.mobile.android.intent.EXTRA_OPERATION_ID";
+
+    String EXTRA_OPERATION_DELAY = "org.alfresco.mobile.android.intent.EXTRA_OPERATION_DELAY";
+
     // EXTRA
     String EXTRA_OPERATIONS_TYPE = "org.alfresco.mobile.android.intent.EXTRA_OPERATIONS_TYPE";
 

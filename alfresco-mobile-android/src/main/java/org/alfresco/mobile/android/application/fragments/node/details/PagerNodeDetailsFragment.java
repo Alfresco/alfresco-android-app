@@ -51,6 +51,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.widget.TextView;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.squareup.otto.Subscribe;
@@ -147,6 +148,21 @@ public class PagerNodeDetailsFragment extends NodeDetailsFragment
     public void onResult(RetrieveNodeEvent event)
     {
         super.onResult(event);
+        if (getActivity() == null) { return; }
+        if (getRootView() == null) { return; }
+        if (event.hasException)
+        {
+            show(R.id.pager_empty);
+            displayEmptyView();
+            if (((TextView) viewById(R.id.empty_text)) != null)
+            {
+                ((TextView) viewById(R.id.empty_text)).setText(R.string.empty_child);
+            }
+        }
+        else
+        {
+            hide(R.id.pager_empty);
+        }
     }
 
     @Subscribe

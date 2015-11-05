@@ -106,7 +106,32 @@ public class ActivityFeedFragment extends ActivityStreamFragment
     @Override
     public void onListItemClick(GridView g, View v, int position, long id)
     {
-        onItemSelected((ActivityEntry) g.getItemAtPosition(position));
+        ActivityEntry entry = (ActivityEntry) g.getItemAtPosition(position);
+
+        Boolean hideDetails = false;
+        if (!selectedEntry.isEmpty())
+        {
+            hideDetails = selectedEntry.get(0).equals(entry);
+        }
+        g.setItemChecked(position, true);
+
+        selectedEntry.clear();
+        if (!hideDetails && DisplayUtils.hasCentralPane(getActivity()))
+        {
+            selectedEntry.add(entry);
+        }
+
+        if (hideDetails)
+        {
+            selectedEntry.clear();
+            onItemUnselected(entry);
+            displayTitle();
+        }
+        else
+        {
+            onItemSelected(entry);
+        }
+        adapter.notifyDataSetChanged();
     }
 
     protected void onItemSelected(ActivityEntry item)
@@ -163,8 +188,7 @@ public class ActivityFeedFragment extends ActivityStreamFragment
     protected ArrayAdapter<ActivityEntry> onAdapterCreation()
     {
         return new ActivityFeedAdapter(this, R.layout.row_two_lines_caption_divider_circle,
-                new ArrayList<ActivityEntry>(0),
-                selectedEntry);
+                new ArrayList<ActivityEntry>(0), selectedEntry);
     }
 
     @Subscribe
