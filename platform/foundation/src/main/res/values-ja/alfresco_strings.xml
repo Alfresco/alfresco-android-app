@@ -192,7 +192,7 @@
     <string name="content_tags_hint">タグの値をコンマ区切りで入力してください (任意)</string>
     <string name="content_title">タイトル</string>
     <!-- Create Folder -->
-    <string name="folder_create">新しいフォルダを作成してください</string>
+    <string name="folder_create">新しいフォルダの作成</string>
     <string name="folder_name">名前</string>
     <string name="folder_name_hint">ここにフォルダ名を入力してください&#8230;</string>
     <!-- Update Properties -->
@@ -369,7 +369,7 @@
     <!-- PROFILES -->
     <string name="profiles_empty">使用可能なプロファイルはありません</string>
     <string name="manage_profiles">プロファイルの管理&#8230;</string>
-    <string name="profiles_switch">プロファイルの切り換え&#8230;</string>
+    <string name="profiles_switch">プロファイルの切り替え&#8230;</string>
 
     <!-- WORKFLOW -->
     <string name="empty_process_definition">プロセスはありません</string>
