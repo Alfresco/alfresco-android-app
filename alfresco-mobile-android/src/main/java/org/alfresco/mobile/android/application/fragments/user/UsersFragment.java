@@ -136,7 +136,8 @@ public class UsersFragment extends PeopleFragment
             else
             {
                 // Show properties
-                UserProfileFragment.with(getActivity()).personId(item.getIdentifier()).display();
+                UserProfileFragment.with(getActivity()).personId(item.getIdentifier()).accountId(getAccount().getId())
+                        .display();
             }
         }
     }
