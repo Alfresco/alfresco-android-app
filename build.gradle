@@ -4,7 +4,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.2.3'
+        classpath 'com.android.tools.build:gradle:1.5.0'
     }
 }
 
@@ -16,6 +16,9 @@ allprojects {
         }
         maven {
             url "https://artifacts.alfresco.com/nexus/content/groups/public-snapshots"
+        }
+        maven {
+            url "https://jitpack.io"
         }
         jcenter()
         mavenCentral()
