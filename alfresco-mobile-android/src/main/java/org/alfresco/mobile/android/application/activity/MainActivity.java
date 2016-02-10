@@ -1088,7 +1088,6 @@ public class MainActivity extends BaseActivity
                         if (!isSyncActive(AlfrescoAccountManager.getInstance(context)
                                 .getAndroidAccount(getCurrentAccount().getId()), SyncContentProvider.AUTHORITY))
                         {
-                            Log.e(TAG, "[Sync NETWORK]");
                             SyncContentManager.getInstance(context).sync(getCurrentAccount());
                         }
                     }
