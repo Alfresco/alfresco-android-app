@@ -49,6 +49,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
@@ -220,6 +221,26 @@ public class CommentsFragment extends CommentsNodeFragment
         commentText.setText("");
         bAdd.setEnabled(false);
         refresh();
+    }
+
+    @Override
+    protected void prepareEmptyInitialView(View ev, ImageView emptyImageView, TextView firstEmptyMessage,
+            TextView secondEmptyMessage)
+    {
+        emptyImageView.setLayoutParams(DisplayUtils.resizeLayout(getActivity(), 275, 275));
+        emptyImageView.setImageResource(R.drawable.alfresco_background_logo);
+        firstEmptyMessage.setVisibility(View.GONE);
+        secondEmptyMessage.setVisibility(View.GONE);
+    }
+
+    protected void prepareEmptyView(View ev, ImageView emptyImageView, TextView firstEmptyMessage,
+            TextView secondEmptyMessage)
+    {
+        emptyImageView.setLayoutParams(DisplayUtils.resizeLayout(getActivity(), 275, 275));
+        emptyImageView.setImageResource(R.drawable.alfresco_background_logo);
+        firstEmptyMessage.setVisibility(View.VISIBLE);
+        firstEmptyMessage.setText(R.string.empty_comment);
+        secondEmptyMessage.setVisibility(View.GONE);
     }
 
     // ///////////////////////////////////////////////////////////////////////////

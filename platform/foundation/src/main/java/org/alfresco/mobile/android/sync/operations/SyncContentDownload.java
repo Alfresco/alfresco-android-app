@@ -97,6 +97,9 @@ public class SyncContentDownload extends SyncContent
         {
             Log.d("Alfresco", "Download for doc[" + doc.getName() + "]");
 
+            // check latest version
+            doc = session.getServiceRegistry().getVersionService().getLatestVersion(doc);
+
             // Retrieve parent
             parentFolder = session.getServiceRegistry().getDocumentFolderService().getParentFolder(doc);
 

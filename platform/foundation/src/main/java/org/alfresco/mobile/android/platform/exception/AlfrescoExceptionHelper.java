@@ -203,7 +203,8 @@ public final class AlfrescoExceptionHelper
         {
             messageId = R.string.error_session_notfound;
         }
-        else if (e instanceof AlfrescoServiceException && e.getMessage().contains("API plan limit exceeded"))
+        else if (e instanceof AlfrescoServiceException && e.getMessage() != null
+                && e.getMessage().contains("API plan limit exceeded"))
         {
             messageId = R.string.error_general;
         }

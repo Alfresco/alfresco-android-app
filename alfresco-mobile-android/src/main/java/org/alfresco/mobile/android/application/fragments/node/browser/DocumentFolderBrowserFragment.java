@@ -1139,6 +1139,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment implement
 
     public void highLight(Node updatedNode)
     {
+        unselect();
         selectedItems.add(updatedNode);
         adapter.notifyDataSetChanged();
     }
@@ -1277,8 +1278,11 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment implement
     public void onDocumentUpdated(UpdateNodeEvent event)
     {
         if (event.hasException) { return; }
+        if (event.parentFolder == null || parentFolder == null
+                || !event.parentFolder.getIdentifier().equals(parentFolder.getIdentifier())) { return; }
         Node updatedNode = event.data;
         remove(event.initialNode);
+
         if (adapter != null)
         {
             ((ProgressNodeAdapter) adapter).replaceNode(updatedNode);

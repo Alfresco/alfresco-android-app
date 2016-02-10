@@ -28,12 +28,18 @@ import org.alfresco.mobile.android.application.fragments.signin.AccountServerFra
 import org.alfresco.mobile.android.application.fragments.signin.WelcomeFragment;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.utils.BundleUtils;
+import org.alfresco.mobile.android.platform.utils.ConnectivityUtils;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.PopupMenu;
+import android.text.Html;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
 
 /**
  * A login screen that offers login via email/password.
@@ -104,7 +110,17 @@ public class WelcomeActivity extends BaseActivity
 
     public void signInOnline(View v)
     {
-        AccountOAuthFragment.with(this).isCreation(true).display();
+        if (ConnectivityUtils.hasNetwork(this))
+        {
+            AccountOAuthFragment.with(this).isCreation(true).display();
+        }
+        else
+        {
+            Crouton.cancelAllCroutons();
+            Crouton.showText(this,
+                    Html.fromHtml(getString(org.alfresco.mobile.android.foundation.R.string.error_session_nodata)),
+                    Style.ALERT, (ViewGroup) (findViewById(R.id.content_frame)));
+        }
     }
 
     public boolean isCreation()

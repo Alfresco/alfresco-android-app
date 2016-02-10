@@ -98,6 +98,7 @@ public class AccountOAuthHelper
                 acc = AlfrescoAccountManager.getInstance(context).update(acc.getId(), acc.getTitle(), acc.getUrl(),
                         acc.getUsername(), acc.getPassword(), acc.getRepositoryId(), acc.getTypeId(), null,
                         data.getAccessToken(), data.getRefreshToken(), acc.getIsPaidAccount() ? 1 : 0);
+                Log.d("[CLOUD]", "SAVE TOKEN");
                 break;
             default:
                 break;
