@@ -32,6 +32,7 @@ import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.account.CheckServerEvent;
 import org.alfresco.mobile.android.async.account.CheckServerRequest;
 import org.alfresco.mobile.android.platform.exception.AlfrescoExceptionHelper;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
@@ -72,6 +73,7 @@ public class AccountServerFragment extends AlfrescoFragment
         super();
         requiredSession = false;
         eventBusRequired = true;
+        screenName = AnalyticsManager.SCREEN_ACCOUNT_SERVER;
     }
 
     public static AccountServerFragment newInstanceByTemplate(Bundle b)

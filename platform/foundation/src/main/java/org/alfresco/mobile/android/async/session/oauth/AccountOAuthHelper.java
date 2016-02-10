@@ -116,7 +116,7 @@ public class AccountOAuthHelper
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         Editor editor = sharedPref.edit();
         editor.putLong(KEY_CLOUD_LOADING_TIME, new Date().getTime());
-        editor.commit();
+        editor.apply();
     }
 
     /**
@@ -130,7 +130,7 @@ public class AccountOAuthHelper
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         Editor editor = sharedPref.edit();
         editor.remove(KEY_CLOUD_LOADING_TIME);
-        editor.commit();
+        editor.apply();
     }
 
     /**

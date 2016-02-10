@@ -47,6 +47,7 @@ import org.alfresco.mobile.android.application.fragments.sync.SyncMigrationFragm
 import org.alfresco.mobile.android.application.intent.RequestCode;
 import org.alfresco.mobile.android.application.managers.ConfigManager;
 import org.alfresco.mobile.android.application.managers.RenditionManagerImpl;
+import org.alfresco.mobile.android.application.managers.extensions.AnalyticHelper;
 import org.alfresco.mobile.android.application.security.DataProtectionUserDialogFragment;
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.account.CreateAccountEvent;
@@ -67,6 +68,7 @@ import org.alfresco.mobile.android.platform.SessionManager;
 import org.alfresco.mobile.android.platform.accounts.AccountsPreferences;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.platform.favorite.FavoritesManager;
 import org.alfresco.mobile.android.platform.intent.AlfrescoIntentAPI;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
@@ -212,7 +214,7 @@ public class MainActivity extends BaseActivity
                     // re-created after the AlfrescoAccount is created.
                     DataProtectionUserDialogFragment.newInstance(true).show(getSupportFragmentManager(),
                             DataProtectionUserDialogFragment.TAG);
-                    prefs.edit().putBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, true).commit();
+                    prefs.edit().putBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, true).apply();
                 }
             }
         }
@@ -276,6 +278,11 @@ public class MainActivity extends BaseActivity
     @Override
     protected void onStart()
     {
+        if (AnalyticsManager.getInstance(this) != null && AnalyticsManager.getInstance(this).isEnable())
+        {
+            AnalyticsManager.getInstance(this).startReport(this);
+        }
+
         registerPublicReceiver(new NetworkReceiver(), new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
         super.onStart();
@@ -778,7 +785,7 @@ public class MainActivity extends BaseActivity
             {
                 DataProtectionUserDialogFragment.newInstance(true).show(getSupportFragmentManager(),
                         DataProtectionUserDialogFragment.TAG);
-                prefs.edit().putBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, true).commit();
+                prefs.edit().putBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, true).apply();
             }
         }
     }
@@ -939,7 +946,7 @@ public class MainActivity extends BaseActivity
             if (paidNetwork)
             {
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-                prefs.edit().putBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, true).commit();
+                prefs.edit().putBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, true).apply();
 
                 if (mdmManager.hasConfig())
                 {
@@ -968,11 +975,15 @@ public class MainActivity extends BaseActivity
             startActivityForResult(new Intent(this, InfoActivity.class), SyncMigrationFragment.REQUEST_CODE);
         }
 
+        // Analytics
+        AnalyticHelper.analyzeSession(this, event.account, getCurrentSession());
+
         // Activate Automatic Sync for Sync Content & Favorite
         SyncContentManager.getInstance(this).setActivateSync(getCurrentAccount(), true);
         FavoritesManager.getInstance(this).setActivateSync(getCurrentAccount(), true);
 
         invalidateOptionsMenu();
+
     }
 
     @Subscribe

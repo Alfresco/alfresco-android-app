@@ -35,6 +35,8 @@ import org.alfresco.mobile.android.platform.SessionManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.exception.AlfrescoExceptionHelper;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsHelper;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
@@ -89,6 +91,7 @@ public class AccountEditFragment extends AlfrescoFragment
         super();
         eventBusRequired = true;
         requiredSession = false;
+        screenName = AnalyticsManager.SCREEN_ACCOUNT_EDIT;
     }
 
     public static AccountEditFragment newInstanceByTemplate(Bundle b)
@@ -321,6 +324,9 @@ public class AccountEditFragment extends AlfrescoFragment
 
             SessionManager.getInstance(getActivity()).saveAccount(acc);
             SessionManager.getInstance(getActivity()).saveSession(acc, event.data);
+
+            AnalyticsHelper.reportOperationEvent(getActivity(), AnalyticsManager.CATEGORY_ACCOUNT,
+                    AnalyticsManager.ACTION_EDIT, AnalyticsManager.LABEL_CREDENTIALS, 1, false);
 
             EventBusManager.getInstance().post(
                     new LoadSessionCallBack.LoadAccountCompletedEvent(updatedAccount.getTitle(), updatedAccount));

@@ -36,6 +36,7 @@ import org.alfresco.mobile.android.application.fragments.config.MenuConfigFragme
 import org.alfresco.mobile.android.application.fragments.user.UserProfileFragment;
 import org.alfresco.mobile.android.application.fragments.utils.EditTextDialogFragment;
 import org.alfresco.mobile.android.application.managers.ConfigManager;
+import org.alfresco.mobile.android.application.managers.extensions.AnalyticHelper;
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.account.DeleteAccountEvent;
 import org.alfresco.mobile.android.async.clean.CleanSyncFavoriteRequest;
@@ -44,6 +45,8 @@ import org.alfresco.mobile.android.platform.SessionManager;
 import org.alfresco.mobile.android.platform.accounts.AccountsPreferences;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsHelper;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
 import org.alfresco.mobile.android.platform.utils.BundleUtils;
@@ -105,6 +108,7 @@ public class AccountSettingsFragment extends AlfrescoFragment implements EditTex
     {
         setHasOptionsMenu(true);
         requiredSession = false;
+        screenName = AnalyticsManager.SCREEN_SETTINGS_ACCOUNT;
     }
 
     protected static AccountSettingsFragment newInstanceByTemplate(Bundle b)
@@ -346,7 +350,7 @@ public class AccountSettingsFragment extends AlfrescoFragment implements EditTex
                             edit.putBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, false);
                             // Turn off data protection
                             DataProtectionManager.getInstance(getActivity()).setDataProtectionEnable(false);
-                            edit.commit();
+                            edit.apply();
 
                             deleteAccount();
                         }
@@ -384,11 +388,18 @@ public class AccountSettingsFragment extends AlfrescoFragment implements EditTex
         AccountManager.get(getActivity()).removeAccount(
                 AlfrescoAccountManager.getInstance(getActivity()).getAndroidAccount(account.getId()), null, null);
 
-        // Send the event
-        EventBusManager.getInstance().post(new DeleteAccountEvent(account));
+        // Analytics
+        AnalyticsHelper
+                .reportOperationEvent(getActivity(), AnalyticsManager.CATEGORY_ACCOUNT,
+                        AnalyticsManager.ACTION_DELETE, account.getTypeId() == AlfrescoAccount.TYPE_ALFRESCO_CLOUD
+                                ? AnalyticsManager.SERVER_TYPE_CLOUD : AnalyticsManager.SERVER_TYPE_ONPREMISE,
+                        1, false);
 
         // In case where currentAccount is the one deleted.
         SessionManager.getInstance(getActivity()).removeAccount(account.getId());
+
+        // Send the event
+        EventBusManager.getInstance().post(new DeleteAccountEvent(account));
 
         AlfrescoAccount newAccount = AlfrescoAccountManager.getInstance(getActivity()).getDefaultAccount();
 
@@ -398,7 +409,7 @@ public class AccountSettingsFragment extends AlfrescoFragment implements EditTex
             long id = settings.getLong(AccountsPreferences.ACCOUNT_DEFAULT, -1);
             if (id == account.getId())
             {
-                settings.edit().putLong(AccountsPreferences.ACCOUNT_DEFAULT, -1).commit();
+                settings.edit().putLong(AccountsPreferences.ACCOUNT_DEFAULT, -1).apply();
             }
         }
 
@@ -417,7 +428,7 @@ public class AccountSettingsFragment extends AlfrescoFragment implements EditTex
             newAccount = accounts.get(0);
             SessionManager.getInstance(getActivity()).saveAccount(newAccount);
             SharedPreferences settings = getActivity().getSharedPreferences(AccountsPreferences.ACCOUNT_PREFS, 0);
-            settings.edit().putLong(AccountsPreferences.ACCOUNT_DEFAULT, newAccount.getId()).commit();
+            settings.edit().putLong(AccountsPreferences.ACCOUNT_DEFAULT, newAccount.getId()).apply();
             setCurrentAccount(newAccount);
 
             if (SessionManager.getInstance(getActivity()).hasSession(newAccount.getId()))
@@ -446,14 +457,15 @@ public class AccountSettingsFragment extends AlfrescoFragment implements EditTex
             // If no AlfrescoAccount left, we remove all preferences
             // Remove preferences
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.clear();
-            editor.commit();
+            sharedPref.edit().clear().apply();
 
             // Redirect to HomeScreenActivity
             getActivity().startActivity(new Intent(getActivity(), WelcomeActivity.class));
             getActivity().finish();
         }
+
+        // Clear Analytics Info for deleted account
+        AnalyticHelper.cleanOpt(getActivity(), account);
     }
 
     // //////////////////////////////////////////////////////////////////////////////////////
@@ -470,6 +482,9 @@ public class AccountSettingsFragment extends AlfrescoFragment implements EditTex
                 SessionManager.getInstance(getActivity()).getSession(account.getId()));
         SessionManager.getInstance(getActivity()).saveAccount(account);
         setCurrentAccount(account);
+
+        AnalyticsHelper.reportOperationEvent(getActivity(), AnalyticsManager.CATEGORY_ACCOUNT,
+                AnalyticsManager.ACTION_EDIT, AnalyticsManager.LABEL_NAME, 1, false);
 
         recreate();
     }

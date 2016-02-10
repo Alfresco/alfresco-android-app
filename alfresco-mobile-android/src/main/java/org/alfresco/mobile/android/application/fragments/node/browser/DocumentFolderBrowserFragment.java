@@ -79,6 +79,8 @@ import org.alfresco.mobile.android.async.node.update.UpdateNodeEvent;
 import org.alfresco.mobile.android.async.utils.ContentFileProgressImpl;
 import org.alfresco.mobile.android.async.utils.NodePlaceHolder;
 import org.alfresco.mobile.android.platform.exception.AlfrescoAppException;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsHelper;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.platform.extensions.ScanSnapManager;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
@@ -179,6 +181,32 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment implement
         DocumentFolderBrowserFragment cbf = new DocumentFolderBrowserFragment();
         cbf.setArguments(b);
         b.putBoolean(ARGUMENT_BASED_ON_TEMPLATE, true);
+
+        if (b != null)
+        {
+            if (b.containsKey(ARGUMENT_FOLDER_TYPE_ID))
+            {
+                int index = b.getInt(ARGUMENT_FOLDER_TYPE_ID);
+                if (index == NodeChildrenRequest.FOLDER_SHARED)
+                {
+                    cbf.screenName = AnalyticsManager.SCREEN_REPOSITORY_SHARED;
+                }
+                else if (index == NodeChildrenRequest.FOLDER_USER_HOMES)
+                {
+                    cbf.screenName = AnalyticsManager.SCREEN_REPOSITORY_USERHOME;
+                }
+            }
+            else if (!b.containsKey(ARGUMENT_FOLDER) && !b.containsKey(ARGUMENT_SITE) && !b.containsKey(ARGUMENT_PATH)
+                    && !b.containsKey(ARGUMENT_FOLDER_NODEREF) && !b.containsKey(ARGUMENT_SITE_SHORTNAME))
+            {
+                cbf.screenName = AnalyticsManager.SCREEN_REPOSITORY;
+            }
+            else
+            {
+                cbf.screenName = AnalyticsManager.SCREEN_NODE_LISTING;
+            }
+        }
+
         return cbf;
     }
 
@@ -1014,10 +1042,15 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment implement
         switch (itemId)
         {
             case R.id.menu_search_from_folder:
+                AnalyticsHelper.reportOperationEvent(getActivity(), AnalyticsManager.CATEGORY_DOCUMENT_MANAGEMENT,
+                        AnalyticsManager.ACTION_QUICK_ACTIONS, AnalyticsManager.ACTION_SEARCH, 1, false);
                 search();
                 return true;
             case R.id.menu_create_folder:
                 createFolder();
+                AnalyticsHelper.reportOperationEvent(getActivity(), AnalyticsManager.CATEGORY_DOCUMENT_MANAGEMENT,
+                        AnalyticsManager.ACTION_QUICK_ACTIONS,
+                        AnalyticsManager.ACTION_CREATE.concat(" " + AnalyticsManager.TYPE_FOLDER), 1, false);
                 return true;
             case R.id.menu_upload:
                 Intent i = new Intent(PrivateIntent.ACTION_PICK_FILE, null, getActivity(),
@@ -1048,6 +1081,8 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment implement
                 if (ScanSnapManager.getInstance(getActivity()) != null)
                 {
                     ScanSnapManager.getInstance(getActivity()).startPresetChooser(getActivity());
+                    AnalyticsHelper.reportOperationEvent(getActivity(), AnalyticsManager.CATEGORY_DOCUMENT_MANAGEMENT,
+                            AnalyticsManager.ACTION_QUICK_ACTIONS, AnalyticsManager.ACTION_SCAN, 1, false);
                 }
                 return true;
             default:

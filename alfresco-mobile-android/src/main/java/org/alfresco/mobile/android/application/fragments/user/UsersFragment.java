@@ -29,6 +29,8 @@ import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.builder.ListingFragmentBuilder;
 import org.alfresco.mobile.android.application.managers.ConfigManager;
 import org.alfresco.mobile.android.async.person.PersonsEvent;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsHelper;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.ui.person.PeopleFragment;
 
 import android.os.Bundle;
@@ -56,6 +58,7 @@ public class UsersFragment extends PeopleFragment
     public UsersFragment()
     {
         emptyListMessageId = R.string.person_not_found;
+        reportAtCreation = false;
     }
 
     public static UsersFragment newInstanceByTemplate(Bundle b)
@@ -64,6 +67,21 @@ public class UsersFragment extends PeopleFragment
         cbf.setArguments(b);
         b.putBoolean(ARGUMENT_BASED_ON_TEMPLATE, true);
         return cbf;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        if (keywords != null)
+        {
+            screenName = AnalyticsManager.SCREEN_SEARCH_RESULT_USERS;
+        }
+        else if (siteShortName != null)
+        {
+            screenName = AnalyticsManager.SCREEN_SITES_MEMBERS;
+        }
+        AnalyticsHelper.reportScreen(getActivity(), screenName);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -136,7 +154,8 @@ public class UsersFragment extends PeopleFragment
             else
             {
                 // Show properties
-                UserProfileFragment.with(getActivity()).personId(item.getIdentifier()).display();
+                UserProfileFragment.with(getActivity()).accountId(getAccount().getId()).personId(item.getIdentifier())
+                        .display();
             }
         }
     }

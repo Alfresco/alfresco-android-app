@@ -47,6 +47,8 @@ import org.alfresco.mobile.android.application.managers.ConfigManager;
 import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsHelper;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.utils.BundleUtils;
 import org.alfresco.mobile.android.sync.SyncContentManager;
@@ -108,6 +110,7 @@ public class MenuConfigFragment extends AlfrescoFragment implements DefaultMenuC
         requiredSession = false;
         checkSession = false;
         setHasOptionsMenu(true);
+        screenName = AnalyticsManager.SCREEN_SETTINGS_CUSTOM_MENU;
     }
 
     protected static MenuConfigFragment newInstanceByTemplate(Bundle b)
@@ -179,6 +182,13 @@ public class MenuConfigFragment extends AlfrescoFragment implements DefaultMenuC
                     saveConfiguration();
                     getActivity().onBackPressed();
                 }
+
+                AnalyticsHelper.reportOperationEvent(getActivity(), AnalyticsManager.CATEGORY_ACCOUNT,
+                        AnalyticsManager.ACTION_UPDATE_MENU,
+                        getAccount().getTypeId() == AlfrescoAccount.TYPE_ALFRESCO_CLOUD
+                                ? AnalyticsManager.SERVER_TYPE_CLOUD : AnalyticsManager.SERVER_TYPE_ONPREMISE,
+                        1, false);
+
             }
         });
 

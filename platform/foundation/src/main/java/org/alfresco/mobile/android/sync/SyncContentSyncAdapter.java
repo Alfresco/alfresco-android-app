@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2016 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.sync;
 
 import java.util.GregorianCalendar;
@@ -27,6 +27,7 @@ import org.alfresco.mobile.android.async.session.LoadSessionHelper;
 import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.SessionManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsHelper;
 import org.alfresco.mobile.android.sync.operations.SyncContent;
 import org.alfresco.mobile.android.sync.prepare.PrepareSyncHelper;
 
@@ -99,15 +100,27 @@ public class SyncContentSyncAdapter extends AbstractThreadedSyncAdapter
                 {
                     ignoreWarning = extras.getBoolean(SyncContentManager.ARGUMENT_IGNORE_WARNING);
                 }
+                else
+                {
+                    ignoreWarning = false;
+                }
 
                 if (extras.containsKey(SyncContentManager.ARGUMENT_NODE))
                 {
                     node = (Node) extras.getSerializable(SyncContentManager.ARGUMENT_NODE);
                 }
+                else
+                {
+                    node = null;
+                }
 
                 if (extras.containsKey(SyncContentManager.ARGUMENT_NODE_ID))
                 {
                     nodeIdentifier = extras.getString(SyncContentManager.ARGUMENT_NODE_ID);
+                }
+                else
+                {
+                    nodeIdentifier = null;
                 }
             }
 
@@ -180,8 +193,8 @@ public class SyncContentSyncAdapter extends AbstractThreadedSyncAdapter
 
             switch (currentSyncScan.getScanResult())
             {
-            // Normal Case
-            // Scan is Success ==> Launch the sync
+                // Normal Case
+                // Scan is Success ==> Launch the sync
                 case SyncScanInfo.RESULT_SUCCESS:
                     // Start Execution
                     for (SyncContent operation : requests)
@@ -221,6 +234,11 @@ public class SyncContentSyncAdapter extends AbstractThreadedSyncAdapter
             syncManager.saveSyncPrepareTimestamp();
 
             EventBusManager.getInstance().post(new SyncContentScanEvent());
+
+            if (node == null && nodeIdentifier == null)
+            {
+                AnalyticsHelper.analyzeSync(getContext(), acc);
+            }
 
             Log.d("SYNC", "Total:" + syncResult.stats.numEntries);
             Log.d("SYNC", "Skipped:" + syncResult.stats.numSkippedEntries);

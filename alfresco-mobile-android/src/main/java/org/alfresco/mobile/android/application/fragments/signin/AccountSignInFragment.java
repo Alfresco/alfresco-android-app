@@ -32,6 +32,7 @@ import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.exception.AlfrescoExceptionHelper;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.platform.mdm.MDMManager;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
@@ -93,6 +94,7 @@ public class AccountSignInFragment extends AlfrescoFragment
     {
         requiredSession = false;
         checkSession = false;
+        screenName = AnalyticsManager.SCREEN_ACCOUNT_SIGNIN;
     }
 
     protected static AccountSignInFragment newInstanceByTemplate(Bundle b)

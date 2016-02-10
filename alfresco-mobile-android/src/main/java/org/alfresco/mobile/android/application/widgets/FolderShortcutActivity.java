@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
- * 
- * This file is part of Alfresco Mobile for Android.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ******************************************************************************/
+/*
+ *  Copyright (C) 2005-2016 Alfresco Software Limited.
+ *
+ *  This file is part of Alfresco Mobile for Android.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.widgets;
 
 import java.io.File;
@@ -26,6 +26,8 @@ import org.alfresco.mobile.android.application.intent.PublicIntentAPIUtils;
 import org.alfresco.mobile.android.async.session.LoadSessionCallBack.LoadAccountCompletedEvent;
 import org.alfresco.mobile.android.async.session.RequestSessionEvent;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsHelper;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 
 import android.content.Intent;
 import android.view.View;
@@ -65,6 +67,11 @@ public class FolderShortcutActivity extends BaseShortcutActivity
         addIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
                 Intent.ShortcutIconResource.fromContext(this, R.drawable.widget_folder));
         setResult(RESULT_OK, addIntent);
+
+        // Analytics
+        AnalyticsHelper.reportOperationEvent(this, AnalyticsManager.CATEGORY_WIDGET, AnalyticsManager.ACTION_SHORTCUT,
+                AnalyticsManager.LABEL_FOLDERS, 1, false);
+
         finish();
     }
 

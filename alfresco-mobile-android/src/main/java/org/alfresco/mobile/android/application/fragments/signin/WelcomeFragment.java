@@ -27,6 +27,7 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.WelcomeActivity;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.platform.intent.AlfrescoIntentAPI;
 import org.alfresco.mobile.android.platform.mdm.MDMEvent;
 import org.alfresco.mobile.android.platform.mdm.MDMManager;
@@ -66,6 +67,7 @@ public class WelcomeFragment extends AlfrescoFragment
     {
         super();
         requiredSession = false;
+        screenName = AnalyticsManager.SCREEN_ACCOUNT_TYPE;
     }
 
     public static WelcomeFragment newInstanceByTemplate(Bundle b)

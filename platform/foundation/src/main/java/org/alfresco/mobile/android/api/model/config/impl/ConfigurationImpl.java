@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
- * 
- * This file is part of the Alfresco Mobile SDK.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+/*
+ *  Copyright (C) 2005-2016 Alfresco Software Limited.
+ *
+ *  This file is part of Alfresco Mobile for Android.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- ******************************************************************************/
+ */
 package org.alfresco.mobile.android.api.model.config.impl;
 
 import java.io.File;
@@ -33,6 +33,7 @@ import org.alfresco.mobile.android.api.model.config.ConfigInfo;
 import org.alfresco.mobile.android.api.model.config.ConfigScope;
 import org.alfresco.mobile.android.api.model.config.ConfigTypeIds;
 import org.alfresco.mobile.android.api.model.config.CreationConfig;
+import org.alfresco.mobile.android.api.model.config.FeatureConfig;
 import org.alfresco.mobile.android.api.model.config.FormConfig;
 import org.alfresco.mobile.android.api.model.config.ProfileConfig;
 import org.alfresco.mobile.android.api.model.config.RepositoryConfig;
@@ -54,6 +55,8 @@ public class ConfigurationImpl
     private ConfigInfo info;
 
     private CreationHelper creationHelper;
+
+    private FeatureHelper featureHelper;
 
     private ViewHelper viewHelper;
 
@@ -97,8 +100,8 @@ public class ConfigurationImpl
             String filename = ConfigConstants.CONFIG_LOCALIZATION_FILENAME;
             if (!Locale.ENGLISH.getLanguage().equals(Locale.getDefault().getLanguage()))
             {
-                filename = String.format(ConfigConstants.CONFIG_LOCALIZATION_FILENAME_PATTERN, Locale.getDefault()
-                        .getLanguage());
+                filename = String.format(ConfigConstants.CONFIG_LOCALIZATION_FILENAME_PATTERN,
+                        Locale.getDefault().getLanguage());
             }
             File localizedFile = new File(configFolder, filename);
             StringHelper stringConfig = StringHelper.load(localizedFile);
@@ -149,8 +152,8 @@ public class ConfigurationImpl
         {
             // It's the beta version of configuration file
             configuration.info = info;
-            configuration.viewHelper = new ViewHelper(configuration, stringHelper, prepareBetaViews(configuration,
-                    JSONConverter.getMap(json.get(ConfigConstants.CATEGORY_ROOTMENU))));
+            configuration.viewHelper = new ViewHelper(configuration, stringHelper,
+                    prepareBetaViews(configuration, JSONConverter.getMap(json.get(ConfigConstants.CATEGORY_ROOTMENU))));
             return configuration;
         }
 
@@ -173,8 +176,8 @@ public class ConfigurationImpl
             {
                 configuration.validationHelper = new ValidationHelper(configuration, stringHelper);
             }
-            configuration.validationHelper.addValidation(JSONConverter.getMap(json.get(ConfigTypeIds.VALIDATION_RULES
-                    .value())));
+            configuration.validationHelper
+                    .addValidation(JSONConverter.getMap(json.get(ConfigTypeIds.VALIDATION_RULES.value())));
         }
 
         // FIELDS
@@ -231,18 +234,34 @@ public class ConfigurationImpl
         if (json.containsKey(ConfigTypeIds.CREATION.value()))
         {
             configuration.creationHelper = new CreationHelper(configuration, stringHelper);
-            if (!configuration.creationHelper.addCreationConfig(JSONConverter.getMap(json.get(ConfigTypeIds.CREATION
-                    .value()))))
+            if (!configuration.creationHelper
+                    .addCreationConfig(JSONConverter.getMap(json.get(ConfigTypeIds.CREATION.value()))))
             {
                 configuration.creationHelper = null;
+            }
+        }
+
+        // FEATURE
+        if (json.containsKey(ConfigTypeIds.FEATURES.value()))
+        {
+            configuration.featureHelper = new FeatureHelper(configuration, stringHelper);
+            if (configuration.featureHelper
+                    .addFeatureConfig(JSONConverter.getList(json.get(ConfigTypeIds.FEATURES.value()))))
+            {
+
+            }
+            else
+            {
+                configuration.featureHelper = null;
+
             }
         }
 
         // CONFIGURATION
         if (json.containsKey(ConfigTypeIds.REPOSITORY.value()))
         {
-            configuration.repositoryConfig = RepositoryConfigImpl.parseJson(JSONConverter.getMap(json
-                    .get(ConfigTypeIds.REPOSITORY.value())));
+            configuration.repositoryConfig = RepositoryConfigImpl
+                    .parseJson(JSONConverter.getMap(json.get(ConfigTypeIds.REPOSITORY.value())));
         }
 
         // PROFILES
@@ -369,6 +388,19 @@ public class ConfigurationImpl
         return creationHelper.getCreationConfig(scope);
     }
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // FEATURE
+    // ///////////////////////////////////////////////////////////////////////////
+    public boolean hasFeatureConfig()
+    {
+        return featureHelper != null && featureHelper.getFeatures() != null;
+    }
+
+    public List<FeatureConfig> getFeatureConfig()
+    {
+        if (featureHelper == null) { return null; }
+        return featureHelper.getFeatures();
+    }
     // ///////////////////////////////////////////////////////////////////////////
     // INTERNALS
     // ///////////////////////////////////////////////////////////////////////////

@@ -299,7 +299,7 @@ public class PassCodeDialogFragment extends DialogFragment
                     Editor editor = sharedPref.edit();
                     editor.putLong(KEY_PASSCODE_ACTIVATED_AT, -1);
                     editor.remove(KEY_PASSCODE_ATTEMPT);
-                    editor.commit();
+                    editor.apply();
                     getActivity().setResult(FragmentActivity.RESULT_OK);
                     getActivity().finish();
                 }
@@ -340,7 +340,7 @@ public class PassCodeDialogFragment extends DialogFragment
             editor.putBoolean(KEY_PASSCODE_ENABLE, true);
             editor.remove(KEY_PASSCODE_ATTEMPT);
             editor.putString(KEY_PASSCODE_VALUE, getUserPassCode(true));
-            editor.commit();
+            editor.apply();
             dismiss();
             errorMessage.setVisibility(View.INVISIBLE);
             if (getActivity().getSupportFragmentManager().findFragmentByTag(PasscodePreferences.TAG) != null)
@@ -369,7 +369,7 @@ public class PassCodeDialogFragment extends DialogFragment
             editor.putBoolean(KEY_PASSCODE_ENABLE, false);
             editor.remove(KEY_PASSCODE_ATTEMPT);
             editor.remove(KEY_PASSCODE_VALUE);
-            editor.commit();
+            editor.apply();
             dismiss();
             errorMessage.setVisibility(View.INVISIBLE);
             if (getActivity().getSupportFragmentManager().findFragmentByTag(PasscodePreferences.TAG) != null)
@@ -441,7 +441,7 @@ public class PassCodeDialogFragment extends DialogFragment
 
         Editor editor = sharedPref.edit();
         editor.putInt(KEY_PASSCODE_ATTEMPT, attempts + 1);
-        editor.commit();
+        editor.apply();
     }
 
     private String getUserPassCode(boolean needConfirmation)

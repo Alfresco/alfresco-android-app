@@ -55,6 +55,7 @@ public class NodePropertiesFragment extends NodeDetailsFragment
     public NodePropertiesFragment()
     {
         layoutId = R.layout.fr_node_properties;
+        reportAtCreation = false;
     }
 
     protected static NodePropertiesFragment newInstanceByTemplate(Bundle b)

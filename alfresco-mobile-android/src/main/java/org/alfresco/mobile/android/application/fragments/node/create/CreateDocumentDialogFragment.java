@@ -42,6 +42,7 @@ import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.node.create.CreateDocumentRequest;
 import org.alfresco.mobile.android.async.node.create.RetrieveDocumentNameEvent;
 import org.alfresco.mobile.android.async.node.create.RetrieveDocumentNameRequest;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
@@ -111,6 +112,7 @@ public abstract class CreateDocumentDialogFragment extends AlfrescoFragment
     // //////////////////////////////////////////////////////////////////////
     public CreateDocumentDialogFragment()
     {
+        screenName = AnalyticsManager.SCREEN_NODE_CREATE_FORM;
     }
 
     public static Bundle createBundle(Folder folder)

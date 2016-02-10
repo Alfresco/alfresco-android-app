@@ -77,6 +77,8 @@ import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.exception.AlfrescoAppException;
 import org.alfresco.mobile.android.platform.exception.AlfrescoExceptionHelper;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsHelper;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.platform.intent.BaseActionUtils.ActionManagerListener;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
@@ -168,6 +170,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         requiredSession = false;
         checkSession = false;
         layoutId = R.layout.app_details;
+        reportAtCreation = false;
     }
 
     // //////////////////////////////////////////////////////////////////////
@@ -636,6 +639,14 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
                         isSynced = (node.isFolder())
                                 ? SyncContentManager.getInstance(getActivity()).isRootSynced(getAccount(), node)
                                 : SyncContentManager.getInstance(getActivity()).isSynced(getAccount(), node);
+
+                        AnalyticsHelper.reportOperationEvent(getActivity(),
+                                AnalyticsManager.CATEGORY_DOCUMENT_MANAGEMENT,
+                                isSynced ? AnalyticsManager.ACTION_SYNC : AnalyticsManager.ACTION_UNSYNC,
+                                node.isDocument() ? ((Document) node).getContentStreamMimeType()
+                                        : AnalyticsManager.TYPE_FOLDER,
+                                1, false);
+
                         sync(v);
                     }
                 });
@@ -834,6 +845,12 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
             DialogFragment frag = new DownloadDialogFragment();
             frag.setArguments(b);
             frag.show(getActivity().getSupportFragmentManager(), DownloadDialogFragment.TAG);
+
+            // Analytics
+            AnalyticsHelper.reportOperationEvent(getActivity(), AnalyticsManager.CATEGORY_DOCUMENT_MANAGEMENT,
+                    AnalyticsManager.ACTION_SHARE,
+                    node.isDocument() ? ((Document) node).getContentStreamMimeType() : AnalyticsManager.TYPE_FOLDER, 1,
+                    false);
         }
         else
         {
@@ -851,6 +868,13 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
                             frag.setArguments(b);
                             frag.show(getActivity().getSupportFragmentManager(), DownloadDialogFragment.TAG);
                             dialog.dismiss();
+
+                            // Analytics
+                            AnalyticsHelper.reportOperationEvent(getActivity(),
+                                    AnalyticsManager.CATEGORY_DOCUMENT_MANAGEMENT, AnalyticsManager.ACTION_SHARE,
+                                    node.isDocument() ? ((Document) node).getContentStreamMimeType()
+                                            : AnalyticsManager.TYPE_FOLDER,
+                                    1, false);
                         }
 
                         @Override
@@ -892,6 +916,14 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
                                     {
                                         Log.i(getString(R.string.app_name), "Site path not as expected: no /sites/");
                                     }
+
+                                    // Analytics
+                                    AnalyticsHelper.reportOperationEvent(getActivity(),
+                                            AnalyticsManager.CATEGORY_DOCUMENT_MANAGEMENT,
+                                            AnalyticsManager.ACTION_SHARE_AS_LINK,
+                                            node.isDocument() ? ((Document) node).getContentStreamMimeType()
+                                                    : AnalyticsManager.TYPE_FOLDER,
+                                            1, false);
                                 }
                                 else
                                 {
@@ -961,6 +993,12 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
             frag.setArguments(b);
             frag.show(getActivity().getSupportFragmentManager(), DownloadDialogFragment.TAG);
         }
+
+        // Analytics
+        AnalyticsHelper.reportOperationEvent(getActivity(), AnalyticsManager.CATEGORY_DOCUMENT_MANAGEMENT,
+                AnalyticsManager.ACTION_OPEN,
+                node.isDocument() ? ((Document) node).getContentStreamMimeType() : AnalyticsManager.TYPE_FOLDER, 1,
+                false, AnalyticsManager.INDEX_FILE_SIZE, ((Document) node).getContentStreamLength());
     }
 
     public void setDownloadDateTime(Date downloadDateTime)
@@ -975,6 +1013,11 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         if (node instanceof Document)
         {
             NodeActions.download(getActivity(), parentNode, (Document) node);
+
+            // Analytics
+            AnalyticsHelper.reportOperationEvent(getActivity(), AnalyticsManager.CATEGORY_DOCUMENT_MANAGEMENT,
+                    AnalyticsManager.ACTION_DOWNLOAD, ((Document) node).getContentStreamMimeType(), 1, false,
+                    AnalyticsManager.INDEX_FILE_SIZE, ((Document) node).getContentStreamLength());
         }
     }
 
@@ -1172,6 +1215,11 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
                 in.putExtra(PrivateIntent.EXTRA_DOCUMENT, (Serializable) doc);
                 in.putExtra(PrivateIntent.EXTRA_ACCOUNT_ID, getAccount().getId());
                 startActivity(in);
+
+                // Analytics
+                AnalyticsHelper.reportOperationEvent(getActivity(), AnalyticsManager.CATEGORY_DOCUMENT_MANAGEMENT,
+                        AnalyticsManager.ACTION_START_REVIEW, doc.getContentStreamMimeType(), 1, false);
+
                 return true;
         }
         return super.onOptionsItemSelected(item);

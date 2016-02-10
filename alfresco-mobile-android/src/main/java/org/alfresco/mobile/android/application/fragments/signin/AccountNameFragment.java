@@ -33,6 +33,7 @@ import org.alfresco.mobile.android.async.person.AvatarRequest;
 import org.alfresco.mobile.android.platform.SessionManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.platform.utils.BundleUtils;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
@@ -65,6 +66,7 @@ public class AccountNameFragment extends AlfrescoFragment
     public AccountNameFragment()
     {
         super();
+        screenName = AnalyticsManager.SCREEN_ACCOUNT_NAME;
     }
 
     public static AccountNameFragment newInstanceByTemplate(Bundle b)

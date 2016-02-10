@@ -28,6 +28,7 @@ import org.alfresco.mobile.android.api.model.config.ConfigInfo;
 import org.alfresco.mobile.android.api.model.config.ConfigScope;
 import org.alfresco.mobile.android.api.model.config.ConfigTypeIds;
 import org.alfresco.mobile.android.api.model.config.CreationConfig;
+import org.alfresco.mobile.android.api.model.config.FeatureConfig;
 import org.alfresco.mobile.android.api.model.config.FormConfig;
 import org.alfresco.mobile.android.api.model.config.ProfileConfig;
 import org.alfresco.mobile.android.api.model.config.RepositoryConfig;
@@ -91,8 +92,8 @@ public class LocalConfigServiceImpl implements ConfigService
             File configFile = null, localizedFile = null;
 
             // CONFIGURATION
-            long lastUpdate = context.getPackageManager().getPackageInfo(
-                    context.getApplicationContext().getPackageName(), 0).lastUpdateTime;
+            long lastUpdate = context.getPackageManager()
+                    .getPackageInfo(context.getApplicationContext().getPackageName(), 0).lastUpdateTime;
 
             File assetFolder = AlfrescoStorageManager.getInstance(context).getConfigurationFolder();
             String configName = context.getString(R.string.config_asset_prefix) + "_"
@@ -116,8 +117,8 @@ public class LocalConfigServiceImpl implements ConfigService
                 try
                 {
                     org.alfresco.mobile.android.api.utils.IOUtils.copyFile(
-                            context.getAssets().open(
-                                    context.getString(R.string.config_asset_messages_path) + localizedName),
+                            context.getAssets()
+                                    .open(context.getString(R.string.config_asset_messages_path) + localizedName),
                             localizedFile);
                 }
                 catch (IOException e)
@@ -267,6 +268,22 @@ public class LocalConfigServiceImpl implements ConfigService
     {
         if (configuration == null) { return null; }
         return configuration.getCreationConfig();
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // FEATURE
+    // ///////////////////////////////////////////////////////////////////////////
+    @Override
+    public boolean hasFeatureConfig()
+    {
+        return configuration != null && configuration.getFeatureConfig() != null;
+    }
+
+    @Override
+    public List<FeatureConfig> getFeatureConfig()
+    {
+        if (configuration == null) { return null; }
+        return configuration.getFeatureConfig();
     }
 
     // ///////////////////////////////////////////////////////////////////////////

@@ -86,6 +86,7 @@ public class PreviewFragment extends AlfrescoFragment
     {
         requiredSession = true;
         checkSession = true;
+        reportAtCreation = false;
     }
 
     protected static PreviewFragment newInstanceByTemplate(Bundle b)

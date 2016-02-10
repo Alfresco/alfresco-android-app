@@ -38,6 +38,7 @@ import org.alfresco.mobile.android.application.fragments.node.details.NodeDetail
 import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsFragment;
 import org.alfresco.mobile.android.async.node.favorite.FavoriteNodeEvent;
 import org.alfresco.mobile.android.async.node.favorite.FavoriteNodesEvent;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.platform.favorite.FavoritesManager;
 import org.alfresco.mobile.android.ui.ListingModeFragment;
 import org.alfresco.mobile.android.ui.SelectableFragment;
@@ -69,6 +70,7 @@ public class FavoritesFragment extends FavoritesNodeFragment implements Selectab
     public FavoritesFragment()
     {
         emptyListMessageId = R.string.empty_favorites;
+        screenName = AnalyticsManager.SCREEN_FAVORITES;
     }
 
     public static FavoritesFragment newInstanceByTemplate(Bundle b)

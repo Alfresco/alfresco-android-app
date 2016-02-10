@@ -38,6 +38,7 @@ import org.alfresco.mobile.android.async.file.encryption.FileProtectionEvent;
 import org.alfresco.mobile.android.async.file.update.RenameFileEvent;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.platform.extensions.ScanSnapManager;
 import org.alfresco.mobile.android.platform.intent.BaseActionUtils.ActionManagerListener;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
@@ -91,6 +92,7 @@ public class FileExplorerFragment extends FileExplorerFoundationFragment
     {
         emptyListMessageId = R.string.empty_download;
         setHasOptionsMenu(true);
+        screenName = AnalyticsManager.SCREEN_LOCAL_FILES_BROWSER;
     }
 
     public static FileExplorerFragment newInstanceByTemplate(Bundle b)

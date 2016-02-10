@@ -44,6 +44,8 @@ import org.alfresco.mobile.android.application.providers.search.HistorySearchMan
 import org.alfresco.mobile.android.application.ui.form.picker.DatePickerFragment;
 import org.alfresco.mobile.android.application.ui.form.picker.DatePickerFragment.onPickDateFragment;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsHelper;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
@@ -123,6 +125,12 @@ public class AdvancedSearchFragment extends AlfrescoFragment
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
+    public AdvancedSearchFragment()
+    {
+        screenName = AnalyticsManager.SCREEN_SEARCH_ADVANCED;
+        reportAtCreation = false;
+    }
+
     protected static AdvancedSearchFragment newInstanceByTemplate(Bundle b)
     {
         AdvancedSearchFragment cbf = new AdvancedSearchFragment();
@@ -146,14 +154,21 @@ public class AdvancedSearchFragment extends AlfrescoFragment
             {
                 case HistorySearch.TYPE_PERSON:
                     layoutId = R.layout.app_search_user;
+                    screenName = AnalyticsManager.SCREEN_SEARCH_ADVANCED_USERS;
                     break;
                 case HistorySearch.TYPE_FOLDER:
+                    layoutId = R.layout.app_search_document;
+                    screenName = AnalyticsManager.SCREEN_SEARCH_ADVANCED_FOLDERS;
+                    break;
                 case HistorySearch.TYPE_DOCUMENT:
                     layoutId = R.layout.app_search_document;
+                    screenName = AnalyticsManager.SCREEN_SEARCH_ADVANCED_FILES;
                     break;
                 default:
                     break;
             }
+
+            AnalyticsHelper.reportScreen(getActivity(), screenName);
 
             // Search inside a folder
             tmpParentFolder = (Folder) getArguments().getSerializable(ARGUMENT_FOLDER);
@@ -266,8 +281,8 @@ public class AdvancedSearchFragment extends AlfrescoFragment
         modificationDateTo = (Button) rootView.findViewById(R.id.metadata_modification_date_to);
         if (modificationDateToValue != null)
         {
-            modificationDateTo.setText(DateFormat.getDateFormat(getActivity())
-                    .format(modificationDateToValue.getTime()));
+            modificationDateTo
+                    .setText(DateFormat.getDateFormat(getActivity()).format(modificationDateToValue.getTime()));
         }
         modificationDateTo.setOnClickListener(new OnClickListener()
         {
@@ -291,8 +306,8 @@ public class AdvancedSearchFragment extends AlfrescoFragment
         modificationDateFrom = (Button) rootView.findViewById(R.id.metadata_modification_date_from);
         if (modificationDateFromValue != null)
         {
-            modificationDateFrom.setText(DateFormat.getDateFormat(getActivity()).format(
-                    modificationDateFromValue.getTime()));
+            modificationDateFrom
+                    .setText(DateFormat.getDateFormat(getActivity()).format(modificationDateFromValue.getTime()));
         }
         modificationDateFrom.setOnClickListener(new OnClickListener()
         {
@@ -384,17 +399,24 @@ public class AdvancedSearchFragment extends AlfrescoFragment
         String description = createDescriptionQuery();
         if (statement == null)
         {
-            AlfrescoNotificationManager.getInstance(getActivity()).showLongToast(
-                    getActivity().getString(R.string.error_search_fields_empty));
+            AlfrescoNotificationManager.getInstance(getActivity())
+                    .showLongToast(getActivity().getString(R.string.error_search_fields_empty));
             return;
         }
+
+        String label = null;
         switch (searchKey)
         {
             case HistorySearch.TYPE_PERSON:
+                label = AnalyticsManager.LABEL_DOCUMENTS;
                 UsersFragment.with(getActivity()).keywords(statement).title(description).display();
                 break;
             case HistorySearch.TYPE_FOLDER:
+                label = AnalyticsManager.LABEL_FOLDERS;
+                DocumentFolderSearchFragment.with(getActivity()).query(statement).title(description).display();
+                break;
             case HistorySearch.TYPE_DOCUMENT:
+                label = AnalyticsManager.LABEL_DOCUMENTS;
                 DocumentFolderSearchFragment.with(getActivity()).query(statement).title(description).display();
                 break;
             default:
@@ -403,6 +425,10 @@ public class AdvancedSearchFragment extends AlfrescoFragment
         // Save history or update
         HistorySearchManager.createHistorySearch(getActivity(), SessionUtils.getAccount(getActivity()).getId(),
                 searchKey, 1, description, statement, new Date().getTime());
+
+        AnalyticsHelper.reportOperationEvent(getActivity(), AnalyticsManager.CATEGORY_SEARCH,
+                AnalyticsManager.ACTION_RUN_ADVANCED, label, 1, false);
+
     }
 
     private String createQuery()
@@ -608,15 +634,15 @@ public class AdvancedSearchFragment extends AlfrescoFragment
         {
             modificationDateFromValue = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
             modificationDateFromValue.setTime(gregorianCalendar.getTime());
-            modificationDateFrom.setText(DateFormat.getDateFormat(getActivity()).format(
-                    modificationDateFromValue.getTime()));
+            modificationDateFrom
+                    .setText(DateFormat.getDateFormat(getActivity()).format(modificationDateFromValue.getTime()));
         }
         else if (DATE_TO.equalsIgnoreCase(dateId))
         {
             modificationDateToValue = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
             modificationDateToValue.setTime(gregorianCalendar.getTime());
-            modificationDateTo.setText(DateFormat.getDateFormat(getActivity())
-                    .format(modificationDateToValue.getTime()));
+            modificationDateTo
+                    .setText(DateFormat.getDateFormat(getActivity()).format(modificationDateToValue.getTime()));
         }
     }
 
@@ -646,8 +672,8 @@ public class AdvancedSearchFragment extends AlfrescoFragment
         {
             super(context, R.layout.app_header_row, MIMETYPE_GROUPS);
             this.vhClassName = SimpleViewHolder.class.getCanonicalName();
-            px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48, getContext().getResources()
-                    .getDisplayMetrics());
+            px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48,
+                    getContext().getResources().getDisplayMetrics());
         }
 
         @Override
@@ -679,6 +705,7 @@ public class AdvancedSearchFragment extends AlfrescoFragment
     private static final List<Integer> MIMETYPE_GROUPS = new ArrayList<Integer>(10)
     {
         private static final long serialVersionUID = 1L;
+
         {
             add(R.string.mimetype_unknown);
             add(R.string.mimetype_documents);
@@ -704,6 +731,7 @@ public class AdvancedSearchFragment extends AlfrescoFragment
         public static final int ICON_ID = R.drawable.ic_search_dark;
 
         public static final int LABEL_ID = R.string.search_advanced;
+
         // ///////////////////////////////////////////////////////////////////////////
         // CONSTRUCTORS
         // ///////////////////////////////////////////////////////////////////////////

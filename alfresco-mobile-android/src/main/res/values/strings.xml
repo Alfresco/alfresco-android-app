@@ -342,6 +342,9 @@
     <string name="settings_custom_menu_summary">Select which tabs are available on your menu.</string>
     <string name="settings_custom_menu_manage">Menu</string>
     <string name="settings_custom_menu_disable">Your Alfresco Administrator has disabled this feature.</string>
+    <string name="settings.feedback">Feedback</string>
+    <string name="settings.feedback.diagnostic">Send Diagnostics</string>
+    <string name="settings.feedback.diagnostic.summary">To help us improve Alfresco Mobile, we collect anonymous technical diagnostic data. Switch off if preferred.</string>
 
 
     <!-- Multi Selection -->

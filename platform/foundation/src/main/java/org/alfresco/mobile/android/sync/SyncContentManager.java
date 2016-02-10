@@ -447,7 +447,7 @@ public class SyncContentManager extends Manager
         if (account != null)
         {
             editor.putLong(LAST_START_SYNC_PREPARE + account.getId(), new Date().getTime());
-            editor.commit();
+            editor.apply();
         }
     }
 
@@ -459,7 +459,7 @@ public class SyncContentManager extends Manager
         if (account != null)
         {
             editor.putLong(LAST_SYNC_ACTIVATED_AT + account.getId(), new Date().getTime());
-            editor.commit();
+            editor.apply();
         }
     }
 
@@ -783,7 +783,7 @@ public class SyncContentManager extends Manager
         if (account != null)
         {
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(appContext);
-            sharedPref.edit().putBoolean(SYNCHRO_WIFI_PREFIX + account.getId(), isWifiOnly).commit();
+            sharedPref.edit().putBoolean(SYNCHRO_WIFI_PREFIX + account.getId(), isWifiOnly).apply();
         }
     }
 
@@ -810,7 +810,7 @@ public class SyncContentManager extends Manager
     public void setActivateSync(long accountId, boolean isActive)
     {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(appContext);
-        sharedPref.edit().putBoolean(SYNCHRO_PREFIX + accountId, isActive).commit();
+        sharedPref.edit().putBoolean(SYNCHRO_PREFIX + accountId, isActive).apply();
         ContentResolver.setSyncAutomatically(
                 AlfrescoAccountManager.getInstance(appContext).getAndroidAccount(accountId),
                 SyncContentProvider.AUTHORITY, isActive);
@@ -829,7 +829,7 @@ public class SyncContentManager extends Manager
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(appContext);
         if (account != null)
         {
-            sharedPref.edit().putBoolean(SYNCHRO_DISPLAY_PREFIX + account.getId(), isActive).commit();
+            sharedPref.edit().putBoolean(SYNCHRO_DISPLAY_PREFIX + account.getId(), isActive).apply();
         }
     }
 
@@ -856,7 +856,7 @@ public class SyncContentManager extends Manager
         if (SessionUtils.getAccount(appContext) != null)
         {
             final AlfrescoAccount account = SessionUtils.getAccount(appContext);
-            sharedPref.edit().putBoolean(SYNCHRO_EVEYTHING_PREFIX + account.getId(), isActive).commit();
+            sharedPref.edit().putBoolean(SYNCHRO_EVEYTHING_PREFIX + account.getId(), isActive).apply();
         }
     }
 
@@ -879,7 +879,7 @@ public class SyncContentManager extends Manager
         if (SessionUtils.getAccount(appContext) != null)
         {
             final AlfrescoAccount account = SessionUtils.getAccount(appContext);
-            sharedPref.edit().putLong(SYNCHRO_DATA_ALERT_PREFIX + account.getId(), length).commit();
+            sharedPref.edit().putLong(SYNCHRO_DATA_ALERT_PREFIX + account.getId(), length).apply();
         }
     }
 
@@ -900,7 +900,7 @@ public class SyncContentManager extends Manager
         if (SessionUtils.getAccount(appContext) != null)
         {
             final AlfrescoAccount account = SessionUtils.getAccount(appContext);
-            sharedPref.edit().putFloat(SYNCHRO_FREE_SPACE_ALERT_PREFIX + account.getId(), percent).commit();
+            sharedPref.edit().putFloat(SYNCHRO_FREE_SPACE_ALERT_PREFIX + account.getId(), percent).apply();
         }
     }
 
