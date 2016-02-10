@@ -32,6 +32,8 @@ import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.SessionManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.exception.CloudExceptionUtils;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsHelper;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
@@ -91,6 +93,7 @@ public class UserProfileFragment extends AlfrescoFragment implements OnMenuItemC
     // //////////////////////////////////////////////////////////////////////
     public UserProfileFragment()
     {
+        screenName = AnalyticsManager.PREFIX_USER.concat(AnalyticsManager.SCREEN_USER_DETAILS);
     }
 
     protected static UserProfileFragment newInstanceByTemplate(Bundle b)
@@ -114,7 +117,10 @@ public class UserProfileFragment extends AlfrescoFragment implements OnMenuItemC
         if (getArguments() != null)
         {
             userName = getArguments().getString(ARGUMENT_USERNAME);
-            accountId = getArguments().getLong(ARGUMENT_ACCOUNTID);
+            if (getArguments().containsKey(ARGUMENT_ACCOUNTID))
+            {
+                accountId = getArguments().getLong(ARGUMENT_ACCOUNTID);
+            }
         }
 
         session = SessionUtils.getSession(getActivity());
@@ -151,8 +157,17 @@ public class UserProfileFragment extends AlfrescoFragment implements OnMenuItemC
 
         hide(R.id.profile_details);
         show(R.id.progressbar);
-        Operator.with(getActivity(), AlfrescoAccountManager.getInstance(getActivity()).retrieveAccount(accountId))
-                .load(new PersonRequest.Builder(userName).setAccountId(accountId));
+        if (accountId == null)
+        {
+            Operator.with(getActivity(), getAccount())
+                    .load(new PersonRequest.Builder(userName).setAccountId(getAccount().getId()));
+        }
+        else
+        {
+            Operator.with(getActivity(), AlfrescoAccountManager.getInstance(getActivity()).retrieveAccount(accountId))
+                    .load(new PersonRequest.Builder(userName).setAccountId(accountId));
+        }
+
     }
 
     @Override
@@ -232,8 +247,8 @@ public class UserProfileFragment extends AlfrescoFragment implements OnMenuItemC
                 if (person.getCompany() != null && person.getCompany().getTelephoneNumber() != null
                         && !person.getCompany().getTelephoneNumber().isEmpty())
                 {
-                    mi = menu.add(Menu.NONE, R.id.menu_user_company_phone, Menu.FIRST + 5, person.getCompany()
-                            .getTelephoneNumber());
+                    mi = menu.add(Menu.NONE, R.id.menu_user_company_phone, Menu.FIRST + 5,
+                            person.getCompany().getTelephoneNumber());
                     mi.setIcon(R.drawable.ic_call);
                     mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
                 }
@@ -262,8 +277,8 @@ public class UserProfileFragment extends AlfrescoFragment implements OnMenuItemC
                 if (person.getCompany() != null && person.getCompany().getEmail() != null
                         && !person.getCompany().getEmail().isEmpty())
                 {
-                    mi = menu.add(Menu.NONE, R.id.menu_user_company_email, Menu.FIRST + 4, person.getCompany()
-                            .getEmail());
+                    mi = menu.add(Menu.NONE, R.id.menu_user_company_email, Menu.FIRST + 4,
+                            person.getCompany().getEmail());
                     mi.setIcon(R.drawable.ic_send_mail);
                     mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
                 }
@@ -279,44 +294,68 @@ public class UserProfileFragment extends AlfrescoFragment implements OnMenuItemC
     public boolean onMenuItemClick(MenuItem item)
     {
         boolean onMenuItemClick = true;
+        String actionName = null, actionLabel = null;
         switch (item.getItemId())
         {
             case R.id.menu_user_chat:
                 onMenuItemClick = true;
                 actionSkype(getActivity(), ACTION_CHAT, person.getSkypeId());
+                actionName = AnalyticsManager.ACTION_SKYPE;
+                actionLabel = AnalyticsManager.LABEL_CHAT;
                 break;
             case R.id.menu_user_call:
                 actionSkype(getActivity(), ACTION_CALL, person.getSkypeId());
                 onMenuItemClick = true;
+                actionName = AnalyticsManager.ACTION_SKYPE;
+                actionLabel = AnalyticsManager.LABEL_CALL;
                 break;
             case R.id.menu_user_videocall:
                 actionSkype(getActivity(), ACTION_VIDEO_CALL, person.getSkypeId());
                 onMenuItemClick = true;
+                actionName = AnalyticsManager.ACTION_SKYPE;
+                actionLabel = AnalyticsManager.LABEL_VIDEOCALL;
                 break;
             case R.id.menu_user_email:
                 actionEmail(getActivity(), person.getEmail(), null, null);
                 onMenuItemClick = true;
+                actionName = AnalyticsManager.ACTION_EMAIL;
+                actionLabel = AnalyticsManager.LABEL_USER;
                 break;
             case R.id.menu_user_company_email:
                 actionEmail(getActivity(), person.getCompany().getEmail(), null, null);
                 onMenuItemClick = true;
+                actionName = AnalyticsManager.ACTION_EMAIL;
+                actionLabel = AnalyticsManager.LABEL_COMPANY;
                 break;
             case R.id.menu_user_company_phone:
                 actionCall(getActivity(), person.getCompany().getTelephoneNumber());
                 onMenuItemClick = true;
+                actionName = AnalyticsManager.ACTION_CALL;
+                actionLabel = AnalyticsManager.LABEL_COMPANY;
                 break;
             case R.id.menu_user_phone:
                 actionCall(getActivity(), person.getTelephoneNumber());
                 onMenuItemClick = true;
+                actionName = AnalyticsManager.ACTION_CALL;
+                actionLabel = AnalyticsManager.LABEL_PHONE;
                 break;
             case R.id.menu_user_mobile:
                 actionCall(getActivity(), person.getMobileNumber());
                 onMenuItemClick = true;
+                actionName = AnalyticsManager.ACTION_CALL;
+                actionLabel = AnalyticsManager.LABEL_MOBILE;
                 break;
             default:
                 onMenuItemClick = false;
                 break;
         }
+
+        if (onMenuItemClick)
+        {
+            AnalyticsHelper.reportOperationEvent(getActivity(), AnalyticsManager.CATEGORY_USER, actionName, actionLabel,
+                    1, false);
+        }
+
         return onMenuItemClick;
     }
 
@@ -515,8 +554,8 @@ public class UserProfileFragment extends AlfrescoFragment implements OnMenuItemC
                 @Override
                 public void onClick(View v)
                 {
-                    actionGeolocalisation(getActivity(), person.getCompany().getFullAddress(), person.getCompany()
-                            .getName());
+                    actionGeolocalisation(getActivity(), person.getCompany().getFullAddress(),
+                            person.getCompany().getName());
                 }
             });
         }
@@ -664,6 +703,9 @@ public class UserProfileFragment extends AlfrescoFragment implements OnMenuItemC
                 }
 
                 activity.startActivity(Intent.createChooser(intent, activity.getString(R.string.contact_add)));
+
+                AnalyticsHelper.reportOperationEvent(activity, AnalyticsManager.CATEGORY_USER,
+                        AnalyticsManager.ACTION_ADD_CONTACT, AnalyticsManager.LABEL_CONTACT, 1, false);
             }
             catch (ActivityNotFoundException e)
             {

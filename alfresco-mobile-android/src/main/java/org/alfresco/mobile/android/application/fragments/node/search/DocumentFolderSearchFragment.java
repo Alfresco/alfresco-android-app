@@ -42,6 +42,7 @@ import org.alfresco.mobile.android.application.fragments.node.details.NodeDetail
 import org.alfresco.mobile.android.async.OperationRequest.OperationBuilder;
 import org.alfresco.mobile.android.async.node.search.SearchEvent;
 import org.alfresco.mobile.android.async.node.search.SearchRequest;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.ui.ListingModeFragment;
 import org.alfresco.mobile.android.ui.SelectableFragment;
 import org.alfresco.mobile.android.ui.node.search.SearchNodesFragment;
@@ -86,6 +87,7 @@ public class DocumentFolderSearchFragment extends SearchNodesFragment implements
         super();
         loadState = LOAD_VISIBLE;
         displayAsList = false;
+        screenName = AnalyticsManager.SCREEN_SEARCH_RESULT_FILES;
     }
 
     protected static DocumentFolderSearchFragment newInstanceByTemplate(Bundle b)

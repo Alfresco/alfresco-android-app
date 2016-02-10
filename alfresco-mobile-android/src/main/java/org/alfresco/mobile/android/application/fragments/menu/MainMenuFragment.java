@@ -123,6 +123,7 @@ public class MainMenuFragment extends AlfrescoFragment implements AdapterView.On
         checkSession = false;
         requiredSession = false;
         setHasOptionsMenu(true);
+        reportAtCreation = false;
     }
 
     protected static MainMenuFragment newInstanceByTemplate(Bundle b)

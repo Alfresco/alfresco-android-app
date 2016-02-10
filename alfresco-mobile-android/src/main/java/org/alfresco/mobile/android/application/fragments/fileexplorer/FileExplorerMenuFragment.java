@@ -27,6 +27,7 @@ import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.configuration.model.view.LocalConfigModel;
 import org.alfresco.mobile.android.application.fragments.MenuFragmentHelper;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
@@ -56,6 +57,7 @@ public class FileExplorerMenuFragment extends AlfrescoFragment
     {
         requiredSession = false;
         checkSession = false;
+        screenName = AnalyticsManager.SCREEN_LOCAL_FILES_MENU;
     }
 
     public static FileExplorerMenuFragment newInstanceByTemplate(Bundle b)

@@ -32,6 +32,7 @@ import org.alfresco.mobile.android.async.workflow.process.start.StartProcessEven
 import org.alfresco.mobile.android.async.workflow.task.TasksEvent;
 import org.alfresco.mobile.android.async.workflow.task.complete.CompleteTaskEvent;
 import org.alfresco.mobile.android.async.workflow.task.delegate.ReassignTaskEvent;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.utils.BundleUtils;
 import org.alfresco.mobile.android.ui.activity.AlfrescoActivity;
@@ -72,6 +73,7 @@ public class TasksFragment extends TasksFoundationFragment
         emptyListMessageId = R.string.empty_tasks;
         loadState = LOAD_VISIBLE;
         setHasOptionsMenu(true);
+        screenName = AnalyticsManager.SCREEN_TASKS_LISTING;
     }
 
     public static TasksFragment newInstanceByTemplate(Bundle b)

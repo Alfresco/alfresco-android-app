@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2016 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.managers.upgrade;
 
 import java.io.File;
@@ -98,7 +98,7 @@ public class UpgradeManager implements VersionNumber
             else
             {
                 // Save status
-                prefs.edit().putInt(VERSION_NUMBER, currentVersionNumber).commit();
+                prefs.edit().putInt(VERSION_NUMBER, currentVersionNumber).apply();
             }
         }
         catch (NameNotFoundException e)
@@ -117,7 +117,7 @@ public class UpgradeManager implements VersionNumber
             upgradeVersion110();
 
             // Upgrade done. Save current state.
-            prefs.edit().putInt(VERSION_NUMBER, currentVersionNumber).commit();
+            prefs.edit().putInt(VERSION_NUMBER, currentVersionNumber).apply();
             versionNumber = currentVersionNumber;
             canUpgrade = false;
         }
@@ -155,12 +155,12 @@ public class UpgradeManager implements VersionNumber
                     {
                         UpgradeVersion110.transferFilesBackground(oldDownloads.getPath(), newDownloads.getPath(),
                                 AlfrescoStorageManager.DIRECTORY_DOWNLOAD, true, true);
-                        prefs.edit().putBoolean(UPGRADE_MIGRATION_FILES, true).commit();
+                        prefs.edit().putBoolean(UPGRADE_MIGRATION_FILES, true).apply();
                     }
                 }
                 else
                 {
-                    prefs.edit().putBoolean(UPGRADE_MIGRATION_FILES, true).commit();
+                    prefs.edit().putBoolean(UPGRADE_MIGRATION_FILES, true).apply();
                 }
             }
             Log.i(TAG, "[upgradeVersion110] : Completed");

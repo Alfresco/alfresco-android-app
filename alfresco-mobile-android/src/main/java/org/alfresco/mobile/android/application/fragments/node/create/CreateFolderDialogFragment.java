@@ -21,6 +21,7 @@ import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.node.create.CreateFolderRequest;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.operation.OperationWaitingDialogFragment;
@@ -54,6 +55,7 @@ public abstract class CreateFolderDialogFragment extends AlfrescoFragment
     // ///////////////////////////////////////////////////////////////////////////
     public CreateFolderDialogFragment()
     {
+        screenName = AnalyticsManager.SCREEN_NODE_CREATE_FOLDER_FORM;
     }
 
     public static Bundle createBundle(Folder folder)

@@ -51,6 +51,7 @@ public class VersionFragment extends VersionsNodeFragment
     // ///////////////////////////////////////////////////////////////////////////
     public VersionFragment()
     {
+        reportAtCreation = false;
     }
 
     protected static VersionFragment newInstanceByTemplate(Bundle b)

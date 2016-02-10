@@ -98,7 +98,6 @@ public class AccountOAuthHelper
                 acc = AlfrescoAccountManager.getInstance(context).update(acc.getId(), acc.getTitle(), acc.getUrl(),
                         acc.getUsername(), acc.getPassword(), acc.getRepositoryId(), acc.getTypeId(), null,
                         data.getAccessToken(), data.getRefreshToken(), acc.getIsPaidAccount() ? 1 : 0);
-                Log.d("[CLOUD]", "SAVE TOKEN");
                 break;
             default:
                 break;
@@ -117,7 +116,7 @@ public class AccountOAuthHelper
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         Editor editor = sharedPref.edit();
         editor.putLong(KEY_CLOUD_LOADING_TIME, new Date().getTime());
-        editor.commit();
+        editor.apply();
     }
 
     /**
@@ -131,7 +130,7 @@ public class AccountOAuthHelper
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         Editor editor = sharedPref.edit();
         editor.remove(KEY_CLOUD_LOADING_TIME);
-        editor.commit();
+        editor.apply();
     }
 
     /**

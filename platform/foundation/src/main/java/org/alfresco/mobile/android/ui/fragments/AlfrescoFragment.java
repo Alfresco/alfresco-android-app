@@ -24,6 +24,7 @@ import org.alfresco.mobile.android.foundation.R;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.activity.AlfrescoActivity;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
@@ -42,7 +43,7 @@ import android.view.ViewGroup;
  * 
  * @author Jean Marie Pascal
  */
-public abstract class AlfrescoFragment extends DialogFragment
+public abstract class AlfrescoFragment extends DialogFragment implements AnalyticsManager.FragmentAnalyzed
 {
     protected static final String ARGUMENT_BASED_ON_TEMPLATE = "basedOnTemplate";
 
@@ -62,6 +63,11 @@ public abstract class AlfrescoFragment extends DialogFragment
     private WeakReference<View> vRoot;
 
     protected String title;
+
+    protected String screenName;
+
+    /** Flag to send screen event with analytics. */
+    protected boolean reportAtCreation = true;
 
     // /////////////////////////////////////////////////////////////
     // LIFECYCLE
@@ -237,5 +243,19 @@ public abstract class AlfrescoFragment extends DialogFragment
     public String onPrepareTitle()
     {
         return title;
+    }
+
+    // /////////////////////////////////////////////////////////////
+    // ANLYTICS
+    // ////////////////////////////////////////////////////////////
+    public String getScreenName()
+    {
+        return TextUtils.isEmpty(screenName) ? getClass().getSimpleName() : screenName;
+    }
+
+    @Override
+    public boolean reportAtCreationEnable()
+    {
+        return reportAtCreation;
     }
 }

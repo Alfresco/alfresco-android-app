@@ -29,6 +29,7 @@ import org.alfresco.mobile.android.application.activity.WelcomeActivity;
 import org.alfresco.mobile.android.application.fragments.builder.LeafFragmentBuilder;
 import org.alfresco.mobile.android.application.security.PassCodeActivity;
 import org.alfresco.mobile.android.application.security.PassCodeDialogFragment;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.holder.HolderUtils;
 import org.alfresco.mobile.android.ui.holder.SingleLineSwitchViewHolder;
@@ -103,6 +104,7 @@ public class PasscodePreferences extends AlfrescoFragment
     public PasscodePreferences()
     {
         requiredSession = false;
+        screenName = AnalyticsManager.SCREEN_SETTINGS_PASSCODE;
     }
 
     protected static PasscodePreferences newInstanceByTemplate(Bundle b)
@@ -193,7 +195,7 @@ public class PasscodePreferences extends AlfrescoFragment
                                 {
                                     String newValue = getResources().getStringArray(R.array.passcode_timeout_values)[which];
                                     index = which;
-                                    sharedPref.edit().putString(KEY_PASSCODE_TIMEOUT, (String) newValue).commit();
+                            sharedPref.edit().putString(KEY_PASSCODE_TIMEOUT, (String) newValue).apply();
                                     int minutes = Math.round(Long.parseLong((String) newValue) / ONE_MINUTE);
                                     passcodeTimeoutVH.bottomText.setText(String.format(
                                             MessageFormat.format(getString(R.string.passcode_timeout_summary), minutes),
@@ -222,11 +224,11 @@ public class PasscodePreferences extends AlfrescoFragment
                     passcodeDataVH.choose.setChecked(maxAttemptActivated);
                     if (maxAttemptActivated)
                     {
-                        sharedPref.edit().putInt(KEY_PASSCODE_MAX_ATTEMPT, 10).commit();
+                        sharedPref.edit().putInt(KEY_PASSCODE_MAX_ATTEMPT, 10).apply();
                     }
                     else
                     {
-                        sharedPref.edit().remove(KEY_PASSCODE_MAX_ATTEMPT).commit();
+                        sharedPref.edit().remove(KEY_PASSCODE_MAX_ATTEMPT).apply();
                     }
                 }
             });
@@ -240,11 +242,11 @@ public class PasscodePreferences extends AlfrescoFragment
                     passcodeDataVH.choose.setChecked(maxAttemptActivated);
                     if (maxAttemptActivated)
                     {
-                        sharedPref.edit().putInt(KEY_PASSCODE_MAX_ATTEMPT, 10).commit();
+                        sharedPref.edit().putInt(KEY_PASSCODE_MAX_ATTEMPT, 10).apply();
                     }
                     else
                     {
-                        sharedPref.edit().remove(KEY_PASSCODE_MAX_ATTEMPT).commit();
+                        sharedPref.edit().remove(KEY_PASSCODE_MAX_ATTEMPT).apply();
                     }
                 }
             });
@@ -318,7 +320,7 @@ public class PasscodePreferences extends AlfrescoFragment
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putLong(KEY_PASSCODE_ACTIVATED_AT, new Date().getTime());
-        editor.commit();
+        editor.apply();
     }
 
     /**

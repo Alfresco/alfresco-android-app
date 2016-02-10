@@ -80,6 +80,8 @@ public final class SyncContentSchema extends OperationsSchema
 
     public static final String[] COLUMN_ALL = join(COLUMNS, COLUMNS_SYNC);
 
+    public static final String[] COLUMN_IDS = { COLUMN_ID };
+
     // ////////////////////////////////////////////////////
     // QUERIES
     // ////////////////////////////////////////////////////

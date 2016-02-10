@@ -25,6 +25,8 @@ import java.util.List;
 import org.alfresco.mobile.android.application.extension.samsung.R;
 import org.alfresco.mobile.android.application.extension.samsung.utils.SNoteUtils;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsHelper;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.platform.intent.BaseActionUtils;
 import org.alfresco.mobile.android.ui.activity.AlfrescoActivity;
 
@@ -132,6 +134,8 @@ public class SNoteEditorActivity extends AlfrescoActivity
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
+        AnalyticsHelper.reportScreen(this, AnalyticsManager.SCREEN_SAMSUNG_SNOTE_EDITOR);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.snote_editor);
         context = this;

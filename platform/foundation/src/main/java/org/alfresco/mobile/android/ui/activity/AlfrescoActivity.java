@@ -29,6 +29,8 @@ import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.exception.AlfrescoAppException;
 import org.alfresco.mobile.android.platform.exception.CloudExceptionUtils;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsHelper;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.platform.extensions.HockeyAppManager;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.ui.fragments.WaitingDialogFragment;
@@ -196,6 +198,13 @@ public abstract class AlfrescoActivity extends AppCompatActivity
     // ///////////////////////////////////////////////////////////////////////////
     public void swapAccount(AlfrescoAccount account)
     {
+        // Analytics
+        AnalyticsHelper
+                .reportOperationEvent(this, AnalyticsManager.CATEGORY_SESSION,
+                        AnalyticsManager.ACTION_SWITCH, account.getTypeId() == AlfrescoAccount.TYPE_ALFRESCO_CLOUD
+                                ? AnalyticsManager.SERVER_TYPE_CLOUD : AnalyticsManager.SERVER_TYPE_ONPREMISE,
+                        1, false);
+
         setCurrentAccount(account);
         SessionManager.getInstance(this).loadSession(account);
     }
@@ -261,8 +270,8 @@ public abstract class AlfrescoActivity extends AppCompatActivity
             telescopeView.setVibrate(false);
             telescopeView.setLens(new EmailDeviceInfoLens(this, getResources().getStringArray(R.array.bugreport_email),
                     getString(R.string.bug_report_title),
-                    getPackageManager().getPackageInfo(getPackageName(), 0).versionName, getPackageManager()
-                            .getPackageInfo(getPackageName(), 0).versionCode));
+                    getPackageManager().getPackageInfo(getPackageName(), 0).versionName,
+                    getPackageManager().getPackageInfo(getPackageName(), 0).versionCode));
         }
         catch (Exception e)
         {

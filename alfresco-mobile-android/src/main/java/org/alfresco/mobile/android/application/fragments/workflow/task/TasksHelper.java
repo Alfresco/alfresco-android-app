@@ -104,7 +104,7 @@ public final class TasksHelper
 
                 if (isProcessFragment)
                 {
-                    prefs.edit().putInt(TASK_FILTER_DEFAULT, itemPosition).commit();
+                    prefs.edit().putInt(TASK_FILTER_DEFAULT, itemPosition).apply();
                     f.addFilter(PublicAPIWorkflowServiceImpl.INCLUDE_VARIABLES, "true");
 
                     ListingContext lc = new ListingContext();
@@ -116,7 +116,7 @@ public final class TasksHelper
                     ListingContext lc = new ListingContext();
                     lc.setFilter(f);
                     TasksFragment.with(activity).menuId(itemPosition).setListingContext(lc).display();
-                    prefs.edit().putInt(TASK_FILTER_DEFAULT, itemPosition).commit();
+                    prefs.edit().putInt(TASK_FILTER_DEFAULT, itemPosition).apply();
                 }
                 return true;
             }

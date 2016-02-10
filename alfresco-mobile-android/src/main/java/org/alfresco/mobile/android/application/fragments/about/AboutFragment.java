@@ -22,6 +22,7 @@ import java.util.Map;
 import org.alfresco.mobile.android.api.Version;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.builder.LeafFragmentBuilder;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 
 import android.app.Dialog;
@@ -50,6 +51,7 @@ public class AboutFragment extends AlfrescoFragment
     {
         requiredSession = false;
         checkSession = false;
+        screenName = AnalyticsManager.SCREEN_SETTINGS_ABOUT;
     }
 
     protected static AboutFragment newInstanceByTemplate(Bundle b)

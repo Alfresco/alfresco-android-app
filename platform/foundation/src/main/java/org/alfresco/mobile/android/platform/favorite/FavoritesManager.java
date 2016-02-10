@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2016 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.platform.favorite;
 
 import java.io.File;
@@ -351,7 +351,7 @@ public class FavoritesManager extends Manager
         if (account != null)
         {
             editor.putLong(LAST_START_SYNC_PREPARE + account.getId(), new Date().getTime());
-            editor.commit();
+            editor.apply();
         }
     }
 
@@ -363,7 +363,7 @@ public class FavoritesManager extends Manager
         if (account != null)
         {
             editor.putLong(LAST_SYNC_ACTIVATED_AT + account.getId(), new Date().getTime());
-            editor.commit();
+            editor.apply();
         }
     }
 
@@ -677,7 +677,7 @@ public class FavoritesManager extends Manager
         if (account != null)
         {
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(appContext);
-            sharedPref.edit().putBoolean(SYNCHRO_WIFI_PREFIX + account.getId(), isWifiOnly).commit();
+            sharedPref.edit().putBoolean(SYNCHRO_WIFI_PREFIX + account.getId(), isWifiOnly).apply();
         }
     }
 
@@ -704,7 +704,7 @@ public class FavoritesManager extends Manager
     public void setActivateSync(long accountId, boolean isActive)
     {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(appContext);
-        sharedPref.edit().putBoolean(SYNCHRO_PREFIX + accountId, isActive).commit();
+        sharedPref.edit().putBoolean(SYNCHRO_PREFIX + accountId, isActive).apply();
         ContentResolver.setSyncAutomatically(AlfrescoAccountManager.getInstance(appContext)
                 .getAndroidAccount(accountId), FavoritesProvider.AUTHORITY, isActive);
     }
@@ -722,7 +722,7 @@ public class FavoritesManager extends Manager
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(appContext);
         if (account != null)
         {
-            sharedPref.edit().putBoolean(SYNCHRO_DISPLAY_PREFIX + account.getId(), isActive).commit();
+            sharedPref.edit().putBoolean(SYNCHRO_DISPLAY_PREFIX + account.getId(), isActive).apply();
         }
     }
 
@@ -749,7 +749,7 @@ public class FavoritesManager extends Manager
         if (SessionUtils.getAccount(appContext) != null)
         {
             final AlfrescoAccount account = SessionUtils.getAccount(appContext);
-            sharedPref.edit().putBoolean(SYNCHRO_EVEYTHING_PREFIX + account.getId(), isActive).commit();
+            sharedPref.edit().putBoolean(SYNCHRO_EVEYTHING_PREFIX + account.getId(), isActive).apply();
         }
     }
 
@@ -772,7 +772,7 @@ public class FavoritesManager extends Manager
         if (SessionUtils.getAccount(appContext) != null)
         {
             final AlfrescoAccount account = SessionUtils.getAccount(appContext);
-            sharedPref.edit().putLong(SYNCHRO_DATA_ALERT_PREFIX + account.getId(), length).commit();
+            sharedPref.edit().putLong(SYNCHRO_DATA_ALERT_PREFIX + account.getId(), length).apply();
         }
     }
 
@@ -793,7 +793,7 @@ public class FavoritesManager extends Manager
         if (SessionUtils.getAccount(appContext) != null)
         {
             final AlfrescoAccount account = SessionUtils.getAccount(appContext);
-            sharedPref.edit().putFloat(SYNCHRO_FREE_SPACE_ALERT_PREFIX + account.getId(), percent).commit();
+            sharedPref.edit().putFloat(SYNCHRO_FREE_SPACE_ALERT_PREFIX + account.getId(), percent).apply();
         }
     }
 

@@ -36,6 +36,7 @@ import org.alfresco.mobile.android.api.model.config.ConfigInfo;
 import org.alfresco.mobile.android.api.model.config.ConfigScope;
 import org.alfresco.mobile.android.api.model.config.ConfigTypeIds;
 import org.alfresco.mobile.android.api.model.config.CreationConfig;
+import org.alfresco.mobile.android.api.model.config.FeatureConfig;
 import org.alfresco.mobile.android.api.model.config.FormConfig;
 import org.alfresco.mobile.android.api.model.config.ProfileConfig;
 import org.alfresco.mobile.android.api.model.config.RepositoryConfig;
@@ -379,5 +380,21 @@ public abstract class AbstractConfigServiceImpl extends AlfrescoService implemen
     {
         if (configuration == null) { return null; }
         return configuration.getCreationConfig();
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // FEATURE
+    // ///////////////////////////////////////////////////////////////////////////
+    @Override
+    public boolean hasFeatureConfig()
+    {
+        return configuration != null && configuration.getCreationConfig() != null;
+    }
+
+    @Override
+    public List<FeatureConfig> getFeatureConfig()
+    {
+        if (configuration == null) { return null; }
+        return configuration.getFeatureConfig();
     }
 }

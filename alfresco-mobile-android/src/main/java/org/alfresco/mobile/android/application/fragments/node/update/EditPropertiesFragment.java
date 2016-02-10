@@ -36,6 +36,7 @@ import org.alfresco.mobile.android.application.ui.form.picker.TimePickerFragment
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.definition.TypeDefinitionEvent;
 import org.alfresco.mobile.android.async.node.update.UpdateNodeRequest;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.platform.utils.BundleUtils;
 
 import android.content.res.Configuration;
@@ -68,6 +69,7 @@ public class EditPropertiesFragment extends EditNodePropertiesFragment implement
     public EditPropertiesFragment()
     {
         setRetainInstance(true);
+        screenName = AnalyticsManager.SCREEN_NODE_EDIT_PROPERTIES;
     }
 
     public static EditPropertiesFragment newInstanceByTemplate(Bundle b)

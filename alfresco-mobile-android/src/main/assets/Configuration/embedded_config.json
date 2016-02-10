@@ -10,6 +10,13 @@
       "root-view-id": "views-menu-default"
     }
   },
+  "features": [
+    {
+      "id": "feature-analytics-default",
+      "type": "org.alfresco.client.feature.analytics",
+      "enable": false
+    }
+  ],
   "view-groups": [
     {
       "id": "views-menu-default",

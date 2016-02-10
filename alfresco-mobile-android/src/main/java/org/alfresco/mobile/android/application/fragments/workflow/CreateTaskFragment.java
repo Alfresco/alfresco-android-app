@@ -46,6 +46,7 @@ import org.alfresco.mobile.android.application.ui.form.picker.DocumentPickerFrag
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.workflow.process.start.StartProcessEvent;
 import org.alfresco.mobile.android.async.workflow.process.start.StartProcessRequest;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.mimetype.MimeTypeManager;
 import org.alfresco.mobile.android.ui.ListingModeFragment;
@@ -122,6 +123,7 @@ public class CreateTaskFragment extends AlfrescoFragment
     // ///////////////////////////////////////////////////////////////////////////
     public CreateTaskFragment()
     {
+        screenName = AnalyticsManager.SCREEN_TASK_CREATE_FORM;
     }
 
     public static CreateTaskFragment newInstanceByTemplate(Bundle b)

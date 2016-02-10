@@ -89,6 +89,7 @@ public class SearchSitesFragment extends CommonBrowserSitesFragment implements L
         super();
         retrieveDataOnCreation = false;
         loadState = LOAD_VISIBLE;
+        reportAtCreation = false;
     }
 
     public static SearchSitesFragment newInstanceByTemplate(Bundle b)
@@ -321,6 +322,7 @@ public class SearchSitesFragment extends CommonBrowserSitesFragment implements L
             searchText.setSelection(searchValue.length());
         }
     }
+
 
     // ///////////////////////////////////////////////////////////////////////////
     // EVENTS

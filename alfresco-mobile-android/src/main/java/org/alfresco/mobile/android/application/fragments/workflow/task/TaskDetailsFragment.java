@@ -56,6 +56,7 @@ import org.alfresco.mobile.android.async.workflow.task.complete.CompleteTaskRequ
 import org.alfresco.mobile.android.async.workflow.task.delegate.ReassignTaskEvent;
 import org.alfresco.mobile.android.async.workflow.task.delegate.ReassignTaskRequest;
 import org.alfresco.mobile.android.platform.exception.CloudExceptionUtils;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.platform.mimetype.MimeTypeManager;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.ListingModeFragment;
@@ -125,6 +126,7 @@ public class TaskDetailsFragment extends AlfrescoFragment implements UserPickerC
     public TaskDetailsFragment()
     {
         setHasOptionsMenu(true);
+        screenName = AnalyticsManager.SCREEN_TASK_DETAILS;
     }
 
     protected static TaskDetailsFragment newInstanceByTemplate(Bundle b)

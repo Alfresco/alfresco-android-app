@@ -72,6 +72,7 @@ public class CommentsFragment extends CommentsNodeFragment
     {
         emptyListMessageId = R.string.empty_comment;
         loadState = LOAD_VISIBLE;
+        reportAtCreation = false;
     }
 
     protected static CommentsFragment newInstanceByTemplate(Bundle b)
