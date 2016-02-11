@@ -798,7 +798,7 @@
     <!-- AlfrescoDisplayName restriction -->
     <string name="title_alfresco_display_name">アカウントの表示名</string>
     <string name="description_alfresco_display_name">リポジトリに接続しているサーバーの名前。</string>
-    <string name="default_alfresco_display_name" translatable="false">Alfresco Server</string>
+    <string name="default_alfresco_display_name">Alfresco Server</string>
 
 
     <!-- Empty -->

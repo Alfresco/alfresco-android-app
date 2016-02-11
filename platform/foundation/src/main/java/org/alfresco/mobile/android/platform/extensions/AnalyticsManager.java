@@ -123,9 +123,9 @@ public abstract class AnalyticsManager extends Manager
 
     public static final String ACTION_RECORD_VIDEO = "Record Video";
 
-    public static final String ACTION_RECORD_AUDIO = "Add Contact";
+    public static final String ACTION_RECORD_AUDIO = "Record Audio";
 
-    public static final String ACTION_SCAN = "Add Contact";
+    public static final String ACTION_SCAN = "Scan";
 
     public static final String ACTION_MULTI_SELECT = "Multiselect";
 
