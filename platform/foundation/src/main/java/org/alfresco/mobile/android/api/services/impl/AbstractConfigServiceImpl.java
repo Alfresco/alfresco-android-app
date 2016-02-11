@@ -394,7 +394,7 @@ public abstract class AbstractConfigServiceImpl extends AlfrescoService implemen
     @Override
     public List<FeatureConfig> getFeatureConfig()
     {
-        if (configuration == null) { return null; }
+        if (configuration == null) { return new ArrayList<>(0); }
         return configuration.getFeatureConfig();
     }
 }

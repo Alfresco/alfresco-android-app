@@ -41,7 +41,7 @@ public class GAnalyticsManagerImpl extends AnalyticsManager
 
     private boolean hasOptOut = false;
 
-    private static final boolean DISPATCH_MANUALLY = true;
+    private boolean dispatchManually = false;
 
     protected SharedPreferences.Editor editor;
 
@@ -67,18 +67,19 @@ public class GAnalyticsManagerImpl extends AnalyticsManager
     {
         super(context);
         analytics = GoogleAnalytics.getInstance(context);
-        mTracker = analytics.newTracker(context.getString(R.string.ga_trackId));
+        // Set it via resource to support override mechanism
+        mTracker = analytics.newTracker(context.getString(R.string.ga_trackingId));
+        mTracker.setSampleRate(Double.parseDouble(context.getResources().getString(R.string.ga_sampleFrequency)));
+        mTracker.enableAutoActivityTracking(context.getResources().getBoolean(R.bool.ga_autoActivityTracking));
+        mTracker.enableExceptionReporting(context.getResources().getBoolean(R.bool.ga_reportUncaughtExceptions));
+        mTracker.setSessionTimeout(context.getResources().getInteger(R.integer.ga_sessionTimeout));
+
+        dispatchManually = context.getResources().getBoolean(R.bool.ga_manualDispatch);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
     // O
     // ///////////////////////////////////////////////////////////////////////////
-    public void optOut(Activity activity, AlfrescoAccount account)
-    {
-        opt(activity, STATUS_DISABLE, account);
-        status = getStatus();
-    }
-
     public void optOutByConfig(Context context, AlfrescoAccount account)
     {
         editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
@@ -93,9 +94,15 @@ public class GAnalyticsManagerImpl extends AnalyticsManager
         status = getStatus();
     }
 
-    public void optIn(Activity activity, AlfrescoAccount account)
+    public void optIn(Activity activity)
     {
-        opt(activity, STATUS_ENABLE, account);
+        setStatus(STATUS_ENABLE);
+        status = getStatus();
+    }
+
+    public void optOut(Activity activity)
+    {
+        setStatus(STATUS_DISABLE);
         status = getStatus();
     }
 
@@ -137,9 +144,14 @@ public class GAnalyticsManagerImpl extends AnalyticsManager
 
     public boolean isEnable(AlfrescoAccount account)
     {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(appContext);
-        int tempStatus = sharedPref.getInt(ANALYTICS_PREFIX + account.getId(), STATUS_ENABLE);
-        return tempStatus == STATUS_ENABLE;
+        return PreferenceManager.getDefaultSharedPreferences(appContext).getInt(ANALYTICS_PREFIX + account.getId(),
+                STATUS_ENABLE) == STATUS_ENABLE;
+    }
+
+    public boolean isBlocked(AlfrescoAccount account)
+    {
+        return PreferenceManager.getDefaultSharedPreferences(appContext).getInt(ANALYTICS_PREFIX + account.getId(),
+                STATUS_ENABLE) == STATUS_BLOCKED;
     }
 
     public boolean isBlocked()
@@ -151,7 +163,7 @@ public class GAnalyticsManagerImpl extends AnalyticsManager
         return status == STATUS_BLOCKED;
     }
 
-    public int getStatus()
+    private int getStatus()
     {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(appContext);
         List<AlfrescoAccount> accounts = AlfrescoAccountManager.retrieveAccounts(appContext);
@@ -163,8 +175,8 @@ public class GAnalyticsManagerImpl extends AnalyticsManager
             switch (tempStatus)
             {
                 case STATUS_BLOCKED:
-                    resultStatus = STATUS_BLOCKED;
-                    break;
+                    status = STATUS_BLOCKED;
+                    return STATUS_BLOCKED;
                 case STATUS_DISABLE:
                     resultStatus = STATUS_DISABLE;
                     break;
@@ -176,51 +188,66 @@ public class GAnalyticsManagerImpl extends AnalyticsManager
         return status;
     }
 
+    private void setStatus(int status)
+    {
+        List<AlfrescoAccount> accounts = AlfrescoAccountManager.retrieveAccounts(appContext);
+        for (AlfrescoAccount account : accounts)
+        {
+            opt(appContext, status, account);
+        }
+    }
+
     // ///////////////////////////////////////////////////////////////////////////
     // REPORT
     // ///////////////////////////////////////////////////////////////////////////
+    @Override
     public void startReport(Activity activity)
     {
         analytics.enableAutoActivityReports(activity.getApplication());
         mTracker.send(new HitBuilders.ScreenViewBuilder().setNewSession().build());
     }
 
+    @Override
     public void reportScreen(String name)
     {
         mTracker.setScreenName(name);
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
-        if (DISPATCH_MANUALLY)
+        if (dispatchManually)
         {
             analytics.dispatchLocalHits();
         }
     }
 
+    @Override
     public void reportEvent(String category, String action, String label, int value)
     {
         mTracker.send(new HitBuilders.EventBuilder().setCategory(category).setAction(action).setLabel(label)
                 .setValue(value).build());
-        if (DISPATCH_MANUALLY)
+        if (dispatchManually)
         {
             analytics.dispatchLocalHits();
         }
     }
 
+    @Override
     public void reportEvent(String category, String action, String label, int value, int customMetricId,
             Long customMetricValue)
     {
         mTracker.send(new HitBuilders.EventBuilder().setCategory(category).setAction(action).setLabel(label)
                 .setValue(value).setCustomMetric(customMetricId, customMetricValue).build());
-        if (DISPATCH_MANUALLY)
+        if (dispatchManually)
         {
             analytics.dispatchLocalHits();
         }
     }
 
+    @Override
     public void reportInfo(String label, SparseArray<String> dimensions, SparseArray<Long> metrics)
     {
         reportEvent(CATEGORY_SESSION, ACTION_INFO, label, 1, dimensions, metrics);
     }
 
+    @Override
     public void reportEvent(String category, String action, String label, int eventValue,
             SparseArray<String> dimensions, SparseArray<Long> metrics)
     {
@@ -248,18 +275,24 @@ public class GAnalyticsManagerImpl extends AnalyticsManager
         }
 
         mTracker.send(builder.build());
-        if (DISPATCH_MANUALLY)
+        if (dispatchManually)
         {
             analytics.dispatchLocalHits();
         }
     }
 
+    @Override
     public void reportError(boolean isFatal, String description)
     {
         mTracker.send(new HitBuilders.ExceptionBuilder().setFatal(isFatal).setDescription(description).build());
-        if (DISPATCH_MANUALLY)
+        if (dispatchManually)
         {
             analytics.dispatchLocalHits();
         }
+    }
+
+    public void enableManualDispatch(boolean enable)
+    {
+        dispatchManually = enable;
     }
 }

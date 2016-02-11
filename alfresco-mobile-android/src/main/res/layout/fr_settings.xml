@@ -260,24 +260,11 @@
                 android:background="?android:attr/dividerVertical" />
 
             <LinearLayout
+                android:id="@+id/settings_dev_tools_items"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/secondary_background"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:id="@+id/settings_dev_menu_config_container"
-                    style="@style/AlfrescoMaterialTheme.Button.BorderLess"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <include
-                        android:id="@+id/settings_dev_menu_config"
-                        layout="@layout/row_two_lines"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
-            </LinearLayout>
+                android:orientation="vertical" />
         </LinearLayout>
 
 

@@ -208,6 +208,7 @@ public class AccountSettingsFragment extends AlfrescoFragment implements EditTex
         {
             viewById(R.id.settings_custom_menu_manage_container).setEnabled(false);
             menuCustomizationVH.bottomText.setText(R.string.settings_custom_menu_disable);
+            HolderUtils.makeMultiLine(menuCustomizationVH.bottomText, 3);
         }
         else
         {

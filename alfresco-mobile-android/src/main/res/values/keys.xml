@@ -18,9 +18,6 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="all">
 
-    <!-- The apps Analytics Tracking Id-->
-    <string name="ga_trackingId">TODO</string>
-
     <!-- Percentage of events to include in reports -->
     <string name="ga_sampleFrequency">100.0</string>
 
@@ -34,7 +31,7 @@
     <bool name="ga_reportUncaughtExceptions">true</bool>
 
     <!-- How long a session exists before giving up -->
-    <integer name="ga_sessionTimeout">1</integer>
+    <integer name="ga_sessionTimeout">20</integer>
 
 
 </resources>

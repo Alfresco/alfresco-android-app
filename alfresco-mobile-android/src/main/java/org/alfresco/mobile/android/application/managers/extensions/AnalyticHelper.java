@@ -45,7 +45,7 @@ public class AnalyticHelper extends AnalyticsHelper
 
     public static void optIn(Activity activity, AlfrescoAccount account)
     {
-        AnalyticsManager.getInstance(activity).optIn(activity, account);
+        AnalyticsManager.getInstance(activity).optIn(activity);
         AnalyticsManager.getInstance(activity).startReport(activity);
         try
         {
@@ -64,7 +64,7 @@ public class AnalyticHelper extends AnalyticsHelper
     {
         AnalyticsManager.getInstance(activity).reportEvent(AnalyticsManager.CATEGORY_SETTINGS,
                 AnalyticsManager.ACTION_ANALYTICS, AnalyticsManager.LABEL_DISABLE, 1);
-        AnalyticsManager.getInstance(activity).optOut(activity, account);
+        AnalyticsManager.getInstance(activity).optOut(activity);
     }
 
     public static void cleanOpt(Activity activity, AlfrescoAccount account)
