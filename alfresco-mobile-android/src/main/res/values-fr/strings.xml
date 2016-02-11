@@ -798,7 +798,7 @@
     <!-- AlfrescoDisplayName restriction -->
     <string name="title_alfresco_display_name">Nom complet du compte</string>
     <string name="description_alfresco_display_name">Nom du serveur associé à l\'entrepôt.</string>
-    <string name="default_alfresco_display_name" translatable="false">Serveur Alfresco</string>
+    <string name="default_alfresco_display_name">Serveur Alfresco</string>
 
 
     <!-- Empty -->
