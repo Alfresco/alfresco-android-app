@@ -486,21 +486,31 @@ public abstract class AnalyticsManager extends Manager
     // ///////////////////////////////////////////////////////////////////////////
     public abstract void cleanOptInfo(Context context, AlfrescoAccount account);
 
-    public abstract void optOut(Activity activity, AlfrescoAccount account);
-
     public abstract void optOutByConfig(Context context, AlfrescoAccount account);
 
     public abstract void optInByConfig(Context context, AlfrescoAccount account);
 
-    public abstract void optIn(Activity activity, AlfrescoAccount account);
+    /**
+     * OptIn check must be done prior to call this method.
+     * 
+     * @param activity
+     */
+    public abstract void optIn(Activity activity);
+
+    /**
+     * optOut check must be done prior to call this method.
+     * 
+     * @param activity
+     */
+    public abstract void optOut(Activity activity);
 
     public abstract boolean isEnable();
 
     public abstract boolean isEnable(AlfrescoAccount account);
 
-    public abstract int getStatus();
-
     public abstract boolean isBlocked();
+
+    public abstract boolean isBlocked(AlfrescoAccount account);
 
     // ///////////////////////////////////////////////////////////////////////////
     // ABSTRACT METHODS
@@ -521,6 +531,9 @@ public abstract class AnalyticsManager extends Manager
 
     public abstract void reportError(boolean isFatal, String description);
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // Fragment Interface
+    // ///////////////////////////////////////////////////////////////////////////
     public interface FragmentAnalyzed
     {
         String getScreenName();

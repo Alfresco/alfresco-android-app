@@ -250,15 +250,26 @@ public class AnalyticsHelper
                 if (configService != null)
                 {
                     List<FeatureConfig> configs = configService.getFeatureConfig();
+
+                    if (configs.isEmpty() && AnalyticsManager.getInstance(context).isBlocked(acc))
+                    {
+                        // When server config has been removed we revert
+                        // analytics
+                        // to true
+                        AnalyticsManager.getInstance(context).optInByConfig(context, acc);
+                    }
+
                     for (FeatureConfig feature : configs)
                     {
                         if (FeatureConfig.FEATURE_ANALYTICS.equals(feature.getType()))
                         {
+                            // When analytics enable via server config
                             if (feature.isEnable() && !AnalyticsManager.getInstance(context).isEnable(acc))
                             {
                                 AnalyticsManager.getInstance(context).optInByConfig(context, acc);
                             }
-                            else if (!feature.isEnable() && AnalyticsManager.getInstance(context).isEnable(acc))
+                            // When analytics disable via server config
+                            else if (!feature.isEnable())
                             {
                                 if (AnalyticsManager.getInstance(context).isEnable())
                                 {
@@ -266,10 +277,20 @@ public class AnalyticsHelper
                                             AnalyticsManager.CATEGORY_SETTINGS, AnalyticsManager.ACTION_ANALYTICS,
                                             AnalyticsManager.LABEL_DISABLE_BY_CONFIG, 1);
                                 }
-                                AnalyticsManager.getInstance(context).optOutByConfig(context, acc);
+
+                                if (!AnalyticsManager.getInstance(context).isBlocked(acc))
+                                {
+                                    AnalyticsManager.getInstance(context).optOutByConfig(context, acc);
+                                }
                             }
                         }
                     }
+                }
+                else if (AnalyticsManager.getInstance(context).isBlocked(acc))
+                {
+                    // When server config has been removed we revert analytics
+                    // to true
+                    AnalyticsManager.getInstance(context).optInByConfig(context, acc);
                 }
             }
         }

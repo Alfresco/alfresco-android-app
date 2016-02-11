@@ -122,7 +122,9 @@ public class GeneralPreferences extends AlfrescoFragment
             boolean isEnable = AnalyticsManager.getInstance(getActivity()).isEnable();
 
             diagnosticVH = HolderUtils.configure(viewById(R.id.settings_diagnostic),
-                    getString(R.string.settings_feedback_diagnostic), getString(R.string.mdm_managed), isEnable);
+                    getString(R.string.settings_feedback_diagnostic), getString(R.string.settings_custom_menu_disable),
+                    isEnable);
+            HolderUtils.makeMultiLine(diagnosticVH.bottomText, 3);
             diagnosticVH.choose.setVisibility(View.GONE);
             diagnosticVH.choose.setEnabled(false);
         }
@@ -166,16 +168,8 @@ public class GeneralPreferences extends AlfrescoFragment
         if (DevToolsManager.getInstance(getActivity()) != null)
         {
             show(R.id.settings_dev_tools_container);
-            vh = HolderUtils.configure(viewById(R.id.settings_dev_menu_config), "Menu Editor",
-                    "Tools to edit and manage menu and profiles", -1);
-            viewById(R.id.settings_dev_menu_config_container).setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View v)
-                {
-                    DevToolsManager.getInstance(getActivity()).displayMenuConfig(getActivity());
-                }
-            });
+            DevToolsManager.getInstance(getActivity()).generateMenu(getActivity(),
+                    (ViewGroup) viewById(R.id.settings_dev_tools_items));
         }
         else
         {

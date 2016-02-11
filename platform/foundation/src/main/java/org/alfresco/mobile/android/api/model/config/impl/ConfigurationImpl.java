@@ -398,7 +398,7 @@ public class ConfigurationImpl
 
     public List<FeatureConfig> getFeatureConfig()
     {
-        if (featureHelper == null) { return null; }
+        if (featureHelper == null) { return new ArrayList<>(0); }
         return featureHelper.getFeatures();
     }
     // ///////////////////////////////////////////////////////////////////////////
