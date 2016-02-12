@@ -89,22 +89,22 @@ public class DeveloperSessionManager extends SessionManager
     // ///////////////////////////////////////////////////////////////////////////
     public AlfrescoSessionSettings prepareSettings(AlfrescoAccount acc)
     {
-        return new SettingsBuilder(appContext).prepare(acc).build();
+        return new DevSettingsBuilder(appContext).prepare(acc).build();
     }
 
     public AlfrescoSessionSettings prepareSettings(AlfrescoAccount acc, OAuthData data)
     {
-        return new SettingsBuilder(appContext).prepare(acc).build();
+        return new DevSettingsBuilder(appContext).prepare(acc).build();
     }
 
     public AlfrescoSessionSettings prepareSettings(String baseUrl, String username, String password)
     {
-        return new SettingsBuilder(appContext).prepare(baseUrl, username, password).build();
+        return new DevSettingsBuilder(appContext).prepare(baseUrl, username, password).build();
     }
 
     public AlfrescoSessionSettings prepareSettings(OAuthData oauthData)
     {
-        return new SettingsBuilder(appContext).prepare(oauthData).build();
+        return new DevSettingsBuilder(appContext).prepare(oauthData).build();
     }
 
     @Override

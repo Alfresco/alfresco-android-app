@@ -110,6 +110,8 @@ android {
                 //DEBUG BUILD TYPE
                 debugCompile project(':extensions:hockeyapp')
                 debugCompile project(':extensions:analytics')
+                debugCompile project(':extensions:tools')
+
 
                 storeCompile project(':extensions:samsung')
                 storeCompile project(':extensions:scansnap')

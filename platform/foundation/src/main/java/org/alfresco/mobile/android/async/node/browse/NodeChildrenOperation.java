@@ -1,23 +1,26 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2016 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.async.node.browse;
 
+import java.net.HttpURLConnection;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.model.Folder;
@@ -26,6 +29,9 @@ import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.SearchLanguage;
 import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.api.model.impl.cloud.CloudFolderImpl;
+import org.alfresco.mobile.android.api.network.NetworkHttpInvoker;
+import org.alfresco.mobile.android.api.session.impl.AbstractAlfrescoSessionImpl;
+import org.alfresco.mobile.android.api.utils.JsonUtils;
 import org.alfresco.mobile.android.async.LoaderResult;
 import org.alfresco.mobile.android.async.OperationAction;
 import org.alfresco.mobile.android.async.OperationsDispatcher;
@@ -33,6 +39,9 @@ import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.impl.ListingOperation;
 import org.alfresco.mobile.android.async.utils.ISO9075;
 import org.alfresco.mobile.android.platform.EventBusManager;
+import org.apache.chemistry.opencmis.client.bindings.spi.http.Response;
+import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
+import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 
 import android.util.Log;
 
@@ -100,26 +109,56 @@ public class NodeChildrenOperation extends ListingOperation<PagingResult<Node>>
                 if (folderTypeId != -1)
                 {
                     List<Node> nodes = null;
-                    String query = null;
-                    switch (folderTypeId)
+
+                    // Try for 5.X
+                    if (folderTypeId == NodeChildrenRequest.FOLDER_USER_HOMES
+                            && session.getRepositoryInfo().getMajorVersion() >= 5)
                     {
-                        case NodeChildrenRequest.FOLDER_SHARED:
-                            query = "SELECT * FROM cmis:folder WHERE CONTAINS ('QNAME:\"app:company_home/app:shared\"')";
-                            break;
-                        case NodeChildrenRequest.FOLDER_USER_HOMES:
-                            query = "SELECT * FROM cmis:folder WHERE CONTAINS ('QNAME:\"app:company_home/app:user_homes/cm:"
-                                    + ISO9075.encode(session.getPersonIdentifier()) + "\"')";
-                            break;
-                        default:
-                            break;
+                        try
+                        {
+                            String statement = "SELECT cm:homeFolder FROM cm:person WHERE cm:userName = '%s'";
+                            String nodeId = getUserHomeIdWithBrowserBinding(
+                                    String.format(statement, ISO9075.encode(session.getPersonIdentifier())));
+                            if (nodeId != null)
+                            {
+                                parentFolder = (Folder) session.getServiceRegistry().getDocumentFolderService()
+                                        .getNodeByIdentifier(nodeId);
+                                nodes = new ArrayList<>(1);
+                                nodes.add(parentFolder);
+                                pagingResult = session.getServiceRegistry().getDocumentFolderService()
+                                        .getChildren(parentFolder, listingContext);
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            nodes = null;
+                        }
                     }
 
-                    nodes = session.getServiceRegistry().getSearchService().search(query, SearchLanguage.CMIS);
-                    if (nodes != null && nodes.size() == 1)
+                    // If not 5.X
+                    if (nodes == null)
                     {
-                        parentFolder = (Folder) nodes.get(0);
-                        pagingResult = session.getServiceRegistry().getDocumentFolderService()
-                                .getChildren(parentFolder, listingContext);
+                        String query = null;
+                        switch (folderTypeId)
+                        {
+                            case NodeChildrenRequest.FOLDER_SHARED:
+                                query = "SELECT * FROM cmis:folder WHERE CONTAINS ('QNAME:\"app:company_home/app:shared\"')";
+                                break;
+                            case NodeChildrenRequest.FOLDER_USER_HOMES:
+                                query = "SELECT * FROM cmis:folder WHERE CONTAINS ('QNAME:\"app:company_home/app:user_homes/cm:"
+                                        + ISO9075.encode(session.getPersonIdentifier()) + "\"')";
+                                break;
+                            default:
+                                break;
+                        }
+
+                        nodes = session.getServiceRegistry().getSearchService().search(query, SearchLanguage.CMIS);
+                        if (nodes != null && nodes.size() == 1)
+                        {
+                            parentFolder = (Folder) nodes.get(0);
+                            pagingResult = session.getServiceRegistry().getDocumentFolderService()
+                                    .getChildren(parentFolder, listingContext);
+                        }
                     }
                 }
                 else if (folderPath != null)
@@ -127,8 +166,8 @@ public class NodeChildrenOperation extends ListingOperation<PagingResult<Node>>
                     Node n = session.getServiceRegistry().getDocumentFolderService().getChildByPath(folderPath);
                     if (n.isFolder())
                     {
-                        pagingResult = session.getServiceRegistry().getDocumentFolderService()
-                                .getChildren((Folder) n, listingContext);
+                        pagingResult = session.getServiceRegistry().getDocumentFolderService().getChildren((Folder) n,
+                                listingContext);
                         parentFolder = (Folder) n;
                     }
                     else
@@ -144,8 +183,8 @@ public class NodeChildrenOperation extends ListingOperation<PagingResult<Node>>
                                 .getNodeByIdentifier(parentFolder.getIdentifier());
                     }
 
-                    pagingResult = session.getServiceRegistry().getDocumentFolderService()
-                            .getChildren(parentFolder, listingContext);
+                    pagingResult = session.getServiceRegistry().getDocumentFolderService().getChildren(parentFolder,
+                            listingContext);
                 }
                 else if (folderIdentifier != null)
                 {
@@ -153,8 +192,8 @@ public class NodeChildrenOperation extends ListingOperation<PagingResult<Node>>
                             .getNodeByIdentifier(folderIdentifier);
                     if (n.isFolder())
                     {
-                        pagingResult = session.getServiceRegistry().getDocumentFolderService()
-                                .getChildren((Folder) n, listingContext);
+                        pagingResult = session.getServiceRegistry().getDocumentFolderService().getChildren((Folder) n,
+                                listingContext);
                         parentFolder = (Folder) n;
                     }
                     else
@@ -178,6 +217,45 @@ public class NodeChildrenOperation extends ListingOperation<PagingResult<Node>>
             Log.w(TAG, Log.getStackTraceString(e));
         }
         return new LoaderResult<PagingResult<Node>>();
+    }
+
+    private static final String BINDING_NETWORK_CMISATOM = "/api/-default-/public/cmis/versions/1.1/browser";
+
+    private String getUserHomeIdWithBrowserBinding(String statement)
+    {
+
+        try
+        {
+            Map<String, List<String>> httpHeaders = ((AbstractAlfrescoSessionImpl) session).getAuthenticationProvider()
+                    .getHTTPHeaders();
+
+            UrlBuilder builder = new UrlBuilder(session.getBaseUrl().concat(BINDING_NETWORK_CMISATOM));
+            builder.addParameter("cmisaction", "query");
+            builder.addParameter("searchAllVersions", false);
+            builder.addParameter("skipCount", 0);
+            builder.addParameter("includeAllowableActions", false);
+            builder.addParameter("maxItems", 1);
+            builder.addParameter("includeRelationships", "none");
+            builder.addParameter("succinct", true);
+            builder.addParameter("statement", statement);
+
+            Response resp = NetworkHttpInvoker.invokePOST(builder, null, null, httpHeaders);
+            if (resp.getResponseCode() == HttpURLConnection.HTTP_OK)
+            {
+                // We got our info!
+                Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
+                Map<String, Object> entry = (Map<String, Object>) JSONConverter.getList(json.get("results")).get(0);
+                List<Object> o = (List<Object>) ((Map<String, Object>) entry.get("succinctProperties"))
+                        .get("cm:homeFolder");
+                return JSONConverter.getJSONStringValue(o.get(0));
+            }
+        }
+        catch (Exception e)
+        {
+            return null;
+        }
+
+        return null;
     }
 
     // ///////////////////////////////////////////////////////////////////////////

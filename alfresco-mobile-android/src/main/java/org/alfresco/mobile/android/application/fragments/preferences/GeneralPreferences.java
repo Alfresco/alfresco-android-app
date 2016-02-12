@@ -115,6 +115,20 @@ public class GeneralPreferences extends AlfrescoFragment
         setRootView(inflater.inflate(R.layout.fr_settings, container, false));
 
         TwoLinesViewHolder vh;
+
+        // Feedback - Email
+        vh = HolderUtils.configure(viewById(R.id.settings_feedback_email_container),
+                getString(R.string.settings_feedback_email), getString(R.string.settings_feedback_email_summary), -1);
+        HolderUtils.makeMultiLine(vh.bottomText, 3);
+        viewById(R.id.settings_feedback_email_container).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                ActionUtils.actionSendFeedbackEmail(GeneralPreferences.this);
+            }
+        });
+
         // Feedback - Analytics
         if (AnalyticsManager.getInstance(getActivity()) == null
                 || AnalyticsManager.getInstance(getActivity()).isBlocked())

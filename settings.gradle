@@ -23,4 +23,4 @@
 // EXTENSIONS
 
 // MDM INTEGRATION
-include ':alfresco-mobile-android', ':extensions', ':platform:foundation', ':extensions:hockeyapp', ':mdm', ':mdm:mobileiron', ':platform', ':extensions:samsung', ':extensions:scansnap', ':platform:thirdparty', 'extensions:analytics'
+include ':alfresco-mobile-android', ':extensions', ':platform:foundation', ':extensions:hockeyapp', ':mdm', ':mdm:mobileiron', ':platform', ':extensions:samsung', ':extensions:scansnap', ':platform:thirdparty', 'extensions:analytics', ':extensions:tools'

@@ -985,7 +985,7 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
             default:
                 break;
         }
-        row.add(Root.COLUMN_ICON, R.drawable.ic_application_icon);
+        row.add(Root.COLUMN_ICON, R.drawable.ic_application_logo);
     }
 
     // //////////////////////////////////////////////////////////////////////
