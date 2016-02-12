@@ -28,6 +28,7 @@ import org.alfresco.mobile.android.platform.io.IOUtils;
 import org.alfresco.mobile.android.ui.operation.OperationWaitingDialogFragment;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
+import android.app.Dialog;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -35,13 +36,12 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
-import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.EditText;
+
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.rengwuxian.materialedittext.MaterialEditText;
 
 public class FileNameDialogFragment extends DialogFragment
 {
@@ -90,24 +90,12 @@ public class FileNameDialogFragment extends DialogFragment
         return adf;
     }
 
-    @Override
-    public void onStart()
+    // ///////////////////////////////////////////////////////////////////////////
+    // LIFECYCLE
+    // ///////////////////////////////////////////////////////////////////////////
+    public Dialog onCreateDialog(Bundle savedInstanceState)
     {
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-        if (fileToRename != null)
-        {
-            getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.ic_edit);
-        }
-        else
-        {
-            getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.mime_folder);
-        }
-        super.onStart();
-    }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
         // Init File
         if (getArguments().containsKey(ARGUMENT_FILE_RENAME))
         {
@@ -115,34 +103,24 @@ public class FileNameDialogFragment extends DialogFragment
         }
         parentFile = (File) getArguments().get(ARGUMENT_FOLDER);
 
+        String title = null;
         if (fileToRename != null)
         {
-            getDialog().setTitle(getString(R.string.action_rename) + " : " + fileToRename.getName());
+            title = getString(R.string.action_rename) + " : " + fileToRename.getName();
         }
         else
         {
-            getDialog().setTitle(R.string.folder_create);
+            title = getString(R.string.folder_create);
         }
 
-        getDialog().requestWindowFeature(Window.FEATURE_LEFT_ICON);
+        LayoutInflater inflater = LayoutInflater.from(getActivity());
+        final View v = inflater.inflate(R.layout.app_create_document, (ViewGroup) this.getView());
 
-        ViewGroup v = (ViewGroup) inflater.inflate(R.layout.app_create_document, container, false);
-
-        int width = (int) Math
-                .round(UIUtils.getScreenDimension(getActivity())[0]
-                        * (Float.parseFloat(getResources().getString(android.R.dimen.dialog_min_width_major).replace(
-                                "%", "")) * 0.01));
-        v.setLayoutParams(new LayoutParams(width, LayoutParams.MATCH_PARENT));
-
-        final EditText textName = ((EditText) v.findViewById(R.id.document_name));
-        final Button validate = UIUtils.initValidation(v, R.string.create);
-        validate.setEnabled(false);
-        final Button cancel = UIUtils.initCancel(v, R.string.cancel);
+        final MaterialEditText textName = ((MaterialEditText) v.findViewById(R.id.document_name));
 
         if (fileToRename != null)
         {
             textName.setText("." + IOUtils.extractFileExtension(fileToRename.getName()));
-            validate.setText(R.string.ok);
         }
 
         textName.addTextChangedListener(new TextWatcher()
@@ -151,16 +129,16 @@ public class FileNameDialogFragment extends DialogFragment
             {
                 if (s.length() > 0)
                 {
-                    validate.setEnabled(true);
+                    ((MaterialDialog) getDialog()).getActionButton(DialogAction.POSITIVE).setEnabled(true);
                     if (UIUtils.hasInvalidName(s.toString().trim()))
                     {
                         textName.setError(getString(R.string.filename_error_character));
-                        validate.setEnabled(false);
+                        ((MaterialDialog) getDialog()).getActionButton(DialogAction.POSITIVE).setEnabled(false);
                     }
                     else if ((new File(parentFile, s.toString().trim()).exists()))
                     {
                         textName.setError(getString(R.string.create_document_filename_error));
-                        validate.setEnabled(false);
+                        ((MaterialDialog) getDialog()).getActionButton(DialogAction.POSITIVE).setEnabled(false);
                     }
                     else
                     {
@@ -169,7 +147,7 @@ public class FileNameDialogFragment extends DialogFragment
                 }
                 else
                 {
-                    validate.setEnabled(false);
+                    ((MaterialDialog) getDialog()).getActionButton(DialogAction.POSITIVE).setEnabled(false);
                     textName.setError(null);
                 }
             }
@@ -183,47 +161,57 @@ public class FileNameDialogFragment extends DialogFragment
             }
         });
 
-        validate.setOnClickListener(new OnClickListener()
-        {
-            public void onClick(View v)
-            {
-                UIUtils.hideKeyboard(getActivity());
+        MaterialDialog dialog = new MaterialDialog.Builder(getActivity()).iconRes(R.drawable.ic_application_logo)
+                .title(title).customView(v, true).positiveText((fileToRename != null) ? R.string.ok : R.string.create)
+                .negativeText(R.string.cancel).callback(new MaterialDialog.ButtonCallback() {
 
-                if (fileToRename != null)
-                {
-                    String operationId = Operator.with(getActivity()).load(
-                            new RenameFileRequest.Builder(fileToRename, textName.getText().toString().trim())
-                                    .setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG));
+                    @Override
+                    public void onNegative(MaterialDialog dialog) {
+                        dialog.dismiss();
+                    }
 
-                    OperationWaitingDialogFragment.newInstance(CreateDirectoryRequest.TYPE_ID, R.drawable.ic_edit,
-                            getString(R.string.action_rename), null, null, 0, operationId).show(
-                            getActivity().getSupportFragmentManager(), OperationWaitingDialogFragment.TAG);
-                }
-                else
-                {
-                    String operationId = Operator.with(getActivity()).load(
-                            new CreateDirectoryRequest.Builder((File) getArguments().get(ARGUMENT_FOLDER), textName
-                                    .getText().toString().trim())
-                                    .setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG));
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        UIUtils.hideKeyboard(getActivity());
 
-                    OperationWaitingDialogFragment.newInstance(CreateDirectoryRequest.TYPE_ID,
-                            R.drawable.ic_add_folder, getString(R.string.folder_create), null, null, 0, operationId)
-                            .show(getActivity().getSupportFragmentManager(), OperationWaitingDialogFragment.TAG);
-                }
+                        if (fileToRename != null) {
+                            String operationId = Operator.with(getActivity())
+                                    .load(new RenameFileRequest.Builder(fileToRename,
+                                            textName.getText().toString().trim())
+                                            .setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG));
 
-                dismiss();
-            }
-        });
+                            OperationWaitingDialogFragment
+                                    .newInstance(CreateDirectoryRequest.TYPE_ID, R.drawable.ic_edit,
+                                            getString(R.string.action_rename), null, null, 0, operationId)
+                                    .show(getActivity().getSupportFragmentManager(),
+                                            OperationWaitingDialogFragment.TAG);
+                        } else {
+                            String operationId = Operator.with(getActivity())
+                                    .load(new CreateDirectoryRequest.Builder((File) getArguments().get(ARGUMENT_FOLDER),
+                                            textName.getText().toString().trim())
+                                            .setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG));
 
-        cancel.setOnClickListener(new OnClickListener()
-        {
-            public void onClick(View v)
-            {
-                FileNameDialogFragment.this.dismiss();
-            }
-        });
+                            OperationWaitingDialogFragment
+                                    .newInstance(CreateDirectoryRequest.TYPE_ID, R.drawable.ic_add_folder,
+                                            getString(R.string.folder_create), null, null, 0, operationId)
+                                    .show(getActivity().getSupportFragmentManager(),
+                                            OperationWaitingDialogFragment.TAG);
+                        }
 
-        return v;
+                        dismiss();
+                    }
+                }).build();
+
+        dialog.getActionButton(DialogAction.POSITIVE).setEnabled(false);
+
+        return dialog;
+    }
+
+    @Override
+    public void onStart()
+    {
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+        super.onStart();
     }
 
     @Override
