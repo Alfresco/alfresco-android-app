@@ -305,7 +305,7 @@
     <string name="account_verify">Verifying Account Information&#8230;</string>
     <string name="account_wizard_alldone_description">Your account is ready for you to use.</string>
     <string name="account_default_onpremise">Alfresco Server</string>
-    <string name="account_default_cloud">Alfresco Cloud</string>
+    <string name="account_default_cloud">Alfresco in the Cloud</string>
 
     <!-- WAITING SESSION -->
     <string name="wait_title">Please wait</string>

@@ -278,7 +278,7 @@
         请检查您的 Alfresco 帐户设置并重试。<br/>如果问题仍然存在，请联系您的管理员。]]>
     </string>
     <string name="error_session_cloud_unavailable">
-<![CDATA[<p><b>Alfresco Cloud 现在非常繁忙！</b><br/></p>
+<![CDATA[<p><b>Alfresco in the Cloud 现在非常繁忙！</b><br/></p>
         请过几分钟再试。<br/>]]>
     </string>
     <string name="error_session_expired">您的会话已过期。请重新登录。</string>
@@ -304,7 +304,7 @@
     <string name="account_verify">正在验证帐户信息&#8230;</string>
     <string name="account_wizard_alldone_description">您的帐户已可使用。</string>
     <string name="account_default_onpremise">Alfresco 服务器</string>
-    <string name="account_default_cloud">Alfresco Cloud</string>
+    <string name="account_default_cloud">Alfresco in the Cloud</string>
 
     <!-- WAITING SESSION -->
     <string name="wait_title">请稍候</string>

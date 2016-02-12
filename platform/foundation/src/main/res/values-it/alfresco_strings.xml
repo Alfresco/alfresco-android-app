@@ -278,7 +278,7 @@
         Verificare le impostazioni dell\'account Alfresco e riprovare.<br/> Se il problema persiste, contattare l\'amministratore.]]>
     </string>
     <string name="error_session_cloud_unavailable">
-<![CDATA[<p><b>Il carico di lavoro di Alfresco Cloud è al momento eccessivo.</b><br/></p>
+<![CDATA[<p><b>Il carico di lavoro di Alfresco in the Cloud è al momento eccessivo.</b><br/></p>
         Riprovare tra qualche minuto.<br/>]]>
     </string>
     <string name="error_session_expired">La sessione è scaduta. Ripetere l\'accesso.</string>
@@ -304,7 +304,7 @@
     <string name="account_verify">Verifica delle informazioni account in corso&#8230;</string>
     <string name="account_wizard_alldone_description">Account pronto per l\'utilizzo.</string>
     <string name="account_default_onpremise">Server Alfresco</string>
-    <string name="account_default_cloud">Alfresco Cloud</string>
+    <string name="account_default_cloud">Alfresco in the Cloud</string>
 
     <!-- WAITING SESSION -->
     <string name="wait_title">Attendere</string>

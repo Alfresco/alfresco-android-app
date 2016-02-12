@@ -52,7 +52,7 @@
 
     <string name="account_wizard_alfresco_server">Alfresco One</string>
     <string name="account_wizard_or">O</string>
-    <string name="account_wizard_alfresco_cloud">Alfresco Cloud</string>
+    <string name="account_wizard_alfresco_cloud">Alfresco in the Cloud</string>
 
     <string name="account">Cuenta</string>
     <string name="action_add_account">Añadir una cuenta</string>
@@ -74,7 +74,7 @@
     <string name="account_verify">Verificando información de cuenta de Alfresco&#8230;</string>
 
     <!-- ACCOUNTS -->
-    <string name="account_default_cloud">Alfresco Cloud</string>
+    <string name="account_default_cloud">Alfresco in the Cloud</string>
     <string name="account_default_onpremise">Servidor de Alfresco</string>
 
     <!-- WAITING SESSION -->
@@ -173,7 +173,7 @@
     <string name="sdknumber_version">SDK: </string>
     <string name="about_description">
 <![CDATA[
-<p>Alfresco Mobile se conecta a Alfresco en la nube y servidores en instalaciones de Alfresco (3.4 y superior) para proporcionar acceso seguro a su contenido corporativo cuando no esté en la oficina.</p>
+<p>Alfresco Mobile se conecta a Alfresco in the Cloud y servidores en instalaciones de Alfresco (3.4 y superior) para proporcionar acceso seguro a su contenido corporativo cuando no esté en la oficina.</p>
 
 <p>Alfresco Mobile se conecta a su repositorio de Alfresco usando las credenciales de inicio de sesión de Alfresco (en HTTP o HTTPS) y gestiona el acceso del usuario basado en sus permisos.</p>
 ]]>
@@ -733,7 +733,7 @@
     <string name="menu_browse_sync_content_folder">Contenido sincronizado</string>
     <string name="menu_browse_favorites_folder">Carpeta de favoritos</string>
     <string name="account_alfresco">Alfresco</string>
-    <string name="account_alfresco_cloud">Alfresco Cloud</string>
+    <string name="account_alfresco_cloud">Alfresco in the Cloud</string>
     <string name="account_alfresco_onpremise">Alfresco On Premise</string>
 
 
