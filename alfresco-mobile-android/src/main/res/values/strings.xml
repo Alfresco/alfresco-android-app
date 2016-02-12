@@ -345,7 +345,8 @@
     <string name="settings.feedback">Feedback</string>
     <string name="settings.feedback.diagnostic">Send Diagnostics</string>
     <string name="settings.feedback.diagnostic.summary">To help us improve Alfresco Mobile, we collect anonymous technical diagnostic data. Switch off if preferred.</string>
-
+    <string name="settings.feedback.email">Send Feedback</string>
+    <string name="settings.feedback.email.summary">Send comments and suggestions anytime</string>
 
     <!-- Multi Selection -->
     <plurals name="selected_document">

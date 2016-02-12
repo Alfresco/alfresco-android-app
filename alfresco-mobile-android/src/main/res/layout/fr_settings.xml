@@ -168,6 +168,28 @@
             android:background="@color/secondary_background"
             android:orientation="vertical">
 
+            <!-- Send Feedback !-->
+            <LinearLayout
+                android:id="@+id/settings_feedback_email_container"
+                style="@style/AlfrescoMaterialTheme.Button.BorderLess"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <include
+                    android:id="@+id/settings_feedback_email"
+                    layout="@layout/row_two_lines"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dip"
+                android:layout_marginLeft="@dimen/d_8"
+                android:layout_marginRight="@dimen/d_8"
+                android:background="?android:attr/dividerVertical" />
+
+            <!-- Diagnostic !-->
             <LinearLayout
                 android:id="@+id/settings_diagnostic_container"
                 style="@style/AlfrescoMaterialTheme.Button.BorderLess"
@@ -181,12 +203,7 @@
                     android:layout_height="wrap_content" />
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dip"
-                android:layout_marginLeft="@dimen/d_8"
-                android:layout_marginRight="@dimen/d_8"
-                android:background="?android:attr/dividerVertical" />
+
         </LinearLayout>
 
         <View
