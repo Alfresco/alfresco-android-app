@@ -21,6 +21,7 @@ import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.node.create.CreateFolderRequest;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsHelper;
 import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
@@ -72,6 +73,8 @@ public abstract class CreateFolderDialogFragment extends AlfrescoFragment
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
+        AnalyticsHelper.reportScreen(getActivity(), AnalyticsManager.SCREEN_NODE_CREATE_NAME);
+
         MaterialDialog dialog = new MaterialDialog.Builder(getActivity()).iconRes(R.drawable.ic_application_logo)
                 .title(R.string.folder_create).customView(createView(LayoutInflater.from(getActivity()), null), true)
                 .positiveText(R.string.create).negativeText(R.string.cancel)

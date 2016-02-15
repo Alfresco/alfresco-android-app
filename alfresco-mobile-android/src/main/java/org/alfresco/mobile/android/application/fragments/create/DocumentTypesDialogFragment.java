@@ -89,6 +89,8 @@ public class DocumentTypesDialogFragment extends DialogFragment
     // ///////////////////////////////////////////////////////////////////////////
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
+        AnalyticsHelper.reportScreen(getActivity(), AnalyticsManager.SCREEN_NODE_CREATE_TYPE);
+
         fileTypes = DocumentTypeRecordHelper.getCreationDocumentTypeList(getActivity());
         FileTypeAdapter adapter = new FileTypeAdapter(getActivity(), R.layout.row_single_line, fileTypes);
 
