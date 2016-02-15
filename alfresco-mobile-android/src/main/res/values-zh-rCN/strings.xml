@@ -52,7 +52,7 @@
 
     <string name="account_wizard_alfresco_server">Alfresco One</string>
     <string name="account_wizard_or">或者</string>
-    <string name="account_wizard_alfresco_cloud">Alfresco Cloud</string>
+    <string name="account_wizard_alfresco_cloud">Alfresco in the Cloud</string>
 
     <string name="account">帐户</string>
     <string name="action_add_account">添加一个帐户</string>
@@ -74,7 +74,7 @@
     <string name="account_verify">正在验证 Alfresco 帐户信息&#8230;</string>
 
     <!-- ACCOUNTS -->
-    <string name="account_default_cloud">Alfresco Cloud</string>
+    <string name="account_default_cloud">Alfresco in the Cloud</string>
     <string name="account_default_onpremise">Alfresco 服务器</string>
 
     <!-- WAITING SESSION -->
@@ -173,7 +173,7 @@
     <string name="sdknumber_version">SDK： </string>
     <string name="about_description">
 <![CDATA[
-<p>Alfresco Mobile 连接至 Alfresco Cloud 和 Alfresco 内部部署服务器（3.4 及以上版本）以便安全访问当前您的企业内容。</p>
+<p>Alfresco Mobile 连接至 Alfresco in the Cloud 和 Alfresco 内部部署服务器（3.4 及以上版本）以便安全访问当前您的企业内容。</p>
 
 <p>Alfresco Mobile 使用 Alfresco 登录凭证（通过 HTTP 或 HTTPS）与您的 Alfresco 存储库连接，并且根据用户的权限管理用户访问。</p>
 ]]>
@@ -733,7 +733,7 @@
     <string name="menu_browse_sync_content_folder">已同步内容</string>
     <string name="menu_browse_favorites_folder">收藏夹文件夹</string>
     <string name="account_alfresco">Alfresco</string>
-    <string name="account_alfresco_cloud">Alfresco Cloud</string>
+    <string name="account_alfresco_cloud">Alfresco in the Cloud</string>
     <string name="account_alfresco_onpremise">Alfresco 内部部署</string>
 
 

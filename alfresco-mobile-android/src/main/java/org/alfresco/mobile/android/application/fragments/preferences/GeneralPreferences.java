@@ -118,8 +118,8 @@ public class GeneralPreferences extends AlfrescoFragment
 
         // Feedback - Email
         vh = HolderUtils.configure(viewById(R.id.settings_feedback_email_container),
-                getString(R.string.settings_feedback_email), getString(R.string.settings_feedback_email_summary), -1);
-        HolderUtils.makeMultiLine(vh.bottomText, 3);
+                getString(R.string.settings_feedback_email), null, -1);
+        // HolderUtils.makeMultiLine(vh.bottomText, 3);
         viewById(R.id.settings_feedback_email_container).setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -149,7 +149,7 @@ public class GeneralPreferences extends AlfrescoFragment
             diagnosticVH = HolderUtils.configure(viewById(R.id.settings_diagnostic),
                     getString(R.string.settings_feedback_diagnostic),
                     getString(R.string.settings_feedback_diagnostic_summary), isEnable);
-            HolderUtils.makeMultiLine(diagnosticVH.bottomText, 3);
+            HolderUtils.makeMultiLine(diagnosticVH.bottomText, 4);
             diagnosticVH.choose.setOnClickListener(new View.OnClickListener()
             {
                 @Override

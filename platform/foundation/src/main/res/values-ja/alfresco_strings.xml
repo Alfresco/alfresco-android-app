@@ -278,7 +278,7 @@
         Alfresco アカウントの設定を確認してから、もう一度やり直してください。<br/>問題が解決しない場合は、管理者に問い合わせてください。]]>
     </string>
     <string name="error_session_cloud_unavailable">
-<![CDATA[<p><b>Alfresco Cloud は現在大量の処理を行っています。</b><br/></p>
+<![CDATA[<p><b>Alfresco in the Cloud は現在大量の処理を行っています。</b><br/></p>
         しばらくしてから、操作をやり直してください。<br/>]]>
     </string>
     <string name="error_session_expired">セッションの期限が切れています。 もう一度サインインしてください。</string>
@@ -304,7 +304,7 @@
     <string name="account_verify">アカウント情報を確認しています&#8230;</string>
     <string name="account_wizard_alldone_description">アカウントを使用する準備ができました。</string>
     <string name="account_default_onpremise">Alfresco Server</string>
-    <string name="account_default_cloud">Alfresco Cloud</string>
+    <string name="account_default_cloud">Alfresco in the Cloud</string>
 
     <!-- WAITING SESSION -->
     <string name="wait_title">お待ちください</string>
