@@ -561,7 +561,7 @@ public class ActionUtils extends BaseActionUtils
 
             StringBuilder builder = new StringBuilder();
             builder.append("\n\n\n\n");
-            builder.append("Technical informations\n");
+            builder.append("Alfresco Mobile and device details\n");
             builder.append("-------------------\n").toString();
             for (Map.Entry entry : info.entrySet())
             {
