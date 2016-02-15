@@ -45,6 +45,7 @@ import android.os.Build;
 import android.speech.RecognizerIntent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.ShareCompat;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -528,21 +529,18 @@ public class ActionUtils extends BaseActionUtils
     {
         try
         {
+            ShareCompat.IntentBuilder iBuilder = ShareCompat.IntentBuilder.from(fr.getActivity());
             Context context = fr.getContext();
-
-            Intent i = new Intent(Intent.ACTION_SEND);
-            i.setType("message/rfc822");
-
             // Email
-            i.putExtra(Intent.EXTRA_EMAIL, context.getResources()
+            iBuilder.addEmailTo(context.getResources()
                     .getStringArray(org.alfresco.mobile.android.foundation.R.array.bugreport_email));
 
             // Prepare Subject
             String versionName = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
             int versionCode = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode;
 
-            String subject = "Android APP %s Feedback";
-            i.putExtra(Intent.EXTRA_SUBJECT, String.format(subject, versionName));
+            String subject = "Alfresco Mobile Feedback";
+            iBuilder.setSubject(subject);
 
             // Content
             DisplayMetrics dm = context.getResources().getDisplayMetrics();
@@ -569,16 +567,10 @@ public class ActionUtils extends BaseActionUtils
             }
 
             builder.append("-------------------\n\n").toString();
-            i.putExtra(Intent.EXTRA_TEXT, builder.toString());
+            iBuilder.setType("message/rfc822");
+            iBuilder.setText(builder.toString());
+            iBuilder.setChooserTitle(fr.getString(R.string.settings_feedback_email)).startChooser();
 
-            if (i.resolveActivity(fr.getActivity().getPackageManager()) == null)
-            {
-                AlfrescoNotificationManager.getInstance(fr.getActivity()).showAlertCrouton(fr.getActivity(),
-                        fr.getString(R.string.error_general));
-                return false;
-            }
-
-            fr.startActivity(Intent.createChooser(i, fr.getString(R.string.send_email)));
 
             return true;
         }
