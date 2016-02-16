@@ -22,6 +22,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsHelper;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 import org.alfresco.mobile.android.ui.holder.SingleLineViewHolder;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
@@ -110,6 +112,8 @@ public class TextSizeDialogFragment extends DialogFragment
     // ///////////////////////////////////////////////////////////////////////////
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
+        AnalyticsHelper.reportScreen(getActivity(), AnalyticsManager.SCREEN_TEXT_EDITOR_TEXT_SIZE);
+
         int title = R.string.file_editor_text_size;
 
         if (getArguments() != null && getArguments().containsKey(ARGUMENT_DEFAULT_SIZE))

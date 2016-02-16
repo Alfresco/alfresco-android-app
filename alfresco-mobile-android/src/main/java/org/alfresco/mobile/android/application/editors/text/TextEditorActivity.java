@@ -36,6 +36,8 @@ import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.file.open.OpenFileEvent;
 import org.alfresco.mobile.android.async.file.open.OpenFileRequest;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsHelper;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.platform.intent.AlfrescoIntentAPI;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
@@ -101,6 +103,9 @@ public class TextEditorActivity extends BaseActivity
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
+
+        AnalyticsHelper.reportScreen(this, AnalyticsManager.SCREEN_TEXT_EDITOR);
+
         supportRequestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 
         super.onCreate(savedInstanceState);

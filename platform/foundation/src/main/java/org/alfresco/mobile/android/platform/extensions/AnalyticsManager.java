@@ -395,15 +395,17 @@ public abstract class AnalyticsManager extends Manager
 
     public static final String SCREEN_SEARCH_RESULT_FILES = PREFIX_SEARCH_RESULT + "Files";
 
+    public static final String SCREEN_SEARCH_RESULT_FOLDERS = PREFIX_SEARCH_RESULT + "Folders";
+
     public static final String SCREEN_SEARCH_RESULT_USERS = PREFIX_SEARCH_RESULT + "People";
 
     public static final String SCREEN_SEARCH_ADVANCED = PREFIX_SEARCH + "Advanced - ";
 
-    public static final String SCREEN_SEARCH_ADVANCED_FILES = PREFIX_SEARCH_RESULT + "Files";
+    public static final String SCREEN_SEARCH_ADVANCED_FILES = SCREEN_SEARCH_ADVANCED + "Files";
 
-    public static final String SCREEN_SEARCH_ADVANCED_FOLDERS = PREFIX_SEARCH_RESULT + "Folders";
+    public static final String SCREEN_SEARCH_ADVANCED_FOLDERS = SCREEN_SEARCH_ADVANCED + "Folders";
 
-    public static final String SCREEN_SEARCH_ADVANCED_USERS = PREFIX_SEARCH_RESULT + "People";
+    public static final String SCREEN_SEARCH_ADVANCED_USERS = SCREEN_SEARCH_ADVANCED + "People";
 
     public static final String PREFIX_TASKS = "Tasks - ";
 
@@ -460,6 +462,12 @@ public abstract class AnalyticsManager extends Manager
     public static final String SCREEN_USER_DETAILS = PREFIX_USER + "Details";
 
     public static final String SCREEN_SAMSUNG_SNOTE_EDITOR = "Samsung - SNote Editor";
+
+    public static final String SCREEN_TEXT_EDITOR = "Text Editor";
+
+    public static final String SCREEN_TEXT_EDITOR_ENCODING = "Text Editor - Encoding";
+
+    public static final String SCREEN_TEXT_EDITOR_TEXT_SIZE = "Text Editor - Text Size";
 
     // ////////////////////////////////////////////////////
     // SETTINGS
