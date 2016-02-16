@@ -119,10 +119,13 @@ public class LikeNodeOperation extends NodeOperation<Boolean>
         super.onPostExecute(result);
 
         // Analytics
-        AnalyticsHelper.reportOperationEvent(context, AnalyticsManager.CATEGORY_DOCUMENT_MANAGEMENT,
-                isLiked ? AnalyticsManager.ACTION_LIKE : AnalyticsManager.ACTION_UNLIKE,
-                node.isDocument() ? ((Document) node).getContentStreamMimeType() : AnalyticsManager.TYPE_FOLDER, 1,
-                result.hasException());
+        if (!readOnly)
+        {
+            AnalyticsHelper.reportOperationEvent(context, AnalyticsManager.CATEGORY_DOCUMENT_MANAGEMENT,
+                    isLiked ? AnalyticsManager.ACTION_LIKE : AnalyticsManager.ACTION_UNLIKE,
+                    node.isDocument() ? ((Document) node).getContentStreamMimeType() : AnalyticsManager.TYPE_FOLDER, 1,
+                    result.hasException());
+        }
 
         EventBusManager.getInstance().post(new LikeNodeEvent(getRequestId(), readOnly, result));
     }

@@ -102,7 +102,8 @@ public class DocumentTypesDialogFragment extends DialogFragment
                                             CharSequence charSequence) {
                         AnalyticsHelper.reportOperationEvent(getActivity(),
                                 AnalyticsManager.CATEGORY_DOCUMENT_MANAGEMENT, AnalyticsManager.ACTION_QUICK_ACTIONS,
-                                AnalyticsManager.ACTION_CREATE.concat(" " + fileTypes.get(position)), 1, false);
+                                AnalyticsManager.ACTION_CREATE.concat(" " + fileTypes.get(position).mimetype), 1,
+                                false);
                         Bundle b = getArguments();
                         b.putSerializable(ARGUMENT_DOCUMENT_TYPE, fileTypes.get(position));
                         EditorsDialogFragment dialogft = EditorsDialogFragment.newInstance(b);

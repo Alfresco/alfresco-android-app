@@ -649,13 +649,6 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
                                 ? SyncContentManager.getInstance(getActivity()).isRootSynced(getAccount(), node)
                                 : SyncContentManager.getInstance(getActivity()).isSynced(getAccount(), node);
 
-                        AnalyticsHelper.reportOperationEvent(getActivity(),
-                                AnalyticsManager.CATEGORY_DOCUMENT_MANAGEMENT,
-                                isSynced ? AnalyticsManager.ACTION_SYNC : AnalyticsManager.ACTION_UNSYNC,
-                                node.isDocument() ? ((Document) node).getContentStreamMimeType()
-                                        : AnalyticsManager.TYPE_FOLDER,
-                                1, false);
-
                         sync(v);
                     }
                 });
