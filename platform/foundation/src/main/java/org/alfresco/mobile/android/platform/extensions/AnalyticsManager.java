@@ -409,9 +409,25 @@ public abstract class AnalyticsManager extends Manager
 
     public static final String SCREEN_TASKS_LISTING = PREFIX_TASKS + "Listing";
 
+    public static final String SCREEN_TASKS_LISTING_ASSIGNED = SCREEN_TASKS_LISTING + " - Tasks Assigned to Me";
+
+    public static final String SCREEN_TASKS_LISTING_STARTED = SCREEN_TASKS_LISTING + " - Tasks I've started";
+
+    public static final String SCREEN_TASKS_LISTING_COMPLETED = SCREEN_TASKS_LISTING + " - Completed Tasks";
+
+    public static final String SCREEN_TASKS_LISTING_HIGH = SCREEN_TASKS_LISTING + " - High Priority Tasks";
+
+    public static final String SCREEN_TASKS_LISTING_DUE = SCREEN_TASKS_LISTING + " - Tasks Due Today";
+
+    public static final String SCREEN_TASKS_LISTING_OVERDUE = SCREEN_TASKS_LISTING + " - Overdue Tasks";
+
+    public static final String SCREEN_TASKS_LISTING_ACTIVE = SCREEN_TASKS_LISTING + " - Active Tasks";
+
     public static final String SCREEN_TASKS_HISTORY = PREFIX_TASKS + "History";
 
     public static final String SCREEN_TASKS_FILTER = PREFIX_TASKS + "Filter";
+
+    public static final String SCREEN_TASKS_FILTER_LISTING = PREFIX_TASKS + "Filter - Listing";
 
     public static final String SCREEN_TASK_DETAILS = PREFIX_TASKS + "Details";
 

@@ -164,9 +164,13 @@ public class UpdateContentOperation extends UpNodeOperation
         super.onPostExecute(result);
 
         // Analytics
-        AnalyticsHelper.reportOperationEvent(context, AnalyticsManager.CATEGORY_DOCUMENT_MANAGEMENT,
-                AnalyticsManager.ACTION_UPDATE, ((Document) node).getContentStreamMimeType(), 1, result.hasException(),
-                AnalyticsManager.INDEX_FILE_SIZE, ((Document) node).getContentStreamLength());
+        if (node != null)
+        {
+            AnalyticsHelper.reportOperationEvent(context, AnalyticsManager.CATEGORY_DOCUMENT_MANAGEMENT,
+                    AnalyticsManager.ACTION_UPDATE, ((Document) node).getContentStreamMimeType(), 1,
+                    result.hasException(), AnalyticsManager.INDEX_FILE_SIZE,
+                    ((Document) node).getContentStreamLength());
+        }
 
         EventBusManager.getInstance().post(new UpdateContentEvent(getRequestId(), result, node, parentFolder));
     }

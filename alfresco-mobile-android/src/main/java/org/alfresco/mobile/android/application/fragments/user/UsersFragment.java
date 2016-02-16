@@ -69,10 +69,11 @@ public class UsersFragment extends PeopleFragment
         return cbf;
     }
 
+
     @Override
-    public void onCreate(Bundle savedInstanceState)
+    public void onActivityCreated(Bundle savedInstanceState)
     {
-        super.onCreate(savedInstanceState);
+        super.onActivityCreated(savedInstanceState);
         if (keywords != null)
         {
             screenName = AnalyticsManager.SCREEN_SEARCH_RESULT_USERS;

@@ -32,6 +32,7 @@ import org.alfresco.mobile.android.async.workflow.process.start.StartProcessEven
 import org.alfresco.mobile.android.async.workflow.task.TasksEvent;
 import org.alfresco.mobile.android.async.workflow.task.complete.CompleteTaskEvent;
 import org.alfresco.mobile.android.async.workflow.task.delegate.ReassignTaskEvent;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsHelper;
 import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.utils.BundleUtils;
@@ -73,6 +74,7 @@ public class TasksFragment extends TasksFoundationFragment
         emptyListMessageId = R.string.empty_tasks;
         loadState = LOAD_VISIBLE;
         setHasOptionsMenu(true);
+        reportAtCreation = false;
         screenName = AnalyticsManager.SCREEN_TASKS_LISTING;
     }
 
@@ -299,6 +301,7 @@ public class TasksFragment extends TasksFoundationFragment
             if (b.containsKey(ListingTemplate.ARGUMENT_HAS_FILTER)
                     || (extraConfiguration != null && extraConfiguration.containsKey(ListingTemplate.ARGUMENT_LISTING)))
             {
+                AnalyticsHelper.reportScreen(getActivity(), AnalyticsManager.SCREEN_TASKS_FILTER_LISTING);
                 return newInstanceByTemplate(b);
             }
             else

@@ -25,6 +25,8 @@ import org.alfresco.mobile.android.api.services.WorkflowService;
 import org.alfresco.mobile.android.api.services.impl.publicapi.PublicAPIWorkflowServiceImpl;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.workflow.process.ProcessesFragment;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsHelper;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.ui.activity.AlfrescoActivity;
 
 import android.content.SharedPreferences;
@@ -67,27 +69,36 @@ public final class TasksHelper
 
                 if (!backStack && itemPosition == currentSelection) { return true; }
 
+                String screenName = AnalyticsManager.SCREEN_TASKS_LISTING_ACTIVE;
                 ListingFilter f = new ListingFilter();
                 switch (itemPosition)
                 {
                     case TasksShortCutAdapter.FILTER_ACTIVE:
+                        screenName = AnalyticsManager.SCREEN_TASKS_LISTING_ACTIVE;
                         f.addFilter(WorkflowService.FILTER_KEY_STATUS, WorkflowService.FILTER_STATUS_ACTIVE);
                         break;
                     case TasksShortCutAdapter.FILTER_INITIATOR:
+                        screenName = AnalyticsManager.SCREEN_TASKS_LISTING_STARTED;
                         isProcessFragment = true;
                         break;
                     case TasksShortCutAdapter.FILTER_COMPLETED:
+                        screenName = AnalyticsManager.SCREEN_TASKS_LISTING_COMPLETED;
                         f.addFilter(WorkflowService.FILTER_KEY_STATUS, WorkflowService.FILTER_STATUS_COMPLETE);
                         break;
                     case TasksShortCutAdapter.FILTER_HIGH_PRIORITY:
+                        screenName = AnalyticsManager.SCREEN_TASKS_LISTING_HIGH;
                         f.addFilter(WorkflowService.FILTER_KEY_PRIORITY, WorkflowService.FILTER_PRIORITY_HIGH);
                         break;
                     case TasksShortCutAdapter.FILTER_DUE_TODAY:
+                        screenName = AnalyticsManager.SCREEN_TASKS_LISTING_DUE;
                         f.addFilter(WorkflowService.FILTER_KEY_DUE, WorkflowService.FILTER_DUE_TODAY);
                         break;
                     case TasksShortCutAdapter.FILTER_OVERDUE:
+                        screenName = AnalyticsManager.SCREEN_TASKS_LISTING_OVERDUE;
                         f.addFilter(WorkflowService.FILTER_KEY_DUE, WorkflowService.FILTER_DUE_OVERDUE);
+                        break;
                     case TasksShortCutAdapter.FILTER_ASSIGNED:
+                        screenName = AnalyticsManager.SCREEN_TASKS_LISTING_ASSIGNED;
                         f.addFilter(WorkflowService.FILTER_KEY_ASSIGNEE, WorkflowService.FILTER_ASSIGNEE_ME);
                         break;
                     case TasksShortCutAdapter.FILTER_CUSTOM:
@@ -96,6 +107,8 @@ public final class TasksHelper
                     default:
                         break;
                 }
+
+                AnalyticsHelper.reportScreen(activity, screenName);
 
                 if (!backStack)
                 {

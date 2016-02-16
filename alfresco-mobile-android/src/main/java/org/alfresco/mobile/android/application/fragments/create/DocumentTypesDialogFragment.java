@@ -89,6 +89,8 @@ public class DocumentTypesDialogFragment extends DialogFragment
     // ///////////////////////////////////////////////////////////////////////////
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
+        AnalyticsHelper.reportScreen(getActivity(), AnalyticsManager.SCREEN_NODE_CREATE_TYPE);
+
         fileTypes = DocumentTypeRecordHelper.getCreationDocumentTypeList(getActivity());
         FileTypeAdapter adapter = new FileTypeAdapter(getActivity(), R.layout.row_single_line, fileTypes);
 
@@ -100,7 +102,8 @@ public class DocumentTypesDialogFragment extends DialogFragment
                                             CharSequence charSequence) {
                         AnalyticsHelper.reportOperationEvent(getActivity(),
                                 AnalyticsManager.CATEGORY_DOCUMENT_MANAGEMENT, AnalyticsManager.ACTION_QUICK_ACTIONS,
-                                AnalyticsManager.ACTION_CREATE.concat(" " + fileTypes.get(position)), 1, false);
+                                AnalyticsManager.ACTION_CREATE.concat(" " + fileTypes.get(position).mimetype), 1,
+                                false);
                         Bundle b = getArguments();
                         b.putSerializable(ARGUMENT_DOCUMENT_TYPE, fileTypes.get(position));
                         EditorsDialogFragment dialogft = EditorsDialogFragment.newInstance(b);

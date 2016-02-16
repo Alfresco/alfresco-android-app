@@ -117,7 +117,7 @@ public class SearchFragment extends BaseCursorGridFragment
         requiredSession = true;
         checkSession = true;
         setHasOptionsMenu(true);
-        reportAtCreation = false;
+        reportAtCreation = true;
         screenName = AnalyticsManager.SCREEN_SEARCH_FILES;
     }
 

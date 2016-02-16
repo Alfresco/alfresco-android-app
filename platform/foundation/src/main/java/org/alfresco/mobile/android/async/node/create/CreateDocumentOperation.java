@@ -26,14 +26,17 @@ import org.alfresco.mobile.android.async.OperationAction;
 import org.alfresco.mobile.android.async.OperationSchema;
 import org.alfresco.mobile.android.async.OperationsDispatcher;
 import org.alfresco.mobile.android.async.Operator;
+import org.alfresco.mobile.android.async.UploadRetryService;
 import org.alfresco.mobile.android.async.node.UpNodeOperation;
 import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.exception.AlfrescoAppException;
+import org.alfresco.mobile.android.platform.exception.AlfrescoOfflineException;
 import org.alfresco.mobile.android.platform.extensions.AnalyticsHelper;
 import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.platform.io.IOUtils;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
 import org.alfresco.mobile.android.platform.security.EncryptionUtils;
+import org.alfresco.mobile.android.platform.utils.ConnectivityUtils;
 import org.alfresco.mobile.android.sync.SyncContentManager;
 
 import android.content.ContentValues;
@@ -111,7 +114,14 @@ public class CreateDocumentOperation extends UpNodeOperation
             }
             else
             {
-                result.setException(new AlfrescoAppException("ParentFolder is empty"));
+                if (!ConnectivityUtils.hasInternetAvailable(context))
+                {
+                    result.setException(new AlfrescoOfflineException("Offline"));
+                }
+                else
+                {
+                    result.setException(new AlfrescoAppException("ParentFolder is empty"));
+                }
             }
 
             // Encrypt if necessary
@@ -186,15 +196,21 @@ public class CreateDocumentOperation extends UpNodeOperation
     {
         super.onPostExecute(result);
 
-        // Analytics
-        AnalyticsHelper.reportOperationEvent(context, AnalyticsManager.CATEGORY_DOCUMENT_MANAGEMENT,
-                AnalyticsManager.ACTION_CREATE, doc != null ? doc.getContentStreamMimeType() : null, 1,
-                result.hasException(), AnalyticsManager.INDEX_SYNCED_SIZE, doc.getContentStreamLength());
-
         EventBusManager.getInstance().post(new CreateDocumentEvent(getRequestId(), result, parentFolder));
+        if (result.hasException() && result.getException() instanceof AlfrescoOfflineException)
+        {
+            UploadRetryService.retryDelay(context, getRequestId(), UploadRetryService.DEFAULT_DELAY);
+        }
+
         if (((CreateDocumentRequest) request).isCreation)
         {
             contentFile.getFile().delete();
         }
+
+        // Analytics
+        AnalyticsHelper.reportOperationEvent(context, AnalyticsManager.CATEGORY_DOCUMENT_MANAGEMENT,
+                AnalyticsManager.ACTION_CREATE, doc != null ? doc.getContentStreamMimeType() : null, 1,
+                result.hasException(), AnalyticsManager.INDEX_SYNCED_SIZE,
+                doc != null ? doc.getContentStreamLength() : -1L);
     }
 }
