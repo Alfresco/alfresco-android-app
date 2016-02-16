@@ -87,6 +87,7 @@ public class DocumentFolderSearchFragment extends SearchNodesFragment implements
         super();
         loadState = LOAD_VISIBLE;
         displayAsList = false;
+        reportAtCreation = false;
         screenName = AnalyticsManager.SCREEN_SEARCH_RESULT_FILES;
     }
 
