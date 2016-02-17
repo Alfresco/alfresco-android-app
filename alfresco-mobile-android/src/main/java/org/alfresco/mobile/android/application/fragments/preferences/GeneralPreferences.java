@@ -129,44 +129,6 @@ public class GeneralPreferences extends AlfrescoFragment
             }
         });
 
-        // Feedback - Analytics
-        if (AnalyticsManager.getInstance(getActivity()) == null
-                || AnalyticsManager.getInstance(getActivity()).isBlocked())
-        {
-            boolean isEnable = AnalyticsManager.getInstance(getActivity()).isEnable();
-
-            diagnosticVH = HolderUtils.configure(viewById(R.id.settings_diagnostic),
-                    getString(R.string.settings_feedback_diagnostic), getString(R.string.settings_custom_menu_disable),
-                    isEnable);
-            HolderUtils.makeMultiLine(diagnosticVH.bottomText, 3);
-            diagnosticVH.choose.setVisibility(View.GONE);
-            diagnosticVH.choose.setEnabled(false);
-        }
-        else
-        {
-            boolean isEnable = AnalyticsManager.getInstance(getActivity()).isEnable();
-
-            diagnosticVH = HolderUtils.configure(viewById(R.id.settings_diagnostic),
-                    getString(R.string.settings_feedback_diagnostic),
-                    getString(R.string.settings_feedback_diagnostic_summary), isEnable);
-            HolderUtils.makeMultiLine(diagnosticVH.bottomText, 4);
-            diagnosticVH.choose.setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View v)
-                {
-                    if (diagnosticVH.choose.isChecked())
-                    {
-                        AnalyticHelper.optIn(getActivity(), getAccount());
-                    }
-                    else
-                    {
-                        AnalyticHelper.optOut(getActivity(), getAccount());
-                    }
-                }
-            });
-        }
-
         // About
         vh = HolderUtils.configure(viewById(R.id.settings_about), getString(R.string.version_number),
                 AboutFragment.getVersionNumber(getActivity()), -1);
@@ -374,6 +336,44 @@ public class GeneralPreferences extends AlfrescoFragment
             dataProtectionVH.bottomText.setText(R.string.mdm_managed);
             viewById(R.id.passcode_preference_container).setEnabled(false);
             passcodeVH.bottomText.setText(R.string.mdm_managed);
+        }
+
+        // Feedback - Analytics
+        if (AnalyticsManager.getInstance(getActivity()) == null
+                || AnalyticsManager.getInstance(getActivity()).isBlocked())
+        {
+            boolean isEnable = AnalyticsManager.getInstance(getActivity()).isEnable();
+
+            diagnosticVH = HolderUtils.configure(viewById(R.id.settings_diagnostic),
+                    getString(R.string.settings_feedback_diagnostic), getString(R.string.settings_custom_menu_disable),
+                    isEnable);
+            HolderUtils.makeMultiLine(diagnosticVH.bottomText, 3);
+            diagnosticVH.choose.setVisibility(View.GONE);
+            diagnosticVH.choose.setEnabled(false);
+        }
+        else
+        {
+            boolean isEnable = AnalyticsManager.getInstance(getActivity()).isEnable();
+
+            diagnosticVH = HolderUtils.configure(viewById(R.id.settings_diagnostic),
+                    getString(R.string.settings_feedback_diagnostic),
+                    getString(R.string.settings_feedback_diagnostic_summary), isEnable);
+            HolderUtils.makeMultiLine(diagnosticVH.bottomText, 4);
+            diagnosticVH.choose.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    if (diagnosticVH.choose.isChecked())
+                    {
+                        AnalyticHelper.optIn(getActivity(), getAccount());
+                    }
+                    else
+                    {
+                        AnalyticHelper.optOut(getActivity(), getAccount());
+                    }
+                }
+            });
         }
     }
 
