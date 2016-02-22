@@ -408,7 +408,7 @@ public class AdvancedSearchFragment extends AlfrescoFragment
         switch (searchKey)
         {
             case HistorySearch.TYPE_PERSON:
-                label = AnalyticsManager.LABEL_DOCUMENTS;
+                label = AnalyticsManager.LABEL_PEOPLE;
                 UsersFragment.with(getActivity()).keywords(statement).title(description).display();
                 break;
             case HistorySearch.TYPE_FOLDER:
