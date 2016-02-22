@@ -50,7 +50,7 @@
     <string name="home_account">I already have an account</string>
     <string name="home_helper">If you want to learn more about Alfresco Mobile take a look at <a href="alfresco://view_help_guide/">our guide</a> in the Help area</string>
 
-    <string name="account_wizard_alfresco_server">Alfresco One</string>
+    <string name="account_wizard_alfresco_server">Alfresco Server</string>
     <string name="account_wizard_or">Or</string>
     <string name="account_wizard_alfresco_cloud">Alfresco in the Cloud</string>
 
