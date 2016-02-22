@@ -431,8 +431,14 @@ public class SyncContentManager extends Manager
 
     public boolean hasConnectivityToSync(AlfrescoAccount account)
     {
-        return ((hasWifiOnlySync(account) && ConnectivityUtils.isWifiAvailable(appContext))
-                || (!hasWifiOnlySync(account) && ConnectivityUtils.hasInternetAvailable(appContext)));
+        return ((hasWifiOnlySync(account.getId()) && ConnectivityUtils.isWifiAvailable(appContext))
+                || (!hasWifiOnlySync(account.getId()) && ConnectivityUtils.hasInternetAvailable(appContext)));
+    }
+
+    public boolean hasConnectivityToSync(Long accountId)
+    {
+        return ((hasWifiOnlySync(accountId) && ConnectivityUtils.isWifiAvailable(appContext))
+                || (!hasWifiOnlySync(accountId) && ConnectivityUtils.hasInternetAvailable(appContext)));
     }
 
     /**
@@ -788,10 +794,15 @@ public class SyncContentManager extends Manager
 
     public boolean hasWifiOnlySync(AlfrescoAccount account)
     {
-        if (account != null)
+        return account != null && hasWifiOnlySync(account.getId());
+    }
+
+    public boolean hasWifiOnlySync(Long accountId)
+    {
+        if (accountId != null)
         {
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(appContext);
-            return sharedPref.getBoolean(SYNCHRO_WIFI_PREFIX + account.getId(), false);
+            return sharedPref.getBoolean(SYNCHRO_WIFI_PREFIX + accountId, false);
         }
         return false;
     }

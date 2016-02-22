@@ -199,7 +199,8 @@ public class CreateDocumentOperation extends UpNodeOperation
         EventBusManager.getInstance().post(new CreateDocumentEvent(getRequestId(), result, parentFolder));
         if (result.hasException() && result.getException() instanceof AlfrescoOfflineException)
         {
-            UploadRetryService.retryDelay(context, getRequestId(), UploadRetryService.DEFAULT_DELAY);
+            UploadRetryService.retryDelay(context, acc != null ? acc.getId() : null, getRequestId(),
+                    UploadRetryService.DEFAULT_DELAY);
         }
 
         if (((CreateDocumentRequest) request).isCreation)
