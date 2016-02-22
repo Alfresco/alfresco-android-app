@@ -534,7 +534,7 @@ public class SearchFragment extends BaseCursorGridFragment
         switch (id)
         {
             case HistorySearch.TYPE_PERSON:
-                hintId = R.string.search_person_hint;
+                hintId = R.string.search;
                 screenName = AnalyticsManager.SCREEN_SEARCH_USERS;
                 // iconResId = R.drawable.ic_person_light;
                 break;
