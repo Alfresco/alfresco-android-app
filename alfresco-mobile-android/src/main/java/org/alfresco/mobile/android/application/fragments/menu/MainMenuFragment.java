@@ -269,6 +269,10 @@ public class MainMenuFragment extends AlfrescoFragment implements AdapterView.On
         {
             configManager = ConfigManager.getInstance(getActivity());
             refresh();
+            if (configManager.getConfig(currentAccount.getId()) == null)
+            {
+                configManager.init(currentAccount);
+            }
             MainMenuConfigManager config = new MainMenuConfigManager(getActivity(),
                     configManager.getConfig(currentAccount.getId()), (ViewGroup) getRootView());
             config.createMenu();
@@ -350,10 +354,7 @@ public class MainMenuFragment extends AlfrescoFragment implements AdapterView.On
     // ///////////////////////////////////////////////////////////////////////////
     private void configure(ConfigService configService)
     {
-        if (configService == null || !configService.hasViewConfig())
-        {
-            return;
-        }
+        if (configService == null || !configService.hasViewConfig()) { return; }
 
         // Default only available since configuration 0.1
         if (configService.getConfigInfo() == null || (configService.getConfigInfo() != null
@@ -694,7 +695,10 @@ public class MainMenuFragment extends AlfrescoFragment implements AdapterView.On
     @Subscribe
     public void onConfigureMenuEvent(ConfigurationMenuEvent event)
     {
-        refreshConfiguration(event.accountId);
+        if (event.accountId >= 0)
+        {
+            refreshConfiguration(event.accountId);
+        }
     }
 
     @Subscribe
