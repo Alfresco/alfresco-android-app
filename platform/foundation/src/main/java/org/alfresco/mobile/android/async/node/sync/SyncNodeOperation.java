@@ -333,13 +333,15 @@ public class SyncNodeOperation extends NodeOperation<Boolean>
     protected void onPostExecute(LoaderResult<Boolean> result)
     {
         super.onPostExecute(result);
-
-        // Analytics
-        AnalyticsHelper.reportOperationEvent(context, AnalyticsManager.CATEGORY_DOCUMENT_MANAGEMENT,
-                !isSynced ? AnalyticsManager.ACTION_SYNC : AnalyticsManager.ACTION_UNSYNC,
-                node.isDocument() ? ((Document) node).getContentStreamMimeType() : AnalyticsManager.TYPE_FOLDER, 1,
-                result.hasException());
-
         EventBusManager.getInstance().post(new SyncNodeEvent(getRequestId(), result, node));
+
+        if (markSync != null)
+        {
+            // Analytics
+            AnalyticsHelper.reportOperationEvent(context, AnalyticsManager.CATEGORY_DOCUMENT_MANAGEMENT,
+                    !markSync ? AnalyticsManager.ACTION_SYNC : AnalyticsManager.ACTION_UNSYNC,
+                    node.isDocument() ? ((Document) node).getContentStreamMimeType() : AnalyticsManager.TYPE_FOLDER, 1,
+                    result.hasException());
+        }
     }
 }

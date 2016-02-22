@@ -470,15 +470,18 @@ public class SearchFragment extends BaseCursorGridFragment
         {
             HistorySearchManager.createHistorySearch(getActivity(), getAccount().getId(), searchKey, 0,
                     getQueryDescription(keywords, tmpParentFolder, site), keywords, new Date().getTime());
+
+            AnalyticsHelper.reportOperationEvent(getActivity(), AnalyticsManager.CATEGORY_SEARCH,
+                    AnalyticsManager.ACTION_RUN, label, 1, false);
         }
         else
         {
             HistorySearchManager.update(getActivity(), search.getId(), search.getAccountId(), search.getType(),
                     search.getAdvanced(), search.getDescription(), search.getQuery(), new Date().getTime());
-        }
 
-        AnalyticsHelper.reportOperationEvent(getActivity(), AnalyticsManager.CATEGORY_SEARCH,
-                AnalyticsManager.ACTION_RUN, label, 1, false);
+            AnalyticsHelper.reportOperationEvent(getActivity(), AnalyticsManager.CATEGORY_SEARCH,
+                    AnalyticsManager.ACTION_RUN_HISTORY, label, 1, false);
+        }
     }
 
     // //////////////////////////////////////////////////////////////////////

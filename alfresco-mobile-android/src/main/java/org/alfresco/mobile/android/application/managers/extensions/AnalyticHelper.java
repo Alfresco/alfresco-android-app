@@ -90,7 +90,7 @@ public class AnalyticHelper extends AnalyticsHelper
 
             // Settings Info
             boolean dataProtectionEnable = DataProtectionManager.getInstance(context).hasDataProtectionEnable();
-            boolean passcodeEnable = PasscodePreferences.hasPasscodeEnable(context);
+            boolean passcodeEnable = PasscodePreferences.hasPasscode(context);
             Boolean syncWifiEnable = SyncContentManager.getInstance(context).hasWifiOnlySync(account);
             customMetrics.append(AnalyticsManager.INDEX_PASSCODE, passcodeEnable ? 1L : 0L);
             customMetrics.append(AnalyticsManager.INDEX_DATA_PROTECTION, dataProtectionEnable ? 1L : 0L);

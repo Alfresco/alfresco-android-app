@@ -34,6 +34,8 @@ import org.alfresco.mobile.android.application.fragments.workflow.CreateTaskFrag
 import org.alfresco.mobile.android.application.fragments.workflow.CreateTaskTypePickerFragment;
 import org.alfresco.mobile.android.application.ui.form.picker.DocumentPickerFragment.onPickDocumentFragment;
 import org.alfresco.mobile.android.async.file.encryption.AccountProtectionEvent;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsHelper;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 
 import android.content.Intent;
@@ -140,6 +142,8 @@ public class PrivateDialogActivity extends BaseAppCompatActivity
             Fragment f = docs.isEmpty() ? new CreateTaskTypePickerFragment()
                     : CreateTaskTypePickerFragment.newInstance(docs);
             FragmentDisplayer.with(this).load(f).back(false).animate(null).into(FragmentDisplayer.PANEL_LEFT);
+
+            AnalyticsHelper.reportScreen(this, AnalyticsManager.SCREEN_TASK_CREATE_TYPE);
         }
 
         if (PrivateIntent.ACTION_DISPLAY_HELP.equals(action))

@@ -350,6 +350,12 @@ public class PasscodePreferences extends AlfrescoFragment
         return isTimeOut;
     }
 
+    public static boolean hasPasscode(Context context)
+    {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+        return sharedPref.getBoolean(KEY_PASSCODE_ENABLE, false);
+    }
+
     private void disableEnableControls(boolean enable, ViewGroup vg)
     {
         for (int i = 0; i < vg.getChildCount(); i++)
