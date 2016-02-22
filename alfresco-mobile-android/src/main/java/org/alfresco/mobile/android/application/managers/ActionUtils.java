@@ -539,7 +539,7 @@ public class ActionUtils extends BaseActionUtils
             String versionName = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
             int versionCode = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode;
 
-            String subject = "Alfresco Mobile Feedback";
+            String subject = "Alfresco Android Mobile Feedback";
             iBuilder.setSubject(subject);
 
             // Content
