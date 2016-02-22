@@ -71,6 +71,13 @@ public class CreateTaskTypePickerFragment extends AlfrescoFragment
         screenName = AnalyticsManager.SCREEN_TASK_CREATE_TYPE;
     }
 
+    public static CreateTaskTypePickerFragment newInstanceByTemplate(Bundle b)
+    {
+        CreateTaskTypePickerFragment cbf = new CreateTaskTypePickerFragment();
+        cbf.setArguments(b);
+        return cbf;
+    }
+
     public static CreateTaskTypePickerFragment newInstance(List<Document> docs)
     {
         CreateTaskTypePickerFragment bf = new CreateTaskTypePickerFragment();
