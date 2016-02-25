@@ -539,12 +539,12 @@ public class SearchFragment extends BaseCursorGridFragment
                 // iconResId = R.drawable.ic_person_light;
                 break;
             case HistorySearch.TYPE_DOCUMENT:
-                hintId = R.string.search_form_hint;
+                hintId = R.string.search;
                 screenName = AnalyticsManager.SCREEN_SEARCH_FILES;
                 // iconResId = R.drawable.ic_office;
                 break;
             case HistorySearch.TYPE_FOLDER:
-                hintId = R.string.search_form_hint;
+                hintId = R.string.search;
                 screenName = AnalyticsManager.SCREEN_SEARCH_FOLDERS;
                 // iconResId = R.drawable.ic_repository_light;
                 break;
