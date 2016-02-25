@@ -28,6 +28,7 @@ import org.alfresco.mobile.android.async.session.oauth.RetrieveOAuthDataRequest;
 import org.alfresco.mobile.android.foundation.R;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.EventBusManager;
+import org.alfresco.mobile.android.platform.utils.AndroidVersion;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -38,6 +39,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -121,6 +123,10 @@ public abstract class OAuthFragment extends DialogFragment
 
         webview = (WebView) v.findViewById(R.id.webview);
         webview.getSettings().setJavaScriptEnabled(true);
+        if (AndroidVersion.isLollipopOrAbove())
+        {
+            webview.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+        }
 
         final FragmentActivity activity = getActivity();
         webview.setWebChromeClient(new WebChromeClient()
@@ -212,9 +218,9 @@ public abstract class OAuthFragment extends DialogFragment
             {
                 if (onOAuthAccessTokenListener != null)
                 {
-                    onOAuthAccessTokenListener.failedRequestAccessToken(new AlfrescoSessionException(
-                            ErrorCodeRegistry.SESSION_AUTH_CODE_INVALID, Messagesl18n
-                                    .getString("ErrorCodeRegistry.SESSION_AUTH_CODE_INVALID")));
+                    onOAuthAccessTokenListener.failedRequestAccessToken(
+                            new AlfrescoSessionException(ErrorCodeRegistry.SESSION_AUTH_CODE_INVALID,
+                                    Messagesl18n.getString("ErrorCodeRegistry.SESSION_AUTH_CODE_INVALID")));
                 }
             }
         }
@@ -241,9 +247,8 @@ public abstract class OAuthFragment extends DialogFragment
             onOAuthAccessTokenListener.beforeRequestAccessToken(new Bundle());
         }
 
-        Operator.with(getActivity()).load(
-                new RetrieveOAuthDataRequest.Builder(RetrieveOAuthDataRequest.OPERATION_ACCESS_TOKEN, baseOAuthUrl,
-                        code, apiKey, apiSecret, callback));
+        Operator.with(getActivity()).load(new RetrieveOAuthDataRequest.Builder(
+                RetrieveOAuthDataRequest.OPERATION_ACCESS_TOKEN, baseOAuthUrl, code, apiKey, apiSecret, callback));
     }
 
     @Subscribe

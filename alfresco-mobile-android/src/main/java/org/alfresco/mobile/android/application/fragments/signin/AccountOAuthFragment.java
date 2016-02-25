@@ -77,7 +77,7 @@ public class AccountOAuthFragment extends OAuthFragment implements AnalyticsMana
 
     public static AccountOAuthFragment newInstance(Context context)
     {
-        AccountOAuthFragment bf = new AccountOAuthFragment();
+        AccountOAuthFragment bf = getOAuthFragment(context, null);
         Bundle b = createBundleArgs(R.layout.fr_oauth_cloud);
         bf.setArguments(b);
         return bf;
@@ -101,7 +101,7 @@ public class AccountOAuthFragment extends OAuthFragment implements AnalyticsMana
     {
         String oauthUrl = null, apikey = null, apisecret = null;
         Bundle b = SessionManager.getInstance(context).getOAuthSettings();
-        if (b != null)
+        if (b != null && !b.isEmpty())
         {
             oauthUrl = b.getString(OAUTH_URL);
             apikey = b.getString(OAUTH_API_KEY);
@@ -122,7 +122,7 @@ public class AccountOAuthFragment extends OAuthFragment implements AnalyticsMana
         AccountOAuthFragment oauthFragment;
         if (oauthUrl == null || oauthUrl.isEmpty())
         {
-            oauthFragment = AccountOAuthFragment.newInstance(context);
+            oauthFragment = new AccountOAuthFragment();
         }
         else
         {
