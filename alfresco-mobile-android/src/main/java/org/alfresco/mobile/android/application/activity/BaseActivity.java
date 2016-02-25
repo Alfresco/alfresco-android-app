@@ -28,12 +28,14 @@ import org.alfresco.mobile.android.ui.activity.AlfrescoActivity;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.ActionMode;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 /**
  * Base class for all activities.
@@ -43,6 +45,8 @@ import android.widget.ProgressBar;
 public abstract class BaseActivity extends AlfrescoActivity
 {
     protected boolean activateCheckPasscode = false;
+
+    public final static int REQUEST_CODE_ASK_PERMISSIONS = 123;
 
     // ///////////////////////////////////////////////////////////////////////////
     // LIFECYCLE
@@ -185,4 +189,27 @@ public abstract class BaseActivity extends AlfrescoActivity
     {
         displayAsDialogActivity(0.90f, 0.9);
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)
+    {
+        switch (requestCode)
+        {
+            case REQUEST_CODE_ASK_PERMISSIONS:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                {
+                    // Permission Granted
+                    Toast.makeText(this, "WRITE_CONTACTS Granted", Toast.LENGTH_SHORT).show();
+                }
+                else
+                {
+                    // Permission Denied
+                    Toast.makeText(this, "WRITE_CONTACTS Denied", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
 }

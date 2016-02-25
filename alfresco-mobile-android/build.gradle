@@ -26,7 +26,7 @@ android {
         applicationId APPLICATION_ID
 
         minSdkVersion 15
-        targetSdkVersion 22
+        targetSdkVersion 23
         versionCode 60
         versionName VERSION_NAME
 
