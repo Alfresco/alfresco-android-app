@@ -344,7 +344,7 @@
     <string name="settings_custom_menu_disable">Votre administrateur Alfresco a désactivé cette fonctionnalité.</string>
     <string name="settings.feedback">Vos données</string>
     <string name="settings.feedback.diagnostic">Envoyer le diagnostic</string>
-    <string name="settings.feedback.diagnostic.summary">Aidez-nous à améliorer Alfresco Mobile en nous envoyant vos données de diagnostic technique qui resteront anonymes. Désactivez l'option, le cas échéant.</string>
+    <string name="settings.feedback.diagnostic.summary">Aidez-nous à améliorer Alfresco Mobile en nous envoyant vos données de diagnostic technique qui resteront anonymes. Désactivez l\'option, le cas échéant.</string>
     <string name="settings.feedback.email">Envoyer les données</string>
 
     <!-- Multi Selection -->
