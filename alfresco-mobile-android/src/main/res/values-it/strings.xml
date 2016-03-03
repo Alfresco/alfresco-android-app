@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  Copyright (C) 2005-2013 Alfresco Software Limited.
-  
+  Copyright (C) 2005-2016 Alfresco Software Limited.
+
   This file is part of Alfresco Mobile for Android.
-  
+
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
-  
+
     http://www.apache.org/licenses/LICENSE-2.0
-  
+
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -50,7 +50,7 @@
     <string name="home_account">Ho già un account</string>
     <string name="home_helper">Per maggiori informazioni su Alfresco Mobile, consulta la <a href="alfresco://view_help_guide/">guida</a> nell\'area Aiuto.</string>
 
-    <string name="account_wizard_alfresco_server">Alfresco One</string>
+    <string name="account_wizard_alfresco_server">Server Alfresco</string>
     <string name="account_wizard_or">o</string>
     <string name="account_wizard_alfresco_cloud">Alfresco in the Cloud</string>
 
@@ -165,7 +165,7 @@
 
     <!-- HELP -->
     <string name="asset_folder_prefix">it</string>
-    <string name="docs_prefix" />
+    <string name="docs_prefix" translatable="false" />
 
     <!-- About Message -->
     <string name="version_number">Versione</string>
@@ -342,7 +342,10 @@
     <string name="settings_custom_menu_summary">Seleziona le schede disponibili sul menu personale.</string>
     <string name="settings_custom_menu_manage">Menu</string>
     <string name="settings_custom_menu_disable">Funzione disabilitata dall\'amministratore Alfresco.</string>
-
+    <string name="settings.feedback">Commenti</string>
+    <string name="settings.feedback.diagnostic">Invia diagnostica</string>
+    <string name="settings.feedback.diagnostic.summary">Al fine di migliorare Alfresco Mobile, raccogliamo dati tecnici anonimi relativi alla diagnostica. Disattivare, se lo si preferisce.</string>
+    <string name="settings.feedback.email">Invia commenti</string>
 
     <!-- Multi Selection -->
     <plurals name="selected_document">
@@ -734,7 +737,7 @@
     <string name="menu_browse_favorites_folder">Cartella dei preferiti</string>
     <string name="account_alfresco">Alfresco</string>
     <string name="account_alfresco_cloud">Alfresco in the Cloud</string>
-    <string name="account_alfresco_onpremise">Alfresco on premise</string>
+    <string name="account_alfresco_onpremise">Server Alfresco</string>
 
 
     <!-- Accessibility -->

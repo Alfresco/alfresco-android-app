@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  Copyright (C) 2005-2013 Alfresco Software Limited.
-  
+  Copyright (C) 2005-2016 Alfresco Software Limited.
+
   This file is part of Alfresco Mobile for Android.
-  
+
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
-  
+
     http://www.apache.org/licenses/LICENSE-2.0
-  
+
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -50,7 +50,7 @@
     <string name="home_account">Ich habe bereits einen Account.</string>
     <string name="home_helper">Wenn Sie mehr über Alfresco Mobile erfahren möchten, dann sehen Sie sich <a href="alfresco://view_help_guide/">unseren Leitfaden</a> im Hilfebereich an.</string>
 
-    <string name="account_wizard_alfresco_server">Alfresco One</string>
+    <string name="account_wizard_alfresco_server">Alfresco Server</string>
     <string name="account_wizard_or">oder</string>
     <string name="account_wizard_alfresco_cloud">Alfresco in the Cloud</string>
 
@@ -165,7 +165,7 @@
 
     <!-- HELP -->
     <string name="asset_folder_prefix">de</string>
-    <string name="docs_prefix" />
+    <string name="docs_prefix" translatable="false" />
 
     <!-- About Message -->
     <string name="version_number">Version</string>
@@ -342,7 +342,10 @@
     <string name="settings_custom_menu_summary">Wählen Sie aus, welche Registerkarten in Ihrem Menü verfügbar sind.</string>
     <string name="settings_custom_menu_manage">Menü</string>
     <string name="settings_custom_menu_disable">Ihr Alfresco Administrator hat diese Funktion deaktiviert.</string>
-
+    <string name="settings.feedback">Feedback</string>
+    <string name="settings.feedback.diagnostic">Diagnose einsenden</string>
+    <string name="settings.feedback.diagnostic.summary">Um Alfresco Mobile weiter zu verbessern, sammeln wir anonym technische Diagnosedaten. Wenn Sie möchten, können Sie dies hier abstellen.</string>
+    <string name="settings.feedback.email">Feedback einsenden</string>
 
     <!-- Multi Selection -->
     <plurals name="selected_document">
@@ -734,7 +737,7 @@
     <string name="menu_browse_favorites_folder">Ordner "Favoriten"</string>
     <string name="account_alfresco">Alfresco</string>
     <string name="account_alfresco_cloud">Alfresco in the Cloud</string>
-    <string name="account_alfresco_onpremise">Alfresco vor Ort</string>
+    <string name="account_alfresco_onpremise">Alfresco Server</string>
 
 
     <!-- Accessibility -->
