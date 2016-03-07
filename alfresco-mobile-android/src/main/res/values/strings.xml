@@ -398,7 +398,7 @@
     <string name="sync_empty_title">Keep your files in sync</string>
     <string name="sync_empty_description">You can view and edit your synced files when you\'re offline</string>
 
-    <string name="sync_info_one_title">Sync has changed !</string>
+    <string name="sync_info_one_title">Sync has changed!</string>
     <string name="sync_info_one_first_text">You can now sync different files on different devices. Just find a file and sync it!</string>
     <string name="sync_info_one_second_text">View and edit your synced files when you\'re offline. When you\'re back online they\'ll automatically sync with Alfresco.</string>
     <string name="sync_info_two_title">What about the files I already favorited?</string>

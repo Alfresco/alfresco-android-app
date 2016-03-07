@@ -303,7 +303,7 @@
     <!-- ACCOUNT -->
     <string name="account_verify">アカウント情報を確認しています&#8230;</string>
     <string name="account_wizard_alldone_description">アカウントを使用する準備ができました。</string>
-    <string name="account_default_onpremise">Alfresco Server</string>
+    <string name="account_default_onpremise">Alfresco サーバー</string>
     <string name="account_default_cloud">Alfresco in the Cloud</string>
 
     <!-- WAITING SESSION -->

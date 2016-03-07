@@ -21,7 +21,7 @@
     <string name="empty_accounts">使用できる Alfresco アカウントがありません</string>
 
     <!-- SIGN IN & CREATE ACCOUNT SCREEN -->
-    <string name="general_login_server_title">Alfresco Server のホスト名を入力してください</string>
+    <string name="general_login_server_title">Alfresco サーバーのホスト名を入力してください</string>
     <string name="general_login_server_hostname">ホスト名</string>
     <string name="general_login_server_next">続行</string>
     <string name="general_login_server_done">完了</string>
@@ -64,8 +64,8 @@
     <string name="account_hostname_required_hint">ホスト名は、www.example.com のような形式で入力してください (必須です)。</string>
     <string name="account_hostname_hint">www.example.com (必須)</string>
     <string name="account_description">説明</string>
-    <string name="account_description_optional_hint">説明を入力します (任意です)。 デフォルトは Alfresco Server です</string>
-    <string name="account_description_hint">Alfresco Server (任意)</string>
+    <string name="account_description_optional_hint">説明を入力します (任意です)。 デフォルトは Alfresco サーバーです</string>
+    <string name="account_description_hint">Alfresco サーバー (任意)</string>
     <string name="account_advanced">詳細設定</string>
     <string name="account_authentication">アカウントの認証方法</string>
     <string name="account_https">HTTPS</string>
@@ -791,13 +791,13 @@
     <!-- ANDROID FOR WORK -->
     <!-- AlfrescoUserName restriction -->
     <string name="title_alfresco_username">ユーザー名</string>
-    <string name="description_alfresco_username">Alfresco Server に接続するときに使用するユーザー名</string>
+    <string name="description_alfresco_username">Alfresco サーバーに接続するときに使用するユーザー名</string>
     <!-- AlfrescoRepositoryURL restriction -->
     <string name="title_alfresco_repository_url">Alfresco リポジトリの URL</string>
-    <string name="description_alfresco_repository_url">Alfresco Server の接続先</string>
+    <string name="description_alfresco_repository_url">Alfresco サーバーの接続先</string>
     <!-- AlfrescoShareURL restriction -->
     <string name="title_alfresco_share_url">Alfresco Share の URL</string>
-    <string name="description_alfresco_share_url">Alfresco Share Server の接続先</string>
+    <string name="description_alfresco_share_url">Alfresco Share サーバーの接続先</string>
     <!-- AlfrescoDisplayName restriction -->
     <string name="title_alfresco_display_name">アカウントの表示名</string>
     <string name="description_alfresco_display_name">リポジトリに接続しているサーバーの名前。</string>

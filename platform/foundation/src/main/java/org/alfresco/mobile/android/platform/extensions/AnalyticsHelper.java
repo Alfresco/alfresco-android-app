@@ -135,7 +135,6 @@ public class AnalyticsHelper
                     null, null);
             syncedFolders = syncedCursor != null ? syncedCursor.getCount() : 0;
             CursorUtils.closeCursor(syncedCursor);
-            Log.d("Analytics Folders", syncedFolders + "");
         }
         catch (Exception e)
         {
@@ -159,7 +158,6 @@ public class AnalyticsHelper
                     null, null);
             syncedFiles = syncedCursor != null ? syncedCursor.getCount() : 0;
             CursorUtils.closeCursor(syncedCursor);
-            Log.d("Analytics Files", syncedFiles + "");
         }
         catch (Exception e)
         {
@@ -189,7 +187,6 @@ public class AnalyticsHelper
                 }
             }
             CursorUtils.closeCursor(syncedCursor);
-            Log.d("Analytics Size", syncedSize + "");
         }
         catch (Exception e)
         {
