@@ -31,6 +31,7 @@ import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
 import org.alfresco.mobile.android.api.session.authentication.impl.OAuth2DataImpl;
 import org.alfresco.mobile.android.api.utils.IOUtils;
+import org.alfresco.mobile.android.async.session.RequestSessionEvent;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.SessionManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
@@ -41,6 +42,8 @@ import org.alfresco.mobile.android.platform.network.NetworkTrustManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Environment;
+
+import com.squareup.otto.Subscribe;
 
 public class DeveloperSessionManager extends SessionManager
 {
@@ -82,6 +85,15 @@ public class DeveloperSessionManager extends SessionManager
     protected DeveloperSessionManager(Context context)
     {
         super(context);
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // EVENTS RECEIVER
+    // ///////////////////////////////////////////////////////////////////////////
+    @Subscribe
+    public void onSessionRequested(RequestSessionEvent event)
+    {
+        super.onSessionRequested(event);
     }
 
     // ///////////////////////////////////////////////////////////////////////////

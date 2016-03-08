@@ -344,7 +344,7 @@
     <string name="settings_custom_menu_disable">Funzione disabilitata dall\'amministratore Alfresco.</string>
     <string name="settings.feedback">Commenti</string>
     <string name="settings.feedback.diagnostic">Invia diagnostica</string>
-    <string name="settings.feedback.diagnostic.summary">Al fine di migliorare Alfresco Mobile, raccogliamo dati tecnici anonimi relativi alla diagnostica. Disattivare, se lo si preferisce.</string>
+    <string name="settings.feedback.diagnostic.summary">Al fine di migliorare Alfresco Mobile, vengono raccolti dati tecnici anonimi relativi alla diagnostica. Disattiva l\'opzione, se lo preferisci.</string>
     <string name="settings.feedback.email">Invia commenti</string>
 
     <!-- Multi Selection -->
