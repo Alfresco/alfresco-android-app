@@ -21,6 +21,10 @@ import java.io.File;
 import java.util.Map;
 
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.activity.BaseActivity;
+import org.alfresco.mobile.android.application.activity.MainActivity;
+import org.alfresco.mobile.android.application.capture.DeviceCapture;
+import org.alfresco.mobile.android.application.capture.DeviceCaptureHelper;
 import org.alfresco.mobile.android.application.configuration.model.view.LocalConfigModel;
 import org.alfresco.mobile.android.application.configuration.model.view.LocalFilesConfigModel;
 import org.alfresco.mobile.android.application.fragments.MenuFragmentHelper;
@@ -38,6 +42,7 @@ import org.alfresco.mobile.android.async.file.encryption.FileProtectionEvent;
 import org.alfresco.mobile.android.async.file.update.RenameFileEvent;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.platform.extensions.ScanSnapManager;
 import org.alfresco.mobile.android.platform.intent.BaseActionUtils.ActionManagerListener;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
@@ -46,6 +51,7 @@ import org.alfresco.mobile.android.ui.activity.AlfrescoActivity;
 import org.alfresco.mobile.android.ui.fragments.WaitingDialogFragment;
 
 import android.content.ActivityNotFoundException;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -53,13 +59,10 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.SubMenu;
 import android.view.View;
 import android.widget.GridView;
 
+import com.cocosw.bottomsheet.BottomSheet;
 import com.squareup.otto.Subscribe;
 
 /**
@@ -91,6 +94,7 @@ public class FileExplorerFragment extends FileExplorerFoundationFragment
     {
         emptyListMessageId = R.string.empty_download;
         setHasOptionsMenu(true);
+        screenName = AnalyticsManager.SCREEN_LOCAL_FILES_BROWSER;
     }
 
     public static FileExplorerFragment newInstanceByTemplate(Bundle b)
@@ -343,45 +347,46 @@ public class FileExplorerFragment extends FileExplorerFoundationFragment
     // MENU
     // //////////////////////////////////////////////////////////////////////
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    protected View.OnClickListener onPrepareFabClickListener()
     {
-        super.onCreateOptionsMenu(menu, inflater);
-        if (!MenuFragmentHelper.canDisplayFragmentMenu(getActivity())) { return; }
-        if (mode == MODE_LISTING)
+        if (!MenuFragmentHelper.canDisplayFragmentMenu(getActivity())) { return null; }
+        if (mode != MODE_LISTING) { return null; }
+        return new View.OnClickListener()
         {
-
-            if (parent != null && privateFolder != null && !parent.getPath().startsWith(privateFolder.getPath()))
+            @Override
+            public void onClick(View v)
             {
-                MenuItem mi = menu.add(Menu.NONE, R.id.menu_create_folder, Menu.FIRST, R.string.folder_create);
-                mi.setIcon(R.drawable.ic_add_folder);
-                mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+                BottomSheet.Builder builder = new BottomSheet.Builder(getActivity(), R.style.M_StyleDialog)
+                        .title(R.string.add_menu);
+
+                if (parent != null && privateFolder != null && !parent.getPath().startsWith(privateFolder.getPath()))
+                {
+                    builder.sheet(R.id.menu_create_folder, R.drawable.ic_repository_light, R.string.folder_create);
+                }
+                builder.sheet(R.id.menu_create_document, R.drawable.ic_doc_light, R.string.create_document);
+                builder.sheet(R.id.menu_device_capture_camera_photo, R.drawable.ic_camera, R.string.take_photo);
+                builder.sheet(R.id.menu_device_capture_camera_video, R.drawable.ic_videos, R.string.make_video);
+                builder.sheet(R.id.menu_device_capture_mic_audio, R.drawable.ic_microphone, R.string.record_audio);
+                if (ScanSnapManager.getInstance(getActivity()) != null
+                        && ScanSnapManager.getInstance(getActivity()).hasScanSnapApplication())
+                {
+                    builder.sheet(R.id.menu_scan_document, R.drawable.ic_camera, R.string.scan);
+                }
+                builder.grid().listener(new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        onOptionsItemSelected(which);
+                    }
+                }).show();
             }
-
-            SubMenu createMenu = menu.addSubMenu(Menu.NONE, R.id.menu_device_capture, Menu.FIRST + 30,
-                    R.string.add_menu);
-            createMenu.setIcon(android.R.drawable.ic_menu_add);
-            createMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-
-            createMenu.add(Menu.NONE, R.id.menu_create_document, Menu.FIRST + 1, R.string.create_document);
-
-            createMenu.add(Menu.NONE, R.id.menu_device_capture_camera_photo, Menu.FIRST + 1, R.string.take_photo);
-
-            createMenu.add(Menu.NONE, R.id.menu_device_capture_camera_video, Menu.FIRST + 2, R.string.make_video);
-
-            if (ScanSnapManager.getInstance(getActivity()) != null
-                    && ScanSnapManager.getInstance(getActivity()).hasScanSnapApplication())
-            {
-                createMenu.add(Menu.NONE, R.id.menu_scan_document, Menu.FIRST + 4, R.string.scan);
-            }
-
-            createMenu.add(Menu.NONE, R.id.menu_device_capture_mic_audio, Menu.FIRST + 3, R.string.record_audio);
-        }
+        };
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
+    public boolean onOptionsItemSelected(int id)
     {
-        switch (item.getItemId())
+        switch (id)
         {
             case R.id.menu_create_folder:
                 createFolder();
@@ -391,8 +396,23 @@ public class FileExplorerFragment extends FileExplorerFoundationFragment
                         .newInstance(SessionUtils.getAccount(getActivity()), TAG);
                 dialogft.show(getFragmentManager(), DocumentTypesDialogFragment.TAG);
                 return true;
+            case R.id.menu_device_capture_camera_photo:
+            case R.id.menu_device_capture_camera_video:
+            case R.id.menu_device_capture_mic_audio:
+                DeviceCapture capture = DeviceCaptureHelper.createDeviceCapture((BaseActivity) getActivity(), id);
+                if (getActivity() instanceof MainActivity)
+                {
+                    ((MainActivity) getActivity()).setCapture(capture);
+                }
+                return true;
+            case R.id.menu_scan_document:
+                if (ScanSnapManager.getInstance(getActivity()) != null)
+                {
+                    ScanSnapManager.getInstance(getActivity()).startPresetChooser(getActivity());
+                }
+                return true;
         }
-        return super.onOptionsItemSelected(item);
+        return false;
     }
 
     // //////////////////////////////////////////////////////////////////////

@@ -30,6 +30,7 @@ import org.alfresco.mobile.android.application.fragments.node.details.DetailsFra
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.node.browse.NodeChildrenEvent;
 import org.alfresco.mobile.android.async.node.browse.NodeChildrenRequest;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.node.browse.NodeBrowserTemplate;
 
@@ -68,6 +69,7 @@ public class CarouselPreviewFragment extends AlfrescoFragment implements Details
     // //////////////////////////////////////////////////////////////////////
     public CarouselPreviewFragment()
     {
+        screenName = AnalyticsManager.SCREEN_NODE_GALLERY;
     }
 
     protected static CarouselPreviewFragment newInstanceByTemplate(Bundle b)

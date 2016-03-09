@@ -19,8 +19,10 @@ package org.alfresco.mobile.android.application.managers;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.PublicDispatcherActivity;
@@ -39,11 +41,14 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.speech.RecognizerIntent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.ShareCompat;
 import android.text.Html;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
 
 /**
@@ -81,7 +86,8 @@ public class ActionUtils extends BaseActionUtils
     // ///////////////////////////////////////////////////////////////////////////
     // ACTION VIEW
     // ///////////////////////////////////////////////////////////////////////////
-    public static void actionView(FragmentActivity context, File myFile, String mimeType, ActionManagerListener listener)
+    public static void actionView(FragmentActivity context, File myFile, String mimeType,
+            ActionManagerListener listener)
     {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         Uri data = Uri.fromFile(myFile);
@@ -151,8 +157,8 @@ public class ActionUtils extends BaseActionUtils
     {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         Uri data = Uri.fromFile(contentFile);
-        intent.setDataAndType(data, MimeTypeManager.getInstance(activity).getMIMEType(contentFile.getName())
-                .toLowerCase());
+        intent.setDataAndType(data,
+                MimeTypeManager.getInstance(activity).getMIMEType(contentFile.getName()).toLowerCase());
         return intent;
     }
 
@@ -238,8 +244,8 @@ public class ActionUtils extends BaseActionUtils
             Intent i = new Intent(Intent.ACTION_SEND);
             i.putExtra(Intent.EXTRA_SUBJECT, contentFile.getName());
             i.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(contentFile));
-            i.setType((TextUtils.isEmpty(mimetype)) ? MimeTypeManager.getInstance(activity).getMIMEType(
-                    contentFile.getName()) : mimetype);
+            i.setType((TextUtils.isEmpty(mimetype))
+                    ? MimeTypeManager.getInstance(activity).getMIMEType(contentFile.getName()) : mimetype);
 
             if (i.resolveActivity(activity.getPackageManager()) == null)
             {
@@ -501,8 +507,8 @@ public class ActionUtils extends BaseActionUtils
         }
         catch (android.content.ActivityNotFoundException anfe)
         {
-            context.startActivity(new Intent(Intent.ACTION_VIEW, Uri
-.parse("https://play.google.com/store/apps/details?type=" + appPackageName)));
+            context.startActivity(new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("https://play.google.com/store/apps/details?type=" + appPackageName)));
         }
     }
 
@@ -516,6 +522,88 @@ public class ActionUtils extends BaseActionUtils
         catch (android.content.ActivityNotFoundException anfe)
         {
             // Display error ?
+        }
+    }
+
+    public static boolean actionSendFeedbackEmail(Fragment fr)
+    {
+        try
+        {
+            ShareCompat.IntentBuilder iBuilder = ShareCompat.IntentBuilder.from(fr.getActivity());
+            Context context = fr.getContext();
+            // Email
+            iBuilder.addEmailTo(context.getResources()
+                    .getStringArray(org.alfresco.mobile.android.foundation.R.array.bugreport_email));
+
+            // Prepare Subject
+            String versionName = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
+            int versionCode = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode;
+
+            String subject = "Alfresco Android Mobile Feedback";
+            iBuilder.setSubject(subject);
+
+            // Content
+            DisplayMetrics dm = context.getResources().getDisplayMetrics();
+            String densityBucket = getDensityString(dm);
+
+            Map<String, String> info = new LinkedHashMap<>();
+            info.put("Version", versionName);
+            info.put("Version code", Integer.toString(versionCode));
+            info.put("Make", Build.MANUFACTURER);
+            info.put("Model", Build.MODEL);
+            info.put("Resolution", dm.heightPixels + "x" + dm.widthPixels);
+            info.put("Density", dm.densityDpi + "dpi (" + densityBucket + ")");
+            info.put("Release", Build.VERSION.RELEASE);
+            info.put("API", String.valueOf(Build.VERSION.SDK_INT));
+            info.put("Language", context.getResources().getConfiguration().locale.getDisplayLanguage());
+
+            StringBuilder builder = new StringBuilder();
+            builder.append("\n\n\n\n");
+            builder.append("Alfresco Mobile and device details\n");
+            builder.append("-------------------\n").toString();
+            for (Map.Entry entry : info.entrySet())
+            {
+                builder.append(entry.getKey()).append(": ").append(entry.getValue()).append('\n');
+            }
+
+            builder.append("-------------------\n\n").toString();
+            iBuilder.setType("message/rfc822");
+            iBuilder.setText(builder.toString());
+            iBuilder.setChooserTitle(fr.getString(R.string.settings_feedback_email)).startChooser();
+
+
+            return true;
+        }
+        catch (Exception e)
+        {
+            AlfrescoNotificationManager.getInstance(fr.getActivity()).showAlertCrouton(fr.getActivity(),
+                    R.string.error_general);
+            Log.d(TAG, Log.getStackTraceString(e));
+        }
+
+        return false;
+    }
+
+    private static String getDensityString(DisplayMetrics displayMetrics)
+    {
+        switch (displayMetrics.densityDpi)
+        {
+            case DisplayMetrics.DENSITY_LOW:
+                return "ldpi";
+            case DisplayMetrics.DENSITY_MEDIUM:
+                return "mdpi";
+            case DisplayMetrics.DENSITY_HIGH:
+                return "hdpi";
+            case DisplayMetrics.DENSITY_XHIGH:
+                return "xhdpi";
+            case DisplayMetrics.DENSITY_XXHIGH:
+                return "xxhdpi";
+            case DisplayMetrics.DENSITY_XXXHIGH:
+                return "xxxhdpi";
+            case DisplayMetrics.DENSITY_TV:
+                return "tvdpi";
+            default:
+                return "unknown";
         }
     }
 

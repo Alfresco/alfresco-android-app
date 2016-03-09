@@ -27,6 +27,8 @@ import org.alfresco.mobile.android.async.session.RequestSessionEvent;
 import org.alfresco.mobile.android.async.session.network.NetworksEvent;
 import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsHelper;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.network.CloudNetworkAdapter;
 import org.alfresco.mobile.android.ui.network.CloudNetworksFragment;
@@ -87,6 +89,10 @@ public class NetworksFragment extends CloudNetworksFragment
         {
             EventBusManager.getInstance().post(new RequestSessionEvent(currentAccount, network.getIdentifier(), true));
             getActivity().getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
+            // Analytics
+            AnalyticsHelper.reportOperationEvent(getActivity(), AnalyticsManager.CATEGORY_SESSION,
+                    AnalyticsManager.ACTION_SWITCH, AnalyticsManager.LABEL_NETWORK, 1, false);
         }
     }
 

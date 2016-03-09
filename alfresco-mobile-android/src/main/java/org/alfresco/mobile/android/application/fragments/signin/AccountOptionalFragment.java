@@ -99,7 +99,7 @@ public class AccountOptionalFragment extends AlfrescoFragment
                     DataProtectionManager.getInstance(getActivity()).encrypt(SessionUtils.getAccount(getActivity()));
                 }
 
-                prefs.edit().putBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, true).commit();
+                prefs.edit().putBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, true).apply();
 
                 AccountNameFragment.with(getActivity()).accountId(accountId).back(false).display();
             }

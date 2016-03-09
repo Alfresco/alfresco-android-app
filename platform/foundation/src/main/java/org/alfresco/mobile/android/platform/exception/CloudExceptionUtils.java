@@ -30,7 +30,6 @@ import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisConnectionException;
-import org.apache.http.HttpStatus;
 
 import android.content.Context;
 import android.text.Html;
@@ -105,7 +104,7 @@ public final class CloudExceptionUtils
             int messageId = R.string.error_session_notfound;
             AlfrescoSessionException se = ((AlfrescoSessionException) exception);
             if (se.getErrorCode() == ErrorCodeRegistry.GENERAL_HTTP_RESP && se.getMessage() != null
-                    && se.getMessage().contains(HttpStatus.SC_SERVICE_UNAVAILABLE + ""))
+                    && se.getMessage().contains("503"))
             {
                 messageId = R.string.error_session_cloud_unavailable;
             }

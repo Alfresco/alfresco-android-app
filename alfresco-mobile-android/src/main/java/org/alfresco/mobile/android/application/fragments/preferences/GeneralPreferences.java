@@ -30,6 +30,7 @@ import org.alfresco.mobile.android.application.fragments.account.AccountsAdapter
 import org.alfresco.mobile.android.application.fragments.builder.LeafFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.signin.AccountSignInFragment;
 import org.alfresco.mobile.android.application.managers.ActionUtils;
+import org.alfresco.mobile.android.application.managers.extensions.AnalyticHelper;
 import org.alfresco.mobile.android.application.security.DataProtectionUserDialogFragment;
 import org.alfresco.mobile.android.async.session.RequestSessionEvent;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
@@ -37,6 +38,7 @@ import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.SessionManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.platform.extensions.DevToolsManager;
 import org.alfresco.mobile.android.platform.intent.PrivateRequestCode;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
@@ -44,6 +46,7 @@ import org.alfresco.mobile.android.platform.mdm.MDMManager;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.holder.HolderUtils;
+import org.alfresco.mobile.android.ui.holder.TwoLinesCheckboxViewHolder;
 import org.alfresco.mobile.android.ui.holder.TwoLinesViewHolder;
 
 import android.content.Intent;
@@ -78,6 +81,8 @@ public class GeneralPreferences extends AlfrescoFragment
 
     private TwoLinesViewHolder dataProtectionVH, passcodeVH;
 
+    private TwoLinesCheckboxViewHolder diagnosticVH;
+
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
@@ -85,6 +90,7 @@ public class GeneralPreferences extends AlfrescoFragment
     {
         requiredSession = false;
         setHasOptionsMenu(true);
+        screenName = AnalyticsManager.SCREEN_SETTINGS_DETAILS;
     }
 
     protected static GeneralPreferences newInstanceByTemplate(Bundle b)
@@ -109,41 +115,19 @@ public class GeneralPreferences extends AlfrescoFragment
         setRootView(inflater.inflate(R.layout.fr_settings, container, false));
 
         TwoLinesViewHolder vh;
-        // Links
-        // Alfresco Website
-        vh = HolderUtils.configure(viewById(R.id.settings_links_website), getString(R.string.settings_links_website),
-                getString(R.string.settings_links_website_summary), -1);
-        viewById(R.id.settings_links_website_container).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ActionUtils.startWebBrowser(getActivity(), getString(R.string.settings_links_website_url));
-            }
-        });
 
-        // Play Store
-        vh = HolderUtils.configure(viewById(R.id.settings_rating), getString(R.string.settings_rating),
-                getString(R.string.settings_rating_summary), -1);
-        viewById(R.id.settings_rating_container).setOnClickListener(new View.OnClickListener()
+        // Feedback - Email
+        vh = HolderUtils.configure(viewById(R.id.settings_feedback_email_container),
+                getString(R.string.settings_feedback_email), null, -1);
+        // HolderUtils.makeMultiLine(vh.bottomText, 3);
+        viewById(R.id.settings_feedback_email_container).setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                startPlayStore();
+                ActionUtils.actionSendFeedbackEmail(GeneralPreferences.this);
             }
         });
-
-        // Facebook
-        vh = HolderUtils.configure(viewById(R.id.settings_links_facebook), getString(R.string.settings_links_facebook),
-                getString(R.string.settings_links_facebook_summary), -1);
-        viewById(R.id.settings_links_facebook_container).setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                ActionUtils.startWebBrowser(getActivity(), getString(R.string.settings_links_facebook_url));
-            }
-        });
-        HolderUtils.makeMultiLine(vh.topText, 2);
 
         // About
         vh = HolderUtils.configure(viewById(R.id.settings_about), getString(R.string.version_number),
@@ -160,16 +144,8 @@ public class GeneralPreferences extends AlfrescoFragment
         if (DevToolsManager.getInstance(getActivity()) != null)
         {
             show(R.id.settings_dev_tools_container);
-            vh = HolderUtils.configure(viewById(R.id.settings_dev_menu_config), "Menu Editor",
-                    "Tools to edit and manage menu and profiles", -1);
-            viewById(R.id.settings_dev_menu_config_container).setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View v)
-                {
-                    DevToolsManager.getInstance(getActivity()).displayMenuConfig(getActivity());
-                }
-            });
+            DevToolsManager.getInstance(getActivity()).generateMenu(getActivity(),
+                    (ViewGroup) viewById(R.id.settings_dev_tools_items));
         }
         else
         {
@@ -360,6 +336,44 @@ public class GeneralPreferences extends AlfrescoFragment
             dataProtectionVH.bottomText.setText(R.string.mdm_managed);
             viewById(R.id.passcode_preference_container).setEnabled(false);
             passcodeVH.bottomText.setText(R.string.mdm_managed);
+        }
+
+        // Feedback - Analytics
+        if (AnalyticsManager.getInstance(getActivity()) == null
+                || AnalyticsManager.getInstance(getActivity()).isBlocked())
+        {
+            boolean isEnable = AnalyticsManager.getInstance(getActivity()).isEnable();
+
+            diagnosticVH = HolderUtils.configure(viewById(R.id.settings_diagnostic),
+                    getString(R.string.settings_feedback_diagnostic), getString(R.string.settings_custom_menu_disable),
+                    isEnable);
+            HolderUtils.makeMultiLine(diagnosticVH.bottomText, 3);
+            diagnosticVH.choose.setVisibility(View.GONE);
+            diagnosticVH.choose.setEnabled(false);
+        }
+        else
+        {
+            boolean isEnable = AnalyticsManager.getInstance(getActivity()).isEnable();
+
+            diagnosticVH = HolderUtils.configure(viewById(R.id.settings_diagnostic),
+                    getString(R.string.settings_feedback_diagnostic),
+                    getString(R.string.settings_feedback_diagnostic_summary), isEnable);
+            HolderUtils.makeMultiLine(diagnosticVH.bottomText, 4);
+            diagnosticVH.choose.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    if (diagnosticVH.choose.isChecked())
+                    {
+                        AnalyticHelper.optIn(getActivity(), getAccount());
+                    }
+                    else
+                    {
+                        AnalyticHelper.optOut(getActivity(), getAccount());
+                    }
+                }
+            });
         }
     }
 

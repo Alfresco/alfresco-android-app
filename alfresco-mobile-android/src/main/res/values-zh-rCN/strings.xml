@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  Copyright (C) 2005-2013 Alfresco Software Limited.
-  
+  Copyright (C) 2005-2016 Alfresco Software Limited.
+
   This file is part of Alfresco Mobile for Android.
-  
+
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
-  
+
     http://www.apache.org/licenses/LICENSE-2.0
-  
+
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -50,9 +50,9 @@
     <string name="home_account">我已经有一个帐户</string>
     <string name="home_helper">如果您要了解有关 Alfresco Mobile 的更多信息，请查看 <a href="alfresco://view_help_guide/">帮助区域中</a> 的指南</string>
 
-    <string name="account_wizard_alfresco_server">Alfresco One</string>
+    <string name="account_wizard_alfresco_server">Alfresco 服务器</string>
     <string name="account_wizard_or">或者</string>
-    <string name="account_wizard_alfresco_cloud">Alfresco Cloud</string>
+    <string name="account_wizard_alfresco_cloud">Alfresco in the Cloud</string>
 
     <string name="account">帐户</string>
     <string name="action_add_account">添加一个帐户</string>
@@ -74,7 +74,7 @@
     <string name="account_verify">正在验证 Alfresco 帐户信息&#8230;</string>
 
     <!-- ACCOUNTS -->
-    <string name="account_default_cloud">Alfresco Cloud</string>
+    <string name="account_default_cloud">Alfresco in the Cloud</string>
     <string name="account_default_onpremise">Alfresco 服务器</string>
 
     <!-- WAITING SESSION -->
@@ -165,7 +165,7 @@
 
     <!-- HELP -->
     <string name="asset_folder_prefix">zh_cn</string>
-    <string name="docs_prefix" />
+    <string name="docs_prefix" translatable="false" />
 
     <!-- About Message -->
     <string name="version_number">版本</string>
@@ -173,7 +173,7 @@
     <string name="sdknumber_version">SDK： </string>
     <string name="about_description">
 <![CDATA[
-<p>Alfresco Mobile 连接至 Alfresco Cloud 和 Alfresco 内部部署服务器（3.4 及以上版本）以便安全访问当前您的企业内容。</p>
+<p>Alfresco Mobile 连接至 Alfresco in the Cloud 和 Alfresco 内部部署服务器（3.4 及以上版本）以便安全访问当前您的企业内容。</p>
 
 <p>Alfresco Mobile 使用 Alfresco 登录凭证（通过 HTTP 或 HTTPS）与您的 Alfresco 存储库连接，并且根据用户的权限管理用户访问。</p>
 ]]>
@@ -342,7 +342,10 @@
     <string name="settings_custom_menu_summary">选择菜单上可用的选项卡。</string>
     <string name="settings_custom_menu_manage">菜单</string>
     <string name="settings_custom_menu_disable">您的 Alfresco 管理员已禁用此功能。</string>
-
+    <string name="settings.feedback">反馈</string>
+    <string name="settings.feedback.diagnostic">发送诊断数据</string>
+    <string name="settings.feedback.diagnostic.summary">为了帮助我们改进 Alfresco Mobile，我们收集匿名技术诊断数据。如果愿意，请关闭。</string>
+    <string name="settings.feedback.email">发送反馈</string>
 
     <!-- Multi Selection -->
     <plurals name="selected_document">
@@ -733,8 +736,8 @@
     <string name="menu_browse_sync_content_folder">已同步内容</string>
     <string name="menu_browse_favorites_folder">收藏夹文件夹</string>
     <string name="account_alfresco">Alfresco</string>
-    <string name="account_alfresco_cloud">Alfresco Cloud</string>
-    <string name="account_alfresco_onpremise">Alfresco 内部部署</string>
+    <string name="account_alfresco_cloud">Alfresco in the Cloud</string>
+    <string name="account_alfresco_onpremise">Alfresco 服务器</string>
 
 
     <!-- Accessibility -->
@@ -798,7 +801,7 @@
     <!-- AlfrescoDisplayName restriction -->
     <string name="title_alfresco_display_name">帐户显示名</string>
     <string name="description_alfresco_display_name">与存储库相关联的服务器的名称。</string>
-    <string name="default_alfresco_display_name" translatable="false">Alfresco 服务器</string>
+    <string name="default_alfresco_display_name">Alfresco 服务器</string>
 
 
     <!-- Empty -->

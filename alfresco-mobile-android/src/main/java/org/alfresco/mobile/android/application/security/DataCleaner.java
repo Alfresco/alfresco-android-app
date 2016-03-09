@@ -61,15 +61,15 @@ public class DataCleaner extends AsyncTask<String, Integer, Boolean>
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activityRef.get());
             Editor editor = sharedPref.edit();
             editor.clear();
-            editor.commit();
+            editor.apply();
             SharedPreferences settings = activityRef.get().getSharedPreferences(AccountsPreferences.ACCOUNT_PREFS, 0);
             editor = settings.edit();
             editor.clear();
-            editor.commit();
+            editor.apply();
             SharedPreferences prefs = activityRef.get().getSharedPreferences(FileExplorerHelper.FILEEXPLORER_PREFS, 0);
             editor = prefs.edit();
             editor.clear();
-            editor.commit();
+            editor.apply();
 
             // Remove All Accounts
             List<Account> accounts = AlfrescoAccountManager.getInstance(activityRef.get()).getAndroidAccounts();

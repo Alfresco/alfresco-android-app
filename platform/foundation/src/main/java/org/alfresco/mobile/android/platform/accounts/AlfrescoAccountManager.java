@@ -128,7 +128,7 @@ public class AlfrescoAccountManager extends Manager
 
     public static List<AlfrescoAccount> retrieveAccounts(Context context)
     {
-        List<AlfrescoAccount> accounts = null;
+        List<AlfrescoAccount> accounts = new ArrayList<>();
         try
         {
             AccountManager mAccountManager = AccountManager.get(context);

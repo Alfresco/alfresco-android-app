@@ -55,6 +55,7 @@ public class NodeSummaryFragment extends NodePropertiesFragment
     public NodeSummaryFragment()
     {
         layoutId = R.layout.fr_node_summary;
+        reportAtCreation = false;
     }
 
     protected static NodeSummaryFragment newInstanceByTemplate(Bundle b)

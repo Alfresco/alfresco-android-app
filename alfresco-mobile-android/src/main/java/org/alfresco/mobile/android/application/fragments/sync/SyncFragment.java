@@ -45,6 +45,7 @@ import org.alfresco.mobile.android.async.node.sync.SyncNodeEvent;
 import org.alfresco.mobile.android.async.node.update.UpdateNodeEvent;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.platform.provider.CursorUtils;
 import org.alfresco.mobile.android.platform.provider.MapUtil;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
@@ -134,6 +135,7 @@ public class SyncFragment extends BaseCursorGridFragment
         checkSession = false;
         setHasOptionsMenu(true);
         displayAsList = true;
+        screenName = AnalyticsManager.SCREEN_SYNCED_CONTENT;
     }
 
     protected static SyncFragment newInstanceByTemplate(Bundle b)

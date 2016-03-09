@@ -58,6 +58,8 @@ import org.alfresco.mobile.android.async.utils.ContentFileProgressImpl;
 import org.alfresco.mobile.android.platform.SessionManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsHelper;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.mimetype.MimeTypeManager;
 import org.alfresco.mobile.android.platform.provider.AlfrescoContentProvider;
@@ -446,6 +448,13 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
                         }
 
                         Log.d(TAG, "Create Sync File Descriptor : " + downloadedFile.getPath());
+
+                        // Analytics
+                        AnalyticsHelper.reportOperationEvent(getContext(), AnalyticsManager.CATEGORY_DOC_PROVIDER,
+                                AnalyticsManager.ACTION_OPEN,
+                                MimeTypeManager.getInstance(getContext()).getMIMEType(downloadedFile.getName()), 1,
+                                false);
+
                         // Document available locally
                         return createSyncFileDescriptor(nodeRefId, isWrite, downloadedFile, accessMode);
                     }
@@ -520,6 +529,14 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
             if (cUri.type == PREFIX_SYNC && downloadedFile != null && downloadedFile.exists())
             {
                 Log.d(TAG, "Doc synced : " + downloadedFile.getPath() + " - Mode " + mode);
+
+                // Analytics
+                AnalyticsHelper.reportOperationEvent(getContext(), AnalyticsManager.CATEGORY_DOC_PROVIDER,
+                        AnalyticsManager.ACTION_OPEN,
+                        currentNode.isDocument() ? ((org.alfresco.mobile.android.api.model.Document) currentNode)
+                                .getContentStreamMimeType() : AnalyticsManager.TYPE_FOLDER,
+                        1, false);
+
                 // Document available locally
                 return createFileDescriptor((org.alfresco.mobile.android.api.model.Document) currentNode, isWrite,
                         downloadedFile, accessMode);
@@ -529,6 +546,14 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
             if (downloadedFile != null && downloadedFile.exists())
             {
                 Log.d(TAG, "Doc in cache : " + downloadedFile.getPath() + " - Mode " + mode);
+
+                // Analytics
+                AnalyticsHelper.reportOperationEvent(getContext(), AnalyticsManager.CATEGORY_DOC_PROVIDER,
+                        AnalyticsManager.ACTION_OPEN,
+                        currentNode.isDocument() ? ((org.alfresco.mobile.android.api.model.Document) currentNode)
+                                .getContentStreamMimeType() : AnalyticsManager.TYPE_FOLDER,
+                        1, false);
+
                 // Document available locally
                 return createFileDescriptor((org.alfresco.mobile.android.api.model.Document) currentNode, isWrite,
                         downloadedFile, accessMode);
@@ -564,6 +589,13 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
 
             if (downloadedFile.exists())
             {
+                // Analytics
+                AnalyticsHelper.reportOperationEvent(getContext(), AnalyticsManager.CATEGORY_DOC_PROVIDER,
+                        AnalyticsManager.ACTION_OPEN,
+                        currentNode.isDocument() ? ((org.alfresco.mobile.android.api.model.Document) currentNode)
+                                .getContentStreamMimeType() : AnalyticsManager.TYPE_FOLDER,
+                        1, false);
+
                 // Document available locally
                 return createFileDescriptor((org.alfresco.mobile.android.api.model.Document) currentNode, isWrite,
                         downloadedFile, accessMode);
@@ -785,6 +817,10 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
 
         try
         {
+            // Analytics
+            AnalyticsHelper.reportOperationEvent(getContext(), AnalyticsManager.CATEGORY_DOC_PROVIDER,
+                    AnalyticsManager.ACTION_CREATE, mimeType, 1, false);
+
             // Flag to detect loading in progress
             Boolean active = mLoadingUris.get(cUri);
 
@@ -861,6 +897,14 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
                     checkSession(cUri);
                     Node currentNode = retrieveNode(cUri.id);
                     session.getServiceRegistry().getDocumentFolderService().deleteNode(currentNode);
+
+                    // Analytics
+                    AnalyticsHelper.reportOperationEvent(getContext(), AnalyticsManager.CATEGORY_DOC_PROVIDER,
+                            AnalyticsManager.ACTION_DELETE,
+                            currentNode.isDocument() ? ((org.alfresco.mobile.android.api.model.Document) currentNode)
+                                    .getContentStreamMimeType() : AnalyticsManager.TYPE_FOLDER,
+                            1, false);
+
                     return null;
                 }
 
@@ -941,7 +985,7 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
             default:
                 break;
         }
-        row.add(Root.COLUMN_ICON, R.drawable.ic_application_icon);
+        row.add(Root.COLUMN_ICON, R.drawable.ic_application_logo);
     }
 
     // //////////////////////////////////////////////////////////////////////

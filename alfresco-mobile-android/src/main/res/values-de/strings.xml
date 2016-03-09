@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  Copyright (C) 2005-2013 Alfresco Software Limited.
-  
+  Copyright (C) 2005-2016 Alfresco Software Limited.
+
   This file is part of Alfresco Mobile for Android.
-  
+
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
-  
+
     http://www.apache.org/licenses/LICENSE-2.0
-  
+
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -50,9 +50,9 @@
     <string name="home_account">Ich habe bereits einen Account.</string>
     <string name="home_helper">Wenn Sie mehr über Alfresco Mobile erfahren möchten, dann sehen Sie sich <a href="alfresco://view_help_guide/">unseren Leitfaden</a> im Hilfebereich an.</string>
 
-    <string name="account_wizard_alfresco_server">Alfresco One</string>
+    <string name="account_wizard_alfresco_server">Alfresco Server</string>
     <string name="account_wizard_or">oder</string>
-    <string name="account_wizard_alfresco_cloud">Alfresco Cloud</string>
+    <string name="account_wizard_alfresco_cloud">Alfresco in the Cloud</string>
 
     <string name="account">Account</string>
     <string name="action_add_account">Account hinzufügen</string>
@@ -74,7 +74,7 @@
     <string name="account_verify">Alfresco Account-Informationen werden verifiziert&#8230;</string>
 
     <!-- ACCOUNTS -->
-    <string name="account_default_cloud">Alfresco Cloud</string>
+    <string name="account_default_cloud">Alfresco in the Cloud</string>
     <string name="account_default_onpremise">Alfresco Server</string>
 
     <!-- WAITING SESSION -->
@@ -165,7 +165,7 @@
 
     <!-- HELP -->
     <string name="asset_folder_prefix">de</string>
-    <string name="docs_prefix" />
+    <string name="docs_prefix" translatable="false" />
 
     <!-- About Message -->
     <string name="version_number">Version</string>
@@ -173,7 +173,7 @@
     <string name="sdknumber_version">SDK: </string>
     <string name="about_description">
 <![CDATA[
-<p>Alfresco Mobile stellt eine Verbindung zu Alfresco in der Cloud und zu den lokalen Alfresco Servern (3.4 und höher) her, um unterwegs einen sicheren Zugriff auf Unternehmensinhalte zu ermöglichen.</p> 
+<p>Alfresco Mobile stellt eine Verbindung zu Alfresco in the Cloud und zu den lokalen Alfresco Servern (3.4 und höher) her, um unterwegs einen sicheren Zugriff auf Unternehmensinhalte zu ermöglichen.</p>
 
 <p>Alfresco Mobile stellt mithilfe Ihrer Alfresco Anmeldeinformationen eine Verbindung zu Ihrem Alfresco Repository (über HTTP oder HTTPS) her und verwaltet den Benutzerzugriff basierend auf deren Berechtigungen.</p>
 ]]>
@@ -342,7 +342,10 @@
     <string name="settings_custom_menu_summary">Wählen Sie aus, welche Registerkarten in Ihrem Menü verfügbar sind.</string>
     <string name="settings_custom_menu_manage">Menü</string>
     <string name="settings_custom_menu_disable">Ihr Alfresco Administrator hat diese Funktion deaktiviert.</string>
-
+    <string name="settings.feedback">Feedback</string>
+    <string name="settings.feedback.diagnostic">Diagnose einsenden</string>
+    <string name="settings.feedback.diagnostic.summary">Um Alfresco Mobile weiter zu verbessern, sammeln wir anonym technische Diagnosedaten. Wenn Sie möchten, können Sie dies hier abstellen.</string>
+    <string name="settings.feedback.email">Feedback einsenden</string>
 
     <!-- Multi Selection -->
     <plurals name="selected_document">
@@ -733,8 +736,8 @@
     <string name="menu_browse_sync_content_folder">Synchronisierter Inhalt</string>
     <string name="menu_browse_favorites_folder">Ordner "Favoriten"</string>
     <string name="account_alfresco">Alfresco</string>
-    <string name="account_alfresco_cloud">Alfresco Cloud</string>
-    <string name="account_alfresco_onpremise">Alfresco vor Ort</string>
+    <string name="account_alfresco_cloud">Alfresco in the Cloud</string>
+    <string name="account_alfresco_onpremise">Alfresco Server</string>
 
 
     <!-- Accessibility -->
@@ -798,7 +801,7 @@
     <!-- AlfrescoDisplayName restriction -->
     <string name="title_alfresco_display_name">Anzeigename des Accounts</string>
     <string name="description_alfresco_display_name">Name des mit dem Server verbundenen Repositorys.</string>
-    <string name="default_alfresco_display_name" translatable="false">Alfresco Server</string>
+    <string name="default_alfresco_display_name">Alfresco Server</string>
 
 
     <!-- Empty -->

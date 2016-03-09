@@ -278,7 +278,7 @@
         Vérifiez vos paramètres de compte Alfresco et réessayez.<br/> Si le problème persiste, contactez votre administrateur.]]>
     </string>
     <string name="error_session_cloud_unavailable">
-<![CDATA[<p><b>Alfresco Cloud est actuellement surchargé !</b><br/></p>
+<![CDATA[<p><b>Alfresco in the Cloud est actuellement surchargé !</b><br/></p>
         Réessayez dans quelques minutes.<br/>]]>
     </string>
     <string name="error_session_expired">Votre session a expiré. Veuillez vous reconnecter.</string>
@@ -304,7 +304,7 @@
     <string name="account_verify">Vérification des informations du compte&#8230;</string>
     <string name="account_wizard_alldone_description">Vous pouvez maintenant utiliser votre compte.</string>
     <string name="account_default_onpremise">Serveur Alfresco</string>
-    <string name="account_default_cloud">Alfresco Cloud</string>
+    <string name="account_default_cloud">Alfresco in the Cloud</string>
 
     <!-- WAITING SESSION -->
     <string name="wait_title">Veuillez patienter</string>

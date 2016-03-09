@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2016 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.application.fragments.search;
 
 import java.text.SimpleDateFormat;
@@ -88,14 +88,16 @@ public class QueryHelper
             }
         }
 
+        boolean isSimpleStatement = TextUtils.isEmpty(title) && TextUtils.isEmpty(description);
+
         // Create the query based on properties
         StringBuilder whereClause = new StringBuilder();
 
         // Name
-        addParenFolderParameter(whereClause, parentFolder);
+        addParenFolderParameter(whereClause, parentFolder, isSimpleStatement);
 
         // Name
-        addContainsParameter(whereClause, PropertyIds.NAME, name);
+        addContainsParameter(whereClause, PropertyIds.NAME, name, isSimpleStatement);
 
         // Title
         addAspectContainsParameter(whereClause, CMIS_PROP_TITLE, title);
@@ -104,10 +106,10 @@ public class QueryHelper
         addAspectContainsParameter(whereClause, CMIS_PROP_DESCRIPTION, description);
 
         // Mimetype
-        addMimeTypeParameter(whereClause, mimetype);
+        addMimeTypeParameter(whereClause, mimetype, isSimpleStatement);
 
         // ModifiedBy
-        addParameter(whereClause, PropertyIds.LAST_MODIFIED_BY, OPERATOR_EQUAL, modifiedById);
+        addParameter(whereClause, PropertyIds.LAST_MODIFIED_BY, OPERATOR_EQUAL, modifiedById, isSimpleStatement);
 
         // Modified FROM
         if (modificationFrom != null)
@@ -115,7 +117,7 @@ public class QueryHelper
             GregorianCalendar localModificationFrom = (GregorianCalendar) modificationFrom.clone();
             localModificationFrom.add(Calendar.DAY_OF_MONTH, -1);
             addDateParameter(whereClause, PropertyIds.LAST_MODIFICATION_DATE, OPERATOR_SUPERIOR,
-                    formatLast(localModificationFrom));
+                    formatLast(localModificationFrom), isSimpleStatement);
         }
 
         // Modified TO
@@ -124,7 +126,7 @@ public class QueryHelper
             GregorianCalendar localModificationTo = (GregorianCalendar) modificationTo.clone();
             localModificationTo.add(Calendar.DAY_OF_MONTH, 1);
             addDateParameter(whereClause, PropertyIds.LAST_MODIFICATION_DATE, OPERATOR_INFERIOR,
-                    formatFirst(localModificationTo));
+                    formatFirst(localModificationTo), isSimpleStatement);
         }
 
         queryBuilder.append(whereClause);
@@ -137,9 +139,9 @@ public class QueryHelper
     public static String createPersonSearchQuery(String name, String jobTitle, String company, String location)
     {
         StringBuilder queryBuilder = new StringBuilder(name);
-        addPersonParameter(queryBuilder, "jobtitle", jobTitle);
-        addPersonParameter(queryBuilder, "organization", company);
-        addPersonParameter(queryBuilder, "location", location);
+        addPersonParameter(queryBuilder, "jobtitle", jobTitle, true);
+        addPersonParameter(queryBuilder, "organization", company, true);
+        addPersonParameter(queryBuilder, "location", location, true);
         return queryBuilder.toString();
     }
 
@@ -158,44 +160,70 @@ public class QueryHelper
         return dateFormat.format(calendar.getTime()).concat("T23:59:59.999Z");
     }
 
-    private static void addParenFolderParameter(StringBuilder builder, Folder value)
+    private static void addParenFolderParameter(StringBuilder builder, Folder value, Boolean isSimpleStatement)
     {
         if (value == null) { return; }
         if (builder.length() != 0)
         {
             builder.append(" AND ");
         }
-        builder.append(" IN_TREE('").append(value.getIdentifier()).append("')");
+        if (isSimpleStatement)
+        {
+            builder.append(" IN_TREE('");
+        }
+        else
+        {
+            builder.append(" IN_TREE(d,'");
+        }
+        builder.append(value.getIdentifier()).append("')");
     }
 
-    private static void addParameter(StringBuilder builder, String key, String operator, String value)
+    private static void addParameter(StringBuilder builder, String key, String operator, String value,
+            Boolean isSimpleStatement)
     {
         if (TextUtils.isEmpty(value)) { return; }
         if (builder.length() != 0)
         {
             builder.append(" AND ");
+        }
+        if (!isSimpleStatement)
+        {
+            builder.append("d.");
         }
         builder.append(key);
         builder.append(operator);
         builder.append("'").append(value).append("'");
     }
 
-    private static void addContainsParameter(StringBuilder builder, String key, String value)
+    private static void addContainsParameter(StringBuilder builder, String key, String value, Boolean isSimpleStatement)
     {
         if (TextUtils.isEmpty(value)) { return; }
         if (builder.length() != 0)
         {
             builder.append(" AND ");
         }
-        builder.append("CONTAINS('~").append(key).append(":\\\'").append(value).append("\\\'')");
+        if (isSimpleStatement)
+        {
+            builder.append("CONTAINS('~");
+        }
+        else
+        {
+            builder.append("CONTAINS(d, '~");
+        }
+        builder.append(key).append(":\\\'").append(value).append("\\\'')");
     }
 
-    private static void addDateParameter(StringBuilder builder, String key, String operator, String value)
+    private static void addDateParameter(StringBuilder builder, String key, String operator, String value,
+            Boolean isSimpleStatement)
     {
         if (TextUtils.isEmpty(value)) { return; }
         if (builder.length() != 0)
         {
             builder.append(" AND ");
+        }
+        if (!isSimpleStatement)
+        {
+            builder.append("d.");
         }
         builder.append(key);
         builder.append(" ");
@@ -214,7 +242,7 @@ public class QueryHelper
         builder.append("CONTAINS(t, '~").append(key).append(":\\\'").append(value).append("\\\'')");
     }
 
-    private static void addPersonParameter(StringBuilder builder, String key, String value)
+    private static void addPersonParameter(StringBuilder builder, String key, String value, Boolean isSimpleStatement)
     {
         if (TextUtils.isEmpty(value)) { return; }
         if (builder.length() != 0)
@@ -224,6 +252,10 @@ public class QueryHelper
         String[] values = value.split(" ");
         for (int i = 0; i < values.length; i++)
         {
+            if (!isSimpleStatement)
+            {
+                builder.append("d.");
+            }
             builder.append(key);
             builder.append(":");
             builder.append(values[i]);
@@ -231,7 +263,7 @@ public class QueryHelper
         }
     }
 
-    private static void addMimeTypeParameter(StringBuilder builder, int mimetypeKey)
+    private static void addMimeTypeParameter(StringBuilder builder, int mimetypeKey, Boolean isSimpleStatement)
     {
         List<MimeType> types = null;
         switch (mimetypeKey)
@@ -285,6 +317,10 @@ public class QueryHelper
         {
             builder.append(" AND ");
         }
+        if (!isSimpleStatement)
+        {
+            builder.append("d.");
+        }
         builder.append(PropertyIds.CONTENT_STREAM_MIME_TYPE);
         builder.append(" IN (");
         builder.append(sb);
@@ -327,6 +363,7 @@ public class QueryHelper
         return new ArrayList<MimeType>()
         {
             private static final long serialVersionUID = 1L;
+
             {
                 add(new MimeType(MimeType.TYPE_AUDIO, "x-aiff"));
                 add(new MimeType(MimeType.TYPE_AUDIO, "vnd.adobe.soundbooth"));
@@ -410,7 +447,8 @@ public class QueryHelper
                 add(new MimeType(MimeType.TYPE_APPLICATION, "vnd.oasis.opendocument.presentation"));
                 add(new MimeType(MimeType.TYPE_APPLICATION, "vnd.oasis.opendocument.presentation-template"));
                 add(new MimeType(MimeType.TYPE_APPLICATION, "vnd.ms-powerpoint.template.macroenabled.12"));
-                add(new MimeType(MimeType.TYPE_APPLICATION, "vnd.openxmlformats-officedocument.presentationml.template"));
+                add(new MimeType(MimeType.TYPE_APPLICATION,
+                        "vnd.openxmlformats-officedocument.presentationml.template"));
                 add(new MimeType(MimeType.TYPE_APPLICATION, "vnd.ms-powerpoint.slideshow.macroenabled.12"));
                 add(new MimeType(MimeType.TYPE_APPLICATION, "vnd.ms-powerpoint"));
                 add(new MimeType(MimeType.TYPE_APPLICATION, "vnd.ms-powerpoint.presentation.macroenabled.12"));
@@ -444,7 +482,8 @@ public class QueryHelper
                 add(new MimeType(MimeType.TYPE_APPLICATION, "vnd.ms-excel.sheet.macroenabled.12"));
                 add(new MimeType(MimeType.TYPE_APPLICATION, "vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
                 add(new MimeType(MimeType.TYPE_APPLICATION, "vnd.ms-excel.template.macroenabled.12"));
-                add(new MimeType(MimeType.TYPE_APPLICATION, "vnd.openxmlformats-officedocument.spreadsheetml.template"));
+                add(new MimeType(MimeType.TYPE_APPLICATION,
+                        "vnd.openxmlformats-officedocument.spreadsheetml.template"));
             }
         };
     }

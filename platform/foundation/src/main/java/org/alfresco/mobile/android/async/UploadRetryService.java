@@ -22,6 +22,7 @@ import java.util.Stack;
 
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.utils.ConnectivityUtils;
+import org.alfresco.mobile.android.sync.SyncContentManager;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -88,18 +89,25 @@ public class UploadRetryService extends Service
     private void retryOperations(Intent pIntent)
     {
         Uri uri = null;
+        Long accountId = -1L;
         if (pIntent.getExtras() != null && pIntent.hasExtra(PrivateIntent.EXTRA_OPERATION_ID))
         {
             uri = Uri.parse(pIntent.getStringExtra(PrivateIntent.EXTRA_OPERATION_ID));
         }
 
-        if (uri == null)
+        if (pIntent.getExtras() != null && pIntent.hasExtra(PrivateIntent.EXTRA_ACCOUNT_ID))
+        {
+            accountId = pIntent.getLongExtra(PrivateIntent.EXTRA_ACCOUNT_ID, -1);
+        }
+
+        if (uri == null || accountId == -1L)
         {
             stopSelf();
         }
 
         // Postpone if still offline (double time for each attempt)
-        if (!ConnectivityUtils.hasInternetAvailable(getApplicationContext()))
+        if (!ConnectivityUtils.hasInternetAvailable(getApplicationContext())
+                || !SyncContentManager.getInstance(getApplicationContext()).hasConnectivityToSync(accountId))
         {
             if (OperationsFactory.canRetry(getApplicationContext(), uri))
             {
@@ -107,11 +115,11 @@ public class UploadRetryService extends Service
                 pIntent.getExtras().clear();
                 if (delay * 2 < DEFAULT_DELAY_MAX)
                 {
-                    postpone(uri.toString(), delay * 2);
+                    postpone(uri.toString(), accountId, delay * 2);
                 }
             }
         }
-        else
+        else if (SyncContentManager.getInstance(getApplicationContext()).hasConnectivityToSync(accountId))
         {
             // Check if still present ?
             if (OperationsFactory.canRetry(getApplicationContext(), uri))
@@ -127,18 +135,22 @@ public class UploadRetryService extends Service
         stopSelf();
     }
 
-    private void postpone(String operationId, int delay)
+    private void postpone(String operationId, Long accountId, int delay)
     {
-        retryDelay(getApplicationContext(), operationId, delay);
+        retryDelay(getApplicationContext(), accountId, operationId, delay);
     }
 
-    public static void retryDelay(Context context, String operationId, int min)
+    public static void retryDelay(Context context, Long accountId, String operationId, int min)
     {
         // Start alarm to retry upload
         Intent postPoneIntent = new Intent(context, UploadRetryService.class);
         postPoneIntent.setAction(PrivateIntent.ACTION_RETRY_OPERATIONS);
         postPoneIntent.putExtra(PrivateIntent.EXTRA_OPERATION_ID, operationId);
         postPoneIntent.putExtra(PrivateIntent.EXTRA_OPERATION_DELAY, min);
+        if (accountId != null)
+        {
+            postPoneIntent.putExtra(PrivateIntent.EXTRA_ACCOUNT_ID, accountId);
+        }
         int uniqueInt = (int) (System.currentTimeMillis() & 0xfffffff);
         PendingIntent pIntent = PendingIntent.getService(context, uniqueInt, postPoneIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);

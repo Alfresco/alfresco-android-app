@@ -42,6 +42,8 @@ import org.alfresco.mobile.android.application.providers.search.HistorySearchCur
 import org.alfresco.mobile.android.application.providers.search.HistorySearchManager;
 import org.alfresco.mobile.android.application.providers.search.HistorySearchSchema;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsHelper;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.ui.fragments.BaseCursorGridFragment;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
@@ -115,6 +117,8 @@ public class SearchFragment extends BaseCursorGridFragment
         requiredSession = true;
         checkSession = true;
         setHasOptionsMenu(true);
+        reportAtCreation = true;
+        screenName = AnalyticsManager.SCREEN_SEARCH_FILES;
     }
 
     protected static SearchFragment newInstanceByTemplate(Bundle b)
@@ -395,10 +399,26 @@ public class SearchFragment extends BaseCursorGridFragment
 
     public void search(String keywords, HistorySearch search)
     {
+        String label = null;
+        switch (searchKey)
+        {
+            case HistorySearch.TYPE_DOCUMENT:
+                label = AnalyticsManager.LABEL_DOCUMENTS;
+                break;
+            case HistorySearch.TYPE_PERSON:
+                label = AnalyticsManager.LABEL_PEOPLE;
+                break;
+            case HistorySearch.TYPE_SITE:
+                label = AnalyticsManager.LABEL_SITES;
+                break;
+            default:
+                label = AnalyticsManager.LABEL_FOLDERS;
+                break;
+        }
+
         // History search so we use the query
         if (search != null && search.getAdvanced() == 1)
         {
-
             switch (searchKey)
             {
                 case HistorySearch.TYPE_PERSON:
@@ -414,6 +434,10 @@ public class SearchFragment extends BaseCursorGridFragment
             // Update
             HistorySearchManager.update(getActivity(), search.getId(), search.getAccountId(), search.getType(),
                     search.getAdvanced(), search.getDescription(), search.getQuery(), new Date().getTime());
+
+            AnalyticsHelper.reportOperationEvent(getActivity(), AnalyticsManager.CATEGORY_SEARCH,
+                    AnalyticsManager.ACTION_RUN_HISTORY, label, 1, false);
+
             return;
         }
 
@@ -446,11 +470,17 @@ public class SearchFragment extends BaseCursorGridFragment
         {
             HistorySearchManager.createHistorySearch(getActivity(), getAccount().getId(), searchKey, 0,
                     getQueryDescription(keywords, tmpParentFolder, site), keywords, new Date().getTime());
+
+            AnalyticsHelper.reportOperationEvent(getActivity(), AnalyticsManager.CATEGORY_SEARCH,
+                    AnalyticsManager.ACTION_RUN, label, 1, false);
         }
         else
         {
             HistorySearchManager.update(getActivity(), search.getId(), search.getAccountId(), search.getType(),
                     search.getAdvanced(), search.getDescription(), search.getQuery(), new Date().getTime());
+
+            AnalyticsHelper.reportOperationEvent(getActivity(), AnalyticsManager.CATEGORY_SEARCH,
+                    AnalyticsManager.ACTION_RUN_HISTORY, label, 1, false);
         }
     }
 
@@ -504,15 +534,18 @@ public class SearchFragment extends BaseCursorGridFragment
         switch (id)
         {
             case HistorySearch.TYPE_PERSON:
-                hintId = R.string.search_person_hint;
+                hintId = R.string.search;
+                screenName = AnalyticsManager.SCREEN_SEARCH_USERS;
                 // iconResId = R.drawable.ic_person_light;
                 break;
             case HistorySearch.TYPE_DOCUMENT:
-                hintId = R.string.search_form_hint;
+                hintId = R.string.search;
+                screenName = AnalyticsManager.SCREEN_SEARCH_FILES;
                 // iconResId = R.drawable.ic_office;
                 break;
             case HistorySearch.TYPE_FOLDER:
-                hintId = R.string.search_form_hint;
+                hintId = R.string.search;
+                screenName = AnalyticsManager.SCREEN_SEARCH_FOLDERS;
                 // iconResId = R.drawable.ic_repository_light;
                 break;
             default:
@@ -524,6 +557,8 @@ public class SearchFragment extends BaseCursorGridFragment
         searchForm.getText().clear();
         searchForm.setHint(hintId);
         searchKey = id;
+
+        AnalyticsHelper.reportScreen(getActivity(), screenName);
 
         // Refresh History
         refreshSilently();

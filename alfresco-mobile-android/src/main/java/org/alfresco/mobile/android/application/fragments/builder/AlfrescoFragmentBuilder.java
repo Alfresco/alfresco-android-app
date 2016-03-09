@@ -28,6 +28,8 @@ import org.alfresco.mobile.android.application.configuration.model.ConfigModelHe
 import org.alfresco.mobile.android.application.configuration.model.ViewConfigModel;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsHelper;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.platform.utils.BundleUtils;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
@@ -168,6 +170,12 @@ public abstract class AlfrescoFragmentBuilder
             // Retrieve configuration
             AlfrescoFragmentBuilder builder = (AlfrescoFragmentBuilder) v.getTag();
 
+            // Generally it's used when creating a menu item.
+            if (AnalyticsManager.getInstance(getActivity()) != null)
+            {
+                // AnalyticsManager.getInstance(getActivity()).reportScreen(builder.viewConfigModel.getSimpleType());
+            }
+
             // Views can requires a session.
             // We check against the activity to display the right info.
             if (builder.sessionRequired && getActivity() instanceof MainActivity)
@@ -231,6 +239,30 @@ public abstract class AlfrescoFragmentBuilder
     {
         Fragment frag = createFragment(createArguments());
         if (frag == null) { return null; }
+
+        // Analytics
+        // Report only fragment & report at creation enable (cf. pager case)
+        if (AnalyticsManager.getInstance(getActivity()) != null
+                || AnalyticsManager.getInstance(getActivity()).isEnable())
+        {
+            if (frag instanceof AnalyticsManager.FragmentAnalyzed
+                    && ((AnalyticsManager.FragmentAnalyzed) frag).reportAtCreationEnable())
+            {
+                if (viewConfigModel != null)
+                {
+                    // Track only Main Menu Selection
+                    AnalyticsHelper.reportScreen(getActivity(), AnalyticsManager.PREFIX_MENU
+                            .concat(((AnalyticsManager.FragmentAnalyzed) frag).getScreenName()));
+                }
+                else
+                {
+                    // Track all fragment created
+                    AnalyticsHelper.reportScreen(getActivity(),
+                            ((AnalyticsManager.FragmentAnalyzed) frag).getScreenName());
+                }
+            }
+        }
+
         // Retrieve session if fragment need it.
         if (sessionRequired && frag instanceof AlfrescoFragment)
         {

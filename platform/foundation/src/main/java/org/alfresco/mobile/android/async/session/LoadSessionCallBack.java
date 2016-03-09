@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2016 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.async.session;
 
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
@@ -26,6 +26,7 @@ import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.exception.AlfrescoExceptionHelper;
 import org.alfresco.mobile.android.platform.exception.CloudExceptionUtils;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsHelper;
 
 import android.content.Context;
 import android.util.Log;
@@ -50,16 +51,17 @@ public class LoadSessionCallBack implements Operation.OperationCallback<Alfresco
     @Override
     public void onPreExecute(Operation<AlfrescoSession> task)
     {
-        EventBusManager.getInstance().post(
-                new LoadAccountStartedEvent(task.getRequestId(), ((LoadSessionOperation) task).getAccount()));
+        EventBusManager.getInstance()
+                .post(new LoadAccountStartedEvent(task.getRequestId(), ((LoadSessionOperation) task).getAccount()));
     }
 
     @Override
-    public void onPostExecute(Operation<AlfrescoSession> task, AlfrescoSession results)
+    public void onPostExecute(Operation<AlfrescoSession> task, AlfrescoSession result)
     {
-        saveData(task, results);
-        EventBusManager.getInstance().post(
-                new LoadAccountCompletedEvent(task.getRequestId(), ((LoadSessionOperation) task).getAccount()));
+        saveData(task, result);
+
+        EventBusManager.getInstance()
+                .post(new LoadAccountCompletedEvent(task.getRequestId(), ((LoadSessionOperation) task).getAccount()));
     }
 
     @Override
@@ -83,16 +85,15 @@ public class LoadSessionCallBack implements Operation.OperationCallback<Alfresco
                 else
                 {
                     // Cloud Account is not active
-                    EventBusManager.getInstance().post(
-                            new LoadInactiveAccountEvent(task.getRequestId(), ((LoadSessionOperation) task)
-                                    .getAccount()));
+                    EventBusManager.getInstance().post(new LoadInactiveAccountEvent(task.getRequestId(),
+                            ((LoadSessionOperation) task).getAccount()));
                 }
                 break;
             case AlfrescoAccount.TYPE_ALFRESCO_TEST_BASIC:
             case AlfrescoAccount.TYPE_ALFRESCO_CMIS:
-                EventBusManager.getInstance().post(
-                        new LoadAccountErrorEvent(task.getRequestId(), ((LoadSessionOperation) task).getAccount(), e,
-                                AlfrescoExceptionHelper.getMessageId(context, e)));
+                EventBusManager.getInstance()
+                        .post(new LoadAccountErrorEvent(task.getRequestId(), ((LoadSessionOperation) task).getAccount(),
+                                e, AlfrescoExceptionHelper.getMessageId(context, e)));
                 break;
             default:
                 break;
@@ -109,6 +110,8 @@ public class LoadSessionCallBack implements Operation.OperationCallback<Alfresco
         {
             SessionManager.getInstance(context).saveSession(acc, session);
         }
+
+        AnalyticsHelper.checkServerConfiguration(context, session, acc);
 
         // For cloud session, try to save the latest version of oauthdata
         if (loadingTask.getOAuthData() == null) return;

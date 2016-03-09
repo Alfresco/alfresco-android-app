@@ -37,6 +37,7 @@ import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.SessionManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.exception.AlfrescoExceptionHelper;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.ui.oauth.OAuthFragment;
 import org.alfresco.mobile.android.ui.oauth.OnOAuthAccessTokenListener;
 
@@ -55,7 +56,7 @@ import android.webkit.WebView;
 
 import com.squareup.otto.Subscribe;
 
-public class AccountOAuthFragment extends OAuthFragment
+public class AccountOAuthFragment extends OAuthFragment implements AnalyticsManager.FragmentAnalyzed
 {
     public static final String TAG = "AccountOAuthFragment";
 
@@ -76,7 +77,7 @@ public class AccountOAuthFragment extends OAuthFragment
 
     public static AccountOAuthFragment newInstance(Context context)
     {
-        AccountOAuthFragment bf = new AccountOAuthFragment();
+        AccountOAuthFragment bf = getOAuthFragment(context, null);
         Bundle b = createBundleArgs(R.layout.fr_oauth_cloud);
         bf.setArguments(b);
         return bf;
@@ -100,7 +101,7 @@ public class AccountOAuthFragment extends OAuthFragment
     {
         String oauthUrl = null, apikey = null, apisecret = null;
         Bundle b = SessionManager.getInstance(context).getOAuthSettings();
-        if (b != null)
+        if (b != null && !b.isEmpty())
         {
             oauthUrl = b.getString(OAUTH_URL);
             apikey = b.getString(OAUTH_API_KEY);
@@ -121,7 +122,7 @@ public class AccountOAuthFragment extends OAuthFragment
         AccountOAuthFragment oauthFragment;
         if (oauthUrl == null || oauthUrl.isEmpty())
         {
-            oauthFragment = AccountOAuthFragment.newInstance(context);
+            oauthFragment = new AccountOAuthFragment();
         }
         else
         {
@@ -241,9 +242,8 @@ public class AccountOAuthFragment extends OAuthFragment
         if (getArguments() != null && getArguments().containsKey(ARGUMENT_ACCOUNT))
         {
             // TODO Replace by SessionMAnager
-            EventBusManager.getInstance().post(
-                    new RequestSessionEvent((AlfrescoAccount) getArguments().getSerializable(ARGUMENT_ACCOUNT),
-                            oauthData));
+            EventBusManager.getInstance().post(new RequestSessionEvent(
+                    (AlfrescoAccount) getArguments().getSerializable(ARGUMENT_ACCOUNT), oauthData));
         }
         else
         {
@@ -260,15 +260,15 @@ public class AccountOAuthFragment extends OAuthFragment
     private void retryOAuthAuthentication()
     {
         reload();
-        AlfrescoNotificationManager.getInstance(getActivity()).showLongToast(
-                getActivity().getString(R.string.error_general));
+        AlfrescoNotificationManager.getInstance(getActivity())
+                .showLongToast(getActivity().getString(R.string.error_general));
     }
 
     private void retryOAuthAuthentication(Exception e)
     {
         reload();
-        AlfrescoNotificationManager.getInstance(getActivity()).showLongToast(
-                getString(AlfrescoExceptionHelper.getMessageId(getActivity(), e)));
+        AlfrescoNotificationManager.getInstance(getActivity())
+                .showLongToast(getString(AlfrescoExceptionHelper.getMessageId(getActivity(), e)));
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -292,11 +292,23 @@ public class AccountOAuthFragment extends OAuthFragment
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
             if (acc.getIsPaidAccount() && !prefs.getBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, false))
             {
-                prefs.edit().putBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, true).commit();
+                prefs.edit().putBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, true).apply();
             }
             AccountNameFragment.with(getActivity()).accountId(acc.getId()).back(false).display();
             return;
         }
+    }
+
+    @Override
+    public String getScreenName()
+    {
+        return AnalyticsManager.SCREEN_ACCOUNT_OAUTH;
+    }
+
+    @Override
+    public boolean reportAtCreationEnable()
+    {
+        return true;
     }
 
     // ///////////////////////////////////////////////////////////////////////////

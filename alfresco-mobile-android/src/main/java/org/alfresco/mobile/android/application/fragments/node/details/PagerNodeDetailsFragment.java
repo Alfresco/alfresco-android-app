@@ -39,6 +39,8 @@ import org.alfresco.mobile.android.async.node.like.LikeNodeEvent;
 import org.alfresco.mobile.android.async.node.sync.SyncNodeEvent;
 import org.alfresco.mobile.android.async.node.update.UpdateContentEvent;
 import org.alfresco.mobile.android.async.node.update.UpdateNodeEvent;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsHelper;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.sync.utils.NodeSyncPlaceHolder;
 
 import android.annotation.TargetApi;
@@ -58,7 +60,7 @@ import com.squareup.otto.Subscribe;
 
 /**
  * Responsible to display details of a specific Node.
- * 
+ *
  * @author Jean Marie Pascal
  */
 public class PagerNodeDetailsFragment extends NodeDetailsFragment
@@ -71,6 +73,8 @@ public class PagerNodeDetailsFragment extends NodeDetailsFragment
     public PagerNodeDetailsFragment()
     {
         setHasOptionsMenu(true);
+        screenName = AnalyticsManager.SCREEN_NODE_SUMMARY;
+        reportAtCreation = false;
     }
 
     protected static PagerNodeDetailsFragment newInstanceByTemplate(Bundle b)
@@ -112,6 +116,8 @@ public class PagerNodeDetailsFragment extends NodeDetailsFragment
         NodeDetailsPagerAdapter adapter = new NodeDetailsPagerAdapter(getChildFragmentManager(), getActivity(), node,
                 parentNode);
         viewPager.setAdapter(adapter);
+        viewPager.addOnPageChangeListener(pageChangeListener);
+        pageChangeListener.onPageSelected(0);
         viewPager.setCurrentItem(0);
         tabs.setViewPager(viewPager);
         tabs.setTextColor(getResources().getColor(android.R.color.black));
@@ -140,6 +146,77 @@ public class PagerNodeDetailsFragment extends NodeDetailsFragment
             }
         }
     }
+
+    ViewPager.OnPageChangeListener pageChangeListener = new ViewPager.OnPageChangeListener()
+    {
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels)
+        {
+
+        }
+
+        @Override
+        public void onPageSelected(int position)
+        {
+            if (AnalyticsManager.getInstance(getActivity()) != null)
+            {
+                boolean isTablet = !getActivity().getResources().getBoolean(R.bool.fr_details_summary);
+                if (node instanceof NodeSyncPlaceHolder)
+                {
+                    screenName = (isTablet) ? AnalyticsManager.SCREEN_NODE_PROPERTIES
+                            : AnalyticsManager.SCREEN_NODE_SUMMARY;
+                }
+                else if (node instanceof Folder)
+                {
+                    switch (position + 1)
+                    {
+                        case NodeDetailsPagerAdapter.TAB_METADATA:
+                            screenName = (isTablet) ? AnalyticsManager.SCREEN_NODE_PROPERTIES
+                                    : AnalyticsManager.SCREEN_NODE_SUMMARY;
+                            break;
+                        case NodeDetailsPagerAdapter.TAB_COMMENTS:
+                            screenName = AnalyticsManager.SCREEN_NODE_COMMENTS;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                else
+                {
+                    int relativePosition = position;
+                    if (!isTablet)
+                    {
+                        relativePosition++;
+                    }
+                    switch (relativePosition)
+                    {
+                        case NodeDetailsPagerAdapter.TAB_PREVIEW:
+                            screenName = AnalyticsManager.SCREEN_NODE_PREVIEW;
+                            break;
+                        case NodeDetailsPagerAdapter.TAB_METADATA:
+                            screenName = (isTablet) ? AnalyticsManager.SCREEN_NODE_PROPERTIES
+                                    : AnalyticsManager.SCREEN_NODE_SUMMARY;
+                            break;
+                        case NodeDetailsPagerAdapter.TAB_COMMENTS:
+                            screenName = AnalyticsManager.SCREEN_NODE_COMMENTS;
+                            break;
+                        case NodeDetailsPagerAdapter.TAB_HISTORY:
+                            screenName = AnalyticsManager.SCREEN_NODE_VERSIONS;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                AnalyticsHelper.reportScreen(getActivity(), screenName);
+            }
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int state)
+        {
+
+        }
+    };
 
     // ///////////////////////////////////////////////////////////////////////////
     // EVENTS RECEIVER

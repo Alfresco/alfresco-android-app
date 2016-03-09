@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.SortedMap;
 
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsHelper;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 import org.alfresco.mobile.android.ui.holder.SingleLineViewHolder;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
@@ -71,6 +73,8 @@ public class EncodingDialogFragment extends DialogFragment
     // ///////////////////////////////////////////////////////////////////////////
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
+        AnalyticsHelper.reportScreen(getActivity(), AnalyticsManager.SCREEN_TEXT_EDITOR_ENCODING);
+
         if (getArguments() != null && getArguments().containsKey(ARGUMENT_DEFAULT_CHARSET))
         {
             defaultCharset = getArguments().getString(ARGUMENT_DEFAULT_CHARSET, "UTF-8");

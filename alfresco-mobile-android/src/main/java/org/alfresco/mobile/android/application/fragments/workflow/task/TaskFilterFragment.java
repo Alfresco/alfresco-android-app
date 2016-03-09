@@ -24,6 +24,7 @@ import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.ListingFilter;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
@@ -50,6 +51,11 @@ public class TaskFilterFragment extends AlfrescoFragment
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
+    public TaskFilterFragment()
+    {
+        screenName = AnalyticsManager.SCREEN_TASKS_FILTER;
+    }
+
     protected static TaskFilterFragment newInstanceByTemplate(Bundle b)
     {
         TaskFilterFragment cbf = new TaskFilterFragment();
@@ -78,7 +84,8 @@ public class TaskFilterFragment extends AlfrescoFragment
         expandableList.setOnChildClickListener(new OnChildClickListener()
         {
             @Override
-            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id)
+            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition,
+                    long id)
             {
                 expListAdapter.select(v, groupPosition, childPosition);
                 return false;

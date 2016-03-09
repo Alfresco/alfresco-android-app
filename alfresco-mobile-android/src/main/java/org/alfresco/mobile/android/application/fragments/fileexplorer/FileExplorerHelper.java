@@ -120,7 +120,7 @@ public final class FileExplorerHelper
                     LibraryFragment.with(activity).mediaType(mediatype).mode(mode).isShortCut(true)
                             .menuId(itemPosition).display();
                 }
-                prefs.edit().putInt(FILEEXPLORER_DEFAULT, itemPosition).commit();
+                prefs.edit().putInt(FILEEXPLORER_DEFAULT, itemPosition).apply();
 
                 return true;
             }

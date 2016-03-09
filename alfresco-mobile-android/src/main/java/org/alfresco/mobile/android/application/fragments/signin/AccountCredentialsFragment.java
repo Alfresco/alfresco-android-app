@@ -32,6 +32,7 @@ import org.alfresco.mobile.android.async.account.CreateAccountEvent;
 import org.alfresco.mobile.android.async.account.CreateAccountRequest;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.exception.AlfrescoExceptionHelper;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
@@ -90,6 +91,7 @@ public class AccountCredentialsFragment extends AlfrescoFragment
         super();
         eventBusRequired = true;
         requiredSession = false;
+        screenName = AnalyticsManager.SCREEN_ACCOUNT_USER;
     }
 
     public static AccountCredentialsFragment newInstanceByTemplate(Bundle b)
@@ -314,7 +316,7 @@ public class AccountCredentialsFragment extends AlfrescoFragment
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
             if (acc.getIsPaidAccount() && !prefs.getBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, false))
             {
-                prefs.edit().putBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, true).commit();
+                prefs.edit().putBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, true).apply();
             }
             AccountNameFragment.with(getActivity()).accountId(acc.getId()).back(false).display();
         }

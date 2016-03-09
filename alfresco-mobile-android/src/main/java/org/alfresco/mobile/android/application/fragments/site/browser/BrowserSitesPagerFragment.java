@@ -26,6 +26,8 @@ import org.alfresco.mobile.android.application.activity.PublicDispatcherActivity
 import org.alfresco.mobile.android.application.configuration.model.view.SiteBrowserConfigModel;
 import org.alfresco.mobile.android.application.fragments.builder.ListingFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.site.search.SearchSitesFragment;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsHelper;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.site.SitesTemplate;
@@ -51,6 +53,7 @@ public class BrowserSitesPagerFragment extends AlfrescoFragment
     // //////////////////////////////////////////////////////////////////////
     public BrowserSitesPagerFragment()
     {
+        reportAtCreation = false;
     }
 
     protected static BrowserSitesPagerFragment newInstanceByTemplate(Bundle b)
@@ -74,6 +77,8 @@ public class BrowserSitesPagerFragment extends AlfrescoFragment
         SitesPagerAdapter adapter = new SitesPagerAdapter(getChildFragmentManager(), getActivity(),
                 getSession() instanceof CloudSession);
         viewPager.setAdapter(adapter);
+        viewPager.addOnPageChangeListener(pageChangeListener);
+        pageChangeListener.onPageSelected(SitesPagerAdapter.TAB_MY_SITES);
         viewPager.setCurrentItem(SitesPagerAdapter.TAB_MY_SITES);
 
         PagerSlidingTabStrip tabs = (PagerSlidingTabStrip) v.findViewById(R.id.tabs);
@@ -93,6 +98,43 @@ public class BrowserSitesPagerFragment extends AlfrescoFragment
         }
         return title;
     }
+
+    ViewPager.OnPageChangeListener pageChangeListener = new ViewPager.OnPageChangeListener()
+    {
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels)
+        {
+
+        }
+
+        @Override
+        public void onPageSelected(int position)
+        {
+            if (AnalyticsManager.getInstance(getActivity()) != null)
+            {
+                switch (position)
+                {
+                    case SitesPagerAdapter.TAB_FAV_SITES:
+                        screenName = AnalyticsManager.SCREEN_SITES_FAVORITES;
+                        break;
+                    case SitesPagerAdapter.TAB_MY_SITES:
+                        screenName = AnalyticsManager.SCREEN_SITES_MY;
+                        break;
+                    default:
+                        screenName = (getSession() instanceof CloudSession) ? AnalyticsManager.SCREEN_SITES_ALL
+                                : AnalyticsManager.SCREEN_SITES_SEARCH;
+                        break;
+                }
+                AnalyticsHelper.reportScreen(getActivity(), screenName);
+            }
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int state)
+        {
+
+        }
+    };
 
     // ///////////////////////////////////////////////////////////////////////////
     // BUILDER
@@ -159,18 +201,20 @@ class SitesPagerAdapter extends FragmentStatePagerAdapter
     public Fragment getItem(int position)
     {
         SitesFragment.Builder builder = SitesFragment.with(activity.get());
+        Fragment fr;
         switch (position)
         {
             case TAB_FAV_SITES:
-                builder.favorite(true);
+                fr = builder.favorite(true).createFragment();
                 break;
             case TAB_MY_SITES:
-                builder.favorite(false);
+                fr = builder.favorite(false).createFragment();
                 break;
             default:
-                return (isCloud) ? builder.createFragment() : SearchSitesFragment.with(activity.get()).createFragment();
+                fr = (isCloud) ? builder.createFragment() : SearchSitesFragment.with(activity.get()).createFragment();
+                break;
         }
-        return builder.createFragment();
+        return fr;
     }
 
     @Override

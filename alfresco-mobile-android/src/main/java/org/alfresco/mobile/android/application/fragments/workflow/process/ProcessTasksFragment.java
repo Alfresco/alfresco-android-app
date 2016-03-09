@@ -28,6 +28,7 @@ import org.alfresco.mobile.android.application.fragments.builder.ListingFragment
 import org.alfresco.mobile.android.async.OperationRequest.OperationBuilder;
 import org.alfresco.mobile.android.async.workflow.task.TasksEvent;
 import org.alfresco.mobile.android.async.workflow.task.TasksRequest;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.ui.fragments.BaseGridFragment;
 
 import android.os.Bundle;
@@ -59,6 +60,7 @@ public class ProcessTasksFragment extends BaseGridFragment
         emptyListMessageId = R.string.empty_tasks;
         retrieveDataOnCreation = true;
         checkSession = true;
+        screenName = AnalyticsManager.SCREEN_TASKS_HISTORY;
     }
 
     protected static ProcessTasksFragment newInstanceByTemplate(Bundle b)

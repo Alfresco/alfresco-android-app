@@ -32,6 +32,7 @@ import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmen
 import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsFragment;
 import org.alfresco.mobile.android.application.fragments.user.UserProfileFragment;
 import org.alfresco.mobile.android.async.activitystream.ActivityStreamEvent;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.ui.activitystream.ActivityStreamFragment;
 
 import android.os.Bundle;
@@ -61,7 +62,7 @@ public class ActivityFeedFragment extends ActivityStreamFragment
         super();
         displayAsList = true;
         setHasOptionsMenu(true);
-
+        screenName = AnalyticsManager.SCREEN_ACTIVITIES;
     }
 
     public static ActivityFeedFragment newInstanceByTemplate(Bundle b)

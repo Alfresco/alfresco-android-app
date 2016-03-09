@@ -50,9 +50,9 @@
     <string name="home_account">I already have an account</string>
     <string name="home_helper">If you want to learn more about Alfresco Mobile take a look at <a href="alfresco://view_help_guide/">our guide</a> in the Help area</string>
 
-    <string name="account_wizard_alfresco_server">Alfresco One</string>
+    <string name="account_wizard_alfresco_server">Alfresco Server</string>
     <string name="account_wizard_or">Or</string>
-    <string name="account_wizard_alfresco_cloud">Alfresco Cloud</string>
+    <string name="account_wizard_alfresco_cloud">Alfresco in the Cloud</string>
 
     <string name="account">Account</string>
     <string name="action_add_account">Add an account</string>
@@ -74,7 +74,7 @@
     <string name="account_verify">Verifying Alfresco Account Information&#8230;</string>
 
     <!-- ACCOUNTS -->
-    <string name="account_default_cloud">Alfresco Cloud</string>
+    <string name="account_default_cloud">Alfresco in the Cloud</string>
     <string name="account_default_onpremise">Alfresco Server</string>
 
     <!-- WAITING SESSION -->
@@ -173,7 +173,7 @@
     <string name="sdknumber_version">SDK: </string>
     <string name="about_description">
 <![CDATA[
-<p>Alfresco Mobile connects to Alfresco in the cloud and Alfresco on premise servers (3.4 and above) to provide safe access to your corporate content on the go.</p>
+<p>Alfresco Mobile connects to Alfresco in the Cloud and Alfresco on premise servers (3.4 and above) to provide safe access to your corporate content on the go.</p>
 
 <p>Alfresco Mobile connects to your Alfresco repository using your Alfresco log-in credentials (over HTTP or HTTPS), and manages user access based on their permissions.</p>
 ]]>
@@ -342,7 +342,10 @@
     <string name="settings_custom_menu_summary">Select which tabs are available on your menu.</string>
     <string name="settings_custom_menu_manage">Menu</string>
     <string name="settings_custom_menu_disable">Your Alfresco Administrator has disabled this feature.</string>
-
+    <string name="settings.feedback">Feedback</string>
+    <string name="settings.feedback.diagnostic">Send Diagnostics</string>
+    <string name="settings.feedback.diagnostic.summary">To help us improve Alfresco Mobile, we collect anonymous technical diagnostic data. Switch off if preferred.</string>
+    <string name="settings.feedback.email">Send Feedback</string>
 
     <!-- Multi Selection -->
     <plurals name="selected_document">
@@ -395,7 +398,7 @@
     <string name="sync_empty_title">Keep your files in sync</string>
     <string name="sync_empty_description">You can view and edit your synced files when you\'re offline</string>
 
-    <string name="sync_info_one_title">Sync has changed !</string>
+    <string name="sync_info_one_title">Sync has changed!</string>
     <string name="sync_info_one_first_text">You can now sync different files on different devices. Just find a file and sync it!</string>
     <string name="sync_info_one_second_text">View and edit your synced files when you\'re offline. When you\'re back online they\'ll automatically sync with Alfresco.</string>
     <string name="sync_info_two_title">What about the files I already favorited?</string>
@@ -733,7 +736,7 @@
     <string name="menu_browse_sync_content_folder">Synced Content</string>
     <string name="menu_browse_favorites_folder">Favorites Folder</string>
     <string name="account_alfresco">Alfresco</string>
-    <string name="account_alfresco_cloud">Alfresco Cloud</string>
+    <string name="account_alfresco_cloud">Alfresco in the Cloud</string>
     <string name="account_alfresco_onpremise">Alfresco On Premise</string>
 
 
@@ -798,7 +801,7 @@
     <!-- AlfrescoDisplayName restriction -->
     <string name="title_alfresco_display_name">Account Display Name</string>
     <string name="description_alfresco_display_name">Name of the server associated to the repository.</string>
-    <string name="default_alfresco_display_name" translatable="false">Alfresco Server</string>
+    <string name="default_alfresco_display_name">Alfresco Server</string>
 
 
     <!-- Empty -->

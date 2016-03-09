@@ -66,6 +66,7 @@ public class SitesFragment extends CommonBrowserSitesFragment
         super();
         retrieveDataOnCreation = true;
         loadState = LOAD_VISIBLE;
+        reportAtCreation = false;
     }
 
     public static SitesFragment newInstanceByTemplate(Bundle b)

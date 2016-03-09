@@ -22,6 +22,8 @@ import java.util.List;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.data.DocumentTypeRecord;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsHelper;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 import org.alfresco.mobile.android.ui.holder.SingleLineViewHolder;
 
@@ -87,6 +89,8 @@ public class DocumentTypesDialogFragment extends DialogFragment
     // ///////////////////////////////////////////////////////////////////////////
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
+        AnalyticsHelper.reportScreen(getActivity(), AnalyticsManager.SCREEN_NODE_CREATE_TYPE);
+
         fileTypes = DocumentTypeRecordHelper.getCreationDocumentTypeList(getActivity());
         FileTypeAdapter adapter = new FileTypeAdapter(getActivity(), R.layout.row_single_line, fileTypes);
 
@@ -96,6 +100,10 @@ public class DocumentTypesDialogFragment extends DialogFragment
                     @Override
                     public void onSelection(MaterialDialog materialDialog, View view, int position,
                                             CharSequence charSequence) {
+                        AnalyticsHelper.reportOperationEvent(getActivity(),
+                                AnalyticsManager.CATEGORY_DOCUMENT_MANAGEMENT, AnalyticsManager.ACTION_QUICK_ACTIONS,
+                                AnalyticsManager.ACTION_CREATE.concat(" " + fileTypes.get(position).mimetype), 1,
+                                false);
                         Bundle b = getArguments();
                         b.putSerializable(ARGUMENT_DOCUMENT_TYPE, fileTypes.get(position));
                         EditorsDialogFragment dialogft = EditorsDialogFragment.newInstance(b);

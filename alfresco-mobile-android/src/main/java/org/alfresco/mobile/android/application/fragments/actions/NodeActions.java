@@ -51,6 +51,8 @@ import org.alfresco.mobile.android.async.node.like.LikeNodeRequest;
 import org.alfresco.mobile.android.async.node.sync.SyncNodeRequest;
 import org.alfresco.mobile.android.async.utils.NodePlaceHolder;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsHelper;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
@@ -236,6 +238,7 @@ public class NodeActions extends AbstractActions<Node>
     @Override
     public boolean onActionItemClicked(ActionMode mode, MenuItem item)
     {
+        String label = null;
         Boolean b = false;
         switch (item.getItemId())
         {
@@ -243,48 +246,59 @@ public class NodeActions extends AbstractActions<Node>
                 NodeDetailsFragment.with(getActivity()).node(selectedItems.get(0)).display();
                 break;
             case R.id.menu_action_update:
+                label = AnalyticsManager.ACTION_UPDATE;
                 update(getActivity().getSupportFragmentManager().findFragmentByTag(PagerNodeDetailsFragment.TAG));
                 b = true;
                 break;
             case R.id.menu_action_sync_group_sync:
+                label = AnalyticsManager.ACTION_SYNC;
                 sync(true);
                 b = true;
                 break;
             case R.id.menu_action_sync_group_unsync:
+                label = AnalyticsManager.ACTION_UNSYNC;
                 sync(false);
                 b = true;
                 break;
             case R.id.menu_action_favorite_group_favorite:
+                label = AnalyticsManager.ACTION_FAVORITE;
                 favorite(true);
                 b = true;
                 break;
             case R.id.menu_action_favorite_group_unfavorite:
+                label = AnalyticsManager.ACTION_UNFAVORITE;
                 favorite(false);
                 b = true;
                 break;
             case R.id.menu_action_like_group_like:
+                label = AnalyticsManager.ACTION_LIKE;
                 like(true);
                 b = true;
                 break;
             case R.id.menu_action_like_group_unlike:
+                label = AnalyticsManager.ACTION_UNLIKE;
                 like(false);
                 b = true;
                 break;
             case R.id.menu_action_download_all:
             case R.id.menu_action_download:
+                label = AnalyticsManager.ACTION_DOWNLOAD;
                 download();
                 b = true;
                 break;
             case R.id.menu_action_edit:
+                label = AnalyticsManager.ACTION_EDIT;
                 edit(getActivity(), parentFolder, selectedItems.get(0));
                 b = true;
                 break;
             case R.id.menu_action_delete:
             case R.id.menu_action_delete_folder:
+                label = AnalyticsManager.ACTION_DELETE;
                 delete(getActivity(), getFragment(), new ArrayList<Node>(selectedItems));
                 b = true;
                 break;
             case R.id.menu_workflow_review_attachments:
+                label = AnalyticsManager.ACTION_START_REVIEW;
                 startReview();
                 b = true;
                 break;
@@ -293,6 +307,10 @@ public class NodeActions extends AbstractActions<Node>
         }
         if (b)
         {
+            // Analytics
+            AnalyticsHelper.reportOperationEvent(getActivity(), AnalyticsManager.CATEGORY_DOCUMENT_MANAGEMENT,
+                    AnalyticsManager.ACTION_MULTI_SELECT, label, selectedItems.size(), false);
+
             selectedItems.clear();
             selectedDocument.clear();
             selectedFolder.clear();

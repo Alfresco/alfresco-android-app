@@ -1,20 +1,20 @@
-/*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+/*
+ *  Copyright (C) 2005-2016 Alfresco Software Limited.
  *
- * This file is part of Alfresco Mobile for Android.
+ *  This file is part of Alfresco Mobile for Android.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.alfresco.mobile.android.sync;
 
 import org.alfresco.mobile.android.foundation.R;
@@ -132,7 +132,7 @@ public class SyncScanInfo
         sharedPref.edit().putLong(SYNCHRO_SCAN_DATA_DELTA_PREFIX + account.getId(), deltaDataTransfer)
                 .putLong(SYNCHRO_SCAN_DATA_TRANSFER_PREFIX + account.getId(), dataToTransfer)
                 .putInt(SYNCHRO_SCAN_RESULT_PREFIX + account.getId(), scanResult)
-                .putInt(SYNCHRO_SCAN_RESPONSE_PREFIX + account.getId(), scanResponse).commit();
+                .putInt(SYNCHRO_SCAN_RESPONSE_PREFIX + account.getId(), scanResponse).apply();
     }
 
     public void reset(Context context, AlfrescoAccount account)
@@ -140,7 +140,7 @@ public class SyncScanInfo
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         sharedPref.edit().remove(SYNCHRO_SCAN_DATA_DELTA_PREFIX + account.getId())
                 .remove(SYNCHRO_SCAN_DATA_TRANSFER_PREFIX + account.getId())
-                .remove(SYNCHRO_SCAN_RESULT_PREFIX + account.getId()).commit();
+                .remove(SYNCHRO_SCAN_RESULT_PREFIX + account.getId()).apply();
     }
 
     public static SyncScanInfo getLastSyncScanData(Context context, AlfrescoAccount account)
@@ -163,7 +163,7 @@ public class SyncScanInfo
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         sharedPref.edit().putLong(SYNCHRO_SCAN_DATA_DELTA_PREFIX + account.getId(), deltaDataTransfer)
                 .putLong(SYNCHRO_SCAN_DATA_TRANSFER_PREFIX + account.getId(), dateToTransfer)
-                .putInt(SYNCHRO_SCAN_RESULT_PREFIX + account.getId(), scanResult).commit();
+                .putInt(SYNCHRO_SCAN_RESULT_PREFIX + account.getId(), scanResult).apply();
     }
 
     public String getErrorMessage(Context context)

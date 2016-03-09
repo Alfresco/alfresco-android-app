@@ -1,10 +1,29 @@
+/*
+ *  Copyright (C) 2005-2016 Alfresco Software Limited.
+ *
+ *  This file is part of Alfresco Mobile for Android.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 buildscript {
     repositories {
         jcenter()
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.2.3'
+        classpath 'com.android.tools.build:gradle:1.5.0'
+        classpath 'com.google.gms:google-services:1.5.0'
     }
 }
 
@@ -16,6 +35,9 @@ allprojects {
         }
         maven {
             url "https://artifacts.alfresco.com/nexus/content/groups/public-snapshots"
+        }
+        maven {
+            url "https://jitpack.io"
         }
         jcenter()
         mavenCentral()

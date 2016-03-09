@@ -42,6 +42,8 @@ import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.node.create.CreateDocumentRequest;
 import org.alfresco.mobile.android.async.node.create.RetrieveDocumentNameEvent;
 import org.alfresco.mobile.android.async.node.create.RetrieveDocumentNameRequest;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsHelper;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
@@ -111,6 +113,7 @@ public abstract class CreateDocumentDialogFragment extends AlfrescoFragment
     // //////////////////////////////////////////////////////////////////////
     public CreateDocumentDialogFragment()
     {
+        screenName = AnalyticsManager.SCREEN_NODE_CREATE_FORM;
     }
 
     public static Bundle createBundle(Folder folder)
@@ -133,6 +136,8 @@ public abstract class CreateDocumentDialogFragment extends AlfrescoFragment
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
+        AnalyticsHelper.reportScreen(getActivity(), AnalyticsManager.SCREEN_NODE_CREATE_FORM);
+
         return new MaterialDialog.Builder(getActivity()).iconRes(R.drawable.ic_application_logo)
                 .title(R.string.content_upload).customView(createView(LayoutInflater.from(getActivity()), null), true)
                 .positiveText(R.string.create).negativeText(R.string.cancel)
