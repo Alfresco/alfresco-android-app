@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  Copyright (C) 2005-2013 Alfresco Software Limited.
-  
+  Copyright (C) 2005-2016 Alfresco Software Limited.
+
   This file is part of Alfresco Mobile for Android.
-  
+
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
-  
+
     http://www.apache.org/licenses/LICENSE-2.0
-  
+
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,7 +21,7 @@
     <string name="empty_accounts">使用できる Alfresco アカウントがありません</string>
 
     <!-- SIGN IN & CREATE ACCOUNT SCREEN -->
-    <string name="general_login_server_title">Alfresco Server のホスト名を入力してください</string>
+    <string name="general_login_server_title">Alfresco サーバーのホスト名を入力してください</string>
     <string name="general_login_server_hostname">ホスト名</string>
     <string name="general_login_server_next">続行</string>
     <string name="general_login_server_done">完了</string>
@@ -50,7 +50,7 @@
     <string name="home_account">アカウントをお持ちの方</string>
     <string name="home_helper">Alfresco Mobile の詳細については、[ヘルプ] にある <a href="alfresco://view_help_guide/">説明を</a> ご覧ください</string>
 
-    <string name="account_wizard_alfresco_server">Alfresco One</string>
+    <string name="account_wizard_alfresco_server">Alfresco サーバー</string>
     <string name="account_wizard_or">または</string>
     <string name="account_wizard_alfresco_cloud">Alfresco in the Cloud</string>
 
@@ -64,8 +64,8 @@
     <string name="account_hostname_required_hint">ホスト名は、www.example.com のような形式で入力してください (必須です)。</string>
     <string name="account_hostname_hint">www.example.com (必須)</string>
     <string name="account_description">説明</string>
-    <string name="account_description_optional_hint">説明を入力します (任意です)。 デフォルトは Alfresco Server です</string>
-    <string name="account_description_hint">Alfresco Server (任意)</string>
+    <string name="account_description_optional_hint">説明を入力します (任意です)。 デフォルトは Alfresco サーバーです</string>
+    <string name="account_description_hint">Alfresco サーバー (任意)</string>
     <string name="account_advanced">詳細設定</string>
     <string name="account_authentication">アカウントの認証方法</string>
     <string name="account_https">HTTPS</string>
@@ -75,7 +75,7 @@
 
     <!-- ACCOUNTS -->
     <string name="account_default_cloud">Alfresco in the Cloud</string>
-    <string name="account_default_onpremise">Alfresco Server</string>
+    <string name="account_default_onpremise">Alfresco サーバー</string>
 
     <!-- WAITING SESSION -->
     <string name="wait_title">お待ちください</string>
@@ -165,17 +165,17 @@
 
     <!-- HELP -->
     <string name="asset_folder_prefix">ja</string>
-    <string name="docs_prefix" />
+    <string name="docs_prefix" translatable="false" />
 
     <!-- About Message -->
     <string name="version_number">バージョン</string>
     <string name="buildnumber_version">バージョン: </string>
-    <string name="sdknumber_version">SDK:  </string>
+    <string name="sdknumber_version">SDK: </string>
     <string name="about_description">
 <![CDATA[
-<p>Alfresco Mobile は Alfresco in the Cloud とオンプレミスの Alfresco Server  (3.4 以上) に接続して、社内のコンテンツに外出先から安全にアクセスできるようにします。</p>
+<p>Alfresco Mobile は Alfresco in the Cloud とオンプレミスの Alfresco サーバー (3.4 以上) に接続して、外出先からでも社内のコンテンツに安全にアクセスできるようにします。</p>
 
-<p> Alfresco Mobile は、Alfresco のログイン資格情報を使用して (HTTP または HTTPS 経由で) Alfresco のリポジトリに接続し、権限に基づいてユーザーのアクセスを管理します。</p>
+<p>Alfresco Mobile は、Alfresco のログイン資格情報を使用して (HTTP または HTTPS 経由で) Alfresco のリポジトリに接続し、権限に基づいてユーザーのアクセスを管理します。</p>
 ]]>
     </string>
 
@@ -342,7 +342,10 @@
     <string name="settings_custom_menu_summary">メニューに表示するタブを選択してください。</string>
     <string name="settings_custom_menu_manage">メニュー</string>
     <string name="settings_custom_menu_disable">Alfresco 管理者がこの機能を無効に設定しています。</string>
-
+    <string name="settings.feedback">フィードバック</string>
+    <string name="settings.feedback.diagnostic">診断データの送信</string>
+    <string name="settings.feedback.diagnostic.summary">弊社は、Alfresco Mobile の改善に役立てるために技術的な診断データを匿名で収集しています。データの提供を希望されない場合は、チェックマークを外してください。</string>
+    <string name="settings.feedback.email">フィードバックの送信</string>
 
     <!-- Multi Selection -->
     <plurals name="selected_document">
@@ -734,7 +737,7 @@
     <string name="menu_browse_favorites_folder">[お気に入り] フォルダ</string>
     <string name="account_alfresco">Alfresco</string>
     <string name="account_alfresco_cloud">Alfresco in the Cloud</string>
-    <string name="account_alfresco_onpremise">Alfresco On Premise</string>
+    <string name="account_alfresco_onpremise">Alfresco サーバー</string>
 
 
     <!-- Accessibility -->
@@ -788,17 +791,17 @@
     <!-- ANDROID FOR WORK -->
     <!-- AlfrescoUserName restriction -->
     <string name="title_alfresco_username">ユーザー名</string>
-    <string name="description_alfresco_username">Alfresco Server に接続するときに使用するユーザー名</string>
+    <string name="description_alfresco_username">Alfresco サーバーに接続するときに使用するユーザー名</string>
     <!-- AlfrescoRepositoryURL restriction -->
     <string name="title_alfresco_repository_url">Alfresco リポジトリの URL</string>
-    <string name="description_alfresco_repository_url">Alfresco Server の接続先</string>
+    <string name="description_alfresco_repository_url">Alfresco サーバーの接続先</string>
     <!-- AlfrescoShareURL restriction -->
     <string name="title_alfresco_share_url">Alfresco Share の URL</string>
-    <string name="description_alfresco_share_url">Alfresco Share Server の接続先</string>
+    <string name="description_alfresco_share_url">Alfresco Share サーバーの接続先</string>
     <!-- AlfrescoDisplayName restriction -->
     <string name="title_alfresco_display_name">アカウントの表示名</string>
     <string name="description_alfresco_display_name">リポジトリに接続しているサーバーの名前。</string>
-    <string name="default_alfresco_display_name">Alfresco Server</string>
+    <string name="default_alfresco_display_name">Alfresco サーバー</string>
 
 
     <!-- Empty -->

@@ -31,6 +31,7 @@ import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
 import org.alfresco.mobile.android.api.session.authentication.impl.OAuth2DataImpl;
 import org.alfresco.mobile.android.api.utils.IOUtils;
+import org.alfresco.mobile.android.async.session.RequestSessionEvent;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.SessionManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
@@ -41,6 +42,8 @@ import org.alfresco.mobile.android.platform.network.NetworkTrustManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Environment;
+
+import com.squareup.otto.Subscribe;
 
 public class DeveloperSessionManager extends SessionManager
 {
@@ -61,7 +64,7 @@ public class DeveloperSessionManager extends SessionManager
 
     private static final String CLOUD_BASIC_AUTH = "org.alfresco.mobile.binding.internal.cloud.basic";
 
-    private static final String ALFRESCO_CLOUD_URL = "http://my.alfresco.com";
+    private static final String ALFRESCO_CLOUD_URL = "https://my.alfresco.com";
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
@@ -82,6 +85,15 @@ public class DeveloperSessionManager extends SessionManager
     protected DeveloperSessionManager(Context context)
     {
         super(context);
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // EVENTS RECEIVER
+    // ///////////////////////////////////////////////////////////////////////////
+    @Subscribe
+    public void onSessionRequested(RequestSessionEvent event)
+    {
+        super.onSessionRequested(event);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -136,6 +148,10 @@ public class DeveloperSessionManager extends SessionManager
                 IOUtils.closeStream(is);
             }
         }
+        else
+        {
+            return null;
+        }
         return b;
     }
 
@@ -165,6 +181,7 @@ public class DeveloperSessionManager extends SessionManager
         {
             this.isCloud = true;
             this.oAuthData = oauthData;
+            prepareOauthURL();
             return this;
         }
 
@@ -194,8 +211,7 @@ public class DeveloperSessionManager extends SessionManager
             {
                 case AlfrescoAccount.TYPE_ALFRESCO_TEST_OAUTH:
                     isCloud = true;
-                    String apikey = null,
-                    apisecret = null;
+                    String apikey = null, apisecret = null;
                     File f = new File(APP_CONFIG_PATH);
                     if (f.exists())
                     {
@@ -220,6 +236,7 @@ public class DeveloperSessionManager extends SessionManager
                     }
 
                     baseUrl = acc.getUrl();
+                    extraSettings.put(BASE_URL, baseUrl);
                     oAuthData = new OAuth2DataImpl(apikey, apisecret, acc.getAccessToken(), acc.getRefreshToken());
                     break;
                 default:
@@ -276,8 +293,8 @@ public class DeveloperSessionManager extends SessionManager
             try
             {
                 URI url = new URI(baseUrl);
-                File f = AlfrescoStorageManager.getInstance(getContext()).getFileInPrivateFolder(
-                        url.getHost() + ".properties");
+                File f = AlfrescoStorageManager.getInstance(getContext())
+                        .getFileInPrivateFolder(url.getHost() + ".properties");
                 if (f.exists() && f.isFile())
                 {
                     AlfrescoNotificationManager.getInstance(getContext()).showToast(R.string.security_ssl_disable);
@@ -287,6 +304,41 @@ public class DeveloperSessionManager extends SessionManager
             catch (Exception e)
             {
                 // Nothing special
+            }
+        }
+
+        protected void prepareOauthURL()
+        {
+            String tmpurl = null;
+            // Check Properties available inside the device
+            File f = new File(APP_CONFIG_PATH);
+            if (f.exists())
+            {
+                Properties prop = new Properties();
+                InputStream is = null;
+                try
+                {
+                    is = new FileInputStream(f);
+                    // load a properties file
+                    prop.load(is);
+                    tmpurl = prop.getProperty(OAUTH_URL);
+                }
+                catch (IOException ex)
+                {
+                    throw new AlfrescoServiceException(ErrorCodeRegistry.PARSING_GENERIC, ex);
+                }
+                finally
+                {
+                    IOUtils.closeStream(is);
+                }
+            }
+            if (tmpurl != null)
+            {
+                extraSettings.put(BASE_URL, tmpurl);
+            }
+            else
+            {
+                // extraSettings.put(BASE_URL, ALFRESCO_CLOUD_URL);
             }
         }
 

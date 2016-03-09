@@ -373,6 +373,7 @@ public class ConfigManager extends Manager
     @Subscribe
     public void onSessionRequested(RequestSessionEvent event)
     {
+        if (event.accountToLoad == null){return;}
         if (hasConfig(event.accountToLoad.getId()))
         {
             currentService.remove(event.accountToLoad.getId());
