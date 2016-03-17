@@ -45,7 +45,7 @@ Before your code can be accepted into the project you must also sign the Individ
 ## What's the code License ?
 
 
-    Alfresco Mobile for Android 1.6.1
+    Alfresco Mobile for Android 1.6.2
 
     Copyright © 2015 Alfresco Software, Ltd. and others.
 
