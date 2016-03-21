@@ -454,6 +454,7 @@ public class ActionUtils extends BaseActionUtils
      */
     public static void actionPickFile(Fragment fr, int requestCode)
     {
+        if (fr == null) { return; }
         try
         {
             Intent i = new Intent(Intent.ACTION_GET_CONTENT);
@@ -570,7 +571,6 @@ public class ActionUtils extends BaseActionUtils
             iBuilder.setType("message/rfc822");
             iBuilder.setText(builder.toString());
             iBuilder.setChooserTitle(fr.getString(R.string.settings_feedback_email)).startChooser();
-
 
             return true;
         }

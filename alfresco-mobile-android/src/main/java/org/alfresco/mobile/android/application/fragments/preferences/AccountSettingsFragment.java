@@ -136,9 +136,15 @@ public class AccountSettingsFragment extends AlfrescoFragment implements EditTex
         // TITLE
         UIUtils.displayTitle(getActivity(), getString(R.string.settings_account));
 
+        if (account == null)
+        {
+            hide(R.id.settings_account_info_container);
+            return getRootView();
+        }
+
         // User Info
         TwoLinesViewHolder vh;
-        if (account.getTypeId() != AlfrescoAccount.TYPE_ALFRESCO_CLOUD)
+        if (account != null && account.getTypeId() != AlfrescoAccount.TYPE_ALFRESCO_CLOUD)
         {
             vh = new TwoLinesViewHolder(viewById(R.id.settings_account_info));
             vh.topText.setText(R.string.settings_userinfo_account);

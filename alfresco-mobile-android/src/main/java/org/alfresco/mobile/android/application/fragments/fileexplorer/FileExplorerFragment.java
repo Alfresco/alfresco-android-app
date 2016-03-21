@@ -162,7 +162,11 @@ public class FileExplorerFragment extends FileExplorerFoundationFragment
                 return;
             }
         }
-        privateFolder = AlfrescoStorageManager.getInstance(getActivity()).getRootPrivateFolder().getParentFile();
+        if (AlfrescoStorageManager.getInstance(getActivity()) != null
+                && AlfrescoStorageManager.getInstance(getActivity()).getRootPrivateFolder() != null)
+        {
+            privateFolder = AlfrescoStorageManager.getInstance(getActivity()).getRootPrivateFolder().getParentFile();
+        }
         displayTitle();
     }
 

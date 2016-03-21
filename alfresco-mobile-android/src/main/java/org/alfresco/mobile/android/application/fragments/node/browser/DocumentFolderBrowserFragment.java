@@ -1039,6 +1039,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment implement
 
     private boolean onOptionMenuItemSelected(int itemId)
     {
+        if (getActivity() == null) { return false; }
         switch (itemId)
         {
             case R.id.menu_search_from_folder:
@@ -1148,11 +1149,12 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment implement
     {
         if (adapter != null)
         {
-            return ((ProgressNodeAdapter) adapter).getNodes();
+            return ((ProgressNodeAdapter) adapter).getNodes() != null ? ((ProgressNodeAdapter) adapter).getNodes()
+                    : new ArrayList<Node>(0);
         }
         else
         {
-            return null;
+            return new ArrayList<>(0);
         }
     }
 

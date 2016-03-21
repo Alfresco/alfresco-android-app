@@ -1009,7 +1009,8 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         AnalyticsHelper.reportOperationEvent(getActivity(), AnalyticsManager.CATEGORY_DOCUMENT_MANAGEMENT,
                 AnalyticsManager.ACTION_OPEN,
                 node.isDocument() ? ((Document) node).getContentStreamMimeType() : AnalyticsManager.TYPE_FOLDER, 1,
-                false, AnalyticsManager.INDEX_FILE_SIZE, ((Document) node).getContentStreamLength());
+                false, AnalyticsManager.INDEX_FILE_SIZE,
+                node.isDocument() ? ((Document) node).getContentStreamLength() : 0);
     }
 
     public void setDownloadDateTime(Date downloadDateTime)
