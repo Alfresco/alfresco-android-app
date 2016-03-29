@@ -7,7 +7,8 @@
       "default": true,
       "label-id": "profile.default.title",
       "description-id": "profile.default.summary",
-      "root-view-id": "views-menu-default"
+      "root-view-id": "views-menu-default",
+      "root-action-id": "actions-default"
     }
   },
   "features": [
@@ -17,6 +18,139 @@
       "enable": false
     }
   ],
+  "action-groups": [
+    {
+      "id": "actions-default",
+      "items": [
+        {
+          "item-type": "action-id",
+          "view-id": "action-favorite-default"
+        },
+        {
+          "item-type": "action-id",
+          "view-id": "action-like-default"
+        },
+        {
+          "item-type": "action-id",
+          "view-id": "action-workflow-default"
+        },
+        {
+          "item-type": "action-id",
+          "view-id": "action-comment-default"
+        },
+        {
+          "item-type": "action-id",
+          "view-id": "action-edit-with-alfresco-default"
+        },
+        {
+          "item-type": "action-id",
+          "view-id": "action-edit-default"
+        },
+        {
+          "item-type": "action-id",
+          "view-id": "action-update-default"
+        },
+        {
+          "item-type": "action-id",
+          "view-id": "action-download-default"
+        },
+        {
+          "item-type": "action-id",
+          "view-id": "action-create-default"
+        },
+        {
+          "item-type": "action-id",
+          "view-id": "action-sync-default"
+        },
+        {
+          "item-type": "action-id",
+          "view-id": "action-open-default"
+        },
+        {
+          "item-type": "action-id",
+          "view-id": "action-share-default"
+        },
+        {
+          "item-type": "action-id",
+          "view-id": "action-delete-default"
+        },
+        {
+          "item-type": "action-id",
+          "view-id": "action-upload-doc-default"
+        },
+        {
+          "item-type": "action-id",
+          "view-id": "action-create-doc-default"
+        },
+        {
+          "item-type": "action-id",
+          "view-id": "action-create-folder-default"
+        }
+      ]
+    }
+  ],
+  "actions": {
+    "action-favorite-default": {
+      "type": "org.alfresco.client.action.node.favorite",
+      "enable": true
+    },
+    "action-like-default": {
+      "type": "org.alfresco.client.action.node.like",
+      "enable": true
+    },
+    "action-workflow-default": {
+      "type": "org.alfresco.client.action.workflow.start",
+      "enable": true
+    },
+    "action-comment-default": {
+      "type": "org.alfresco.client.action.node.comment",
+      "enable": true
+    },
+    "action-edit-with-alfresco-default": {
+      "type": "org.alfresco.client.action.node.edit-with-alfresco",
+      "enable": true
+    },
+    "action-edit-default": {
+      "type": "org.alfresco.client.action.node.edit",
+      "enable": true
+    },
+    "action-update-default": {
+      "type": "org.alfresco.client.action.document.update",
+      "enable": true
+    },
+    "action-download-default": {
+      "type": "org.alfresco.client.action.document.download",
+      "enable": true
+    },
+    "action-sync-default": {
+      "type": "org.alfresco.client.action.node.sync",
+      "enable": true
+    },
+    "action-open-default": {
+      "type": "org.alfresco.client.action.document.open",
+      "enable": true
+    },
+    "action-share-default": {
+      "type": "org.alfresco.client.action.node.share",
+      "enable": true
+    },
+    "action-delete-default": {
+      "type": "org.alfresco.client.action.node.delete",
+      "enable": true
+    },
+    "action-upload-doc-default": {
+      "type": "org.alfresco.client.action.document.upload",
+      "enable": true
+    },
+    "action-create-doc-default": {
+      "type": "org.alfresco.client.action.document.create",
+      "enable": true
+    },
+    "action-create-folder-default": {
+      "type": "org.alfresco.client.action.folder.create",
+      "enable": true
+    }
+  },
   "view-groups": [
     {
       "id": "views-menu-default",

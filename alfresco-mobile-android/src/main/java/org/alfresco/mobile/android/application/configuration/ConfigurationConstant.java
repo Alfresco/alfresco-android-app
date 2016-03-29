@@ -89,4 +89,38 @@ public interface ConfigurationConstant
             add(KEY_LOCAL_FILES);
         }
     };
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // DEFAULT TEMPLATE ACTION VIEWS
+    // ///////////////////////////////////////////////////////////////////////////
+    String PREFIX_ACTION = "org.alfresco.client.action";
+
+    String KEY_ACTION_CREATE_FOLDER = PREFIX_ACTION.concat(".folder.create");
+
+    String KEY_ACTION_CREATE_DOCUMENT = PREFIX_ACTION.concat(".document.create");
+
+    String KEY_ACTION_NODE_UPLOAD = PREFIX_ACTION.concat(".document.upload");
+
+    String KEY_ACTION_NODE_DELETE = PREFIX_ACTION.concat(".node.delete");
+
+    String KEY_ACTION_NODE_FAVORITE = PREFIX_ACTION.concat(".node.favorite");
+
+    String KEY_ACTION_NODE_LIKE = PREFIX_ACTION.concat(".node.like");
+
+    String KEY_ACTION_WORKFLOW = PREFIX_ACTION.concat(".workflow.start");
+
+    String KEY_ACTION_NODE_COMMENT = PREFIX_ACTION.concat(".node.comment");
+
+    String KEY_ACTION_NODE_UPDATE = PREFIX_ACTION.concat(".document.update");
+
+    String KEY_ACTION_NODE_EDIT = PREFIX_ACTION.concat(".node.edit");
+
+    String KEY_ACTION_NODE_DOWNLOAD = PREFIX_ACTION.concat(".document.download");
+
+    String KEY_ACTION_NODE_SYNC = PREFIX_ACTION.concat(".node.sync");
+
+    String KEY_ACTION_NODE_OPEN = PREFIX_ACTION.concat(".document.open");
+
+    String KEY_ACTION_NODE_SHARE = PREFIX_ACTION.concat(".node.share");
+
 }

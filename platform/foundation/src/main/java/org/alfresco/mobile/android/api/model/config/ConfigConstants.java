@@ -243,6 +243,8 @@ public interface ConfigConstants
 
     String ROOTVIEW_ID_VALUE = "root-view-id";
 
+    String ROOTACTION_ID_VALUE = "root-action-id";
+
     String FOLDER_TYPE_ID = "folderTypeId";
 
     // VALIDATION
@@ -379,6 +381,52 @@ public interface ConfigConstants
         public static ValidationConfigType fromValue(String v)
         {
             for (ValidationConfigType c : ValidationConfigType.values())
+            {
+                if (c.value.equalsIgnoreCase(v)) { return c; }
+            }
+            return null;
+        }
+    }
+
+    // /////////////////////////////////////////////////
+    // ACTION ENUM
+    // /////////////////////////////////////////////////
+    enum ActionConfigType
+    {
+        ACTION_ID("action-id"), ACTION_GROUP_ID("action-group-id"), ACTION("action");
+
+        /** The value associated to an enum. */
+        private final String value;
+
+        /**
+         * Instantiates a new property type.
+         *
+         * @param v the value of the enum.
+         */
+        ActionConfigType(String v)
+        {
+            value = v;
+        }
+
+        /**
+         * Value.
+         *
+         * @return the string
+         */
+        public String value()
+        {
+            return value;
+        }
+
+        /**
+         * From value.
+         *
+         * @param v the value of the enum.
+         * @return the property type
+         */
+        public static ActionConfigType fromValue(String v)
+        {
+            for (ActionConfigType c : ActionConfigType.values())
             {
                 if (c.value.equalsIgnoreCase(v)) { return c; }
             }

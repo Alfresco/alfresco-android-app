@@ -16,23 +16,18 @@
  *  limitations under the License.
  */
 package org.alfresco.mobile.android.api.model.config;
-/**
- *  Base type for Profile Configuration.
- *  
- * @author Jean Marie Pascal
- *
- */
-public interface ProfileConfig extends BaseConfig 
-{
-    /** Returns true if the profile is the default profile for the specified user.*/
-    public boolean isDefault();
-    
-    /** Returns the id of the view or view group that acts as the entry point of the client. */
-    public String getRootViewId();
 
+/**
+ * Base type for Action Group Configuration.
+ * 
+ * @author Jean Marie Pascal
+ */
+public interface ActionGroupConfig extends GroupConfig<ActionConfig>
+{
     /**
-     * Returns the id of the action or action group that acts as the entry point
-     * of the client.
+     * Returns a list of GroupConfig or ItemConfig objects.
+     *
+     * @return
      */
-    public String getRootActionId();
+    ActionConfig getChildById(String actionId);
 }

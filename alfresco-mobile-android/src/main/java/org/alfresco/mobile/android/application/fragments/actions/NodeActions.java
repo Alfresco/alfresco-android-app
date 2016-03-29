@@ -29,6 +29,7 @@ import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.PrivateDialogActivity;
+import org.alfresco.mobile.android.application.configuration.ConfigurableActionHelper;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsFragment;
@@ -182,6 +183,7 @@ public class NodeActions extends AbstractActions<Node>
             mi = menu.add(Menu.NONE, R.id.menu_action_download_all, Menu.FIRST, R.string.download);
             mi.setIcon(R.drawable.ic_download_light);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+            removeActionIfNecessary(menu, mi.getItemId(), ConfigurableActionHelper.ACTION_NODE_DOWNLOAD);
 
             if (!(SessionUtils.getSession(activity) instanceof CloudSession))
             {
@@ -189,6 +191,7 @@ public class NodeActions extends AbstractActions<Node>
                         R.string.process_start_review);
                 mi.setIcon(R.drawable.ic_start_review);
                 mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+                removeActionIfNecessary(menu, mi.getItemId(), ConfigurableActionHelper.ACTION_NODE_REVIEW);
             }
         }
 
@@ -199,6 +202,7 @@ public class NodeActions extends AbstractActions<Node>
             createMenu = menu.addSubMenu(Menu.NONE, R.id.menu_action_sync_group, Menu.FIRST, R.string.sync);
             createMenu.setIcon(R.drawable.ic_sync_light);
             createMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+            removeActionIfNecessary(menu, createMenu.getItem().getItemId(), ConfigurableActionHelper.ACTION_NODE_SYNC);
 
             createMenu.add(Menu.NONE, R.id.menu_action_sync_group_sync, Menu.FIRST + 1, R.string.sync);
             createMenu.add(Menu.NONE, R.id.menu_action_sync_group_unsync, Menu.FIRST + 2, R.string.unsync);
@@ -208,6 +212,7 @@ public class NodeActions extends AbstractActions<Node>
         createMenu = menu.addSubMenu(Menu.NONE, R.id.menu_action_favorite_group, Menu.FIRST + 135, R.string.favorite);
         createMenu.setIcon(R.drawable.ic_favorite_light);
         createMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        removeActionIfNecessary(menu, createMenu.getItem().getItemId(), ConfigurableActionHelper.ACTION_NODE_FAVORITE);
 
         createMenu.add(Menu.NONE, R.id.menu_action_favorite_group_favorite, Menu.FIRST + 1, R.string.favorite);
         createMenu.add(Menu.NONE, R.id.menu_action_favorite_group_unfavorite, Menu.FIRST + 2, R.string.unfavorite);
@@ -221,17 +226,19 @@ public class NodeActions extends AbstractActions<Node>
             createMenu = menu.addSubMenu(Menu.NONE, R.id.menu_action_like_group, Menu.FIRST + 150, R.string.like);
             createMenu.setIcon(R.drawable.ic_like);
             createMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+            removeActionIfNecessary(menu, createMenu.getItem().getItemId(), ConfigurableActionHelper.ACTION_NODE_LIKE);
 
             createMenu.add(Menu.NONE, R.id.menu_action_like_group_like, Menu.FIRST + 1, R.string.like);
             createMenu.add(Menu.NONE, R.id.menu_action_like_group_unlike, Menu.FIRST + 2, R.string.unlike);
         }
 
-        if (parentFolder != null
-                && alfSession.getServiceRegistry().getDocumentFolderService().getPermissions(parentFolder).canDelete())
+        if (parentFolder != null && ConfigurableActionHelper.isVisible(getActivity(), getAccount(), getSession(),
+                parentFolder, ConfigurableActionHelper.ACTION_NODE_DELETE))
         {
             mi = menu.add(Menu.NONE, R.id.menu_action_delete, Menu.FIRST + 1000, R.string.delete);
             mi.setIcon(R.drawable.ic_delete);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+            removeActionIfNecessary(menu, mi.getItemId(), ConfigurableActionHelper.ACTION_NODE_DELETE);
         }
     }
 
@@ -322,6 +329,14 @@ public class NodeActions extends AbstractActions<Node>
     // ///////////////////////////////////////////////////////////////////////////
     // ACTIONS
     // ///////////////////////////////////////////////////////////////////////////
+    protected void removeActionIfNecessary(Menu menu, int menuItemId, int actionId)
+    {
+        if (!ConfigurableActionHelper.isVisible(getActivity(), getAccount(), actionId))
+        {
+            menu.removeItem(menuItemId);
+        }
+    }
+
     private void startReview()
     {
         Intent it = new Intent(PrivateIntent.ACTION_START_PROCESS, null, getActivity(), PrivateDialogActivity.class);

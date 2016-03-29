@@ -464,8 +464,6 @@
     <string name="action_view_properties">View Properties</string>
     <string name="action_edit_properties">Edit Properties</string>
     <string name="like_in_progress">"Like" in progress</string>
-    <string name="like_completed">Like completed</string>
-    <string name="like_complete">Like complete</string>
     <string name="favorite">Favorite</string>
     <string name="unfavorite">Unfavorite</string>
 

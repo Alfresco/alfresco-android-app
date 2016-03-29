@@ -24,18 +24,17 @@ import java.util.ArrayList;
 import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Node;
-import org.alfresco.mobile.android.api.model.impl.DocumentImpl;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.PrivateDialogActivity;
 import org.alfresco.mobile.android.application.activity.PublicDispatcherActivity;
+import org.alfresco.mobile.android.application.configuration.ConfigurableActionHelper;
 import org.alfresco.mobile.android.application.fragments.actions.AbstractActions;
 import org.alfresco.mobile.android.application.intent.RequestCode;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.sync.utils.NodeSyncPlaceHolder;
-import org.apache.chemistry.opencmis.commons.enums.Action;
 
 import android.content.Intent;
 import android.support.v4.app.Fragment;
@@ -86,22 +85,24 @@ public class NodeDetailsActionMode extends AbstractActions<Node>
 
         if (node.isDocument())
         {
-            if (((Document) node).getContentStreamLength() > 0 && !isRestrict)
+            if (((Document) node).getContentStreamLength() > 0 && !isRestrict && ConfigurableActionHelper
+                    .isVisible(getActivity(), getAccount(), ConfigurableActionHelper.ACTION_NODE_DOWNLOAD))
             {
                 mi = menu.add(Menu.NONE, R.id.menu_action_download, Menu.FIRST, R.string.download);
                 mi.setIcon(R.drawable.ic_download_light);
                 mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
             }
 
-            if (((Document) node).isLatestVersion()
-                    && ((DocumentImpl) node).hasAllowableAction(Action.CAN_SET_CONTENT_STREAM.value()))
+            if (((Document) node).isLatestVersion() && ConfigurableActionHelper.isVisible(getActivity(), getAccount(),
+                    getSession(), node, ConfigurableActionHelper.ACTION_NODE_UPDATE))
             {
                 mi = menu.add(Menu.NONE, R.id.menu_action_update, Menu.FIRST + 130, R.string.update);
                 mi.setIcon(R.drawable.ic_upload);
                 mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
             }
 
-            if (!(SessionUtils.getSession(activity) instanceof CloudSession))
+            if (!(SessionUtils.getSession(activity) instanceof CloudSession) && ConfigurableActionHelper
+                    .isVisible(getActivity(), getAccount(), ConfigurableActionHelper.ACTION_NODE_REVIEW))
             {
                 mi = menu.add(Menu.NONE, R.id.menu_workflow_add, Menu.FIRST + 500, R.string.process_start_review);
                 mi.setIcon(R.drawable.ic_start_review);
@@ -109,16 +110,16 @@ public class NodeDetailsActionMode extends AbstractActions<Node>
             }
         }
 
-        if (SessionUtils.getSession(activity).getServiceRegistry().getDocumentFolderService().getPermissions(node)
-                .canEdit())
+        if (ConfigurableActionHelper.isVisible(getActivity(), getAccount(), getSession(), node,
+                ConfigurableActionHelper.ACTION_NODE_EDIT))
         {
             mi = menu.add(Menu.NONE, R.id.menu_action_edit, Menu.FIRST + 50, R.string.edit);
             mi.setIcon(R.drawable.ic_edit);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         }
 
-        if (SessionUtils.getSession(activity).getServiceRegistry().getDocumentFolderService().getPermissions(node)
-                .canDelete())
+        if (ConfigurableActionHelper.isVisible(getActivity(), getAccount(), getSession(), node,
+                ConfigurableActionHelper.ACTION_NODE_DELETE))
         {
             mi = menu.add(Menu.NONE, R.id.menu_action_delete, Menu.FIRST + 1000, R.string.delete);
             mi.setIcon(R.drawable.ic_delete);
@@ -143,8 +144,8 @@ public class NodeDetailsActionMode extends AbstractActions<Node>
             case R.id.menu_action_update:
                 Intent i = new Intent(PrivateIntent.ACTION_PICK_FILE, null, getActivity(),
                         PublicDispatcherActivity.class);
-                i.putExtra(PrivateIntent.EXTRA_FOLDER, AlfrescoStorageManager.getInstance(getActivity())
-                        .getDownloadFolder(getAccount()));
+                i.putExtra(PrivateIntent.EXTRA_FOLDER,
+                        AlfrescoStorageManager.getInstance(getActivity()).getDownloadFolder(getAccount()));
                 i.putExtra(PrivateIntent.EXTRA_ACCOUNT_ID, getAccount().getId());
                 getFragment().startActivityForResult(i, RequestCode.FILEPICKER);
                 return true;

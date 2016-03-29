@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.alfresco.mobile.android.api.model.config.ActionConfig;
 import org.alfresco.mobile.android.api.model.config.ConfigInfo;
 import org.alfresco.mobile.android.api.model.config.ConfigScope;
 import org.alfresco.mobile.android.api.model.config.ConfigTypeIds;
@@ -222,6 +223,29 @@ public class LocalConfigServiceImpl implements ConfigService
     public boolean hasViewConfig()
     {
         return configuration != null && configuration.hasViewConfig();
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // VIEWS
+    // ///////////////////////////////////////////////////////////////////////////
+    @Override
+    public ActionConfig getActionConfig(String viewId, ConfigScope scope)
+    {
+        if (configuration == null) { return null; }
+        return configuration.getActionConfig(viewId, scope);
+    }
+
+    @Override
+    public ActionConfig getActionConfig(String viewId)
+    {
+        if (configuration == null) { return null; }
+        return configuration.getActionConfig(viewId);
+    }
+
+    @Override
+    public boolean hasActionConfig()
+    {
+        return configuration != null && configuration.hasActionConfig();
     }
 
     // ///////////////////////////////////////////////////////////////////////////
