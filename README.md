@@ -9,8 +9,8 @@ Alfresco Mobile is based on top of our Alfresco Android SDK. More information on
 ## Where can I find it ?
 
 <a href="https://play.google.com/store/apps/details?id=org.alfresco.mobile.android.application">
-  <img alt="Get it on Google Play"
-       src="https://developer.android.com/images/brand/en_generic_rgb_wo_45.png" />
+   <img alt="Get it on Google Play" height="100" width="300"
+        src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png" />
 </a> 
 
 
@@ -45,7 +45,7 @@ Before your code can be accepted into the project you must also sign the Individ
 ## What's the code License ?
 
 
-    Alfresco Mobile for Android 1.5
+    Alfresco Mobile for Android 1.6.2
 
     Copyright © 2015 Alfresco Software, Ltd. and others.
 

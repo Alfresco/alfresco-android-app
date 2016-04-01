@@ -243,7 +243,7 @@ public abstract class AlfrescoFragmentBuilder
         // Analytics
         // Report only fragment & report at creation enable (cf. pager case)
         if (AnalyticsManager.getInstance(getActivity()) != null
-                || AnalyticsManager.getInstance(getActivity()).isEnable())
+                && AnalyticsManager.getInstance(getActivity()).isEnable())
         {
             if (frag instanceof AnalyticsManager.FragmentAnalyzed
                     && ((AnalyticsManager.FragmentAnalyzed) frag).reportAtCreationEnable())
