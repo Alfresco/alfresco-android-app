@@ -22,12 +22,14 @@ import java.net.URL;
 
 import org.alfresco.mobile.android.platform.exception.AlfrescoAppException;
 import org.alfresco.mobile.android.platform.extensions.MobileIronManager;
+import org.alfresco.mobile.android.platform.mdm.MDMManager;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
+import android.util.Log;
 
 public class MobileIronManagerImpl extends MobileIronManager
 {
@@ -63,9 +65,16 @@ public class MobileIronManagerImpl extends MobileIronManager
     // ///////////////////////////////////////////////////////////////////////////
     public void requestConfig(FragmentActivity activity, String applicationId)
     {
-        Intent intent = new Intent("com.mobileiron.REQUEST_CONFIG");
-        intent.putExtra("packageName", applicationId);
-        activity.startService(intent);
+        try
+        {
+            Intent intent = new Intent("com.mobileiron.REQUEST_CONFIG");
+            intent.putExtra("packageName", applicationId);
+            activity.startService(MDMManager.createExplicitFromImplicitIntent(activity, intent));
+        }
+        catch (Exception e)
+        {
+            Log.i(TAG, "Error during request config");
+        }
     }
 
     @Override
@@ -97,8 +106,8 @@ public class MobileIronManagerImpl extends MobileIronManager
 
         // REPOSITORY URL
         String repositoryURL = (String) b.get(ALFRESCO_REPOSITORY_URL);
-        if (TextUtils.isEmpty(repositoryURL)) { throw new AlfrescoAppException(ALFRESCO_REPOSITORY_URL
-                + " can't be empty."); }
+        if (TextUtils.isEmpty(
+                repositoryURL)) { throw new AlfrescoAppException(ALFRESCO_REPOSITORY_URL + " can't be empty."); }
 
         URL u = null;
         try
@@ -112,7 +121,7 @@ public class MobileIronManagerImpl extends MobileIronManager
 
         // USERNAME
         String username = (String) b.get(ALFRESCO_USERNAME);
-        if (TextUtils.isEmpty(repositoryURL)) { throw new AlfrescoAppException(ALFRESCO_USERNAME + " can't be empty."); }
+        if (TextUtils.isEmpty(username)) { throw new AlfrescoAppException(ALFRESCO_USERNAME + " can't be empty."); }
     }
 
     @Override

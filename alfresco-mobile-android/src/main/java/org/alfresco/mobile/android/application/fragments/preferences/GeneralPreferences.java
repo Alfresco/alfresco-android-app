@@ -342,7 +342,8 @@ public class GeneralPreferences extends AlfrescoFragment
         if (AnalyticsManager.getInstance(getActivity()) == null
                 || AnalyticsManager.getInstance(getActivity()).isBlocked())
         {
-            boolean isEnable = AnalyticsManager.getInstance(getActivity()).isEnable();
+            boolean isEnable = AnalyticsManager.getInstance(getActivity()) != null
+                    && AnalyticsManager.getInstance(getActivity()).isEnable();
 
             diagnosticVH = HolderUtils.configure(viewById(R.id.settings_diagnostic),
                     getString(R.string.settings_feedback_diagnostic), getString(R.string.settings_custom_menu_disable),
@@ -353,7 +354,8 @@ public class GeneralPreferences extends AlfrescoFragment
         }
         else
         {
-            boolean isEnable = AnalyticsManager.getInstance(getActivity()).isEnable();
+            boolean isEnable = AnalyticsManager.getInstance(getActivity()) != null
+                    && AnalyticsManager.getInstance(getActivity()).isEnable();
 
             diagnosticVH = HolderUtils.configure(viewById(R.id.settings_diagnostic),
                     getString(R.string.settings_feedback_diagnostic),
