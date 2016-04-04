@@ -21,6 +21,7 @@ import java.util.Map;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.BaseActivity;
+import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.activity.WelcomeActivity;
 import org.alfresco.mobile.android.application.fragments.builder.LeafFragmentBuilder;
 import org.alfresco.mobile.android.application.managers.ConfigManager;
@@ -41,6 +42,7 @@ import org.alfresco.mobile.android.ui.operation.OperationWaitingDialogFragment;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -251,6 +253,8 @@ public class AccountSignInFragment extends AlfrescoFragment
         {
             ConfigManager.getInstance(getActivity()).setSession(event.data.getId(),
                     SessionUtils.getSession(getActivity()));
+            startActivity(new Intent(getActivity(), MainActivity.class));
+            getActivity().finish();
         }
     }
 
