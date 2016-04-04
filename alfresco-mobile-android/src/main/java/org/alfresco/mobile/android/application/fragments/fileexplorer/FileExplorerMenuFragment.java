@@ -174,7 +174,7 @@ public class FileExplorerMenuFragment extends AlfrescoFragment
             {
                 FileExplorerFragment.with(getActivity()).file(currentLocation).display();
             }
-            else if (mediatype >= 0)
+            else if (mediatype >= 0 && requestWriteExternalStorage(null) != null)
             {
                 LibraryFragment.with(getActivity()).mediaType(mediatype).display();
             }
@@ -206,24 +206,16 @@ public class FileExplorerMenuFragment extends AlfrescoFragment
             if (hasWriteExternalStoragePermission != PackageManager.PERMISSION_GRANTED)
             {
                 if (!ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
-                        Manifest.permission.WRITE_CONTACTS))
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE))
                 {
-                    showMessageOKCancel("You need to allow access to your storage",
-                            new DialogInterface.OnClickListener()
-                            {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which)
-                                {
-                                    ActivityCompat.requestPermissions(getActivity(),
-                                            new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE },
-                                            BaseActivity.REQUEST_CODE_ASK_PERMISSIONS);
-                                }
-                            });
+                    ActivityCompat.requestPermissions(getActivity(),
+                            new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE }, externalFolder == null
+                                    ? BaseActivity.REQUEST_PERMISSION_SD : BaseActivity.REQUEST_PERMISSION_DL);
                     return null;
                 }
                 ActivityCompat.requestPermissions(getActivity(),
-                        new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE },
-                        BaseActivity.REQUEST_CODE_ASK_PERMISSIONS);
+                        new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE }, externalFolder == null
+                                ? BaseActivity.REQUEST_PERMISSION_SD : BaseActivity.REQUEST_PERMISSION_DL);
                 return null;
             }
             else

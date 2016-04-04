@@ -18,10 +18,13 @@
 package org.alfresco.mobile.android.application.activity;
 
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerFragment;
 import org.alfresco.mobile.android.application.fragments.preferences.PasscodePreferences;
 import org.alfresco.mobile.android.application.security.PassCodeActivity;
 import org.alfresco.mobile.android.platform.SessionManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsHelper;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.platform.intent.AlfrescoIntentAPI;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.ui.activity.AlfrescoActivity;
@@ -30,12 +33,12 @@ import org.alfresco.mobile.android.ui.utils.UIUtils;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.TypedValue;
 import android.view.ActionMode;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 /**
  * Base class for all activities.
@@ -46,7 +49,9 @@ public abstract class BaseActivity extends AlfrescoActivity
 {
     protected boolean activateCheckPasscode = false;
 
-    public final static int REQUEST_CODE_ASK_PERMISSIONS = 123;
+    public final static int REQUEST_PERMISSION_SD = 70;
+
+    public final static int REQUEST_PERMISSION_DL = 80;
 
     // ///////////////////////////////////////////////////////////////////////////
     // LIFECYCLE
@@ -195,16 +200,24 @@ public abstract class BaseActivity extends AlfrescoActivity
     {
         switch (requestCode)
         {
-            case REQUEST_CODE_ASK_PERMISSIONS:
+            case REQUEST_PERMISSION_SD:
+            case REQUEST_PERMISSION_DL:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
                 {
+                    FileExplorerFragment.with(this)
+                            .file(requestCode == REQUEST_PERMISSION_DL ? Environment.getExternalStorageDirectory()
+                                    : Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS))
+                            .display();
+
                     // Permission Granted
-                    Toast.makeText(this, "WRITE_CONTACTS Granted", Toast.LENGTH_SHORT).show();
+                    AnalyticsHelper.reportOperationEvent(this, AnalyticsManager.CATEGORY_SETTINGS,
+                            AnalyticsManager.ACTION_GRANT_PERMISSION, AnalyticsManager.LABEL_STORAGE, 1, false);
                 }
                 else
                 {
                     // Permission Denied
-                    Toast.makeText(this, "WRITE_CONTACTS Denied", Toast.LENGTH_SHORT).show();
+                    AnalyticsHelper.reportOperationEvent(this, AnalyticsManager.CATEGORY_SETTINGS,
+                            AnalyticsManager.ACTION_DENY_PERMISSION, AnalyticsManager.LABEL_STORAGE, 1, false);
                 }
                 break;
             default:

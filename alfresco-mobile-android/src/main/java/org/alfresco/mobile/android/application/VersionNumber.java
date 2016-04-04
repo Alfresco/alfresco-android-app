@@ -67,5 +67,8 @@ public interface VersionNumber
     /** Release April 2015. */
     int VERSION_1_6_2 = 61;
 
-    int LATEST_VERSION = VERSION_1_6_2;
+    /** Release XXX 2015. */
+    int VERSION_1_6_3 = 63;
+
+    int LATEST_VERSION = VERSION_1_6_3;
 }

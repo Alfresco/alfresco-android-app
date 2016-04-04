@@ -32,13 +32,17 @@ import org.alfresco.mobile.android.ui.ListingModeFragment;
 import org.alfresco.mobile.android.ui.activity.AlfrescoActivity;
 import org.alfresco.mobile.android.ui.fragments.BaseCursorGridFragment;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.text.Html;
@@ -148,7 +152,17 @@ public class LibraryFragment extends BaseCursorGridFragment
     @Override
     protected void performRequest(ListingContext lcorigin)
     {
-        getLoaderManager().initLoader(0, null, this);
+        int hasWriteExternalStoragePermission = PackageManager.PERMISSION_GRANTED;
+        if (Build.VERSION.SDK_INT >= 23)
+        {
+            hasWriteExternalStoragePermission = ContextCompat.checkSelfPermission(getActivity(),
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+
+        if (hasWriteExternalStoragePermission == PackageManager.PERMISSION_GRANTED)
+        {
+            getLoaderManager().initLoader(0, null, this);
+        }
     }
 
     // ///////////////////////////////////////////////////////////////////////////
