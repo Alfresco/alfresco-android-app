@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.alfresco.mobile.android.api.model.Node;
+import org.alfresco.mobile.android.api.model.config.ActionConfig;
 import org.alfresco.mobile.android.api.model.config.ConfigConstants;
 import org.alfresco.mobile.android.api.model.config.ConfigInfo;
 import org.alfresco.mobile.android.api.model.config.ConfigScope;
@@ -69,6 +70,8 @@ public class ConfigurationImpl
     private StringHelper stringHelper;
 
     private ProfileHelper profileHelper;
+
+    private ActionHelper actionHelper;
 
     private RepositoryConfig repositoryConfig;
 
@@ -230,6 +233,27 @@ public class ConfigurationImpl
             configuration.viewHelper.addViewGroups(JSONConverter.getList(json.get(ConfigTypeIds.VIEW_GROUPS.value())));
         }
 
+        // ACTIONS
+        if (json.containsKey(ConfigTypeIds.ACTIONS.value()))
+        {
+            if (configuration.actionHelper == null)
+            {
+                configuration.actionHelper = new ActionHelper(configuration, stringHelper);
+            }
+            configuration.actionHelper.addActions(JSONConverter.getMap(json.get(ConfigTypeIds.ACTIONS.value())));
+        }
+
+        // ACTIONS GROUP
+        if (json.containsKey(ConfigTypeIds.ACTION_GROUPS.value()))
+        {
+            if (configuration.actionHelper == null)
+            {
+                configuration.actionHelper = new ActionHelper(configuration, stringHelper);
+            }
+            configuration.actionHelper
+                    .addActionGroups(JSONConverter.getList(json.get(ConfigTypeIds.ACTION_GROUPS.value())));
+        }
+
         // CREATION
         if (json.containsKey(ConfigTypeIds.CREATION.value()))
         {
@@ -350,6 +374,26 @@ public class ConfigurationImpl
     }
 
     // ///////////////////////////////////////////////////////////////////////////
+    // ACTIONS
+    // ///////////////////////////////////////////////////////////////////////////
+    public boolean hasActionConfig()
+    {
+        return actionHelper != null && actionHelper.hasActionConfig();
+    }
+
+    public ActionConfig getActionConfig(String viewId, ConfigScope scope)
+    {
+        if (actionHelper == null) { return null; }
+        return actionHelper.getActionByType(viewId, scope);
+    }
+
+    public ActionConfig getActionConfig(String viewId)
+    {
+        if (actionHelper == null) { return null; }
+        return actionHelper.getActionByType(viewId);
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
     // FORMS
     // ///////////////////////////////////////////////////////////////////////////
     public boolean hasFormConfig()
@@ -401,6 +445,7 @@ public class ConfigurationImpl
         if (featureHelper == null) { return new ArrayList<>(0); }
         return featureHelper.getFeatures();
     }
+
     // ///////////////////////////////////////////////////////////////////////////
     // INTERNALS
     // ///////////////////////////////////////////////////////////////////////////

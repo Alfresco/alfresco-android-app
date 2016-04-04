@@ -135,6 +135,10 @@ public abstract class AnalyticsManager extends Manager
 
     public static final String ACTION_COMPLETE_TASK = "Complete";
 
+    public static final String ACTION_GRANT_PERMISSION = "Grant Permission";
+
+    public static final String ACTION_DENY_PERMISSION = "Deny Permission";
+
     ///////////////////////////////////////////////////////////
     // EVENTS : LABELS
     ///////////////////////////////////////////////////////////
@@ -189,6 +193,8 @@ public abstract class AnalyticsManager extends Manager
     public static final String LABEL_SITES = "Sites";
 
     public static final String LABEL_PEOPLE = "People";
+
+    public static final String LABEL_STORAGE = "Storage";
 
     ///////////////////////////////////////////////////////////
     // CUSTOM DIMENSIONS

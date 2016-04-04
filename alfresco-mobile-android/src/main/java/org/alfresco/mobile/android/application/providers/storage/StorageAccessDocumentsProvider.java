@@ -39,7 +39,6 @@ import org.alfresco.mobile.android.api.model.ContentStream;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.KeywordSearchOptions;
 import org.alfresco.mobile.android.api.model.Node;
-import org.alfresco.mobile.android.api.model.Permissions;
 import org.alfresco.mobile.android.api.model.SearchLanguage;
 import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.api.services.DocumentFolderService;
@@ -52,6 +51,7 @@ import org.alfresco.mobile.android.api.utils.DateUtils;
 import org.alfresco.mobile.android.api.utils.IOUtils;
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.configuration.ConfigurableActionHelper;
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.node.update.UpdateContentRequest;
 import org.alfresco.mobile.android.async.utils.ContentFileProgressImpl;
@@ -1380,16 +1380,6 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
     {
         int flags = 0;
 
-        Permissions permission = null;
-        try
-        {
-            permission = session.getServiceRegistry().getDocumentFolderService().getPermissions(node);
-        }
-        catch (Exception e)
-        {
-
-        }
-
         DocumentFolderCursor.RowBuilder row = result.newRow();
 
         row.add(Document.COLUMN_DOCUMENT_ID, EncodedQueryUri.encodeItem(PREFIX_DOC, selectedAccountId,
@@ -1400,7 +1390,9 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
         {
             row.add(Document.COLUMN_SIZE, null);
             row.add(Document.COLUMN_MIME_TYPE, Document.MIME_TYPE_DIR);
-            if (permission != null && permission.canAddChildren())
+            // if (permission != null && permission.canAddChildren())
+            if (ConfigurableActionHelper.isVisible(getContext(), selectedAccount, session, parentFolder,
+                    ConfigurableActionHelper.ACTION_NODE_UPLOAD))
             {
                 flags |= Document.FLAG_DIR_SUPPORTS_CREATE;
             }
@@ -1412,12 +1404,14 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
             flags |= Document.FLAG_SUPPORTS_THUMBNAIL;
             row.add(Document.COLUMN_MIME_TYPE,
                     ((org.alfresco.mobile.android.api.model.Document) node).getContentStreamMimeType());
-            if (permission != null && permission.canEdit())
+            if (ConfigurableActionHelper.isVisible(getContext(), selectedAccount, session, parentFolder,
+                    ConfigurableActionHelper.ACTION_NODE_EDIT))
             {
                 flags |= Document.FLAG_SUPPORTS_WRITE;
             }
 
-            if (permission != null && permission.canDelete())
+            if (ConfigurableActionHelper.isVisible(getContext(), selectedAccount, session, parentFolder,
+                    ConfigurableActionHelper.ACTION_NODE_DELETE))
             {
                 flags |= Document.FLAG_SUPPORTS_DELETE;
             }

@@ -548,9 +548,11 @@ public class RenditionManagerImpl extends RenditionManager
         public ImageDownloader(OkHttpClient client, AlfrescoSession alfSession)
         {
             super(client);
+            if (alfSession == null
+                    && ((AbstractAlfrescoSessionImpl) alfSession).getAuthenticationProvider() == null) { return; }
             Map<String, List<String>> httpHeaders = ((AbstractAlfrescoSessionImpl) alfSession)
                     .getAuthenticationProvider().getHTTPHeaders();
-            Map<String, String> headers = new HashMap<>(httpHeaders.size());
+            Map<String, String> headers = new HashMap<>(httpHeaders != null ? httpHeaders.size() : 0);
             // set other headers
             if (httpHeaders != null)
             {

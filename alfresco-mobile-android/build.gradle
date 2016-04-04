@@ -26,8 +26,9 @@ android {
         applicationId APPLICATION_ID
 
         minSdkVersion 15
-        targetSdkVersion 22
-        versionCode 61
+        targetSdkVersion 23
+        versionCode 63
+
         versionName VERSION_NAME
 
         manifestPlaceholders = [PROVIDER_AUTHORITY: PROVIDER_AUTHORITY]

@@ -35,7 +35,7 @@ public class MenuFragmentHelper
     // //////////////////////////////////////////////////////////////////////
     public static MenuItem getMenu(Context context, Menu menu)
     {
-        if (menu == null) { return null; }
+        if (menu == null || context == null) { return null; }
         if (AccessibilityUtils.isEnabled(context))
         {
             MenuItem mi = menu.add(Menu.NONE, R.id.menu_refresh, Menu.FIRST + 40, R.string.refresh);

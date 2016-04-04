@@ -31,6 +31,7 @@ import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.SearchLanguage;
+import org.alfresco.mobile.android.api.model.config.ActionConfig;
 import org.alfresco.mobile.android.api.model.config.ConfigConstants;
 import org.alfresco.mobile.android.api.model.config.ConfigInfo;
 import org.alfresco.mobile.android.api.model.config.ConfigScope;
@@ -333,6 +334,29 @@ public abstract class AbstractConfigServiceImpl extends AlfrescoService implemen
     public boolean hasViewConfig()
     {
         return configuration != null && configuration.hasViewConfig();
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // ACTIONS
+    // ///////////////////////////////////////////////////////////////////////////
+    @Override
+    public ActionConfig getActionConfig(String viewId, ConfigScope scope)
+    {
+        if (configuration == null) { return null; }
+        return configuration.getActionConfig(viewId, scope);
+    }
+
+    @Override
+    public ActionConfig getActionConfig(String viewId)
+    {
+        if (configuration == null) { return null; }
+        return configuration.getActionConfig(viewId);
+    }
+
+    @Override
+    public boolean hasActionConfig()
+    {
+        return configuration != null && configuration.hasActionConfig();
     }
 
     // ///////////////////////////////////////////////////////////////////////////

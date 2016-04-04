@@ -25,15 +25,15 @@ package org.alfresco.mobile.android.api.model.config;
 public enum ConfigTypeIds
 {
     INFO("info"),
-    REPOSITORY("repository"), 
+ REPOSITORY("repository"),
     VIEWS("views"),
-    FORMS("forms"), 
+ FORMS("forms"),
     CREATION("creation"),
  FEATURES(
-            "features"),
+            "features"), ACTIONS("actions"), ACTION_GROUPS("action-groups"),
     VIEW_GROUPS("view-groups"),
-    FIELDS("fields"), 
-    FIELD_GROUPS("field-groups"), 
+ FIELDS(
+                    "fields"), FIELD_GROUPS("field-groups"),
     EVALUATORS("evaluators"),
     VALIDATION_RULES("validation-rules"),
     PROFILES("profiles");

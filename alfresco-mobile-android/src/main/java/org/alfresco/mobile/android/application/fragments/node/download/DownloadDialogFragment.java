@@ -197,7 +197,7 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
             AlfrescoNotificationManager.getInstance(getActivity())
                     .showToast(getActivity().getText(R.string.download_error).toString());
         }
-        dismiss();
+        getFragmentManager().beginTransaction().remove(this).commitAllowingStateLoss();
     }
 
     @Override

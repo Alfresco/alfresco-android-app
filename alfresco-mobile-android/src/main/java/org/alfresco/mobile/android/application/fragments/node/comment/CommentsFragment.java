@@ -25,6 +25,7 @@ import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.services.CommentService;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.configuration.ConfigurableActionHelper;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.builder.ListingFragmentBuilder;
 import org.alfresco.mobile.android.async.Operator;
@@ -152,7 +153,8 @@ public class CommentsFragment extends CommentsNodeFragment
 
         try
         {
-            if (!getSession().getServiceRegistry().getDocumentFolderService().getPermissions(node).canEdit())
+            if (!ConfigurableActionHelper.isVisible(getActivity(), getAccount(), getSession(), node,
+                    ConfigurableActionHelper.ACTION_NODE_COMMENT))
             {
                 ((View) commentText.getParent().getParent()).setVisibility(View.GONE);
             }

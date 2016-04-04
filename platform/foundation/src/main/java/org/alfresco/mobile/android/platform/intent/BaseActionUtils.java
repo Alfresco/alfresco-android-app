@@ -22,6 +22,7 @@ import java.io.File;
 import org.alfresco.mobile.android.foundation.R;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.mimetype.MimeTypeManager;
+import org.alfresco.mobile.android.platform.provider.CursorUtils;
 
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -166,21 +167,33 @@ public class BaseActionUtils
      */
     public static String getPath(Context context, Uri uri)
     {
-        String scheme = uri.getScheme();
         String s = null;
-        if (scheme.equals("content"))
+        Cursor cursor = null;
+        try
         {
-            String[] projection = { MediaStore.Files.FileColumns.DATA };
-            Cursor cursor = context.getContentResolver().query(uri, projection, null, null, null);
-            int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATA);
-            cursor.moveToFirst();
-            s = cursor.getString(columnIndex);
+            String scheme = uri.getScheme();
+            if (scheme.equals("content"))
+            {
+                String[] projection = { MediaStore.Files.FileColumns.DATA };
+                cursor = context.getContentResolver().query(uri, projection, null, null, null);
+                int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATA);
+                cursor.moveToFirst();
+                s = cursor.getString(columnIndex);
+            }
+            else if (scheme.equals("file"))
+            {
+                s = uri.getPath();
+            }
+            // Log.d("ActionManager", "URI:" + uri + " - S:" + s);
         }
-        else if (scheme.equals("file"))
+        catch (Exception e)
         {
-            s = uri.getPath();
+
         }
-        // Log.d("ActionManager", "URI:" + uri + " - S:" + s);
+        finally
+        {
+            CursorUtils.closeCursor(cursor);
+        }
         return s;
     }
 
