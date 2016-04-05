@@ -905,4 +905,7 @@
     <string name="form_message_link_error"><![CDATA[<p>This content is not from a supported source of content.</p> Please select another one.]]></string>
 
 
+    <string name="open_in_alfresco_editor">Open in Alfresco Text Editor</string>
+
+
 </resources>

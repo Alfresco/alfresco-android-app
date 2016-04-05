@@ -616,7 +616,6 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         }
         hideActionIfNecessary(b, ConfigurableActionHelper.ACTION_NODE_FAVORITE);
 
-
         // SYNC
         b = (ImageView) viewById(R.id.action_sync);
 
@@ -666,7 +665,6 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
             b.setVisibility(View.GONE);
         }
         hideActionIfNecessary(b, ConfigurableActionHelper.ACTION_NODE_SYNC);
-
 
         b = (ImageView) viewById(R.id.action_share);
         if (node.isDocument() && !isRestrictable)
@@ -963,6 +961,11 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
 
     public void openin()
     {
+        openin(false);
+    }
+
+    public void openin(boolean withAlfresco)
+    {
         if (isRestrictable) { return; }
 
         Bundle b = new Bundle();
@@ -1004,16 +1007,26 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
                 // getActivity().getApplicationContext(), node, acc);
                 // observer.startWatching();
                 // If sync file + sync activate
-                ActionUtils.openIn(this, syncFile,
-                        MimeTypeManager.getInstance(getActivity()).getMIMEType(syncFile.getName()),
-                        RequestCode.SAVE_BACK);
+                if (withAlfresco)
+                {
+                    ActionUtils.openIn(this, syncFile,
+                            MimeTypeManager.getInstance(getActivity()).getMIMEType(syncFile.getName()),
+                            RequestCode.SAVE_BACK);
+                }
+                else
+                {
+                    ActionUtils.openWithAlfrescoTextEditor(this, syncFile,
+                            MimeTypeManager.getInstance(getActivity()).getMIMEType(syncFile.getName()),
+                            RequestCode.SAVE_BACK);
+                }
             }
         }
         else
         {
             // Other case
             b.putParcelable(DownloadDialogFragment.ARGUMENT_DOCUMENT, node);
-            b.putInt(DownloadDialogFragment.ARGUMENT_ACTION, DownloadDialogFragment.ACTION_OPEN);
+            b.putInt(DownloadDialogFragment.ARGUMENT_ACTION, withAlfresco
+                    ? DownloadDialogFragment.ACTION_OPEN_WITH_ALFRESCO : DownloadDialogFragment.ACTION_OPEN);
             DialogFragment frag = new DownloadDialogFragment();
             frag.setArguments(b);
             frag.show(getActivity().getSupportFragmentManager(), DownloadDialogFragment.TAG);
@@ -1184,6 +1197,21 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
                 mi.setIcon(R.drawable.ic_start_review);
                 mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
             }
+
+            try
+            {
+                String mimetype = ((Document) node).getContentStreamMimeType();
+                if (!TextUtils.isEmpty(mimetype) && mimetype.startsWith(MimeType.TYPE_TEXT))
+                {
+                    mi = menu.add(Menu.NONE, R.id.menu_action_open_with_alfresco_editor, Menu.FIRST + 50,
+                            R.string.open_in_alfresco_editor);
+                    mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+                }
+            }
+            catch (Exception e)
+            {
+
+            }
         }
 
         if (session == null) { return; }
@@ -1258,6 +1286,9 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
                 ActionUtils.actionShowMap(this, node.getName(),
                         node.getProperty(ContentModel.PROP_LATITUDE).getValue().toString(),
                         node.getProperty(ContentModel.PROP_LONGITUDE).getValue().toString());
+                return true;
+            case R.id.menu_action_open_with_alfresco_editor:
+                openin(true);
                 return true;
             case R.id.menu_workflow_add:
                 Intent in = new Intent(PrivateIntent.ACTION_START_PROCESS, null, getActivity(),
@@ -1570,7 +1601,6 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
     {
         return getActivity().getSupportFragmentManager().findFragmentByTag(tag);
     }
-
     // ///////////////////////////////////////////////////////////////////////////
     // BUILDER
     // ///////////////////////////////////////////////////////////////////////////

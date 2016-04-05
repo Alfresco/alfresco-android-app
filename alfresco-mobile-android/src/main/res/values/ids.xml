@@ -37,6 +37,7 @@
     <item name="menu_gallery" type="id" />
     <item name="menu_action_share" type="id" />
     <item name="menu_action_open" type="id" />
+    <item name="menu_action_open_with_alfresco_editor" type="id" />
     <item name="menu_action_delete" type="id" />
     <item name="menu_action_location" type="id" />
     <item name="menu_action_delete_folder" type="id" />
