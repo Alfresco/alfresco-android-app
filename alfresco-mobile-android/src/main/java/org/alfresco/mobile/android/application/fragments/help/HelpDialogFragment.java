@@ -208,7 +208,7 @@ public class HelpDialogFragment extends DialogFragment implements RefreshFragmen
     // ///////////////////////////////////////////////////////////////////////////
     private String getUrl(FragmentActivity activity)
     {
-        String prefix = activity.getString(R.string.docs_prefix);
+        String prefix = activity.getString(R.string.asset_folder_prefix);
         String urlValue = null;
         if (TextUtils.isEmpty(prefix))
         {

@@ -164,8 +164,7 @@
     <string name="share_content">Share Content with&#8230;</string>
 
     <!-- HELP -->
-    <string name="asset_folder_prefix">en</string>
-    <string name="docs_prefix" translatable="false" />
+    <string name="asset_folder_prefix" />
 
     <!-- About Message -->
     <string name="version_number">Version</string>
@@ -464,6 +463,8 @@
     <string name="action_view_properties">View Properties</string>
     <string name="action_edit_properties">Edit Properties</string>
     <string name="like_in_progress">"Like" in progress</string>
+    <string name="like_completed">Like completed</string>
+    <string name="like_complete">Like complete</string>
     <string name="favorite">Favorite</string>
     <string name="unfavorite">Unfavorite</string>
 

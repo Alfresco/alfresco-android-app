@@ -157,15 +157,14 @@
     <string name="error_unable_open_file">このファイル形式は使用できません。 このファイルを読み取ることができるアプリをインストールしてください。</string>
 
     <!-- OTHER -->
-    <string name="unlike">[いいね !] の取り消し</string>
-    <string name="error_retrieve_likes">このコンテンツの[いいね!]/[いいね!の取り消し] タグを取得できませんでした。</string>
+    <string name="unlike">[いいね!] の削除</string>
+    <string name="error_retrieve_likes">このコンテンツの[いいね!]/[[いいね!] の削除] タグを取得できませんでした。</string>
     <string name="next">次へ</string>
     <string name="save">保存</string>
     <string name="share_content">コンテンツの共有&#8230;</string>
 
     <!-- HELP -->
     <string name="asset_folder_prefix">ja</string>
-    <string name="docs_prefix" translatable="false" />
 
     <!-- About Message -->
     <string name="version_number">バージョン</string>
@@ -173,7 +172,7 @@
     <string name="sdknumber_version">SDK: </string>
     <string name="about_description">
 <![CDATA[
-<p>Alfresco Mobile は Alfresco in the Cloud とオンプレミスの Alfresco サーバー (3.4 以上) に接続して、外出先からでも社内のコンテンツに安全にアクセスできるようにします。</p>
+<p>Alfresco Mobile は Alfresco in the Cloud とオンプレミスの Alfresco サーバー (3.4 以上) に接続して、社内のコンテンツに外出先から安全にアクセスできるようにします。</p>
 
 <p>Alfresco Mobile は、Alfresco のログイン資格情報を使用して (HTTP または HTTPS 経由で) Alfresco のリポジトリに接続し、権限に基づいてユーザーのアクセスを管理します。</p>
 ]]>
@@ -242,7 +241,7 @@
     <!-- SITES ACTION -->
     <string name="sites_empty_title">サイトが見つかりません</string>
     <string name="action_join_site">参加</string>
-    <string name="action_join_request_site">参加のリクエスト</string>
+    <string name="action_join_request_site">参加リクエストの送信</string>
     <string name="action_leave_site">退会</string>
     <string name="action_favorite_site">お気に入り</string>
     <string name="action_unfavorite_site">お気に入りの解除</string>
@@ -542,7 +541,7 @@
     <string name="contactInformation">連絡先</string>
     <string name="email">E メール</string>
     <string name="telephone">電話</string>
-    <string name="mobile">携帯</string>
+    <string name="mobile">携帯電話</string>
     <string name="skypeId">Skype</string>
     <string name="instantMessagingId">IM</string>
     <string name="instantMessaging">インスタントメッセージング</string>
@@ -555,7 +554,7 @@
     <string name="companyTelephone">電話</string>
     <string name="companyFax">ファックス</string>
     <string name="companyEmail">E メール</string>
-    <string name="call">通話</string>
+    <string name="call">電話</string>
     <string name="skype">Skype</string>
     <string name="start_chat">チャットの開始</string>
     <string name="start_call">通話の開始</string>
@@ -641,8 +640,8 @@
 
     <!-- Process Start -->
     <string name="process_start_review">レビューの開始</string>
-    <string name="process_choose_definition">タスクのタイプを選択</string>
-    <string name="process_create_task">タスクを作成</string>
+    <string name="process_choose_definition">タスクの種類の選択</string>
+    <string name="process_create_task">タスクの作成</string>
     <string name="process_choose_attachments">添付ファイルの選択</string>
     <string name="process_start_title">プロセスの開始</string>
     <string name="process_title">タイトル</string>
@@ -668,8 +667,8 @@
     <string name="process_approvers">承認者</string>
     <string name="process_no_approvers">承認者なし</string>
     <string name="process_starting">プロセスの開始</string>
-    <string name="task_create">タスクを作成</string>
-    <string name="task_todo">作業リスト</string>
+    <string name="task_create">タスクの作成</string>
+    <string name="task_todo">タスクの割り当て</string>
     <string name="task_todo_description">タスクを担当者に割り当てます</string>
     <string name="task_review_approve">レビューと承認</string>
     <string name="task_review_approve_description">タスクをコンテンツのレビューと承認を行う担当者に割り当てます。</string>
@@ -684,9 +683,9 @@
 
     <!-- PROCESS NAME -->
     <string name="process_adhoc">アドホックワークフロー</string>
-    <string name="process_parallel_review">並列のレビューと承認 (Activiti)</string>
+    <string name="process_parallel_review">並列のレビューと承認</string>
     <string name="process_review">レビューと承認</string>
-    <string name="process_pooled_review">プールされたレビューと承認 (Activiti)</string>
+    <string name="process_pooled_review">プールされたレビューと承認</string>
 
     <!-- AGGREGATOR SEARCH -->
     <string name="search">検索</string>
@@ -772,8 +771,8 @@
     <string name="shortcut_create">ショートカットの作成...</string>
     <string name="shortcut_action_create">アクションの定義...</string>
     <string name="action_associated">関連付けられているアクション</string>
-    <string name="action_photo">写真を撮影する</string>
-    <string name="action_text">テキストを書く</string>
+    <string name="action_photo">写真の撮影</string>
+    <string name="action_text">テキストの入力</string>
     <string name="action_speech2text">音声入力</string>
 
     <string name="mdm_managed">管理者によって管理されています</string>
