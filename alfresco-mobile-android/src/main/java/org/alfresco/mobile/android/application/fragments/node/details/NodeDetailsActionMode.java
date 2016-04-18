@@ -114,7 +114,7 @@ public class NodeDetailsActionMode extends AbstractActions<Node>
                 ConfigurableActionHelper.ACTION_NODE_EDIT))
         {
             mi = menu.add(Menu.NONE, R.id.menu_action_edit, Menu.FIRST + 50, R.string.edit);
-            mi.setIcon(R.drawable.ic_edit);
+            mi.setIcon(R.drawable.ic_properties);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         }
 

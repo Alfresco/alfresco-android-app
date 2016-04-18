@@ -22,7 +22,7 @@
     <!-- ALFRESCO SDK MANUAL -->
     <!-- ************************** -->
     <!-- Relative Date -->
-    <string name="relative_date_just_now">à l\'instant</string>
+    <string name="relative_date_just_now">maintenant</string>
     <string name="relative_date_less_than_a_minute_ago">il y a moins d\'une minute</string>
 
     <plurals name="relative_date_minutes_ago">
@@ -64,8 +64,8 @@
     <string name="org_alfresco_blog_post_created">Article de blog {0} créé par {1}</string>
     <string name="org_alfresco_blog_post_updated">Article de blog {0} mis à jour par {1}</string>
     <string name="org_alfresco_blog_post_deleted">Article de blog {0} supprimé par {1}</string>
-    <string name="org_alfresco_comments_comment_created">{1} commenté {0}</string>
-    <string name="org_alfresco_comments_comment_updated">{1} a mis à jour le commentaire sur {0}</string>
+    <string name="org_alfresco_comments_comment_created">{1} a commenté {0}</string>
+    <string name="org_alfresco_comments_comment_updated">{1} a mis à jour son commentaire sur {0}</string>
     <string name="org_alfresco_comments_comment_deleted">{1} a supprimé un commentaire de {0}</string>
     <string name="org_alfresco_discussions_post_created">Discussion {0} démarrée par {1}</string>
     <string name="org_alfresco_discussions_post_updated">Discussion {0} mise à jour par {1}</string>
@@ -97,10 +97,10 @@
     <string name="org_alfresco_wiki_page_deleted">Page wiki {0} supprimée par {1}</string>
     <string name="org_alfresco_site_group_added">Groupe {1} ajouté au site {4} avec le rôle {2}</string>
     <string name="org_alfresco_site_group_removed">Groupe {1} supprimé du site {4}</string>
-    <string name="org_alfresco_site_group_role_changed">Rôle du groupe {1} modifié pour {2}</string>
+    <string name="org_alfresco_site_group_role_changed">Rôle du groupe {1} changé en {2}</string>
     <string name="org_alfresco_site_user_joined">{1} a rejoint le site {4} avec le rôle {2}</string>
     <string name="org_alfresco_site_user_left">{1} a quitté le site {4}</string>
-    <string name="org_alfresco_site_user_role_changed">Le rôle de {1} a changé pour {2}</string>
+    <string name="org_alfresco_site_user_role_changed">Rôle {1} changé en {2}</string>
     <string name="org_alfresco_links_link_created">Lien {0} créé par {1}</string>
     <string name="org_alfresco_links_link_updated">Lien {0} mis à jour par {1}</string>
     <string name="org_alfresco_links_link_deleted">Lien {0} supprimé par {1}</string>
@@ -108,7 +108,7 @@
     <string name="org_alfresco_datalists_list_updated">Détails de la liste des données {0} mis à jour par {1}</string>
     <string name="org_alfresco_datalists_list_deleted">Liste des données {0} supprimée par {1}</string>
     <string name="org_alfresco_subscriptions_followed">{1} suit maintenant {5}</string>
-    <string name="org_alfresco_subscriptions_subscribed">{1} s\'est inscrit à {2}</string>
+    <string name="org_alfresco_subscriptions_subscribed">{1} s\'est abonné à {2}</string>
     <string name="org_alfresco_profile_status_changed">{1} : {6}</string>
     <string name="org_alfresco_documentlibrary_file_previewed">{1} a prévisualisé le document {0}</string>
     <string name="org_alfresco_documentlibrary_file_downloaded">{1} a téléchargé le document {0}</string>
@@ -208,7 +208,7 @@
     <string name="empty_users">Aucun utilisateur trouvé</string>
     <string name="empty_child">Aucun fichier trouvé</string>
     <string name="empty_site">Aucun site disponible</string>
-    <string name="empty_version">Aucun historique de version disponible</string>
+    <string name="empty_version">Aucun historique des versions disponible</string>
     <string name="empty_session">Aucune session disponible</string>
     <string name="empty_actvity">Aucune activité trouvée</string>
     <string name="empty_tag">Aucun tag trouvé</string>
@@ -234,7 +234,7 @@
     <string name="take_photo">Prendre une photo</string>
     <string name="make_video">Enregistrer vidéo</string>
     <string name="record_audio">Enregistrer audio</string>
-    <string name="version_history">Historique de version</string>
+    <string name="version_history">Historique des versions</string>
     <string name="tags">Tags</string>
     <string name="share">Partager</string>
     <string name="refresh">Actualiser</string>

@@ -71,7 +71,7 @@
     <string name="org_alfresco_discussions_post_updated">Discussione {0} aggiornata da {1}</string>
     <string name="org_alfresco_discussions_post_deleted">Discussione {0} eliminata da {1}</string>
     <string name="org_alfresco_discussions_reply_created">{1} ha risposto alla discussione {0}</string>
-    <string name="org_alfresco_discussions_reply_updated">{1} ha aggiornato una risposta in {0}</string>
+    <string name="org_alfresco_discussions_reply_updated">{1} ha aggiornato la risposta a {0}</string>
     <string name="org_alfresco_calendar_event_created">Evento del calendario {0} creato da {1}</string>
     <string name="org_alfresco_calendar_event_updated">Evento del calendario {0} aggiornato da {1}</string>
     <string name="org_alfresco_calendar_event_deleted">Evento del calendario {0} eliminato da {1}</string>
@@ -164,7 +164,7 @@
     <string name="metadata_prop_album">Album</string>
     <string name="metadata_prop_artist">Artista</string>
     <string name="metadata_prop_composer">Compositore</string>
-    <string name="metadata_prop_engineer">Ingegnere</string>
+    <string name="metadata_prop_engineer">Tecnico</string>
     <string name="metadata_prop_genre">Genere</string>
     <string name="metadata_prop_track_number">Numero di traccia</string>
     <string name="metadata_prop_release_date">Data di pubblicazione</string>
@@ -175,7 +175,7 @@
     <!-- Metadata Version -->
     <string name="metadata_prop_version">Versione</string>
     <string name="metadata_prop_version_modification_date">Data di modifica</string>
-    <string name="metadata_prop_version_modified_by">Ultima modifica effettuata da</string>
+    <string name="metadata_prop_version_modified_by">Ultima modifica di</string>
     <string name="metadata_prop_version_comment">Commento</string>
     <string name="metadata_prop_version_current">Versione attuale</string>
     <!-- Metadata RESTRICTABLE -->
@@ -194,7 +194,7 @@
     <!-- Create Folder -->
     <string name="folder_create">Crea una nuova cartella</string>
     <string name="folder_name">Nome</string>
-    <string name="folder_name_hint">Immetti qui il nome della cartella&#8230;</string>
+    <string name="folder_name_hint">Digita qui il nome della cartella&#8230;</string>
     <!-- Update Properties -->
     <string name="edit">Modifica</string>
     <string name="update">Aggiorna</string>
@@ -225,7 +225,7 @@
     <string name="search_hint">Immetti termine da cercare</string>
     <!-- Comments -->
     <string name="comments">Commenti</string>
-    <string name="comment_add_hint">Immetti qui il commento&#8230;</string>
+    <string name="comment_add_hint">Digita qui il commento&#8230;</string>
     <!-- Actions -->
     <string name="create">Crea</string>
     <string name="add">Aggiungi</string>
@@ -234,7 +234,7 @@
     <string name="take_photo">Scatta foto</string>
     <string name="make_video">Registra video</string>
     <string name="record_audio">Registra audio</string>
-    <string name="version_history">Cronologia delle versioni</string>
+    <string name="version_history">Cronologia versioni</string>
     <string name="tags">Tag</string>
     <string name="share">Condividi</string>
     <string name="refresh">Aggiorna</string>
@@ -242,7 +242,7 @@
     <string name="save_back">Salva</string>
 
     <!-- MESSAGE ERROR -->
-    <string name="error_general">Si è verificato un errore. Riprovare.</string>
+    <string name="error_general">Si è verificato un errore. Riprova.</string>
     <string name="error_general_title">Si è verificato un errore.</string>
     <string name="error_unable_open_file">Impossibile aprire il file</string>
     <string name="error_unable_share_link">Impossibile condividere il link</string>
@@ -253,41 +253,41 @@
     <string name="retry_account_loading">Riprova</string>
     <string name="error_session_creation_title">Salva account</string>
     <string name="error_session_creation_message">Errore di connessione</string>
-    <string name="error_session_creation">Impossibile eseguire l\'autenticazione. Verificare le impostazioni dell\'account Alfresco.</string>
+    <string name="error_session_creation">Impossibile eseguire l\'autenticazione. Verifica le impostazioni dell\'account Alfresco.</string>
     <string name="error_session_hostname_short">Il valore del <b>nome host</b> è probabilmente errato.</string>
-    <string name="error_session_hostname"><![CDATA[Il valore del <b>nome host</b> è probabilmente errato o è necessario <b>attivare il VPN</b>.<br/> Verificare i valori e le impostazioni.]]></string>
+    <string name="error_session_hostname"><![CDATA[Il valore del <b>nome host</b> è probabilmente errato o è necessario <b>attivare il VPN</b>.<br/> Verifica i valori e le impostazioni.]]></string>
     <string name="error_session_nodata_short">La connessione dati del dispositivo è assente.</string>
-    <string name="error_session_nodata"><![CDATA[<p><b>La connessione dati del dispositivo è assente.</b><br/></p> Controllare le impostazioni del dispositivo e abilitare la connessione dati.]]></string>
-    <string name="error_session_unauthorized"><![CDATA[Non è consentito accedere a questo server.<br/> Verificare le impostazioni dell\'account Alfresco <b>(Nome utente/Password)</b>.]]></string>
-    <string name="error_session_service_url"><![CDATA[Il valore <b>URL servizio</b> è errato.<br/> Verificare le impostazioni dell\'account Alfresco.]]></string>
-    <string name="error_session_service_unavailable"><![CDATA[Il server non è momentaneamente in grado di elaborare la richiesta a causa di inattività per manutenzione o problemi di capacità.<br/> Riprovare più tardi.]]></string>
-    <string name="error_session_notfound"><![CDATA[Impossibile raggiungere il server.<br/> Verificare le impostazioni dell\'account Alfresco.]]></string>
-    <string name="error_session_port"><![CDATA[Il valore <b>porta</b> è errato.<br/> Verificare le impostazioni dell\'account Alfresco.]]></string>
+    <string name="error_session_nodata"><![CDATA[<p><b>La connessione dati del dispositivo è assente.</b><br/></p> Controlla le impostazioni del dispositivo e abilita la connessione dati.]]></string>
+    <string name="error_session_unauthorized"><![CDATA[Non è consentito accedere a questo server.<br/> Verifica le impostazioni dell\'account Alfresco <b>(Nome utente/Password)</b>.]]></string>
+    <string name="error_session_service_url"><![CDATA[Il valore <b>URL servizio</b> è errato.<br/> Verifica le impostazioni dell\'account Alfresco.]]></string>
+    <string name="error_session_service_unavailable"><![CDATA[Il server non è momentaneamente in grado di elaborare la richiesta a causa di inattività per manutenzione o problemi di capacità.<br/> Riprova più tardi.]]></string>
+    <string name="error_session_notfound"><![CDATA[Impossibile raggiungere il server.<br/> Verifica le impostazioni dell\'account Alfresco.]]></string>
+    <string name="error_session_port"><![CDATA[Il valore <b>porta</b> è errato.<br/> Verifica le impostazioni dell\'account Alfresco.]]></string>
     <string name="error_session_certificate">
 <![CDATA[<p><b>Il certificato di sicurezza del server non è attendibile.</b><br/></p>
 		L\'organizzazione di terzi che ha emesso il certificato di destinazione del server non è riconosciuta dal dispositivo.<br/>
-		Alfresco Mobile può verificare che si sta effettuando la connessione al server giusto solo se il certificato è emesso da un\'organizzazione attendibile.<br/>
-		Se il server ha un certificato autofirmato, aggiungerlo al dispositivo per poter effettuare la connessione.<br/> ]]>
+		Alfresco Mobile può verificare che ti stai connettendo al server giusto solo se il certificato è emesso da un\'organizzazione attendibile.<br/>
+		Se il server ha un certificato autofirmato, aggiungilo al dispositivo per poterti connettere.<br/> ]]>
     </string>
     <string name="error_session_certificate_expired">
 <![CDATA[<p><b>Il certificato di sicurezza del server è scaduto o non è più valido.</b><br/></p>
-		Verificare la data e l\'ora del dispositivo.<br/> Se il problema persiste, contattare l\'amministratore. ]]>
+		Verifica la data e l\'ora del dispositivo.<br/> Se il problema persiste, contatta l\'amministratore. ]]>
     </string>
     <string name="error_session_ssl">
 <![CDATA[<p><b>Si è verificato un errore con il protocollo SSL.</b><br/></p>
-        Verificare le impostazioni dell\'account Alfresco e riprovare.<br/> Se il problema persiste, contattare l\'amministratore.]]>
+        Verifica le impostazioni dell\'account Alfresco e riprova.<br/> Se il problema persiste, contatta l\'amministratore.]]>
     </string>
     <string name="error_session_cloud_unavailable">
 <![CDATA[<p><b>Il carico di lavoro di Alfresco in the Cloud è al momento eccessivo.</b><br/></p>
-        Riprovare tra qualche minuto.<br/>]]>
+        Riprova tra qualche minuto.<br/>]]>
     </string>
-    <string name="error_session_expired">La sessione è scaduta. Ripetere l\'accesso.</string>
+    <string name="error_session_expired">La sessione è scaduta. Accedi di nuovo.</string>
     <string name="error_session_refresh">Aggiornamento sessione.</string>
-    <string name="error_chunk_transfert"><![CDATA[Il server non supporta trasferimenti in blocco.<br/> Ricaricare l\'account</b>.]]></string>
+    <string name="error_chunk_transfert"><![CDATA[Il server non supporta trasferimenti in blocco.<br/> Ricarica l\'account</b>.]]></string>
 
-    <string name="error_account_url">URL errato. Verificare le impostazioni dell\'account Alfresco.</string>
+    <string name="error_account_url">URL errato. Verifica le impostazioni dell\'account Alfresco.</string>
     <string name="error_unknown_filepath">Impossibile trovare la risorsa.</string>
-    <string name="error_name_already_exist">Impossibile rinominare il file. Potrebbe esistere un altro file con lo stesso nome.</string>
+    <string name="error_name_already_exist">Impossibile rinominare il file. Forse esiste già un altro file con lo stesso nome.</string>
     <string name="error_unknown_exception">Si è verificato un errore: %s</string>
     <string name="error_unknown">Si è verificato un errore: %s</string>
 
@@ -301,8 +301,8 @@
     <string name="security_ssl_disable">Convalida certificato SSL disabilitata.</string>
 
     <!-- ACCOUNT -->
-    <string name="account_verify">Verifica delle informazioni account in corso&#8230;</string>
-    <string name="account_wizard_alldone_description">Account pronto per l\'utilizzo.</string>
+    <string name="account_verify">Verifica informazioni account in corso&#8230;</string>
+    <string name="account_wizard_alldone_description">Account pronto per l\'uso.</string>
     <string name="account_default_onpremise">Server Alfresco</string>
     <string name="account_default_cloud">Alfresco in the Cloud</string>
 
@@ -391,9 +391,9 @@
     <string name="favorites_deactivate">Disattiva sincronizzazione</string>
     <string name="favorites_deactivate_description"><![CDATA[<p>Disattivare la sincronizzazione?</p> Tutti i contenuti sincronizzati saranno rimossi dal dispositivo.]]></string>
     <string name="sync_error_title">Errori di sincronizzazione</string>
-    <string name="sync_error_node_unfavorited"><![CDATA[<p><b>%s</b> è stato rimosso dai preferiti perché modificato. <br/> <b>Sincronizzare</b> la versione modificata con il server o <b>salvarla</b> nella cartella \"Download\". </p>]]></string>
+    <string name="sync_error_node_unfavorited"><![CDATA[<p><b>%s</b> è stato rimosso dai preferiti perché modificato. <br/> <b>Sincronizza</b> la versione modificata con il server o <b>salvala</b> nella cartella \"Download\". </p>]]></string>
     <string name="sync_error_node_deleted"><![CDATA[<p> <b>%s</b> è stato cancellato dal server, ma una copia è stata salvata nella cartella \"Download\".</p>]]></string>
-    <string name="sync_error_no_permission"><![CDATA[<p> Non si dispone dei permessi necessari per caricare la versione modificata di <b>%s</b>. È possibile <b>salvarla</b> nella cartella \"Download\", oppure <b>sovrascriverla</b> con la versione presente sul server, che annullerà le modifiche.]]></string>
+    <string name="sync_error_no_permission"><![CDATA[<p> Non hai i permessi necessari per caricare la versione modificata di <b>%s</b>. Puoi <b>salvarla</b> nella cartella \"Download\" o <b>sovrascriverla</b> con la versione presente sul server, che annullerà le modifiche.]]></string>
     <string name="sync_error_node_local_modification">Errori di sincronizzazione</string>
     <string name="sync_action">Sincronizza</string>
     <string name="sync_override_action">Sovrascrivi</string>
@@ -443,9 +443,9 @@
 
     <string name="sync_warning">Avviso di sincronizzazione</string>
     <string name="sync_error">Errore di sincronizzazione</string>
-    <string name="sync_warning_mobile_data"><![CDATA[<p> Si sta per eseguire la sincronizzazione di <b>%s</b> su una connessione portante.</p> Continuare?]]></string>
-    <string name="sync_error_storage"><![CDATA[<p> Si sta tentando di sincronizzare <b>%1$s</b>, ma sono disponibili solo %2$s.</p> Liberare un po\' di spazio sul dispositivo o rimuovere alcuni contenuti dai preferiti.]]></string>
-    <string name="sync_warning_storage"><![CDATA[<p> Si sta per eseguire la sincronizzazione di <b>%1$s</b>, ma sul dispositivo rimane soltanto %2$s.</p> Continuare?]]></string>
+    <string name="sync_warning_mobile_data"><![CDATA[<p> Stai per sincronizzare <b>%s</b> su una connessione portante.</p> Continuare?]]></string>
+    <string name="sync_error_storage"><![CDATA[<p> Stai tentando di sincronizzare <b>%1$s</b>, ma sono disponibili solo %2$s.</p> Libera spazio sul dispositivo o rimuovi alcuni contenuti dai preferiti.]]></string>
+    <string name="sync_warning_storage"><![CDATA[<p> Stai per sincronizzare <b>%1$s</b>, ma sul dispositivo rimangono solo %2$s.</p> Continuare?]]></string>
     <string name="sync_document_not_available">Questo documento non è disponibile sul dispositivo.</string>
 
     <!-- NOTIFICATION -->

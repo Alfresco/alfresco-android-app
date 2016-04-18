@@ -164,7 +164,6 @@
     <string name="share_content">Share Content with&#8230;</string>
 
     <!-- HELP -->
-    <string name="asset_folder_prefix">en</string>
     <string name="docs_prefix" translatable="false" />
 
     <!-- About Message -->
@@ -464,6 +463,8 @@
     <string name="action_view_properties">View Properties</string>
     <string name="action_edit_properties">Edit Properties</string>
     <string name="like_in_progress">"Like" in progress</string>
+    <string name="like_completed">Like completed</string>
+    <string name="like_complete">Like complete</string>
     <string name="favorite">Favorite</string>
     <string name="unfavorite">Unfavorite</string>
 
@@ -903,6 +904,9 @@
     <string name="form_message_unsupported_description"><![CDATA[<p>This form contains one or more required fields that are not currently supported on mobile devices.</p> Please use the web app to action this step.]]></string>
     <string name="form_message_link_error_title">Link unsupported</string>
     <string name="form_message_link_error"><![CDATA[<p>This content is not from a supported source of content.</p> Please select another one.]]></string>
+
+
+    <string name="open_in_alfresco_editor">Open in Alfresco Text Editor</string>
 
 
 </resources>
