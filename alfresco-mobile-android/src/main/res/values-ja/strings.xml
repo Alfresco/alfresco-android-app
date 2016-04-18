@@ -164,7 +164,7 @@
     <string name="share_content">コンテンツの共有&#8230;</string>
 
     <!-- HELP -->
-    <string name="asset_folder_prefix">ja</string>
+    <string name="docs_prefix">ja</string>
 
     <!-- About Message -->
     <string name="version_number">バージョン</string>

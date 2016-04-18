@@ -1205,7 +1205,8 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
                 {
                     mi = menu.add(Menu.NONE, R.id.menu_action_open_with_alfresco_editor, Menu.FIRST + 50,
                             R.string.open_in_alfresco_editor);
-                    mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+                    mi.setIcon(R.drawable.ic_edit);
+                    mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
                 }
             }
             catch (Exception e)
@@ -1220,7 +1221,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
                 ConfigurableActionHelper.ACTION_NODE_EDIT))
         {
             mi = menu.add(Menu.NONE, R.id.menu_action_edit, Menu.FIRST + 10, R.string.edit);
-            mi.setIcon(R.drawable.ic_edit);
+            mi.setIcon(R.drawable.ic_properties);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         }
 

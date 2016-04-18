@@ -164,7 +164,7 @@
     <string name="share_content">Condividi contenuto con&#8230;</string>
 
     <!-- HELP -->
-    <string name="asset_folder_prefix">it</string>
+    <string name="docs_prefix">it</string>
 
     <!-- About Message -->
     <string name="version_number">Versione</string>
