@@ -1033,11 +1033,25 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         }
 
         // Analytics
-        AnalyticsHelper.reportOperationEvent(getActivity(), AnalyticsManager.CATEGORY_DOCUMENT_MANAGEMENT,
-                AnalyticsManager.ACTION_OPEN,
-                node.isDocument() ? ((Document) node).getContentStreamMimeType() : AnalyticsManager.TYPE_FOLDER, 1,
-                false, AnalyticsManager.INDEX_FILE_SIZE,
-                node.isDocument() ? ((Document) node).getContentStreamLength() : 0);
+        if (node instanceof Document)
+        {
+            AnalyticsHelper.reportOperationEvent(getActivity(), AnalyticsManager.CATEGORY_DOCUMENT_MANAGEMENT,
+                    AnalyticsManager.ACTION_OPEN,
+                    node.isDocument() ? ((Document) node).getContentStreamMimeType() : AnalyticsManager.TYPE_FOLDER, 1,
+                    false, AnalyticsManager.INDEX_FILE_SIZE,
+                    node.isDocument() ? ((Document) node).getContentStreamLength() : 0);
+        }
+        else if (node instanceof NodeSyncPlaceHolder)
+        {
+            AnalyticsHelper.reportOperationEvent(getActivity(), AnalyticsManager.CATEGORY_DOCUMENT_MANAGEMENT,
+                    AnalyticsManager.ACTION_OPEN_OFFLINE,
+                    node.getPropertyValue(PropertyIds.CONTENT_STREAM_MIME_TYPE) != null
+                            ? node.getPropertyValue(PropertyIds.CONTENT_STREAM_MIME_TYPE).toString()
+                            : AnalyticsManager.TYPE_FOLDER,
+                    1, false, AnalyticsManager.INDEX_FILE_SIZE,
+                    node.getPropertyValue(PropertyIds.CONTENT_STREAM_LENGTH) != null
+                            ? Long.parseLong(node.getPropertyValue(PropertyIds.CONTENT_STREAM_LENGTH).toString()) : 0);
+        }
     }
 
     public void setDownloadDateTime(Date downloadDateTime)
@@ -1602,6 +1616,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
     {
         return getActivity().getSupportFragmentManager().findFragmentByTag(tag);
     }
+
     // ///////////////////////////////////////////////////////////////////////////
     // BUILDER
     // ///////////////////////////////////////////////////////////////////////////
