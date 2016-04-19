@@ -75,6 +75,8 @@ public abstract class AnalyticsManager extends Manager
 
     public static final String ACTION_OPEN = "Open";
 
+    public static final String ACTION_OPEN_OFFLINE = "Open Offline";
+
     public static final String ACTION_DOWNLOAD = "Download";
 
     public static final String ACTION_EDIT = "Edit";
