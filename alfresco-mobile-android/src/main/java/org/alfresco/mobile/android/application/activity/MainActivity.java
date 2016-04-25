@@ -30,6 +30,7 @@ import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.capture.DeviceCapture;
 import org.alfresco.mobile.android.application.configuration.ConfigurationConstant;
+import org.alfresco.mobile.android.application.configuration.features.ConfigFeatureHelper;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.about.AboutFragment;
@@ -49,6 +50,7 @@ import org.alfresco.mobile.android.application.managers.ConfigManager;
 import org.alfresco.mobile.android.application.managers.RenditionManagerImpl;
 import org.alfresco.mobile.android.application.managers.extensions.AnalyticHelper;
 import org.alfresco.mobile.android.application.security.DataProtectionUserDialogFragment;
+import org.alfresco.mobile.android.application.security.PassCodeActivity;
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.account.CreateAccountEvent;
 import org.alfresco.mobile.android.async.configuration.ConfigurationEvent;
@@ -366,6 +368,12 @@ public class MainActivity extends BaseActivity
                 EventBusManager.getInstance()
                         .post(new ConfigManager.ConfigurationMenuEvent(getCurrentAccount().getId()));
             }
+        }
+
+        if (requestCode == PassCodeActivity.REQUEST_CODE_PASSCODE && sessionState == SESSION_LOADING
+                && getCurrentSession() != null)
+        {
+            onAccountLoaded(new LoadAccountCompletedEvent("-1", getCurrentAccount()));
         }
     }
 
@@ -854,6 +862,7 @@ public class MainActivity extends BaseActivity
     {
         // Avoid collision with PublicDispatcherActivity when selecting an
         // account.
+        Log.i(TAG, "ON Account Loaded");
         if (event.requestId == null || getCurrentSession() == null) { return; }
 
         if (event.requestId == LoadAccountCompletedEvent.SWAP)
@@ -868,10 +877,10 @@ public class MainActivity extends BaseActivity
 
         ServiceRegistry registry = getCurrentSession().getServiceRegistry();
 
-        ConfigManager config = ConfigManager.getInstance(this);
-        if (!config.hasConfig(getCurrentAccount().getId()))
+        ConfigManager configManager = ConfigManager.getInstance(this);
+        if (!configManager.hasConfig(getCurrentAccount().getId()))
         {
-            config.init(getCurrentAccount());
+            configManager.init(getCurrentAccount());
         }
         if (registry instanceof AlfrescoServiceRegistry)
         {
@@ -884,10 +893,14 @@ public class MainActivity extends BaseActivity
             }
             else
             {
-                config.loadRemote(getCurrentAccount().getId(), ((AlfrescoServiceRegistry) registry).getConfigService());
+                configManager.loadRemote(getCurrentAccount().getId(),
+                        ((AlfrescoServiceRegistry) registry).getConfigService());
+
+                // Check feature config
+                ConfigFeatureHelper.check(this, getCurrentAccount(), getCurrentSession());
             }
         }
-        config.setSession(getCurrentAccount().getId(), getCurrentSession());
+        configManager.setSession(getCurrentAccount().getId(), getCurrentSession());
 
         // Retrieve latest avatar
         Operator.with(this).load(new AvatarRequest.Builder(getCurrentAccount().getUsername()));
@@ -996,7 +1009,6 @@ public class MainActivity extends BaseActivity
         }
 
         invalidateOptionsMenu();
-
     }
 
     @Subscribe
@@ -1082,7 +1094,8 @@ public class MainActivity extends BaseActivity
                     }
                     invalidateOptionsMenu();
 
-                    // If connectivity is better (or reopen) we can try to sync all pending request
+                    // If connectivity is better (or reopen) we can try to sync
+                    // all pending request
                     if (getCurrentSession() != null && SyncContentManager.hasPendingSync(context, getCurrentAccount()))
                     {
                         if (!isSyncActive(AlfrescoAccountManager.getInstance(context)

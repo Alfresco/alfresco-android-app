@@ -28,6 +28,7 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.activity.BaseAppCompatActivity;
 import org.alfresco.mobile.android.application.activity.WelcomeActivity;
+import org.alfresco.mobile.android.application.configuration.features.SyncCellularConfigFeature;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.account.AccountEditFragment;
@@ -252,6 +253,13 @@ public class AccountSettingsFragment extends AlfrescoFragment implements EditTex
                             syncFavoritesVH.choose.isChecked());
                 }
             });
+        }
+
+        SyncCellularConfigFeature feature = new SyncCellularConfigFeature(getActivity());
+        if (feature.isProtected(account))
+        {
+            syncFavoritesVH.bottomText.setText(R.string.mdm_managed);
+            syncFavoritesVH.choose.setEnabled(false);
         }
     }
 
@@ -532,6 +540,13 @@ public class AccountSettingsFragment extends AlfrescoFragment implements EditTex
         {
             ((BaseActivity) getActivity()).setCurrentAccount(account);
         }
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // CONFIG
+    // ///////////////////////////////////////////////////////////////////////////
+    private void getSyncWifi()
+    {
     }
 
     // ///////////////////////////////////////////////////////////////////////////

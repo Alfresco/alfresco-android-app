@@ -58,6 +58,10 @@ public class PassCodeDialogFragment extends DialogFragment
 {
     public static final String ARGUMENT_MODE = "Mode";
 
+    public static final String ARGUMENT_INFO = "info";
+
+    public static final int MODE_INFO = 1;
+
     public static final int MODE_CREATE = 1;
 
     public static final int MODE_UPDATE = 2;
@@ -110,6 +114,16 @@ public class PassCodeDialogFragment extends DialogFragment
         return fragment;
     }
 
+    public static PassCodeDialogFragment define()
+    {
+        PassCodeDialogFragment fragment = new PassCodeDialogFragment();
+        Bundle b = new Bundle();
+        b.putInt(ARGUMENT_MODE, MODE_CREATE);
+        b.putInt(ARGUMENT_INFO, MODE_INFO);
+        fragment.setArguments(b);
+        return fragment;
+    }
+
     public static PassCodeDialogFragment modify()
     {
         PassCodeDialogFragment fragment = new PassCodeDialogFragment();
@@ -144,6 +158,17 @@ public class PassCodeDialogFragment extends DialogFragment
         final View v = inflater.inflate(R.layout.app_passcode, (ViewGroup) this.getView());
 
         title = (TextView) v.findViewById(R.id.passcode_hint);
+
+        if (getArguments().containsKey(ARGUMENT_INFO))
+        {
+            ((TextView) v.findViewById(R.id.passcode_admin)).setText(R.string.passcode_admin_title);
+            v.findViewById(R.id.passcode_admin).setVisibility(View.VISIBLE);
+        }
+        else
+        {
+
+        }
+
         errorMessage = (TextView) v.findViewById(R.id.passcode_error);
 
         passwordEditText = (EditText) v.findViewById(R.id.passcode);
@@ -162,7 +187,8 @@ public class PassCodeDialogFragment extends DialogFragment
         });
 
         int[] ids = new int[] { R.id.keyboard_0, R.id.keyboard_1, R.id.keyboard_2, R.id.keyboard_3, R.id.keyboard_4,
-                R.id.keyboard_5, R.id.keyboard_6, R.id.keyboard_7, R.id.keyboard_8, R.id.keyboard_9, R.id.keyboard_back };
+                R.id.keyboard_5, R.id.keyboard_6, R.id.keyboard_7, R.id.keyboard_8, R.id.keyboard_9,
+                R.id.keyboard_back };
 
         Button key = null;
         for (int i = 0; i < ids.length; i++)
@@ -173,8 +199,7 @@ public class PassCodeDialogFragment extends DialogFragment
 
         return v;
     }
-    
-    
+
     @Override
     public void onResume()
     {
@@ -189,9 +214,8 @@ public class PassCodeDialogFragment extends DialogFragment
         }
         if (getDialog() != null)
         {
-            getActivity().getWindow().setSoftInputMode(
-                    WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
-                            | WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+            getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
+                    | WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
             UIUtils.hideKeyboard(getActivity());
         }
     }
@@ -345,9 +369,16 @@ public class PassCodeDialogFragment extends DialogFragment
             errorMessage.setVisibility(View.INVISIBLE);
             if (getActivity().getSupportFragmentManager().findFragmentByTag(PasscodePreferences.TAG) != null)
             {
-                ((PasscodePreferences) getActivity().getSupportFragmentManager().findFragmentByTag(
-                        PasscodePreferences.TAG))
-                        .refresh();
+                ((PasscodePreferences) getActivity().getSupportFragmentManager()
+                        .findFragmentByTag(PasscodePreferences.TAG)).refresh();
+            }
+            else
+            {
+                editor.putLong(KEY_PASSCODE_ACTIVATED_AT, -1);
+                editor.remove(KEY_PASSCODE_ATTEMPT);
+                editor.apply();
+                getActivity().setResult(FragmentActivity.RESULT_OK);
+                getActivity().finish();
             }
         }
         else
@@ -374,9 +405,8 @@ public class PassCodeDialogFragment extends DialogFragment
             errorMessage.setVisibility(View.INVISIBLE);
             if (getActivity().getSupportFragmentManager().findFragmentByTag(PasscodePreferences.TAG) != null)
             {
-                ((PasscodePreferences) getActivity().getSupportFragmentManager().findFragmentByTag(
-                        PasscodePreferences.TAG))
-                        .refresh();
+                ((PasscodePreferences) getActivity().getSupportFragmentManager()
+                        .findFragmentByTag(PasscodePreferences.TAG)).refresh();
             }
         }
         else

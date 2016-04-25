@@ -276,6 +276,7 @@
 
     <!-- PIN Code -->
     <string name="passcode_title">Enter Passcode</string>
+    <string name="passcode_admin_title">Your Alfresco Administrator requires you to protect Alfresco Mobile with a Passcode.</string>
     <string name="passcode_enable_title">Enable Passcode</string>
     <string name="passcode_preference">Passcode Protection</string>
     <string name="passcode_enable">Enabled</string>

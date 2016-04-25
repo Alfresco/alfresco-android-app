@@ -95,6 +95,12 @@ public abstract class AnalyticsManager extends Manager
 
     public static final String ACTION_ANALYTICS = "Analytics";
 
+    public static final String ACTION_SYNC_CELLULAR = "Sync Cellular";
+
+    public static final String ACTION_DATA_PROTECTION = "Data Protection";
+
+    public static final String ACTION_PASSCODE = "Passcode";
+
     public static final String ACTION_FAVORITE = "Favorite";
 
     public static final String ACTION_UNFAVORITE = "UnFavorite";
@@ -175,6 +181,8 @@ public abstract class AnalyticsManager extends Manager
     public static final String LABEL_ENABLE = "Enable";
 
     public static final String LABEL_DISABLE = "Disable";
+
+    public static final String LABEL_ENABLE_BY_CONFIG = "Enable By Config";
 
     public static final String LABEL_DISABLE_BY_CONFIG = "Disable By Config";
 
