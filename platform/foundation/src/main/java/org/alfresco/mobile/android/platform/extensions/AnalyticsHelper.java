@@ -280,6 +280,7 @@ public class AnalyticsHelper
                                     AnalyticsManager.getInstance(context).optOutByConfig(context, acc);
                                 }
                             }
+                            break;
                         }
                     }
                 }

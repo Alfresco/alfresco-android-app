@@ -290,22 +290,6 @@ public abstract class AlfrescoActivity extends AppCompatActivity
     // ////////////////////////////////////////////////////////
     // BROADCAST RECEIVER
     // ///////////////////////////////////////////////////////
-    /**
-     * Register a broadcast receiver to this specific activity. If used this
-     * methods is responsible to unregister the receiver during on stop().
-     *
-     * @param receiver
-     * @param filter
-     */
-    public void registerPrivateReceiver(BroadcastReceiver receiver, IntentFilter filter)
-    {
-        if (receiver != null && filter != null)
-        {
-            broadcastManager.registerReceiver(receiver, filter);
-            receivers.add(receiver);
-        }
-    }
-
     public void registerPublicReceiver(BroadcastReceiver receiver, IntentFilter filter)
     {
         if (receiver != null && filter != null)

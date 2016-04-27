@@ -26,6 +26,7 @@ import java.util.Map;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.activity.WelcomeActivity;
+import org.alfresco.mobile.android.application.configuration.features.PasscodeConfigFeature;
 import org.alfresco.mobile.android.application.fragments.builder.LeafFragmentBuilder;
 import org.alfresco.mobile.android.application.security.PassCodeActivity;
 import org.alfresco.mobile.android.application.security.PassCodeDialogFragment;
@@ -174,8 +175,8 @@ public class PasscodePreferences extends AlfrescoFragment
         passcodeTimeoutVH = HolderUtils.configure(viewById(R.id.passcode_timeout),
                 getString(R.string.passcode_timeout_title), getString(R.string.passcode_timeout_title), -1);
         int minutes = Math.round(timeout / ONE_MINUTE);
-        passcodeTimeoutVH.bottomText.setText(String.format(
-                MessageFormat.format(getString(R.string.passcode_timeout_summary), minutes), minutes));
+        passcodeTimeoutVH.bottomText.setText(
+                String.format(MessageFormat.format(getString(R.string.passcode_timeout_summary), minutes), minutes));
         HolderUtils.makeMultiLine(passcodeTimeoutVH.bottomText, 3);
 
         if (passcodeEnable)
@@ -188,21 +189,20 @@ public class PasscodePreferences extends AlfrescoFragment
                     MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity()).cancelable(false)
                             .title(R.string.passcode_timeout_title).items(R.array.passcode_timeout_entries)
                             .itemsCallbackSingleChoice(index, new MaterialDialog.ListCallbackSingleChoice()
-                            {
-                                @Override
-                                public boolean onSelection(MaterialDialog dialog, View view, int which,
-                                        CharSequence text)
-                                {
-                                    String newValue = getResources().getStringArray(R.array.passcode_timeout_values)[which];
-                                    index = which;
+                    {
+                        @Override
+                        public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text)
+                        {
+                            String newValue = getResources().getStringArray(R.array.passcode_timeout_values)[which];
+                            index = which;
                             sharedPref.edit().putString(KEY_PASSCODE_TIMEOUT, (String) newValue).apply();
-                                    int minutes = Math.round(Long.parseLong((String) newValue) / ONE_MINUTE);
-                                    passcodeTimeoutVH.bottomText.setText(String.format(
-                                            MessageFormat.format(getString(R.string.passcode_timeout_summary), minutes),
-                                            minutes));
-                                    return true;
-                                }
-                            }).negativeText(R.string.cancel);
+                            int minutes = Math.round(Long.parseLong((String) newValue) / ONE_MINUTE);
+                            passcodeTimeoutVH.bottomText.setText(String.format(
+                                    MessageFormat.format(getString(R.string.passcode_timeout_summary), minutes),
+                                    minutes));
+                            return true;
+                        }
+                    }).negativeText(R.string.cancel);
                     builder.show();
                 }
             });
@@ -255,6 +255,10 @@ public class PasscodePreferences extends AlfrescoFragment
         // PASSCODE ENABLE
         passcodeEnableVH = HolderUtils.configure(viewById(R.id.passcode_enable_key),
                 getString(R.string.passcode_enable_title), -1, passcodeEnable);
+
+        PasscodeConfigFeature feature = new PasscodeConfigFeature(getActivity());
+        passcodeEnableVH.switcher.setEnabled(!feature.isProtected());
+
         passcodeEnableVH.switcher.setOnClickListener(new View.OnClickListener()
         {
             @Override
