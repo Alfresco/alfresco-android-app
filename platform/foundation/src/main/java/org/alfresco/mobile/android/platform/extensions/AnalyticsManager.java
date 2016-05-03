@@ -256,6 +256,20 @@ public abstract class AnalyticsManager extends Manager
 
     public static final String INDEX_ACCOUNT_COUNT_5 = "5+";
 
+    public static final int INDEX_PROFILE_COUNT = 4;
+
+    public static final String INDEX_PROFILE_COUNT_0 = "0";
+
+    public static final String INDEX_PROFILE_COUNT_1 = "1";
+
+    public static final String INDEX_PROFILE_COUNT_2 = "2";
+
+    public static final String INDEX_PROFILE_COUNT_3 = "3";
+
+    public static final String INDEX_PROFILE_COUNT_4 = "4";
+
+    public static final String INDEX_PROFILE_COUNT_5 = "5+";
+
     ///////////////////////////////////////////////////////////
     // CUSTOM METRICS
     ///////////////////////////////////////////////////////////
