@@ -683,6 +683,25 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
             b.setVisibility(View.GONE);
         }
         hideActionIfNecessary(b, ConfigurableActionHelper.ACTION_NODE_SHARE);
+
+        b = (ImageView) viewById(R.id.action_open_in_alfresco_editor);
+        String mimetype = ((Document) node).getContentStreamMimeType();
+        if (node.isDocument() && !TextUtils.isEmpty(mimetype) && mimetype.startsWith(MimeType.TYPE_TEXT))
+        {
+            b.setOnClickListener(new OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    openin(true);
+                }
+            });
+        }
+        else
+        {
+            b.setVisibility(View.GONE);
+        }
+        hideActionIfNecessary(b, ConfigurableActionHelper.ACTION_NODE_EDIT);
     }
 
     protected void displayTabs()
@@ -1211,22 +1230,6 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
                 mi.setIcon(R.drawable.ic_start_review);
                 mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
             }
-
-            try
-            {
-                String mimetype = ((Document) node).getContentStreamMimeType();
-                if (!TextUtils.isEmpty(mimetype) && mimetype.startsWith(MimeType.TYPE_TEXT))
-                {
-                    mi = menu.add(Menu.NONE, R.id.menu_action_open_with_alfresco_editor, Menu.FIRST + 50,
-                            R.string.open_in_alfresco_editor);
-                    mi.setIcon(R.drawable.ic_edit);
-                    mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-                }
-            }
-            catch (Exception e)
-            {
-
-            }
         }
 
         if (session == null) { return; }
@@ -1301,9 +1304,6 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
                 ActionUtils.actionShowMap(this, node.getName(),
                         node.getProperty(ContentModel.PROP_LATITUDE).getValue().toString(),
                         node.getProperty(ContentModel.PROP_LONGITUDE).getValue().toString());
-                return true;
-            case R.id.menu_action_open_with_alfresco_editor:
-                openin(true);
                 return true;
             case R.id.menu_workflow_add:
                 Intent in = new Intent(PrivateIntent.ACTION_START_PROCESS, null, getActivity(),
