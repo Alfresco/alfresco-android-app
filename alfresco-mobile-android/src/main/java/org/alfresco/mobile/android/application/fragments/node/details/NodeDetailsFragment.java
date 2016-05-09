@@ -685,17 +685,25 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         hideActionIfNecessary(b, ConfigurableActionHelper.ACTION_NODE_SHARE);
 
         b = (ImageView) viewById(R.id.action_open_in_alfresco_editor);
-        String mimetype = ((Document) node).getContentStreamMimeType();
-        if (node.isDocument() && !TextUtils.isEmpty(mimetype) && mimetype.startsWith(MimeType.TYPE_TEXT))
+
+        if (node.isDocument())
         {
-            b.setOnClickListener(new OnClickListener()
+            String mimetype = ((Document) node).getContentStreamMimeType();
+            if (!TextUtils.isEmpty(mimetype) && mimetype.startsWith(MimeType.TYPE_TEXT))
             {
-                @Override
-                public void onClick(View v)
+                b.setOnClickListener(new OnClickListener()
                 {
-                    openin(true);
-                }
-            });
+                    @Override
+                    public void onClick(View v)
+                    {
+                        openin(true);
+                    }
+                });
+            }
+            else
+            {
+                b.setVisibility(View.GONE);
+            }
         }
         else
         {
