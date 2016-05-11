@@ -115,6 +115,8 @@ public interface ConfigurationConstant
 
     String KEY_ACTION_NODE_EDIT = PREFIX_ACTION.concat(".node.edit");
 
+    String KEY_ACTION_NODE_EDIT_WITH_ALFRESCO = PREFIX_ACTION.concat(".node.edit-with-alfresco");
+
     String KEY_ACTION_NODE_DOWNLOAD = PREFIX_ACTION.concat(".document.download");
 
     String KEY_ACTION_NODE_SYNC = PREFIX_ACTION.concat(".node.sync");

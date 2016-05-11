@@ -709,7 +709,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         {
             b.setVisibility(View.GONE);
         }
-        hideActionIfNecessary(b, ConfigurableActionHelper.ACTION_NODE_EDIT);
+        hideActionIfNecessary(b, ConfigurableActionHelper.ACTION_NODE_EDIT_WITH_ALFRESCO);
     }
 
     protected void displayTabs()
