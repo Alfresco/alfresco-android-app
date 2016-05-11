@@ -38,6 +38,7 @@ import org.alfresco.mobile.android.async.clean.CleanSyncFavoriteRequest;
 import org.alfresco.mobile.android.platform.Manager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.provider.CursorUtils;
 import org.alfresco.mobile.android.platform.provider.MapUtil;
@@ -91,6 +92,8 @@ public class SyncContentManager extends Manager
     public static final int MODE_BOTH = 4;
 
     public static final String ARGUMENT_IGNORE_WARNING = "ignoreWarning";
+
+    public static final String ARGUMENT_ANALYTIC = "analytic";
 
     public static final String ARGUMENT_NODE = "node";
 
@@ -269,11 +272,12 @@ public class SyncContentManager extends Manager
         return Uri.parse(SyncContentProvider.CONTENT_URI + "/" + id);
     }
 
-    public void sync(AlfrescoAccount account)
+    public void sync(String analyticInfo, AlfrescoAccount account)
     {
         if (account == null) { return; }
         Bundle settingsBundle = new Bundle();
         settingsBundle.putInt(ARGUMENT_MODE, SyncContentManager.MODE_BOTH);
+        settingsBundle.putString(ARGUMENT_ANALYTIC, analyticInfo);
         settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
         settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
         settingsBundle.putBoolean(ARGUMENT_IGNORE_WARNING, false);
@@ -281,10 +285,16 @@ public class SyncContentManager extends Manager
                 SyncContentProvider.AUTHORITY, settingsBundle);
     }
 
+    public void sync(AlfrescoAccount account)
+    {
+        sync(AnalyticsManager.LABEL_SYNC_SYSTEM, account);
+    }
+
     public void sync(AlfrescoAccount account, String nodeIdentifier)
     {
         if (account == null) { return; }
         Bundle settingsBundle = new Bundle();
+        settingsBundle.putString(ARGUMENT_ANALYTIC, AnalyticsManager.LABEL_SYNC_ACTION);
         settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
         settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
         settingsBundle.putInt(ARGUMENT_MODE, SyncContentManager.MODE_NODE);
@@ -493,7 +503,7 @@ public class SyncContentManager extends Manager
         long lastTime = sharedPref.getLong(LAST_SYNC_ACTIVATED_AT + account.getId(), now);
         if ((lastTime + 3600000) < now && canSync(account))
         {
-            sync(account);
+            sync(AnalyticsManager.LABEL_SYNC_CRON, account);
         }
     }
 
