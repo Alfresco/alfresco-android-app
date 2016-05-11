@@ -39,12 +39,6 @@ public final class ConfigurableActionHelper
 
     // public static final int ACTION_NODE_CREATE = 0;
 
-    public static final int ACTION_CREATE_FOLDER = 13;
-
-    public static final int ACTION_CREATE_DOC = 14;
-
-    public static final int ACTION_NODE_UPLOAD = 15;
-
     public static final int ACTION_NODE_DELETE = 1;
 
     public static final int ACTION_NODE_FAVORITE = 2;
@@ -69,6 +63,14 @@ public final class ConfigurableActionHelper
 
     public static final int ACTION_NODE_SHARE = 12;
 
+    public static final int ACTION_CREATE_FOLDER = 13;
+
+    public static final int ACTION_CREATE_DOC = 14;
+
+    public static final int ACTION_NODE_UPLOAD = 15;
+
+    public static final int ACTION_NODE_EDIT_WITH_ALFRESCO = 16;
+
     public static final boolean isVisible(Context context, AlfrescoAccount account, int actionId)
     {
         return isVisible(context, account, null, null, actionId);
@@ -88,9 +90,13 @@ public final class ConfigurableActionHelper
                     && configManager.getConfig(account.getId()).hasActionConfig())
             {
                 ConfigService service = configManager.getConfig(account.getId());
+                if (service == null) { return true; }
 
                 String profileId = configManager.getCurrentProfileId();
-                if (profileId == null) { return true; }
+                if (profileId == null)
+                {
+                    profileId = service.getDefaultProfile().getIdentifier();
+                }
 
                 String rootActionId = service.getProfile(profileId).getRootActionId();
                 if (rootActionId == null || service.getActionConfig(rootActionId) == null) { return true; }
@@ -148,6 +154,10 @@ public final class ConfigurableActionHelper
                     case ACTION_NODE_SHARE:
                         actionNameId = ConfigurationConstant.KEY_ACTION_NODE_SHARE;
                         break;
+                    case ACTION_NODE_EDIT_WITH_ALFRESCO:
+                        actionNameId = ConfigurationConstant.KEY_ACTION_NODE_EDIT_WITH_ALFRESCO;
+                        permissionRequired = true;
+                        break;
                 }
                 ActionConfig config = ((ActionGroupConfig) service.getActionConfig(rootActionId))
                         .getChildById(actionNameId);
@@ -172,6 +182,7 @@ public final class ConfigurableActionHelper
                     hasPermission = permission.canAddChildren();
                     break;
                 case ACTION_NODE_EDIT:
+                case ACTION_NODE_EDIT_WITH_ALFRESCO:
                     hasPermission = permission.canEdit();
                     break;
                 case ACTION_NODE_UPDATE:
