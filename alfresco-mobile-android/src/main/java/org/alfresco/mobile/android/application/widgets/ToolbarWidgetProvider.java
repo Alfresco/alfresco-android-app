@@ -92,36 +92,28 @@ public class ToolbarWidgetProvider extends AppWidgetProvider
 
     private PendingIntent createAlfrescoIntent(Context context)
     {
+        // Analytics
+        AnalyticsHelper.reportOperationEvent(context, AnalyticsManager.CATEGORY_WIDGET, AnalyticsManager.ACTION_TOOLBAR,
+                AnalyticsManager.LABEL_ADD, 1, false);
+
         Intent intent = new Intent(context, MainActivity.class);
         return PendingIntent.getActivity(context, 0, intent, 0);
     }
 
     private PendingIntent createSpeechTextEditorIntent(Context context)
     {
-        // Analytics
-        AnalyticsHelper.reportOperationEvent(context, AnalyticsManager.CATEGORY_WIDGET, AnalyticsManager.ACTION_TOOLBAR,
-                AnalyticsManager.LABEL_SPEECH_2_TEXT, 1, false);
-
         return PendingIntent.getActivity(context, 1, PublicIntentAPIUtils.speechToTextIntent(),
                 PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     private PendingIntent createTextEditorIntent(Context context)
     {
-        // Analytics
-        AnalyticsHelper.reportOperationEvent(context, AnalyticsManager.CATEGORY_WIDGET, AnalyticsManager.ACTION_TOOLBAR,
-                AnalyticsManager.LABEL_CREATE_TEXT, 1, false);
-
         return PendingIntent.getActivity(context, 0, PublicIntentAPIUtils.createTextIntent(),
                 PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     private PendingIntent createPhotoCaptureIntent(Context context)
     {
-        // Analytics
-        AnalyticsHelper.reportOperationEvent(context, AnalyticsManager.CATEGORY_WIDGET, AnalyticsManager.ACTION_TOOLBAR,
-                AnalyticsManager.LABEL_TAKE_PHOTO, 1, false);
-
         return PendingIntent.getActivity(context, 2, PublicIntentAPIUtils.captureImageIntent(),
                 PendingIntent.FLAG_UPDATE_CURRENT);
     }

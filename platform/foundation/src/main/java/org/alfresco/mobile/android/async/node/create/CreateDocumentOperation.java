@@ -133,7 +133,7 @@ public class CreateDocumentOperation extends UpNodeOperation
             // Sync if necessary
             if (SyncContentManager.getInstance(context).isRootSynced(getAccount(), parentFolder))
             {
-                SyncContentManager.getInstance(context).sync(getAccount());
+                SyncContentManager.getInstance(context).sync(AnalyticsManager.LABEL_SYNC_ACTION, getAccount());
             }
         }
         catch (Exception e)

@@ -87,7 +87,7 @@ public class AnalyticsHelper
         return customMetrics;
     }
 
-    public static void analyzeSync(Context context, AlfrescoAccount account)
+    public static void analyzeSync(Context context, AlfrescoAccount account, String analyticInfo)
     {
         if (AnalyticsManager.getInstance(context) == null
                 || !AnalyticsManager.getInstance(context).isEnable()) { return; }
@@ -109,10 +109,12 @@ public class AnalyticsHelper
 
             // Via EVENT
             AnalyticsManager.getInstance(context).reportEvent(AnalyticsManager.CATEGORY_SYNC,
-                    AnalyticsManager.ACTION_RUN, AnalyticsManager.SYNCED_FILES, syncedFile, customDimensions,
+ analyticInfo,
+                    AnalyticsManager.SYNCED_FILES, syncedFile, customDimensions,
                     customMetrics);
             AnalyticsManager.getInstance(context).reportEvent(AnalyticsManager.CATEGORY_SYNC,
-                    AnalyticsManager.ACTION_RUN, AnalyticsManager.SYNCED_FOLDERS, syncedFolder, customDimensions, null);
+ analyticInfo,
+                    AnalyticsManager.SYNCED_FOLDERS, syncedFolder, customDimensions, null);
 
         }
         catch (Exception e)

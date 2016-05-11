@@ -1498,7 +1498,8 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
                 }
                 else
                 {
-                    SyncContentManager.getInstance(getActivity()).sync(SessionUtils.getAccount(getActivity()));
+                    SyncContentManager.getInstance(getActivity()).sync(AnalyticsManager.LABEL_SYNC_ACTION,
+                            SessionUtils.getAccount(getActivity()));
                 }
             }
         }

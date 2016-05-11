@@ -149,6 +149,8 @@ public class TextEditorActivity extends BaseActivity
             setTextShown(false);
             retrieveTitle();
 
+            // Analytics
+
             return;
         }
 

@@ -999,7 +999,8 @@ public class MainActivity extends BaseActivity
         SyncContentManager.getInstance(this).setActivateSync(getCurrentAccount(), true);
         if (SyncContentManager.getInstance(this).canSync(getCurrentAccount()))
         {
-            SyncContentManager.getInstance(this).sync(getCurrentAccount());
+            SyncContentManager.getInstance(this).sync(AnalyticsManager.LABEL_SYNC_SESSION_LOADED, getCurrentAccount());
+
         }
 
         FavoritesManager.getInstance(this).setActivateSync(getCurrentAccount(), true);
@@ -1101,7 +1102,8 @@ public class MainActivity extends BaseActivity
                         if (!isSyncActive(AlfrescoAccountManager.getInstance(context)
                                 .getAndroidAccount(getCurrentAccount().getId()), SyncContentProvider.AUTHORITY))
                         {
-                            SyncContentManager.getInstance(context).sync(getCurrentAccount());
+                            SyncContentManager.getInstance(context).sync(AnalyticsManager.LABEL_SYNC_NETWORK,
+                                    getCurrentAccount());
                         }
                     }
 
