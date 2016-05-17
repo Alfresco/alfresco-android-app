@@ -242,7 +242,7 @@ public class AccountSettingsFragment extends AlfrescoFragment implements EditTex
             viewById(R.id.settings_sync_container).setVisibility(View.VISIBLE);
             syncFavoritesVH = HolderUtils.configure(viewById(R.id.favorite_sync_wifi),
                     getString(R.string.settings_favorite_sync_data),
-                    getString(R.string.settings_favorite_sync_data_all), !syncWifiEnable);
+                    getString(R.string.settings_favorite_sync_data_all), syncWifiEnable);
 
             syncFavoritesVH.choose.setOnClickListener(new View.OnClickListener()
             {

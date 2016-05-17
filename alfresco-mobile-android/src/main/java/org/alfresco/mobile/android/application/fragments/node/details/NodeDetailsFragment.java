@@ -688,7 +688,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
 
         if (node.isDocument())
         {
-            String mimetype = ((Document) node).getContentStreamMimeType();
+            String mimetype = node.getPropertyValue(PropertyIds.CONTENT_STREAM_MIME_TYPE);
             if (!TextUtils.isEmpty(mimetype) && mimetype.startsWith(MimeType.TYPE_TEXT))
             {
                 b.setOnClickListener(new OnClickListener()
@@ -1029,20 +1029,16 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
             }
             else
             {
-                // Log.e(TAG, "[OBSERVER] CREATE");
-                // observer = new SyncedFileObserver(syncFile.getPath(),
-                // getActivity().getApplicationContext(), node, acc);
-                // observer.startWatching();
-                // If sync file + sync activate
                 if (withAlfresco)
                 {
-                    ActionUtils.openIn(this, syncFile,
+                    ActionUtils.openWithAlfrescoTextEditor(this, syncFile,
                             MimeTypeManager.getInstance(getActivity()).getMIMEType(syncFile.getName()),
                             RequestCode.SAVE_BACK);
+
                 }
                 else
                 {
-                    ActionUtils.openWithAlfrescoTextEditor(this, syncFile,
+                    ActionUtils.openIn(this, syncFile,
                             MimeTypeManager.getInstance(getActivity()).getMIMEType(syncFile.getName()),
                             RequestCode.SAVE_BACK);
                 }
