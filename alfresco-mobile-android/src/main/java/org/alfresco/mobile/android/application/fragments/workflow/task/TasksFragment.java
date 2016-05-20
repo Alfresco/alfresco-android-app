@@ -43,6 +43,8 @@ import org.alfresco.mobile.android.ui.utils.UIUtils;
 import org.alfresco.mobile.android.ui.workflow.task.TasksFoundationAdapter;
 import org.alfresco.mobile.android.ui.workflow.task.TasksFoundationFragment;
 
+import com.squareup.otto.Subscribe;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -56,8 +58,6 @@ import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.squareup.otto.Subscribe;
 
 public class TasksFragment extends TasksFoundationFragment
 {
@@ -290,6 +290,12 @@ public class TasksFragment extends TasksFoundationFragment
         {
             // Add Listing Filter as arguments for the view.
             TasksFoundationFragment.addFilter(properties, b);
+        }
+
+        public Builder retrieveFilter(Intent intent)
+        {
+            TasksFoundationFragment.addFilter(intent, extraConfiguration);
+            return this;
         }
 
         // ///////////////////////////////////////////////////////////////////////////

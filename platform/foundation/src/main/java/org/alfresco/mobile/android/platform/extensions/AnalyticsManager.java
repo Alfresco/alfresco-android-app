@@ -525,6 +525,10 @@ public abstract class AnalyticsManager extends Manager
 
     public static final String SCREEN_TEXT_EDITOR_TEXT_SIZE = "Text Editor - Text Size";
 
+    public static final String PREFIX_ACCOUNTS = "Accounts - ";
+
+    public static final String SCREEN_ACCOUNTS_LISTING = PREFIX_ACCOUNTS + "Listing";
+
     // ////////////////////////////////////////////////////
     // SETTINGS
     // ////////////////////////////////////////////////////

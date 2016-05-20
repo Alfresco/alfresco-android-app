@@ -36,15 +36,14 @@ import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.about.AboutFragment;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.builder.FragmentBuilderFactory;
-import org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerFragment;
 import org.alfresco.mobile.android.application.fragments.help.HelpDialogFragment;
 import org.alfresco.mobile.android.application.fragments.menu.MainMenuFragment;
 import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
-import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsFragment;
 import org.alfresco.mobile.android.application.fragments.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.fragments.signin.AccountOAuthFragment;
 import org.alfresco.mobile.android.application.fragments.sync.SyncFragment;
 import org.alfresco.mobile.android.application.fragments.sync.SyncMigrationFragment;
+import org.alfresco.mobile.android.application.intent.PublicIntentAPIUtils;
 import org.alfresco.mobile.android.application.intent.RequestCode;
 import org.alfresco.mobile.android.application.managers.ConfigManager;
 import org.alfresco.mobile.android.application.managers.RenditionManagerImpl;
@@ -72,7 +71,6 @@ import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.platform.favorite.FavoritesManager;
-import org.alfresco.mobile.android.platform.intent.AlfrescoIntentAPI;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.mdm.MDMManager;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
@@ -83,6 +81,9 @@ import org.alfresco.mobile.android.ui.RefreshFragment;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.node.browse.NodeBrowserTemplate;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
+
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.squareup.otto.Subscribe;
 
 import android.accounts.Account;
 import android.annotation.TargetApi;
@@ -110,9 +111,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.squareup.otto.Subscribe;
 
 /**
  * Main activity of the application.
@@ -310,7 +308,7 @@ public class MainActivity extends BaseActivity
         }
 
         // Is it from an alfresco shortcut ?
-        openShortcut(getIntent());
+        PublicIntentAPIUtils.openShortcut(this, getIntent());
     }
 
     @Override
@@ -427,7 +425,7 @@ public class MainActivity extends BaseActivity
             }
 
             // Is it from an alfresco shortcut ?
-            openShortcut(intent);
+            PublicIntentAPIUtils.openShortcut(this, intent);
         }
         catch (Exception e)
         {
@@ -441,26 +439,6 @@ public class MainActivity extends BaseActivity
         super.onSaveInstanceState(outState);
         outState.putBundle(MainActivityHelper.TAG,
                 MainActivityHelper.createBundle(outState, getCurrentAccount(), capture, fragmentQueue, importParent));
-    }
-
-    public void openShortcut(Intent intent)
-    {
-        if (AlfrescoIntentAPI.ACTION_VIEW.equals(intent.getAction()) && intent.getData() != null)
-        {
-            if (AlfrescoIntentAPI.AUTHORITY_FOLDER.equals(intent.getData().getAuthority()))
-            {
-                DocumentFolderBrowserFragment.with(this).folderIdentifier(intent.getData().getPathSegments().get(0))
-                        .shortcut(true).display();
-            }
-            else if (AlfrescoIntentAPI.AUTHORITY_FILE.equals(intent.getData().getAuthority()))
-            {
-                FileExplorerFragment.with(this).file(new File(intent.getData().getPathSegments().get(0))).display();
-            }
-            else if (AlfrescoIntentAPI.AUTHORITY_DOCUMENT.equals(intent.getData().getAuthority()))
-            {
-                NodeDetailsFragment.with(this).nodeId(intent.getData().getPathSegments().get(0)).back(false).display();
-            }
-        }
     }
 
     // ///////////////////////////////////////////////////////////////////////////
