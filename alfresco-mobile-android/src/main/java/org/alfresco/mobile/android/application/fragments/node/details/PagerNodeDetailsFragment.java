@@ -43,6 +43,9 @@ import org.alfresco.mobile.android.platform.extensions.AnalyticsHelper;
 import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.sync.utils.NodeSyncPlaceHolder;
 
+import com.astuetz.PagerSlidingTabStrip;
+import com.squareup.otto.Subscribe;
+
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
@@ -54,9 +57,6 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.widget.TextView;
-
-import com.astuetz.PagerSlidingTabStrip;
-import com.squareup.otto.Subscribe;
 
 /**
  * Responsible to display details of a specific Node.
@@ -231,9 +231,16 @@ public class PagerNodeDetailsFragment extends NodeDetailsFragment
         {
             show(R.id.pager_empty);
             displayEmptyView();
-            if (((TextView) viewById(R.id.empty_text)) != null)
+            if (viewById(R.id.empty_text) != null)
             {
-                ((TextView) viewById(R.id.empty_text)).setText(R.string.empty_child);
+                if (event.exception != null && event.exception instanceof NullPointerException)
+                {
+                    ((TextView) viewById(R.id.empty_text)).setText(R.string.node_details_file_not_found);
+                }
+                else
+                {
+                    ((TextView) viewById(R.id.empty_text)).setText(R.string.empty_child);
+                }
             }
         }
         else

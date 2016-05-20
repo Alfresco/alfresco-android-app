@@ -66,11 +66,11 @@ public class ConfigFeatureHelper
                     }
                 }
 
-                new PasscodeConfigFeature(activity).check(session, acc, passcodeFeature);
                 new SyncCellularConfigFeature(activity).check(session, acc, cellularFeature);
 
                 if (OnPremiseConstant.ALFRESCO_EDITION_ENTERPRISE.equals(session.getRepositoryInfo().getEdition()))
                 {
+                    new PasscodeConfigFeature(activity).check(session, acc, passcodeFeature);
                     new DataProtectionConfigFeature(activity).check(session, acc, dataProtectionFeature);
                 }
             }

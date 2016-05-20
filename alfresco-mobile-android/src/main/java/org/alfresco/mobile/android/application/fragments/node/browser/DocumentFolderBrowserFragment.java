@@ -97,7 +97,11 @@ import org.alfresco.mobile.android.ui.node.browse.NodeBrowserFragment;
 import org.alfresco.mobile.android.ui.node.browse.NodeBrowserTemplate;
 import org.alfresco.mobile.android.ui.operation.OperationWaitingDialogFragment;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
+import org.apache.chemistry.opencmis.commons.exceptions.CmisObjectNotFoundException;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
+
+import com.cocosw.bottomsheet.BottomSheet;
+import com.squareup.otto.Subscribe;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -121,9 +125,6 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
-
-import com.cocosw.bottomsheet.BottomSheet;
-import com.squareup.otto.Subscribe;
 
 /**
  * Display a dialogFragment to retrieve information about the content of a
@@ -772,7 +773,19 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment implement
             {
                 ev.setVisibility(View.VISIBLE);
             }
-            onResultError(event.exception);
+
+            if (event.exception != null && event.exception.getCause() instanceof CmisObjectNotFoundException)
+            {
+                displayEmptyView();
+                if (viewById(R.id.empty_text) != null)
+                {
+                    ((TextView) viewById(R.id.empty_text)).setText(R.string.node_browser_folder_not_found);
+                }
+            }
+            else
+            {
+                onResultError(event.exception);
+            }
         }
         else
         {

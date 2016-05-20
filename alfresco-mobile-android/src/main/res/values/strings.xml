@@ -834,6 +834,18 @@
     <string name="empty_comment">No comments found</string>
     <string name="empty_search">No files found</string>
     <string name="action_sign_in_short">Sign in</string>
+    <string name="node.details.file.not.found">No file found</string>
+    <string name="node.browser.folder.not.found">No folder found</string>
+    <string name="user.details.user.not.found">No user found</string>
+    <string name="public.url.wrong.format">We didn\'t recognize this link. Try contacting your Alfresco administrator</string>
+    <string name="public.url.tasks.missing.filter">Filter information is missing. Try contacting your Alfresco administrator</string>
+    <string name="public.url.file.missing.id">Id information is missing. Try contacting your Alfresco administrator</string>
+    <string name="public.url.noderef.format">NodeRef information seems wrong. Try contacting your Alfresco administrator</string>
+
+
+    <!-- ACCOUNTS SELECTION -->
+    <string name="accounts.title.select">Select an account</string>
+    <string name="accounts.not.found">No accounts found. Try adding one.</string>
 
 
     <!-- DATA PROTECTION -->
