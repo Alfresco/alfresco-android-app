@@ -26,10 +26,10 @@ import java.util.Map.Entry;
 
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
-import org.alfresco.mobile.android.api.model.Permissions;
 import org.alfresco.mobile.android.api.model.impl.publicapi.PublicAPIPropertyIds;
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.configuration.ConfigurableActionHelper;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
 import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsFragment;
@@ -548,19 +548,18 @@ public class ProgressNodeAdapter extends NodeAdapter
     {
         MenuItem mi;
 
-        Permissions permission = SessionUtils.getSession(getActivity()).getServiceRegistry().getDocumentFolderService()
-                .getPermissions(node);
-
         mi = menu.add(Menu.NONE, R.id.menu_node_details, Menu.FIRST, R.string.action_view_properties);
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
 
-        if (permission.canEdit())
+        if (ConfigurableActionHelper.isVisible(getActivity(), SessionUtils.getAccount(getActivity()),
+                SessionUtils.getSession(getActivity()), node, ConfigurableActionHelper.ACTION_NODE_EDIT))
         {
             mi = menu.add(Menu.NONE, R.id.menu_action_edit, Menu.FIRST + 50, R.string.action_edit_properties);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
         }
 
-        if (permission.canDelete())
+        if (ConfigurableActionHelper.isVisible(getActivity(), SessionUtils.getAccount(getActivity()),
+                SessionUtils.getSession(getActivity()), node, ConfigurableActionHelper.ACTION_NODE_DELETE))
         {
             mi = menu.add(Menu.NONE, R.id.menu_action_delete_folder, Menu.FIRST + 1000, R.string.delete);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);

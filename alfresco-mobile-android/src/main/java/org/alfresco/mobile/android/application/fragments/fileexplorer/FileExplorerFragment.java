@@ -55,6 +55,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -86,6 +87,8 @@ public class FileExplorerFragment extends FileExplorerFoundationFragment
     private long lastModifiedDate;
 
     private int menuId;
+
+    private boolean hasAudioRecorder = false;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS & HELPERS
@@ -162,8 +165,16 @@ public class FileExplorerFragment extends FileExplorerFoundationFragment
                 return;
             }
         }
-        privateFolder = AlfrescoStorageManager.getInstance(getActivity()).getRootPrivateFolder().getParentFile();
+        if (AlfrescoStorageManager.getInstance(getActivity()) != null
+                && AlfrescoStorageManager.getInstance(getActivity()).getRootPrivateFolder() != null)
+        {
+            privateFolder = AlfrescoStorageManager.getInstance(getActivity()).getRootPrivateFolder().getParentFile();
+        }
         displayTitle();
+
+        // Test Audio Recording
+        Intent intent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
+        hasAudioRecorder = intent.resolveActivity(getActivity().getPackageManager()) != null;
     }
 
     @Override
@@ -366,7 +377,10 @@ public class FileExplorerFragment extends FileExplorerFoundationFragment
                 builder.sheet(R.id.menu_create_document, R.drawable.ic_doc_light, R.string.create_document);
                 builder.sheet(R.id.menu_device_capture_camera_photo, R.drawable.ic_camera, R.string.take_photo);
                 builder.sheet(R.id.menu_device_capture_camera_video, R.drawable.ic_videos, R.string.make_video);
-                builder.sheet(R.id.menu_device_capture_mic_audio, R.drawable.ic_microphone, R.string.record_audio);
+                if (hasAudioRecorder)
+                {
+                    builder.sheet(R.id.menu_device_capture_mic_audio, R.drawable.ic_microphone, R.string.record_audio);
+                }
                 if (ScanSnapManager.getInstance(getActivity()) != null
                         && ScanSnapManager.getInstance(getActivity()).hasScanSnapApplication())
                 {

@@ -30,25 +30,26 @@ import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.capture.DeviceCapture;
 import org.alfresco.mobile.android.application.configuration.ConfigurationConstant;
+import org.alfresco.mobile.android.application.configuration.features.ConfigFeatureHelper;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.about.AboutFragment;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.builder.FragmentBuilderFactory;
-import org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerFragment;
 import org.alfresco.mobile.android.application.fragments.help.HelpDialogFragment;
 import org.alfresco.mobile.android.application.fragments.menu.MainMenuFragment;
 import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
-import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsFragment;
 import org.alfresco.mobile.android.application.fragments.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.fragments.signin.AccountOAuthFragment;
 import org.alfresco.mobile.android.application.fragments.sync.SyncFragment;
 import org.alfresco.mobile.android.application.fragments.sync.SyncMigrationFragment;
+import org.alfresco.mobile.android.application.intent.PublicIntentAPIUtils;
 import org.alfresco.mobile.android.application.intent.RequestCode;
 import org.alfresco.mobile.android.application.managers.ConfigManager;
 import org.alfresco.mobile.android.application.managers.RenditionManagerImpl;
 import org.alfresco.mobile.android.application.managers.extensions.AnalyticHelper;
 import org.alfresco.mobile.android.application.security.DataProtectionUserDialogFragment;
+import org.alfresco.mobile.android.application.security.PassCodeActivity;
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.account.CreateAccountEvent;
 import org.alfresco.mobile.android.async.configuration.ConfigurationEvent;
@@ -70,7 +71,6 @@ import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.platform.favorite.FavoritesManager;
-import org.alfresco.mobile.android.platform.intent.AlfrescoIntentAPI;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.mdm.MDMManager;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
@@ -81,6 +81,9 @@ import org.alfresco.mobile.android.ui.RefreshFragment;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.node.browse.NodeBrowserTemplate;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
+
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.squareup.otto.Subscribe;
 
 import android.accounts.Account;
 import android.annotation.TargetApi;
@@ -108,9 +111,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.squareup.otto.Subscribe;
 
 /**
  * Main activity of the application.
@@ -308,7 +308,7 @@ public class MainActivity extends BaseActivity
         }
 
         // Is it from an alfresco shortcut ?
-        openShortcut(getIntent());
+        PublicIntentAPIUtils.openShortcut(this, getIntent());
     }
 
     @Override
@@ -361,11 +361,20 @@ public class MainActivity extends BaseActivity
                 ((MainMenuFragment) getFragment(MainMenuFragment.TAG)).refreshAccount();
                 ((MainMenuFragment) getFragment(MainMenuFragment.SLIDING_TAG)).refreshAccount();
 
-                // Send Event
-                // ConfigManager.getInstance(this).loadAndUseCustom(getCurrentAccount());
-                EventBusManager.getInstance()
-                        .post(new ConfigManager.ConfigurationMenuEvent(getCurrentAccount().getId()));
+                if (getCurrentAccount() != null)
+                {
+                    // Send Event
+                    // ConfigManager.getInstance(this).loadAndUseCustom(getCurrentAccount());
+                    EventBusManager.getInstance()
+                            .post(new ConfigManager.ConfigurationMenuEvent(getCurrentAccount().getId()));
+                }
             }
+        }
+
+        if (requestCode == PassCodeActivity.REQUEST_CODE_PASSCODE && sessionState == SESSION_LOADING
+                && getCurrentSession() != null)
+        {
+            onAccountLoaded(new LoadAccountCompletedEvent("-1", getCurrentAccount()));
         }
     }
 
@@ -419,7 +428,7 @@ public class MainActivity extends BaseActivity
             }
 
             // Is it from an alfresco shortcut ?
-            openShortcut(intent);
+            PublicIntentAPIUtils.openShortcut(this, intent);
         }
         catch (Exception e)
         {
@@ -433,26 +442,6 @@ public class MainActivity extends BaseActivity
         super.onSaveInstanceState(outState);
         outState.putBundle(MainActivityHelper.TAG,
                 MainActivityHelper.createBundle(outState, getCurrentAccount(), capture, fragmentQueue, importParent));
-    }
-
-    public void openShortcut(Intent intent)
-    {
-        if (AlfrescoIntentAPI.ACTION_VIEW.equals(intent.getAction()) && intent.getData() != null)
-        {
-            if (AlfrescoIntentAPI.AUTHORITY_FOLDER.equals(intent.getData().getAuthority()))
-            {
-                DocumentFolderBrowserFragment.with(this).folderIdentifier(intent.getData().getPathSegments().get(0))
-                        .shortcut(true).display();
-            }
-            else if (AlfrescoIntentAPI.AUTHORITY_FILE.equals(intent.getData().getAuthority()))
-            {
-                FileExplorerFragment.with(this).file(new File(intent.getData().getPathSegments().get(0))).display();
-            }
-            else if (AlfrescoIntentAPI.AUTHORITY_DOCUMENT.equals(intent.getData().getAuthority()))
-            {
-                NodeDetailsFragment.with(this).nodeId(intent.getData().getPathSegments().get(0)).back(false).display();
-            }
-        }
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -854,6 +843,7 @@ public class MainActivity extends BaseActivity
     {
         // Avoid collision with PublicDispatcherActivity when selecting an
         // account.
+        Log.i(TAG, "ON Account Loaded");
         if (event.requestId == null || getCurrentSession() == null) { return; }
 
         if (event.requestId == LoadAccountCompletedEvent.SWAP)
@@ -868,10 +858,10 @@ public class MainActivity extends BaseActivity
 
         ServiceRegistry registry = getCurrentSession().getServiceRegistry();
 
-        ConfigManager config = ConfigManager.getInstance(this);
-        if (!config.hasConfig(getCurrentAccount().getId()))
+        ConfigManager configManager = ConfigManager.getInstance(this);
+        if (!configManager.hasConfig(getCurrentAccount().getId()))
         {
-            config.init(getCurrentAccount());
+            configManager.init(getCurrentAccount());
         }
         if (registry instanceof AlfrescoServiceRegistry)
         {
@@ -884,10 +874,14 @@ public class MainActivity extends BaseActivity
             }
             else
             {
-                config.loadRemote(getCurrentAccount().getId(), ((AlfrescoServiceRegistry) registry).getConfigService());
+                configManager.loadRemote(getCurrentAccount().getId(),
+                        ((AlfrescoServiceRegistry) registry).getConfigService());
+
+                // Check feature config
+                ConfigFeatureHelper.check(this, getCurrentAccount(), getCurrentSession());
             }
         }
-        config.setSession(getCurrentAccount().getId(), getCurrentSession());
+        configManager.setSession(getCurrentAccount().getId(), getCurrentSession());
 
         // Retrieve latest avatar
         Operator.with(this).load(new AvatarRequest.Builder(getCurrentAccount().getUsername()));
@@ -986,7 +980,8 @@ public class MainActivity extends BaseActivity
         SyncContentManager.getInstance(this).setActivateSync(getCurrentAccount(), true);
         if (SyncContentManager.getInstance(this).canSync(getCurrentAccount()))
         {
-            SyncContentManager.getInstance(this).sync(getCurrentAccount());
+            SyncContentManager.getInstance(this).sync(AnalyticsManager.LABEL_SYNC_SESSION_LOADED, getCurrentAccount());
+
         }
 
         FavoritesManager.getInstance(this).setActivateSync(getCurrentAccount(), true);
@@ -996,7 +991,6 @@ public class MainActivity extends BaseActivity
         }
 
         invalidateOptionsMenu();
-
     }
 
     @Subscribe
@@ -1082,13 +1076,15 @@ public class MainActivity extends BaseActivity
                     }
                     invalidateOptionsMenu();
 
-                    // If connectivity is better (or reopen) we can try to sync all pending request
+                    // If connectivity is better (or reopen) we can try to sync
+                    // all pending request
                     if (getCurrentSession() != null && SyncContentManager.hasPendingSync(context, getCurrentAccount()))
                     {
                         if (!isSyncActive(AlfrescoAccountManager.getInstance(context)
                                 .getAndroidAccount(getCurrentAccount().getId()), SyncContentProvider.AUTHORITY))
                         {
-                            SyncContentManager.getInstance(context).sync(getCurrentAccount());
+                            SyncContentManager.getInstance(context).sync(AnalyticsManager.LABEL_SYNC_NETWORK,
+                                    getCurrentAccount());
                         }
                     }
 

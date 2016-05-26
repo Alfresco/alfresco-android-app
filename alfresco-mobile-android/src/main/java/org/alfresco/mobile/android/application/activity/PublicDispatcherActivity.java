@@ -20,9 +20,11 @@ package org.alfresco.mobile.android.application.activity;
 import java.io.File;
 import java.util.List;
 
+import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.configuration.ConfigurationConstant;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
+import org.alfresco.mobile.android.application.fragments.account.AccountsFragment;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.builder.FragmentBuilderFactory;
 import org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerFragment;
@@ -32,22 +34,28 @@ import org.alfresco.mobile.android.application.fragments.node.upload.UploadFormF
 import org.alfresco.mobile.android.application.fragments.preferences.PasscodePreferences;
 import org.alfresco.mobile.android.application.fragments.signin.AccountOAuthFragment;
 import org.alfresco.mobile.android.application.fragments.sync.SyncFragment;
+import org.alfresco.mobile.android.application.intent.PublicIntentAPIUtils;
+import org.alfresco.mobile.android.application.managers.NotificationManager;
 import org.alfresco.mobile.android.application.security.PassCodeActivity;
 import org.alfresco.mobile.android.async.node.favorite.FavoriteNodesRequest;
 import org.alfresco.mobile.android.async.session.LoadSessionCallBack.LoadAccountCompletedEvent;
 import org.alfresco.mobile.android.async.session.RequestSessionEvent;
+import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
+import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
+import org.alfresco.mobile.android.platform.intent.AlfrescoIntentAPI;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.ui.ListingModeFragment;
+
+import com.squareup.otto.Subscribe;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-
-import com.squareup.otto.Subscribe;
 
 /**
  * Activity responsible to manage public intent from 3rd party application. This
@@ -90,7 +98,15 @@ public class PublicDispatcherActivity extends BaseActivity
         if ((Intent.ACTION_SEND.equals(action) || Intent.ACTION_SEND_MULTIPLE.equals(action))
                 && getFragment(UploadFormFragment.TAG) == null)
         {
-            FragmentDisplayer.with(this).load(new UploadFormFragment()).back(false).animate(null).into(FragmentDisplayer.PANEL_LEFT);
+            FragmentDisplayer.with(this).load(new UploadFormFragment()).back(false).animate(null)
+                    .into(FragmentDisplayer.PANEL_LEFT);
+            return;
+        }
+
+        if (Intent.ACTION_VIEW.equals(action)
+                && AlfrescoIntentAPI.SCHEME.equals(getIntent().getData().getScheme().toLowerCase()))
+        {
+            managePublicIntent(null);
             return;
         }
 
@@ -142,6 +158,151 @@ public class PublicDispatcherActivity extends BaseActivity
             receiver = null;
         }
         super.onStop();
+    }
+
+    private boolean validateIntentId()
+    {
+        List<String> pathSegments = getIntent().getData().getPathSegments();
+        if (pathSegments == null || pathSegments.isEmpty())
+        {
+            NotificationManager.getInstance(this).showLongToast(R.string.public_url_wrong_format);
+            finish();
+            return false;
+        }
+
+        if (!AlfrescoIntentAPI.ID.equals(pathSegments.get(0)))
+        {
+            NotificationManager.getInstance(this).showLongToast(R.string.public_url_file_missing_id);
+            finish();
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean validateIntentFilter()
+    {
+        List<String> pathSegments = getIntent().getData().getPathSegments();
+        if (pathSegments == null || pathSegments.isEmpty())
+        {
+            NotificationManager.getInstance(this).showLongToast(R.string.public_url_wrong_format);
+            finish();
+            return false;
+        }
+
+        if (!AlfrescoIntentAPI.FILTER.equals(pathSegments.get(0)))
+        {
+            NotificationManager.getInstance(this).showLongToast(R.string.public_url_tasks_missing_filter);
+            finish();
+            return false;
+        }
+
+        return true;
+    }
+
+    private String retrieveNodeRef()
+    {
+        String nodeRefIntent = getIntent().getData().getLastPathSegment();
+        if (NodeRefUtils.isIdentifier(nodeRefIntent))
+        {
+            return NodeRefUtils.createNodeRefByIdentifier(getIntent().getData().getLastPathSegment());
+        }
+        else if (NodeRefUtils.isNodeRef(nodeRefIntent))
+        {
+            return nodeRefIntent;
+        }
+        else
+        {
+            NotificationManager.getInstance(this).showLongToast(R.string.public_url_noderef_format);
+            finish();
+            return null;
+        }
+    }
+
+    public void managePublicIntent(AlfrescoAccount accountSelected)
+    {
+        if (Intent.ACTION_VIEW.equals(getIntent().getAction())
+                && AlfrescoIntentAPI.SCHEME.equals(getIntent().getData().getScheme().toLowerCase()))
+        {
+            Intent i = null;
+            try
+            {
+                // Check Hostname
+                // If no Hostname we just open the App
+                String hostname = getIntent().getData().getHost();
+                if (TextUtils.isEmpty(hostname))
+                {
+                    i = new Intent(this, MainActivity.class);
+                    startActivity(i);
+                    finish();
+                    return;
+                }
+
+                // If multiple account we have to request the user to select one
+                if (AlfrescoAccountManager.getInstance(this).hasMultipleAccount() && accountSelected == null)
+                {
+
+                    FragmentDisplayer.with(this).animate(null).load(AccountsFragment.with(this).createFragment())
+                            .back(false).into(FragmentDisplayer.PANEL_LEFT);
+                    return;
+                }
+
+                // Check URL Pattern
+                // We support only ids for the moment
+                // alfresco://document/id/<objectId>
+                AlfrescoAccount acc = accountSelected != null ? accountSelected : getCurrentAccount();
+                if (acc == null)
+                {
+                    acc = AlfrescoAccountManager.getInstance(this).getDefaultAccount();
+                }
+
+                if (AlfrescoIntentAPI.AUTHORITY_DOCUMENT.equals(hostname))
+                {
+                    // Check Id
+                    if (!validateIntentId()) { return; }
+                    if (retrieveNodeRef() == null) { return; }
+
+                    i = PublicIntentAPIUtils.viewDocument(acc.getId(), retrieveNodeRef());
+                }
+                else if (AlfrescoIntentAPI.AUTHORITY_FOLDER.equals(hostname))
+                {
+                    // Check Id
+                    if (!validateIntentId()) { return; }
+                    if (retrieveNodeRef() == null) { return; }
+
+                    i = PublicIntentAPIUtils.viewFolder(acc.getId(), retrieveNodeRef());
+                }
+                else if (AlfrescoIntentAPI.AUTHORITY_SITE.equals(hostname))
+                {
+                    // Check Id
+                    if (!validateIntentId()) { return; }
+                    i = PublicIntentAPIUtils.viewSite(acc.getId(), getIntent().getData().getLastPathSegment());
+                }
+                else if (AlfrescoIntentAPI.AUTHORITY_USER.equals(hostname))
+                {
+                    // Check Id
+                    if (!validateIntentId()) { return; }
+                    i = PublicIntentAPIUtils.viewUser(acc.getId(), getIntent().getData().getLastPathSegment());
+                }
+                else if (AlfrescoIntentAPI.AUTHORITY_TASKS.equals(hostname))
+                {
+                    if (!validateIntentFilter()) { return; }
+                    i = PublicIntentAPIUtils.viewTasks(acc.getId(), getIntent().getData());
+                }
+                else
+                {
+                    i = new Intent(this, MainActivity.class);
+                }
+            }
+            catch (Exception e)
+            {
+                i = new Intent(this, MainActivity.class);
+            }
+
+            startActivity(i);
+            finish();
+            return;
+        }
     }
 
     // ///////////////////////////////////////////////////////////////////////////

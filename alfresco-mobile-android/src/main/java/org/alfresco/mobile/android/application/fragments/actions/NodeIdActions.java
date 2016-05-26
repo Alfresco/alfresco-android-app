@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.configuration.ConfigurableActionHelper;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.sync.SyncContentManager;
 
@@ -77,6 +78,7 @@ public class NodeIdActions extends AbstractActions<String>
             createMenu = menu.addSubMenu(Menu.NONE, R.id.menu_action_sync_group, Menu.FIRST, R.string.sync);
             createMenu.setIcon(R.drawable.ic_sync_light);
             createMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+            hideActionIfNecessary(menu, createMenu.getItem().getItemId(), ConfigurableActionHelper.ACTION_NODE_SYNC);
 
             createMenu.add(Menu.NONE, R.id.menu_action_sync_group_sync, Menu.FIRST + 1, R.string.sync);
             createMenu.add(Menu.NONE, R.id.menu_action_sync_group_unsync, Menu.FIRST + 2, R.string.unsync);
@@ -86,6 +88,7 @@ public class NodeIdActions extends AbstractActions<String>
         createMenu = menu.addSubMenu(Menu.NONE, R.id.menu_action_favorite_group, Menu.FIRST + 2, R.string.favorite);
         createMenu.setIcon(R.drawable.ic_favorite_light);
         createMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        hideActionIfNecessary(menu, createMenu.getItem().getItemId(), ConfigurableActionHelper.ACTION_NODE_FAVORITE);
 
         createMenu.add(Menu.NONE, R.id.menu_action_favorite_group_favorite, Menu.FIRST + 1, R.string.favorite);
         createMenu.add(Menu.NONE, R.id.menu_action_favorite_group_unfavorite, Menu.FIRST + 2, R.string.unfavorite);
@@ -99,6 +102,7 @@ public class NodeIdActions extends AbstractActions<String>
             createMenu = menu.addSubMenu(Menu.NONE, R.id.menu_action_like_group, Menu.FIRST + 3, R.string.like);
             createMenu.setIcon(R.drawable.ic_like);
             createMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+            hideActionIfNecessary(menu, createMenu.getItem().getItemId(), ConfigurableActionHelper.ACTION_NODE_LIKE);
 
             createMenu.add(Menu.NONE, R.id.menu_action_like_group_like, Menu.FIRST + 1, R.string.like);
             createMenu.add(Menu.NONE, R.id.menu_action_like_group_unlike, Menu.FIRST + 2, R.string.unlike);
@@ -149,6 +153,14 @@ public class NodeIdActions extends AbstractActions<String>
     // ///////////////////////////////////////////////////////////////////////////
     // ACTIONS
     // ///////////////////////////////////////////////////////////////////////////
+    protected void hideActionIfNecessary(Menu menu, int menuItemId, int actionId)
+    {
+        if (!ConfigurableActionHelper.isVisible(getActivity(), getAccount(), actionId))
+        {
+            menu.removeItem(menuItemId);
+        }
+    }
+
     private void favorite(boolean doFavorite)
     {
         NodeActions.favorite(getFragment(), selectedItems, doFavorite);

@@ -277,6 +277,9 @@ public class ConfigManager extends Manager
             case FEATURES:
                 service = (service.getFeatureConfig() != null) ? service : null;
                 break;
+            case ACTIONS:
+                service = (service.hasActionConfig()) ? service : null;
+                break;
             default:
                 break;
         }
@@ -373,7 +376,7 @@ public class ConfigManager extends Manager
     @Subscribe
     public void onSessionRequested(RequestSessionEvent event)
     {
-        if (event.accountToLoad == null){return;}
+        if (event.accountToLoad == null) { return; }
         if (hasConfig(event.accountToLoad.getId()))
         {
             currentService.remove(event.accountToLoad.getId());

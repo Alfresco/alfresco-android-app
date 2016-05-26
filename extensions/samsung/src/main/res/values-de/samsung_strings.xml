@@ -22,7 +22,7 @@
     <string name="cancel">Abbrechen</string>
     <string name="search">Suche</string>
     <string name="search_hint">Suchbegriff eingeben</string>
-    <string name="comment_add_hint">Kommentar hier eingeben...</string>
+    <string name="comment_add_hint">Kommentar hier eingeben&#8230;</string>
     <string name="add">Hinzufügen</string>
 
 

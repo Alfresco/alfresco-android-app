@@ -38,6 +38,7 @@ import org.alfresco.mobile.android.application.activity.PrivateDialogActivity;
 import org.alfresco.mobile.android.application.activity.PublicDispatcherActivity;
 import org.alfresco.mobile.android.application.capture.DeviceCapture;
 import org.alfresco.mobile.android.application.capture.DeviceCaptureHelper;
+import org.alfresco.mobile.android.application.configuration.ConfigurableActionHelper;
 import org.alfresco.mobile.android.application.configuration.model.view.RepositoryConfigModel;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
@@ -96,12 +97,17 @@ import org.alfresco.mobile.android.ui.node.browse.NodeBrowserFragment;
 import org.alfresco.mobile.android.ui.node.browse.NodeBrowserTemplate;
 import org.alfresco.mobile.android.ui.operation.OperationWaitingDialogFragment;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
+import org.apache.chemistry.opencmis.commons.exceptions.CmisObjectNotFoundException;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
+
+import com.cocosw.bottomsheet.BottomSheet;
+import com.squareup.otto.Subscribe;
 
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.ActionBar;
@@ -119,9 +125,6 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
-
-import com.cocosw.bottomsheet.BottomSheet;
-import com.squareup.otto.Subscribe;
 
 /**
  * Display a dialogFragment to retrieve information about the content of a
@@ -164,6 +167,8 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment implement
     private boolean doFavorite;
 
     private Permissions permission;
+
+    private boolean hasAudioRecorder = false;
 
     // //////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
@@ -246,6 +251,10 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment implement
         {
             setActivateThumbnail(true);
         }
+
+        // Test Audio Recording
+        Intent intent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
+        hasAudioRecorder = intent.resolveActivity(getActivity().getPackageManager()) != null;
     }
 
     @Override
@@ -304,7 +313,6 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment implement
             TextView secondEmptyMessage)
     {
 
-        Permissions permission;
         int iconId = R.drawable.ic_empty_folder_ro;
         int titleId = R.string.nodebrowser_empty_ro_title;
         int descriptionId = -1;
@@ -312,8 +320,8 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment implement
         {
             if (parentFolder != null)
             {
-                permission = getSession().getServiceRegistry().getDocumentFolderService().getPermissions(parentFolder);
-                if (permission.canAddChildren())
+                if (ConfigurableActionHelper.isVisible(getActivity(), getAccount(), getSession(), parentFolder,
+                        ConfigurableActionHelper.ACTION_CREATE_FOLDER))
                 {
                     iconId = R.drawable.ic_empty_folder_rw;
                     titleId = R.string.nodebrowser_empty_rw_title;
@@ -765,7 +773,19 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment implement
             {
                 ev.setVisibility(View.VISIBLE);
             }
-            onResultError(event.exception);
+
+            if (event.exception != null && event.exception.getCause() instanceof CmisObjectNotFoundException)
+            {
+                displayEmptyView();
+                if (viewById(R.id.empty_text) != null)
+                {
+                    ((TextView) viewById(R.id.empty_text)).setText(R.string.node_browser_folder_not_found);
+                }
+            }
+            else
+            {
+                onResultError(event.exception);
+            }
         }
         else
         {
@@ -913,9 +933,10 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment implement
         }
         else if (getActivity() instanceof PublicDispatcherActivity || getActivity() instanceof BaseShortcutActivity)
         {
-            permission = getSession().getServiceRegistry().getDocumentFolderService().getPermissions(parentFolder);
-
-            if (permission.canAddChildren())
+            // permission =
+            // getSession().getServiceRegistry().getDocumentFolderService().getPermissions(parentFolder);
+            if (ConfigurableActionHelper.isVisible(getActivity(), getAccount(), getSession(), parentFolder,
+                    ConfigurableActionHelper.ACTION_CREATE_FOLDER))
             {
                 MenuItem mi = menu.add(Menu.NONE, R.id.menu_create_folder, Menu.FIRST, R.string.folder_create);
                 mi.setIcon(R.drawable.ic_repository_light);
@@ -944,7 +965,12 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment implement
         mi.setIcon(R.drawable.ic_search_light);
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
-        if (permission.canAddChildren())
+        if (ConfigurableActionHelper.isVisible(getActivity(), getAccount(), getSession(), parentFolder,
+                ConfigurableActionHelper.ACTION_CREATE_DOC)
+                || ConfigurableActionHelper.isVisible(getActivity(), getAccount(), getSession(), parentFolder,
+                        ConfigurableActionHelper.ACTION_CREATE_FOLDER)
+                || ConfigurableActionHelper.isVisible(getActivity(), getAccount(), getSession(), parentFolder,
+                        ConfigurableActionHelper.ACTION_NODE_UPLOAD))
         {
             displayFab();
         }
@@ -962,17 +988,36 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment implement
             {
                 BottomSheet.Builder builder = new BottomSheet.Builder(getActivity(), R.style.M_StyleDialog)
                         .title(R.string.add_menu);
-                builder.sheet(R.id.menu_create_folder, R.drawable.ic_repository_light, R.string.folder_create);
-                builder.sheet(R.id.menu_upload, R.drawable.ic_upload, R.string.upload_title);
-                builder.sheet(R.id.menu_create_document, R.drawable.ic_doc_light, R.string.create_document);
-                builder.sheet(R.id.menu_device_capture_camera_photo, R.drawable.ic_camera, R.string.take_photo);
-                builder.sheet(R.id.menu_device_capture_camera_video, R.drawable.ic_videos, R.string.make_video);
-                builder.sheet(R.id.menu_device_capture_mic_audio, R.drawable.ic_microphone, R.string.record_audio);
-                if (ScanSnapManager.getInstance(getActivity()) != null
-                        && ScanSnapManager.getInstance(getActivity()).hasScanSnapApplication())
+                if (ConfigurableActionHelper.isVisible(getActivity(), getAccount(), getSession(), parentFolder,
+                        ConfigurableActionHelper.ACTION_CREATE_FOLDER))
                 {
-                    builder.sheet(R.id.menu_scan_document, R.drawable.ic_camera, R.string.scan);
+                    builder.sheet(R.id.menu_create_folder, R.drawable.ic_repository_light, R.string.folder_create);
                 }
+
+                if (ConfigurableActionHelper.isVisible(getActivity(), getAccount(), getSession(), parentFolder,
+                        ConfigurableActionHelper.ACTION_NODE_UPLOAD))
+                {
+                    builder.sheet(R.id.menu_upload, R.drawable.ic_upload, R.string.upload_title);
+                }
+
+                if (ConfigurableActionHelper.isVisible(getActivity(), getAccount(), getSession(), parentFolder,
+                        ConfigurableActionHelper.ACTION_CREATE_DOC))
+                {
+                    builder.sheet(R.id.menu_create_document, R.drawable.ic_doc_light, R.string.create_document);
+                    builder.sheet(R.id.menu_device_capture_camera_photo, R.drawable.ic_camera, R.string.take_photo);
+                    builder.sheet(R.id.menu_device_capture_camera_video, R.drawable.ic_videos, R.string.make_video);
+                    if (hasAudioRecorder)
+                    {
+                        builder.sheet(R.id.menu_device_capture_mic_audio, R.drawable.ic_microphone,
+                                R.string.record_audio);
+                    }
+                    if (ScanSnapManager.getInstance(getActivity()) != null
+                            && ScanSnapManager.getInstance(getActivity()).hasScanSnapApplication())
+                    {
+                        builder.sheet(R.id.menu_scan_document, R.drawable.ic_camera, R.string.scan);
+                    }
+                }
+
                 builder.grid().listener(new DialogInterface.OnClickListener()
                 {
                     @Override
@@ -1039,6 +1084,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment implement
 
     private boolean onOptionMenuItemSelected(int itemId)
     {
+        if (getActivity() == null) { return false; }
         switch (itemId)
         {
             case R.id.menu_search_from_folder:
@@ -1148,11 +1194,12 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment implement
     {
         if (adapter != null)
         {
-            return ((ProgressNodeAdapter) adapter).getNodes();
+            return ((ProgressNodeAdapter) adapter).getNodes() != null ? ((ProgressNodeAdapter) adapter).getNodes()
+                    : new ArrayList<Node>(0);
         }
         else
         {
-            return null;
+            return new ArrayList<>(0);
         }
     }
 
@@ -1230,9 +1277,8 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment implement
 
             if (parentFolder != null)
             {
-                Permissions permission = getSession().getServiceRegistry().getDocumentFolderService()
-                        .getPermissions(parentFolder);
-                enable = permission.canAddChildren();
+                enable = ConfigurableActionHelper.isVisible(getActivity(), getAccount(), getSession(), parentFolder,
+                        ConfigurableActionHelper.ACTION_NODE_UPLOAD);
             }
             validationButton.setEnabled(enable);
         }

@@ -27,7 +27,6 @@ import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.config.ConfigTypeIds;
-import org.alfresco.mobile.android.api.model.impl.DocumentImpl;
 import org.alfresco.mobile.android.api.services.ConfigService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
@@ -37,6 +36,7 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.activity.PrivateDialogActivity;
 import org.alfresco.mobile.android.application.activity.PublicDispatcherActivity;
+import org.alfresco.mobile.android.application.configuration.ConfigurableActionHelper;
 import org.alfresco.mobile.android.application.configuration.model.view.NodeDetailsConfigModel;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
@@ -105,10 +105,10 @@ import org.alfresco.mobile.android.ui.template.ViewTemplate;
 import org.alfresco.mobile.android.ui.utils.Formatter;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
-import org.apache.chemistry.opencmis.commons.enums.Action;
 
 import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -328,9 +328,8 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
                     // Encrypt sync file if necessary
                     AlfrescoStorageManager.getInstance(getActivity()).manageFile(dlFile);
                 }
-                else if (modified && getSession() != null
-                        && getSession().getServiceRegistry().getDocumentFolderService().getPermissions(node) != null
-                        && getSession().getServiceRegistry().getDocumentFolderService().getPermissions(node).canEdit())
+                else if (modified && getSession() != null && ConfigurableActionHelper.isVisible(getActivity(),
+                        getAccount(), getSession(), node, ConfigurableActionHelper.ACTION_NODE_EDIT))
                 {
                     // File modified + Sync File
                     if (isSynced)
@@ -559,6 +558,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         {
             b.setVisibility(View.GONE);
         }
+        hideActionIfNecessary(b, ConfigurableActionHelper.ACTION_NODE_OPEN);
 
         b = (ImageView) viewById(R.id.action_like);
         if (node instanceof NodeSyncPlaceHolder)
@@ -588,6 +588,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
                 viewById(R.id.like_progress).setVisibility(View.GONE);
             }
         }
+        hideActionIfNecessary(b, ConfigurableActionHelper.ACTION_NODE_LIKE);
 
         // BUTTONS
         b = (ImageView) viewById(R.id.action_favorite);
@@ -613,6 +614,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
             b.setVisibility(View.GONE);
             viewById(R.id.favorite_progress).setVisibility(View.GONE);
         }
+        hideActionIfNecessary(b, ConfigurableActionHelper.ACTION_NODE_FAVORITE);
 
         // SYNC
         b = (ImageView) viewById(R.id.action_sync);
@@ -662,6 +664,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         {
             b.setVisibility(View.GONE);
         }
+        hideActionIfNecessary(b, ConfigurableActionHelper.ACTION_NODE_SYNC);
 
         b = (ImageView) viewById(R.id.action_share);
         if (node.isDocument() && !isRestrictable)
@@ -679,6 +682,34 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         {
             b.setVisibility(View.GONE);
         }
+        hideActionIfNecessary(b, ConfigurableActionHelper.ACTION_NODE_SHARE);
+
+        b = (ImageView) viewById(R.id.action_open_in_alfresco_editor);
+
+        if (node.isDocument())
+        {
+            String mimetype = node.getPropertyValue(PropertyIds.CONTENT_STREAM_MIME_TYPE);
+            if (!TextUtils.isEmpty(mimetype) && mimetype.startsWith(MimeType.TYPE_TEXT))
+            {
+                b.setOnClickListener(new OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        openin(true);
+                    }
+                });
+            }
+            else
+            {
+                b.setVisibility(View.GONE);
+            }
+        }
+        else
+        {
+            b.setVisibility(View.GONE);
+        }
+        hideActionIfNecessary(b, ConfigurableActionHelper.ACTION_NODE_EDIT_WITH_ALFRESCO);
     }
 
     protected void displayTabs()
@@ -694,6 +725,14 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
     // ///////////////////////////////////////////////////////////////////////////
     // UI UTILS
     // ///////////////////////////////////////////////////////////////////////////
+    protected void hideActionIfNecessary(View v, int actionId)
+    {
+        if (!ConfigurableActionHelper.isVisible(getContext(), getAccount(), getSession(), node, actionId))
+        {
+            v.setVisibility(View.GONE);
+        }
+    }
+
     protected void displayData()
     {
         hide(R.id.empty);
@@ -949,6 +988,11 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
 
     public void openin()
     {
+        openin(false);
+    }
+
+    public void openin(boolean withAlfresco)
+    {
         if (isRestrictable) { return; }
 
         Bundle b = new Bundle();
@@ -985,31 +1029,52 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
             }
             else
             {
-                // Log.e(TAG, "[OBSERVER] CREATE");
-                // observer = new SyncedFileObserver(syncFile.getPath(),
-                // getActivity().getApplicationContext(), node, acc);
-                // observer.startWatching();
-                // If sync file + sync activate
-                ActionUtils.openIn(this, syncFile,
-                        MimeTypeManager.getInstance(getActivity()).getMIMEType(syncFile.getName()),
-                        RequestCode.SAVE_BACK);
+                if (withAlfresco)
+                {
+                    ActionUtils.openWithAlfrescoTextEditor(this, syncFile,
+                            MimeTypeManager.getInstance(getActivity()).getMIMEType(syncFile.getName()),
+                            RequestCode.SAVE_BACK);
+
+                }
+                else
+                {
+                    ActionUtils.openIn(this, syncFile,
+                            MimeTypeManager.getInstance(getActivity()).getMIMEType(syncFile.getName()),
+                            RequestCode.SAVE_BACK);
+                }
             }
         }
         else
         {
             // Other case
             b.putParcelable(DownloadDialogFragment.ARGUMENT_DOCUMENT, node);
-            b.putInt(DownloadDialogFragment.ARGUMENT_ACTION, DownloadDialogFragment.ACTION_OPEN);
+            b.putInt(DownloadDialogFragment.ARGUMENT_ACTION, withAlfresco
+                    ? DownloadDialogFragment.ACTION_OPEN_WITH_ALFRESCO : DownloadDialogFragment.ACTION_OPEN);
             DialogFragment frag = new DownloadDialogFragment();
             frag.setArguments(b);
             frag.show(getActivity().getSupportFragmentManager(), DownloadDialogFragment.TAG);
         }
 
         // Analytics
-        AnalyticsHelper.reportOperationEvent(getActivity(), AnalyticsManager.CATEGORY_DOCUMENT_MANAGEMENT,
-                AnalyticsManager.ACTION_OPEN,
-                node.isDocument() ? ((Document) node).getContentStreamMimeType() : AnalyticsManager.TYPE_FOLDER, 1,
-                false, AnalyticsManager.INDEX_FILE_SIZE, ((Document) node).getContentStreamLength());
+        if (node instanceof Document)
+        {
+            AnalyticsHelper.reportOperationEvent(getActivity(), AnalyticsManager.CATEGORY_DOCUMENT_MANAGEMENT,
+                    AnalyticsManager.ACTION_OPEN,
+                    node.isDocument() ? ((Document) node).getContentStreamMimeType() : AnalyticsManager.TYPE_FOLDER, 1,
+                    false, AnalyticsManager.INDEX_FILE_SIZE,
+                    node.isDocument() ? ((Document) node).getContentStreamLength() : 0);
+        }
+        else if (node instanceof NodeSyncPlaceHolder)
+        {
+            AnalyticsHelper.reportOperationEvent(getActivity(), AnalyticsManager.CATEGORY_DOCUMENT_MANAGEMENT,
+                    AnalyticsManager.ACTION_OPEN_OFFLINE,
+                    node.getPropertyValue(PropertyIds.CONTENT_STREAM_MIME_TYPE) != null
+                            ? node.getPropertyValue(PropertyIds.CONTENT_STREAM_MIME_TYPE).toString()
+                            : AnalyticsManager.TYPE_FOLDER,
+                    1, false, AnalyticsManager.INDEX_FILE_SIZE,
+                    node.getPropertyValue(PropertyIds.CONTENT_STREAM_LENGTH) != null
+                            ? Long.parseLong(node.getPropertyValue(PropertyIds.CONTENT_STREAM_LENGTH).toString()) : 0);
+        }
     }
 
     public void setDownloadDateTime(Date downloadDateTime)
@@ -1135,7 +1200,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
     // ///////////////////////////////////////////////////////////////////////////
     // MENU
     // ///////////////////////////////////////////////////////////////////////////
-    public static void getMenu(AlfrescoSession session, Menu menu, Node node)
+    public void getMenu(Context context, AlfrescoSession session, Menu menu, Node node)
     {
         MenuItem mi;
 
@@ -1146,22 +1211,24 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
 
         if (node.isDocument())
         {
-            if (((Document) node).getContentStreamLength() > 0 && !isRestrict)
+            if (((Document) node).getContentStreamLength() > 0 && !isRestrict && ConfigurableActionHelper.isVisible(
+                    getActivity(), getAccount(), getSession(), node, ConfigurableActionHelper.ACTION_NODE_DOWNLOAD))
             {
                 mi = menu.add(Menu.NONE, R.id.menu_action_download, Menu.FIRST, R.string.download);
                 mi.setIcon(R.drawable.ic_download_light);
                 mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
             }
 
-            if (((Document) node).isLatestVersion()
-                    && ((DocumentImpl) node).hasAllowableAction(Action.CAN_SET_CONTENT_STREAM.value()))
+            if (((Document) node).isLatestVersion() && ConfigurableActionHelper.isVisible(getActivity(), getAccount(),
+                    getSession(), node, ConfigurableActionHelper.ACTION_NODE_UPDATE))
             {
                 mi = menu.add(Menu.NONE, R.id.menu_action_update, Menu.FIRST + 130, R.string.update);
                 mi.setIcon(R.drawable.ic_upload);
                 mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
             }
 
-            if (!(session instanceof CloudSession))
+            if (!(session instanceof CloudSession) && ConfigurableActionHelper.isVisible(getActivity(), getAccount(),
+                    getSession(), node, ConfigurableActionHelper.ACTION_NODE_REVIEW))
             {
                 mi = menu.add(Menu.NONE, R.id.menu_workflow_add, Menu.FIRST + 500, R.string.process_start_review);
                 mi.setIcon(R.drawable.ic_start_review);
@@ -1171,10 +1238,11 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
 
         if (session == null) { return; }
 
-        if (session.getServiceRegistry().getDocumentFolderService().getPermissions(node).canEdit())
+        if (ConfigurableActionHelper.isVisible(getActivity(), getAccount(), getSession(), node,
+                ConfigurableActionHelper.ACTION_NODE_EDIT))
         {
             mi = menu.add(Menu.NONE, R.id.menu_action_edit, Menu.FIRST + 10, R.string.edit);
-            mi.setIcon(R.drawable.ic_edit);
+            mi.setIcon(R.drawable.ic_properties);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         }
 
@@ -1185,7 +1253,8 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
         }
 
-        if (session.getServiceRegistry().getDocumentFolderService().getPermissions(node).canDelete())
+        if (ConfigurableActionHelper.isVisible(getActivity(), getAccount(), getSession(), node,
+                ConfigurableActionHelper.ACTION_NODE_DELETE))
         {
             mi = menu.add(Menu.NONE, R.id.menu_action_delete, Menu.FIRST + 1000, R.string.delete);
             mi.setIcon(R.drawable.ic_delete);
@@ -1195,7 +1264,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
 
     public void getMenu(Menu menu)
     {
-        getMenu(getSession(), menu, node);
+        getMenu(getActivity(), getSession(), menu, node);
     }
 
     @Override
@@ -1425,7 +1494,8 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
                 }
                 else
                 {
-                    SyncContentManager.getInstance(getActivity()).sync(SessionUtils.getAccount(getActivity()));
+                    SyncContentManager.getInstance(getActivity()).sync(AnalyticsManager.LABEL_SYNC_ACTION,
+                            SessionUtils.getAccount(getActivity()));
                 }
             }
         }

@@ -106,7 +106,7 @@
     <string name="menu_browse_sites">Sites</string>
     <string name="menu_browse_userhome">Meine Dateien</string>
     <string name="menu_browse_shared">Freigegebene Dateien</string>
-    <string name="menu_browse_site_finder">Site-Suche</string>
+    <string name="menu_browse_site_finder">Site-Finder</string>
     <string name="menu_browse_all_sites">Alle Sites</string>
     <string name="menu_browse_my_sites">Meine Sites</string>
     <string name="menu_browse_favorite_sites">Favoriten-Sites</string>
@@ -164,8 +164,7 @@
     <string name="share_content">Inhalt freigeben für&#8230;</string>
 
     <!-- HELP -->
-    <string name="asset_folder_prefix">de</string>
-    <string name="docs_prefix" translatable="false" />
+    <string name="docs_prefix">de</string>
 
     <!-- About Message -->
     <string name="version_number">Version</string>
@@ -245,19 +244,19 @@
     <string name="action_join_request_site">Beitritt beantragen</string>
     <string name="action_leave_site">Abmelden</string>
     <string name="action_favorite_site">Favorit</string>
-    <string name="action_unfavorite_site">Markierung als Favorit aufheben</string>
+    <string name="action_unfavorite_site">Aus Favoriten entfernen</string>
     <string name="action_join_site_validation">Sie sind nun Mitglied von \"%s\".</string>
     <string name="action_leave_site_validation">Sie haben sich bei \"%s\" abgemeldet.</string>
     <string name="action_favorite_site_validation">\"%s\" ist jetzt ein Favorit.</string>
-    <string name="action_unfavorite_site_validation">Die Markierung von \"%s\" als Favorit wurde aufgehoben.</string>
+    <string name="action_unfavorite_site_validation">\"%s\" wurde aus Ihren Favoriten entfernt.</string>
     <string name="action_join_request_site_validation">Sie haben den Beitritt zu \"%s\" beantragt.</string>
     <string name="joinsiterequest_list_title">Liste ausstehender Anfragen</string>
     <string name="joinsiterequest_cancel_description">Anfrage, der Site %s beizutreten, verwerfen</string>
     <string name="action_cancel_join_site_request">Ihre Anfrage, \"%s\" beizutreten, wurde verworfen.</string>
     <string name="action_join_site_error">Aufgrund eines Problems konnten Sie der Site \"%s\" nicht beitreten.</string>
     <string name="action_leave_site_error">Aufgrund eines Problems konnten Sie sich nicht bei der Site \"%s\" abmelden.</string>
-    <string name="action_favorite_error">Aufgrund eines Problems konnten Sie die Site \"%s\" nicht als Favorit festlegen.</string>
-    <string name="action_unfavorite_site_error">Aufgrund eines Problems konnten Sie die Markierung der Site \"%s\" als Favorit nicht aufheben.</string>
+    <string name="action_favorite_error">Aufgrund eines Problems konnte die Site \"%s\" nicht zu Ihren Favoriten hinzugefügt werden.</string>
+    <string name="action_unfavorite_site_error">Aufgrund eines Problems konnte die Site \"%s\" nicht aus Ihren Favoriten entfernt werden.</string>
 
     <!-- IMPORT -->
     <string name="import_document_title">Mit Alfresco Mobile hochladen</string>
@@ -452,7 +451,7 @@
     <string name="sync_warning">Synchronisierungswarnung</string>
     <string name="sync_error">Synchronisierungsfehler</string>
     <string name="sync_warning_mobile_data"><![CDATA[<p> Sie sind im Begriff, <b>%s</b> über eine Carrier-Verbindung zu synchronisieren.</p> Möchten Sie fortfahren?]]></string>
-    <string name="sync_error_storage"><![CDATA[<p> Sie versuchen, <b>%1$s</b> zu synchronisieren; nur %2$s sind verfügbar.</p> Sie müssen Speicherplatz auf Ihrem Gerät freigeben oder für einige Inhalte die Markierung als Favoriten aufheben.]]></string>
+    <string name="sync_error_storage"><![CDATA[<p> Sie versuchen, <b>%1$s</b> zu synchronisieren, es sind jedoch nur %2$s verfügbar.</p> Sie müssen Speicherplatz auf Ihrem Gerät freigeben oder Inhalte aus Ihren Favoriten entfernen.]]></string>
     <string name="sync_warning_storage"><![CDATA[<p> Sie sind im Begriff, <b>%1$s</b> zu synchronisieren; nur noch %2$s auf Ihrem Gerät.</p> Möchten Sie fortfahren?]]></string>
     <string name="sync_document_not_available">Das Dokument ist auf Ihrem Gerät nicht verfügbar.</string>
 
@@ -467,7 +466,7 @@
     <string name="like_completed">"Gefällt mir"-Vorgang abgeschlossen</string>
     <string name="like_complete">"Gefällt mir"-Vorgang abgeschlossen</string>
     <string name="favorite">Favorit</string>
-    <string name="unfavorite">Markierung als Favorit aufheben</string>
+    <string name="unfavorite">Aus Favoriten entfernen</string>
 
     <!-- Operations Status -->
     <string name="status_pending">Ausstehend</string>
@@ -541,7 +540,7 @@
     <string name="summary">Zusammenfassung</string>
     <string name="contactInformation">Kontaktinformationen</string>
     <string name="email">E-Mail</string>
-    <string name="telephone">Festnetz</string>
+    <string name="telephone">Telefon</string>
     <string name="mobile">Handy</string>
     <string name="skypeId">Skype</string>
     <string name="instantMessagingId">IM</string>
@@ -552,7 +551,7 @@
     <string name="companyName">Name</string>
     <string name="companyAdress">Adresse</string>
     <string name="companyPostCode">Postleitzahl</string>
-    <string name="companyTelephone">Festnetz</string>
+    <string name="companyTelephone">Telefon</string>
     <string name="companyFax">Fax</string>
     <string name="companyEmail">E-Mail</string>
     <string name="call">Anruf</string>
@@ -606,7 +605,7 @@
     <!-- Tasks -->
     <string name="task_filter_view">Aufgaben anzeigen</string>
     <string name="validate">Validieren</string>
-    <string name="workflow_priority_low">Geringe Priorität</string>
+    <string name="workflow_priority_low">Niedrige Priorität</string>
     <string name="workflow_priority_medium">Mittlere Priorität</string>
     <string name="workflow_priority_high">Hohe Priorität</string>
     <string name="task_user_approved"><![CDATA[%s <b>hat den Inhalt genehmigt</b>]]></string>
@@ -619,8 +618,8 @@
     <string name="task_response">Antwort</string>
     <string name="done">Fertig</string>
     <string name="task_completing">Aufgabe wird abgeschlossen</string>
-    <string name="task_reassign">Erneut zuweisen</string>
-    <string name="task_reassign_long">Diese Aufgabe erneut zuweisen an&#8230;</string>
+    <string name="task_reassign">Neu zuweisen</string>
+    <string name="task_reassign_long">Diese Aufgabe neu zuweisen an&#8230;</string>
     <string name="task_claim">Anspruch</string>
     <string name="task_unclaim">An Pool freigeben</string>
     <string name="task_priority">Priorität</string>
@@ -631,7 +630,7 @@
 
     <!-- Tasks Filters -->
     <string name="task_filter_active">Aktive Aufgaben</string>
-    <string name="task_filter_initiator">Von mir gestartete Aufgaben</string>
+    <string name="task_filter_initiator">Von mir begonnene Aufgaben</string>
     <string name="task_filter_completed">Abgeschlossene Aufgaben</string>
     <string name="task_filter_high_priority">Aufgaben mit hoher Priorität</string>
     <string name="task_filter_due_today">Heute fällige Aufgaben</string>
@@ -655,7 +654,7 @@
     <string name="task_assignees_plurals">{0,choice,0#Keine zugewiesenen Personen|1#1 zugewiesene Person|1&lt;{0} zugewiesene Personen}</string>
     <string name="task_assignees">Zugewiesene Personen</string>
     <string name="task_assignees_selection">Zugewiesene Personen auswählen&#8230;</string>
-    <string name="process_approvers_plurals">{0,choice,0#Keine genehmigende Personen|1#1 von 1 genehmigende Person|1&lt;%s von {0} genehmigenden Personen}</string>
+    <string name="process_approvers_plurals">{0,choice,0#Keine Genehmiger|1#1 von 1 Genehmiger|1&lt;%s von {0} Genehmigern}</string>
     <string name="task_attachments_plurals">{0,choice,0#Keine Anhänge|1#1 Anhang|1&lt;{0} Anhänge}</string>
     <string name="task_attachments_selection">Anhänge auswählen&#8230;</string>
     <string name="task_attachments">Anhänge</string>
@@ -665,16 +664,16 @@
     <string name="process_no_attachments">Keinen Inhalt angehängt</string>
     <string name="process_priority">Priorität</string>
     <string name="process_notification">E-Mail-Benachrichtigung</string>
-    <string name="process_approvers">Genehmigende Personen</string>
-    <string name="process_no_approvers">Keine genehmigenden Personen</string>
+    <string name="process_approvers">Genehmiger</string>
+    <string name="process_no_approvers">Keine Genehmiger</string>
     <string name="process_starting">Prozess wird gestartet</string>
     <string name="task_create">Aufgabe erstellen</string>
     <string name="task_todo">Zu erledigende Aufgaben</string>
     <string name="task_todo_description">Einer Person eine Aufgabe zuweisen</string>
     <string name="task_review_approve">Überprüfen und genehmigen</string>
     <string name="task_review_approve_description">Weisen Sie einer oder mehreren Personen eine Aufgabe zu, um Inhalt zu überprüfen und zu genehmigen.</string>
-    <string name="task_delegate_in_progress">Erneute Zuweisung wird durchgeführt&#8230;</string>
-    <string name="task_delegate_complete">Erneute Zuweisung abgeschlossen</string>
+    <string name="task_delegate_in_progress">Neuzuweisung wird durchgeführt&#8230;</string>
+    <string name="task_delegate_complete">Neuzuweisung abgeschlossen</string>
     <string name="picker_assignees">Zugewiesene Personen auswählen</string>
     <string name="picker_due_date">Fälligkeitsdatum auswählen</string>
     <string name="picker_attachments">Anhänge auswählen</string>
@@ -684,9 +683,9 @@
 
     <!-- PROCESS NAME -->
     <string name="process_adhoc">Ad-hoc-Workflow</string>
-    <string name="process_parallel_review">Gleichzeitige Überprüfung und Genehmigung</string>
+    <string name="process_parallel_review">Paralleles Überprüfen und Genehmigen</string>
     <string name="process_review">Überprüfen und genehmigen</string>
-    <string name="process_pooled_review">Zusammengefasste Überprüfung und Genehmigung</string>
+    <string name="process_pooled_review">Gebündeltes Überprüfen und Genehmigen</string>
 
     <!-- AGGREGATOR SEARCH -->
     <string name="search">Suche</string>
@@ -811,7 +810,7 @@
     <string name="favorites_empty_title">Keine Favoriten gefunden</string>
     <string name="favorites_empty_description">Sie können Dateien und Ordner zu Ihren Favoriten hinzufügen, um schneller darauf zugreifen zu können.</string>
     <string name="sites_my_empty_title">Sie haben noch keine Sites hinzugefügt</string>
-    <string name="sites_my_empty_description">Über die Site-Suche können Sie nach Sites suchen und sie hinzufügen.</string>
+    <string name="sites_my_empty_description">Über Site-Finder können Sie nach Sites suchen und sie hinzufügen.</string>
     <string name="sites_favorites_empty_title">Keine Favoriten gefunden</string>
     <string name="sites_favorites_empty_description">Sie können Sites zu Ihren Favoriten hinzufügen, um schneller darauf zugreifen zu können.</string>
     <string name="sites_search_empty_title">Keine Sites gefunden</string>
@@ -827,7 +826,7 @@
 
 
     <string name="empty_site">Keine Sites verfügbar</string>
-    <string name="empty_version">Keine Versionshistorie verfügbar</string>
+    <string name="empty_version">Kein Versionsverlauf verfügbar</string>
     <string name="empty_session">Keine Sitzung verfügbar</string>
     <string name="empty_actvity">Keine Aktivitäten gefunden</string>
     <string name="empty_tag">Kein Tag gefunden</string>

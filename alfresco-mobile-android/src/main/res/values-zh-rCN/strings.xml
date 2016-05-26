@@ -164,8 +164,7 @@
     <string name="share_content">与&#8230;共享内容</string>
 
     <!-- HELP -->
-    <string name="asset_folder_prefix">zh_cn</string>
-    <string name="docs_prefix" translatable="false" />
+    <string name="docs_prefix" />
 
     <!-- About Message -->
     <string name="version_number">版本</string>
@@ -542,7 +541,7 @@
     <string name="contactInformation">联系信息</string>
     <string name="email">电子邮件</string>
     <string name="telephone">电话</string>
-    <string name="mobile">移动电话</string>
+    <string name="mobile">手机</string>
     <string name="skypeId">Skype</string>
     <string name="instantMessagingId">IM</string>
     <string name="instantMessaging">即时消息</string>

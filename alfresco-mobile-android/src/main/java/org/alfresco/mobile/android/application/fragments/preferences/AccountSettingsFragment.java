@@ -28,6 +28,7 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.activity.BaseAppCompatActivity;
 import org.alfresco.mobile.android.application.activity.WelcomeActivity;
+import org.alfresco.mobile.android.application.configuration.features.SyncCellularConfigFeature;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.account.AccountEditFragment;
@@ -57,6 +58,8 @@ import org.alfresco.mobile.android.ui.holder.TwoLinesCheckboxViewHolder;
 import org.alfresco.mobile.android.ui.holder.TwoLinesViewHolder;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Intent;
@@ -73,8 +76,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
-import com.afollestad.materialdialogs.MaterialDialog;
 
 /**
  * Manage global application preferences.
@@ -136,9 +137,15 @@ public class AccountSettingsFragment extends AlfrescoFragment implements EditTex
         // TITLE
         UIUtils.displayTitle(getActivity(), getString(R.string.settings_account));
 
+        if (account == null)
+        {
+            hide(R.id.settings_account_info_container);
+            return getRootView();
+        }
+
         // User Info
         TwoLinesViewHolder vh;
-        if (account.getTypeId() != AlfrescoAccount.TYPE_ALFRESCO_CLOUD)
+        if (account != null && account.getTypeId() != AlfrescoAccount.TYPE_ALFRESCO_CLOUD)
         {
             vh = new TwoLinesViewHolder(viewById(R.id.settings_account_info));
             vh.topText.setText(R.string.settings_userinfo_account);
@@ -184,6 +191,18 @@ public class AccountSettingsFragment extends AlfrescoFragment implements EditTex
     {
         setRetainInstance(true);
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onStart()
+    {
+        super.onStart();
+        if (AlfrescoAccountManager.getInstance(getActivity()).isEmpty()
+                && AlfrescoAccountManager.getInstance(getActivity()).hasData())
+        {
+            dismiss();
+            getActivity().finish();
+        }
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -235,7 +254,7 @@ public class AccountSettingsFragment extends AlfrescoFragment implements EditTex
             viewById(R.id.settings_sync_container).setVisibility(View.VISIBLE);
             syncFavoritesVH = HolderUtils.configure(viewById(R.id.favorite_sync_wifi),
                     getString(R.string.settings_favorite_sync_data),
-                    getString(R.string.settings_favorite_sync_data_all), !syncWifiEnable);
+                    getString(R.string.settings_favorite_sync_data_all), syncWifiEnable);
 
             syncFavoritesVH.choose.setOnClickListener(new View.OnClickListener()
             {
@@ -246,6 +265,13 @@ public class AccountSettingsFragment extends AlfrescoFragment implements EditTex
                             syncFavoritesVH.choose.isChecked());
                 }
             });
+        }
+
+        SyncCellularConfigFeature feature = new SyncCellularConfigFeature(getActivity());
+        if (feature.isProtected(account))
+        {
+            syncFavoritesVH.bottomText.setText(R.string.mdm_managed);
+            syncFavoritesVH.choose.setEnabled(false);
         }
     }
 
@@ -526,6 +552,13 @@ public class AccountSettingsFragment extends AlfrescoFragment implements EditTex
         {
             ((BaseActivity) getActivity()).setCurrentAccount(account);
         }
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // CONFIG
+    // ///////////////////////////////////////////////////////////////////////////
+    private void getSyncWifi()
+    {
     }
 
     // ///////////////////////////////////////////////////////////////////////////

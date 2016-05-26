@@ -22,7 +22,7 @@
     <!-- ALFRESCO SDK MANUAL -->
     <!-- ************************** -->
     <!-- Relative Date -->
-    <string name="relative_date_just_now">hace un momento</string>
+    <string name="relative_date_just_now">en este momento</string>
     <string name="relative_date_less_than_a_minute_ago">hace menos de un minuto</string>
 
     <plurals name="relative_date_minutes_ago">
@@ -54,7 +54,7 @@
     <!-- Listing -->
     <string name="load_more">Cargar más&#8230;</string>
     <string name="load_more_progress">Carga en curso&#8230;</string>
-    <string name="listing_nodata">Sin datos.</string>
+    <string name="listing_nodata">Ningún dato.</string>
     <!-- Dialog -->
     <string name="dialog_ok">Aceptar</string>
     <string name="dialog_cancel">Cancelar</string>
@@ -64,14 +64,14 @@
     <string name="org_alfresco_blog_post_created">Entrada {0} del blog creada por {1}</string>
     <string name="org_alfresco_blog_post_updated">Entrada {0} del blog actualizada por {1}</string>
     <string name="org_alfresco_blog_post_deleted">Entrada {0} del blog eliminada por {1}</string>
-    <string name="org_alfresco_comments_comment_created">{1} ha comentado sobre {0}</string>
-    <string name="org_alfresco_comments_comment_updated">{1} ha actualizado el comentario sobre {0}</string>
-    <string name="org_alfresco_comments_comment_deleted">{1} ha eliminado el comentario de {0}</string>
+    <string name="org_alfresco_comments_comment_created">{1} comentó sobre {0}</string>
+    <string name="org_alfresco_comments_comment_updated">{1} actualizó el comentario sobre {0}</string>
+    <string name="org_alfresco_comments_comment_deleted">{1} eliminó el comentario sobre {0}</string>
     <string name="org_alfresco_discussions_post_created">{0} foro iniciado por {1}</string>
     <string name="org_alfresco_discussions_post_updated">{0} foro actualizado por {1}</string>
     <string name="org_alfresco_discussions_post_deleted">{0} foro eliminado por {1}</string>
-    <string name="org_alfresco_discussions_reply_created">{1} ha respondido al foro {0}</string>
-    <string name="org_alfresco_discussions_reply_updated">{1} ha actualizado una respuesta a {0}</string>
+    <string name="org_alfresco_discussions_reply_created">{1} respondió al foro {0}</string>
+    <string name="org_alfresco_discussions_reply_updated">{1} actualizó la respuesta a {0}</string>
     <string name="org_alfresco_calendar_event_created">Evento {0} del calendario creado por {1}</string>
     <string name="org_alfresco_calendar_event_updated">Evento {0} del calendario actualizado por {1}</string>
     <string name="org_alfresco_calendar_event_deleted">Evento {0} del calendario eliminado por {1}</string>
@@ -86,8 +86,8 @@
     <string name="org_alfresco_documentlibrary_folders_added">{0} carpetas añadidas por {1}</string>
     <string name="org_alfresco_documentlibrary_folder_deleted">{0} fue eliminado por {1}</string>
     <string name="org_alfresco_documentlibrary_folders_deleted">{0} carpetas eliminadas por {1}</string>
-    <string name="org_alfresco_documentlibrary_google_docs_checkout">Fichero {0} descargado de Google Docs por {1}</string>
-    <string name="org_alfresco_documentlibrary_google_docs_checkin">Fichero {0} cargado a Google Docs por {1}</string>
+    <string name="org_alfresco_documentlibrary_google_docs_checkout">Fichero {0} bloqueado en Google Docs por {1}</string>
+    <string name="org_alfresco_documentlibrary_google_docs_checkin">Fichero {0} desbloqueado de Google Docs por {1}</string>
     <string name="org_alfresco_documentlibrary_inline_edit">Fichero {0} editado por {1}</string>
     <string name="org_alfresco_documentlibrary_file_liked">A {1} le gusta el fichero {0}</string>
     <string name="org_alfresco_documentlibrary_folder_liked">A {1} le gusta la carpeta {0}</string>
@@ -99,7 +99,7 @@
     <string name="org_alfresco_site_group_removed">Grupo {1} eliminado del sitio {4}</string>
     <string name="org_alfresco_site_group_role_changed">Rol del grupo {1} cambiado a {2}</string>
     <string name="org_alfresco_site_user_joined">{1} se unió al sitio {4} con el rol {2}</string>
-    <string name="org_alfresco_site_user_left">{1} dejó el sitio {4}</string>
+    <string name="org_alfresco_site_user_left">{1} abandonó el sitio {4}</string>
     <string name="org_alfresco_site_user_role_changed">Rol {1} cambiado a {2}</string>
     <string name="org_alfresco_links_link_created">Enlace {0} creado por {1}</string>
     <string name="org_alfresco_links_link_updated">Enlace {0} actualizado por {1}</string>
@@ -107,11 +107,11 @@
     <string name="org_alfresco_datalists_list_created">Lista de datos {0} creada por {1}</string>
     <string name="org_alfresco_datalists_list_updated">Detalles de la lista de datos {0} actualizados por {1}</string>
     <string name="org_alfresco_datalists_list_deleted">Lista de datos {0} eliminada por {1}</string>
-    <string name="org_alfresco_subscriptions_followed">{1} ahora es seguidor de {5}</string>
+    <string name="org_alfresco_subscriptions_followed">{1} está siguiendo a {5}</string>
     <string name="org_alfresco_subscriptions_subscribed">{1} se ha suscrito a {2}</string>
     <string name="org_alfresco_profile_status_changed">{1}: {6}</string>
-    <string name="org_alfresco_documentlibrary_file_previewed">{1} documento previsualizado {0}</string>
-    <string name="org_alfresco_documentlibrary_file_downloaded">{1} documento descargado {0}</string>
+    <string name="org_alfresco_documentlibrary_file_previewed">{1} previsualizó el documento {0}</string>
+    <string name="org_alfresco_documentlibrary_file_downloaded">{1} descargó el documento {0}</string>
     <string name="activity_role_None">Ningún privilegio</string>
     <string name="activity_role_SiteConsumer">Consumidor</string>
     <string name="activity_role_SiteManager">Administrador</string>
@@ -167,7 +167,7 @@
     <string name="metadata_prop_engineer">Ingeniero</string>
     <string name="metadata_prop_genre">Género</string>
     <string name="metadata_prop_track_number">Número de pista</string>
-    <string name="metadata_prop_release_date">Fecha de lanzamiento</string>
+    <string name="metadata_prop_release_date">Fecha de publicación</string>
     <string name="metadata_prop_sample_rate">Frecuencia de muestreo</string>
     <string name="metadata_prop_sample_type">Tipo de muestreo</string>
     <string name="metadata_prop_channel_type">Tipo de canal</string>
@@ -250,7 +250,7 @@
     <string name="error_unable_open_map">No se puede abrir el mapa</string>
 
     <!-- SESSION ERROR -->
-    <string name="retry_account_loading">Intentar de nuevo</string>
+    <string name="retry_account_loading">Reintentar</string>
     <string name="error_session_creation_title">Guardar cuenta</string>
     <string name="error_session_creation_message">Error de conexión</string>
     <string name="error_session_creation">No se puede autenticar. Compruebe la configuración de su cuenta de Alfresco.</string>
@@ -316,7 +316,7 @@
     <string name="create_folder_complete">Crear carpeta completado</string>
 
     <!-- Workflow FILTERS -->
-    <string name="empty_tasks">Sin tareas</string>
+    <string name="empty_tasks">Ninguna tarea</string>
     <string name="tasks_assignee_unassigned">No asignado</string>
     <string name="task_delegate_in_progress">Reasignación en curso&#8230;</string>
     <string name="task_delegate_complete">Reasignación completada</string>

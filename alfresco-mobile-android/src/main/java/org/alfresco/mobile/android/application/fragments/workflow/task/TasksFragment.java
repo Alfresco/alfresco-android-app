@@ -23,6 +23,7 @@ import java.util.Map;
 import org.alfresco.mobile.android.api.model.Task;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.PrivateDialogActivity;
+import org.alfresco.mobile.android.application.configuration.ConfigurableActionHelper;
 import org.alfresco.mobile.android.application.configuration.model.view.TasksConfigModel;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
@@ -42,6 +43,8 @@ import org.alfresco.mobile.android.ui.utils.UIUtils;
 import org.alfresco.mobile.android.ui.workflow.task.TasksFoundationAdapter;
 import org.alfresco.mobile.android.ui.workflow.task.TasksFoundationFragment;
 
+import com.squareup.otto.Subscribe;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -55,8 +58,6 @@ import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.squareup.otto.Subscribe;
 
 public class TasksFragment extends TasksFoundationFragment
 {
@@ -139,14 +140,21 @@ public class TasksFragment extends TasksFoundationFragment
     @Override
     protected View.OnClickListener onPrepareFabClickListener()
     {
-        return new View.OnClickListener()
+        if (ConfigurableActionHelper.isVisible(getContext(), getAccount(), ConfigurableActionHelper.ACTION_NODE_REVIEW))
         {
-            @Override
-            public void onClick(View v)
+            return new View.OnClickListener()
             {
-                onOptionMenuItemSelected(R.id.menu_workflow_add);
-            }
-        };
+                @Override
+                public void onClick(View v)
+                {
+                    onOptionMenuItemSelected(R.id.menu_workflow_add);
+                }
+            };
+        }
+        else
+        {
+            return null;
+        }
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -282,6 +290,12 @@ public class TasksFragment extends TasksFoundationFragment
         {
             // Add Listing Filter as arguments for the view.
             TasksFoundationFragment.addFilter(properties, b);
+        }
+
+        public Builder retrieveFilter(Intent intent)
+        {
+            TasksFoundationFragment.addFilter(intent, extraConfiguration);
+            return this;
         }
 
         // ///////////////////////////////////////////////////////////////////////////

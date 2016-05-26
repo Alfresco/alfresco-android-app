@@ -19,6 +19,7 @@ package org.alfresco.mobile.android.api.services;
 
 import java.util.List;
 
+import org.alfresco.mobile.android.api.model.config.ActionConfig;
 import org.alfresco.mobile.android.api.model.config.ConfigInfo;
 import org.alfresco.mobile.android.api.model.config.ConfigScope;
 import org.alfresco.mobile.android.api.model.config.CreationConfig;
@@ -150,4 +151,16 @@ public interface ConfigService extends Service
 
     /** Returns the configuration for creation related features. */
     List<FeatureConfig> getFeatureConfig();
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // ACTIONS
+    /**
+     * Returns the configuration for the action with the given identifier and
+     * optionally for the given node.
+     */
+    boolean hasActionConfig();
+
+    ActionConfig getActionConfig(String actionId);
+
+    ActionConfig getActionConfig(String actionId, ConfigScope scope);
 }

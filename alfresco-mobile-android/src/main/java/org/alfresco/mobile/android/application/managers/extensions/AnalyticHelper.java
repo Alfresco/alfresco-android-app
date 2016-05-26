@@ -21,6 +21,7 @@ package org.alfresco.mobile.android.application.managers.extensions;
 import java.util.List;
 
 import org.alfresco.mobile.android.api.model.config.ProfileConfig;
+import org.alfresco.mobile.android.api.services.ConfigService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.application.fragments.preferences.PasscodePreferences;
 import org.alfresco.mobile.android.application.managers.ConfigManager;
@@ -110,11 +111,6 @@ public class AnalyticHelper extends AnalyticsHelper
             for (int i = 0; i < syncInfo.size(); i++)
             {
                 int key = syncInfo.keyAt(i);
-                if (key == AnalyticsManager.INDEX_SYNCED_FILES)
-                {
-                    customDimensions.append(AnalyticsManager.INDEX_SYNC_FILE_COUNT,
-                            getSyncFileLabel(syncInfo.get(key)));
-                }
                 customMetrics.append(key, syncInfo.get(key));
             }
 
@@ -122,7 +118,9 @@ public class AnalyticHelper extends AnalyticsHelper
             customMetrics.append(AnalyticsManager.INDEX_LOCAL_FILES, getDownloadedFilesCount(context, account));
 
             // Profiles
-            customMetrics.append(AnalyticsManager.INDEX_PROFILES, getProfilesCount(context, account));
+            Long profileCount = getProfilesCount(context, account);
+            customMetrics.append(AnalyticsManager.INDEX_PROFILES, profileCount);
+            customDimensions.append(AnalyticsManager.INDEX_PROFILE_COUNT, getProfileLabel(profileCount));
 
             AnalyticsManager.getInstance(context).reportInfo(AnalyticsManager.ACTION_INFO, customDimensions,
                     customMetrics);
@@ -141,11 +139,18 @@ public class AnalyticHelper extends AnalyticsHelper
             if (ConfigManager.getInstance(context) != null
                     && ConfigManager.getInstance(context).hasConfig(account.getId()))
             {
-                List<ProfileConfig> profileListing = ConfigManager.getInstance(context).getConfig(account.getId())
-                        .getProfiles();
-                size = profileListing.size();
-            }
 
+                ConfigService remoteConfig = ConfigManager.getInstance(context).getRemoteConfig(account.getId());
+                if (remoteConfig != null)
+                {
+                    // Number of profiles
+                    List<ProfileConfig> profileListing = ConfigManager.getInstance(context).getConfig(account.getId())
+                            .getProfiles();
+                    size = profileListing.size();
+
+                    // Profile Usage TBD
+                }
+            }
         }
         catch (Exception e)
         {
@@ -154,9 +159,30 @@ public class AnalyticHelper extends AnalyticsHelper
         return (long) size;
     }
 
+    protected static String getProfileLabel(Long valueLong)
+    {
+        if (valueLong == null) { return AnalyticsManager.INDEX_PROFILE_COUNT_0; }
+        switch (valueLong.intValue())
+        {
+            case 0:
+                return AnalyticsManager.INDEX_PROFILE_COUNT_0;
+            case 1:
+                return AnalyticsManager.INDEX_PROFILE_COUNT_1;
+            case 2:
+                return AnalyticsManager.INDEX_PROFILE_COUNT_2;
+            case 3:
+                return AnalyticsManager.INDEX_PROFILE_COUNT_3;
+            case 4:
+                return AnalyticsManager.INDEX_PROFILE_COUNT_4;
+            case 5:
+                return AnalyticsManager.INDEX_PROFILE_COUNT_5;
+            default:
+                return AnalyticsManager.INDEX_PROFILE_COUNT_5;
+        }
+    }
+
     protected static String getAccountLabel(int value)
     {
-        String label = AnalyticsManager.INDEX_ACCOUNT_COUNT_1;
         switch (value)
         {
             case 1:
@@ -169,8 +195,9 @@ public class AnalyticHelper extends AnalyticsHelper
                 return AnalyticsManager.INDEX_ACCOUNT_COUNT_4;
             case 5:
                 return AnalyticsManager.INDEX_ACCOUNT_COUNT_5;
+            default:
+                return AnalyticsManager.INDEX_ACCOUNT_COUNT_5;
         }
-        return label;
     }
 
     protected static String getSyncFileLabel(long value)

@@ -22,7 +22,7 @@
     <string name="cancel">Annulla</string>
     <string name="search">Cerca</string>
     <string name="search_hint">Immetti termine da cercare</string>
-    <string name="comment_add_hint">Immetti qui un commento...</string>
+    <string name="comment_add_hint">Digita qui il commento&#8230;</string>
     <string name="add">Aggiungi</string>
 
 
@@ -82,8 +82,8 @@
     <!-- ERROR PEN SDK -->
     <string name="error_sdk_dialog">Requisiti S Note</string>
     <string name="error_sdk_unsupported">Questo dispositivo non supporta l\'S Pen</string>
-    <string name="error_sdk_library_not_installed"><![CDATA[<p>Per utilizzare questa funzione, installare il software aggiuntivo dell\'S Pen. <br/>La schermata di installazione verrà aperta.</p> Dopo l\'installazione del software, riavviare l\'applicazione.]]></string>
-    <string name="error_sdk_library_update_required"><![CDATA[<p>Per utilizzare questa funzione, aggiornare il software dell\'S Pen. <br/>La schermata di installazione verrà aperta.</p> Dopo l\'installazione del software, riavviare l\'applicazione.]]></string>
-    <string name="error_sdk_library_update_recommended"><![CDATA[<p>Prima di utilizzare questa funzione, si consiglia di aggiornare il software dell\'S Pen. <br/>La schermata di installazione verrà aperta.</p> Dopo l\'installazione del software, riavviare l\'applicazione.]]></string>
+    <string name="error_sdk_library_not_installed"><![CDATA[<p>È necessario installare il software aggiuntivo dell\'S Pen per utilizzare questa funzione. <br/>Verrà aperta la schermata di installazione.</p> Dopo l\'installazione, riavvia l\'applicazione.]]></string>
+    <string name="error_sdk_library_update_required"><![CDATA[<p>È necessario aggiornare il software dell\'S Pen per utilizzare questa funzione. <br/>Verrà aperta la schermata di installazione.</p> Dopo l\'installazione, riavvia l\'applicazione.]]></string>
+    <string name="error_sdk_library_update_recommended"><![CDATA[<p>Si consiglia di aggiornare il software dell\'S Pen prima di utilizzare questa funzione. <br/>Verrà aperta la schermata di installazione.</p> Dopo l\'installazione, riavvia l\'applicazione.]]></string>
 
 </resources>

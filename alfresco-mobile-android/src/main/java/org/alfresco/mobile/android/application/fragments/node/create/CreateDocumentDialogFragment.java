@@ -369,7 +369,7 @@ public abstract class CreateDocumentDialogFragment extends AlfrescoFragment
         if (tv == null) { return; }
         requestInProgress = false;
         recommandedName = event.data;
-        if (!recommandedName.equals(event.originalName))
+        if (recommandedName != null && !recommandedName.equals(event.originalName))
         {
             tv.setError(getString(R.string.create_document_filename_error));
             if (getDialog() != null && getDialog() instanceof MaterialDialog)

@@ -22,7 +22,7 @@
     <string name="cancel">キャンセル</string>
     <string name="search">検索</string>
     <string name="search_hint">検索キーワードを入力してください</string>
-    <string name="comment_add_hint">ここにコメントを入力してください...</string>
+    <string name="comment_add_hint">ここにコメントを入力してください&#8230;</string>
     <string name="add">追加</string>
 
 

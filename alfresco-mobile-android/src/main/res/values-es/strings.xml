@@ -164,8 +164,7 @@
     <string name="share_content">Compartir contenido con&#8230;</string>
 
     <!-- HELP -->
-    <string name="asset_folder_prefix">es</string>
-    <string name="docs_prefix" translatable="false" />
+    <string name="docs_prefix">es</string>
 
     <!-- About Message -->
     <string name="version_number">Versión</string>
@@ -344,7 +343,7 @@
     <string name="settings_custom_menu_disable">Su administrador de Alfresco ha deshabilitado esta función.</string>
     <string name="settings.feedback">Comentarios</string>
     <string name="settings.feedback.diagnostic">Enviar diagnósticos</string>
-    <string name="settings.feedback.diagnostic.summary">Para ayudarnos a mejorar Alfresco Mobile, recopilamos datos de diagnósticos técnicos anónimos. Puede desactivar esta opción si lo prefiere.</string>
+    <string name="settings.feedback.diagnostic.summary">Para ayudarnos a mejorar Alfresco Mobile, recogemos datos de diagnóstico técnicos de forma anónima. Puede desactivar esta opción si lo prefiere.</string>
     <string name="settings.feedback.email">Enviar comentarios</string>
 
     <!-- Multi Selection -->
@@ -576,8 +575,8 @@
     <string name="activity_profile">Perfil de %s</string>
 
     <!-- Workflow -->
-    <string name="empty_tasks">Sin tareas</string>
-    <string name="empty_items">Sin adjuntos</string>
+    <string name="empty_tasks">Ninguna tarea</string>
+    <string name="empty_items">Ningún adjunto</string>
     <string name="task_items">Adjunto(s)</string>
     <string name="workflow_start">Crear tarea</string>
     <string name="task_actions">Respuesta</string>
@@ -593,7 +592,7 @@
     <string name="tasks_due_tomorrow">Mañana</string>
     <string name="tasks_due_week">Próximos 7 días</string>
     <string name="tasks_due_over">Vencido</string>
-    <string name="tasks_due_no_date">Sin fecha</string>
+    <string name="tasks_due_no_date">Ninguna fecha</string>
     <string name="tasks_priority">Prioridad</string>
     <string name="tasks_priority_low">Baja</string>
     <string name="tasks_priority_medium">Media</string>
@@ -606,9 +605,9 @@
     <!-- Tasks -->
     <string name="task_filter_view">Ver tareas</string>
     <string name="validate">Validar</string>
-    <string name="workflow_priority_low">Prioridad baja</string>
+    <string name="workflow_priority_low">Baja prioridad</string>
     <string name="workflow_priority_medium">Prioridad media</string>
-    <string name="workflow_priority_high">Prioridad alta</string>
+    <string name="workflow_priority_high">Alta prioridad</string>
     <string name="task_user_approved"><![CDATA[%s <b>aprobó el contenido</b>]]></string>
     <string name="task_user_rejected"><![CDATA[%s <b>rechazó el contenido</b>]]></string>
     <string name="task_user_commented">y comentó:</string>
@@ -633,7 +632,7 @@
     <string name="task_filter_active">Tareas activas</string>
     <string name="task_filter_initiator">Tareas que he iniciado</string>
     <string name="task_filter_completed">Tareas completadas</string>
-    <string name="task_filter_high_priority">Tareas de prioridad alta</string>
+    <string name="task_filter_high_priority">Tareas de alta prioridad</string>
     <string name="task_filter_due_today">Tareas que vencen hoy</string>
     <string name="task_filter_overdue">Tareas vencidas</string>
     <string name="task_filter_assigned_me">Tareas que se me han asignado</string>
@@ -683,14 +682,14 @@
 
 
     <!-- PROCESS NAME -->
-    <string name="process_adhoc">Flujo de trabajo adhoc</string>
-    <string name="process_parallel_review">Revisión y aprobación paralelas</string>
+    <string name="process_adhoc">Flujo de trabajo ad hoc</string>
+    <string name="process_parallel_review">Revisión y aprobación en paralelo</string>
     <string name="process_review">Revisión y aprobación</string>
     <string name="process_pooled_review">Revisión y aprobación en grupo</string>
 
     <!-- AGGREGATOR SEARCH -->
     <string name="search">Buscar</string>
-    <string name="search_person">Gente</string>
+    <string name="search_person">Personas</string>
     <string name="search_documents">Ficheros</string>
     <string name="search_folders">Carpetas</string>
     <string name="search_site">Sitio</string>

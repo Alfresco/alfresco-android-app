@@ -75,6 +75,8 @@ public abstract class AnalyticsManager extends Manager
 
     public static final String ACTION_OPEN = "Open";
 
+    public static final String ACTION_OPEN_OFFLINE = "Open Offline";
+
     public static final String ACTION_DOWNLOAD = "Download";
 
     public static final String ACTION_EDIT = "Edit";
@@ -93,6 +95,12 @@ public abstract class AnalyticsManager extends Manager
 
     public static final String ACTION_ANALYTICS = "Analytics";
 
+    public static final String ACTION_SYNC_CELLULAR = "Sync Cellular";
+
+    public static final String ACTION_DATA_PROTECTION = "Data Protection";
+
+    public static final String ACTION_PASSCODE = "Passcode";
+
     public static final String ACTION_FAVORITE = "Favorite";
 
     public static final String ACTION_UNFAVORITE = "UnFavorite";
@@ -107,7 +115,7 @@ public abstract class AnalyticsManager extends Manager
 
     public static final String ACTION_SHARE = "Share";
 
-    public static final String ACTION_SHARE_AS_LINK = "Share";
+    public static final String ACTION_SHARE_AS_LINK = "Share Link";
 
     public static final String ACTION_MEMBERSHIP = "Membership";
 
@@ -134,6 +142,10 @@ public abstract class AnalyticsManager extends Manager
     public static final String ACTION_START_REVIEW = "Send for Review";
 
     public static final String ACTION_COMPLETE_TASK = "Complete";
+
+    public static final String ACTION_GRANT_PERMISSION = "Grant Permission";
+
+    public static final String ACTION_DENY_PERMISSION = "Deny Permission";
 
     ///////////////////////////////////////////////////////////
     // EVENTS : LABELS
@@ -170,6 +182,8 @@ public abstract class AnalyticsManager extends Manager
 
     public static final String LABEL_DISABLE = "Disable";
 
+    public static final String LABEL_ENABLE_BY_CONFIG = "Enable By Config";
+
     public static final String LABEL_DISABLE_BY_CONFIG = "Disable By Config";
 
     public static final String LABEL_JOIN = "Join";
@@ -189,6 +203,34 @@ public abstract class AnalyticsManager extends Manager
     public static final String LABEL_SITES = "Sites";
 
     public static final String LABEL_PEOPLE = "People";
+
+    public static final String LABEL_STORAGE = "Storage";
+
+    public static final String LABEL_ADD = "Add";
+
+    // Default
+    public static final String LABEL_SYNC_SYSTEM = "System";
+
+    // After network reconnection if there's pending sync
+    public static final String LABEL_SYNC_NETWORK = "Network";
+
+    // After session creation (start of the app)
+    public static final String LABEL_SYNC_SESSION_LOADED = "Session";
+
+    // After 60 min if the session is still active
+    public static final String LABEL_SYNC_CRON = "Cron";
+
+    // After a node has been synced
+    public static final String LABEL_SYNC_ACTION = "Sync Action";
+
+    // After a sync node has been edited
+    public static final String LABEL_SYNC_SAVE_BACK = "Save Back";
+
+    // Pull to refresh on sync screen
+    public static final String LABEL_SYNC_REFRESH = "Refresh";
+
+    // From the SAF
+    public static final String LABEL_SYNC_DOC_PROVIDER = "Doc Provider";
 
     ///////////////////////////////////////////////////////////
     // CUSTOM DIMENSIONS
@@ -239,6 +281,20 @@ public abstract class AnalyticsManager extends Manager
     public static final String INDEX_ACCOUNT_COUNT_4 = "4";
 
     public static final String INDEX_ACCOUNT_COUNT_5 = "5+";
+
+    public static final int INDEX_PROFILE_COUNT = 4;
+
+    public static final String INDEX_PROFILE_COUNT_0 = "0";
+
+    public static final String INDEX_PROFILE_COUNT_1 = "1";
+
+    public static final String INDEX_PROFILE_COUNT_2 = "2";
+
+    public static final String INDEX_PROFILE_COUNT_3 = "3";
+
+    public static final String INDEX_PROFILE_COUNT_4 = "4";
+
+    public static final String INDEX_PROFILE_COUNT_5 = "5+";
 
     ///////////////////////////////////////////////////////////
     // CUSTOM METRICS
@@ -468,6 +524,10 @@ public abstract class AnalyticsManager extends Manager
     public static final String SCREEN_TEXT_EDITOR_ENCODING = "Text Editor - Encoding";
 
     public static final String SCREEN_TEXT_EDITOR_TEXT_SIZE = "Text Editor - Text Size";
+
+    public static final String PREFIX_ACCOUNTS = "Accounts - ";
+
+    public static final String SCREEN_ACCOUNTS_LISTING = PREFIX_ACCOUNTS + "Listing";
 
     // ////////////////////////////////////////////////////
     // SETTINGS

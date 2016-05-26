@@ -28,6 +28,7 @@ import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.SessionManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.extensions.AnalyticsHelper;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.sync.operations.SyncContent;
 import org.alfresco.mobile.android.sync.prepare.PrepareSyncHelper;
 
@@ -60,6 +61,8 @@ public class SyncContentSyncAdapter extends AbstractThreadedSyncAdapter
     private Node node;
 
     private String nodeIdentifier;
+
+    private String analyticInfo;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTOR
@@ -121,6 +124,15 @@ public class SyncContentSyncAdapter extends AbstractThreadedSyncAdapter
                 else
                 {
                     nodeIdentifier = null;
+                }
+
+                if (extras.containsKey(SyncContentManager.ARGUMENT_ANALYTIC))
+                {
+                    analyticInfo = extras.getString(SyncContentManager.ARGUMENT_ANALYTIC);
+                }
+                else
+                {
+                    analyticInfo = AnalyticsManager.LABEL_SYNC_SYSTEM;
                 }
             }
 
@@ -237,7 +249,7 @@ public class SyncContentSyncAdapter extends AbstractThreadedSyncAdapter
 
             if (node == null && nodeIdentifier == null)
             {
-                AnalyticsHelper.analyzeSync(getContext(), acc);
+                AnalyticsHelper.analyzeSync(getContext(), acc, analyticInfo);
             }
 
             Log.d("SYNC", "Total:" + syncResult.stats.numEntries);

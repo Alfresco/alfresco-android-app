@@ -114,7 +114,7 @@
     <string name="menu_search">Cerca</string>
     <string name="menu_downloads">Download</string>
     <string name="menu_local_files">File locali</string>
-    <string name="menu_about">Informazioni su</string>
+    <string name="menu_about">Informazioni</string>
     <string name="menu_settings">Impostazioni</string>
     <string name="menu_accounts">Account</string>
     <string name="menu_view">Viste</string>
@@ -157,15 +157,14 @@
     <string name="error_unable_open_file">Formato file non supportato. È necessario installare un\'applicazione in grado di leggere il formato.</string>
 
     <!-- OTHER -->
-    <string name="unlike">Non mi piace più</string>
-    <string name="error_retrieve_likes">Impossibile recuperare il tag Mi piace/Non mi piace più per questo contenuto.</string>
+    <string name="unlike">Non mi piace</string>
+    <string name="error_retrieve_likes">Impossibile recuperare il tag Mi piace/Non mi piace per questo contenuto.</string>
     <string name="next">Continua</string>
     <string name="save">Salva</string>
     <string name="share_content">Condividi contenuto con&#8230;</string>
 
     <!-- HELP -->
-    <string name="asset_folder_prefix">it</string>
-    <string name="docs_prefix" translatable="false" />
+    <string name="docs_prefix">it</string>
 
     <!-- About Message -->
     <string name="version_number">Versione</string>
@@ -173,9 +172,9 @@
     <string name="sdknumber_version">SDK: </string>
     <string name="about_description">
 <![CDATA[
-<p>Alfresco Mobile si connette ad Alfresco in the Cloud e on premise (v3.4 e successive) per garantire un accesso sicuro ai contenuti aziendali sempre e ovunque. </p>
+<p>Alfresco Mobile si connette ad Alfresco in the Cloud e on premise (v. 3.4 e successive) per garantire un accesso sicuro ai contenuti aziendali sempre e ovunque. </p>
 
-<p>Alfresco Mobile si connette al repository Alfresco con le credenziali di accesso ad Alfresco (su HTTP o HTTPS) e gestisce l\'accesso degli utenti in base ai permessi utente.</p>
+<p>Alfresco Mobile si connette al repository Alfresco tramite le credenziali di accesso di Alfresco (su HTTP o HTTPS) e gestisce gli accessi in base ai permessi degli utenti.</p>
 ]]>
     </string>
 
@@ -209,14 +208,14 @@
     <string name="open_play_store">Apri Google Play Store</string>
     <string name="create_document">Crea&#8230;</string>
     <string name="create_document_title">Crea&#8230;</string>
-    <string name="create_document_name_hint">Immetti qui il nome del file</string>
+    <string name="create_document_name_hint">Digita qui il nome del file</string>
     <string name="create_document_filename_error">Nome già utilizzato.</string>
     <string name="create_document_editor_title">Completa azione con</string>
     <string name="create_document_editor_not_available">Nessuna applicazione disponibile</string>
-    <string name="create_document_editor_not_available_description">Non si dispone di un\'applicazione per creare questo tipo di file.</string>
+    <string name="create_document_editor_not_available_description">Non hai un\'applicazione per creare questo tipo di file.</string>
     <string name="preview_unavailable">Anteprima non disponibile.</string>
     <string name="sdinaccessible">La scheda SD deve essere accessibile per l\'operazione</string>
-    <string name="loginfirst">Accedere prima all\'account Alfresco</string>
+    <string name="loginfirst">Accedi prima all\'account Alfresco</string>
 
     <!-- Comment -->
     <string name="comment_add_hint">Aggiungi qui un commento&#8230;</string>
@@ -235,28 +234,28 @@
     <!-- OPEN AS.. -->
     <string name="open_as_title">Apri come&#8230;</string>
     <string name="open_as_image">Immagine</string>
-    <string name="open_as_audio">File audio</string>
-    <string name="open_as_video">File video</string>
+    <string name="open_as_audio">Audio</string>
+    <string name="open_as_video">Video</string>
     <string name="open_as_txt">Documento di testo</string>
 
     <!-- SITES ACTION -->
     <string name="sites_empty_title">Nessun sito trovato</string>
     <string name="action_join_site">Partecipa</string>
-    <string name="action_join_request_site">Richiedi partecipazione</string>
+    <string name="action_join_request_site">Posso partecipare?</string>
     <string name="action_leave_site">Abbandona</string>
     <string name="action_favorite_site">Preferito</string>
     <string name="action_unfavorite_site">Rimuovi dai preferiti</string>
     <string name="action_join_site_validation">Ora sei membro di \"%s\".</string>
     <string name="action_leave_site_validation">Hai abbandonato \"%s\".</string>
-    <string name="action_favorite_site_validation">\"%s\" è ora un preferito.</string>
+    <string name="action_favorite_site_validation">\"%s\" è stato aggiunto ai preferiti.</string>
     <string name="action_unfavorite_site_validation">\"%s\" è stato rimosso dai preferiti.</string>
-    <string name="action_join_request_site_validation">Hai richiesto la partecipazione a \"%s\"</string>
+    <string name="action_join_request_site_validation">Hai richiesto di partecipare a \"%s\"</string>
     <string name="joinsiterequest_list_title">Elenco di richieste in sospeso</string>
-    <string name="joinsiterequest_cancel_description">Annulla la richiesta di partecipazione al sito %s</string>
-    <string name="action_cancel_join_site_request">La richiesta di partecipazione a \"%s\" è stata annullata.</string>
+    <string name="joinsiterequest_cancel_description">Annulla la richiesta di partecipare al sito %s</string>
+    <string name="action_cancel_join_site_request">La richiesta di partecipare a \"%s\" è stata annullata.</string>
     <string name="action_join_site_error">Impossibile partecipare al sito \"%s\" a causa di un problema.</string>
     <string name="action_leave_site_error">Impossibile abbandonare il sito \"%s\" a causa di un problema.</string>
-    <string name="action_favorite_error">Impossibile inserire il sito \"%s\" tra i preferiti a causa di un problema.</string>
+    <string name="action_favorite_error">Impossibile aggiungere il sito \"%s\" ai preferiti a causa di un problema.</string>
     <string name="action_unfavorite_site_error">Impossibile rimuovere il sito \"%s\" dai preferiti a causa di un problema.</string>
 
     <!-- IMPORT -->
@@ -285,9 +284,9 @@
     <string name="passcode_timeout">Scadenza</string>
     <string name="passcode_timeout_summary">{0,choice,0#Dopo 0 minuti|1#Dopo 1 minuto|1&lt;Dopo {0} minuti}</string>
     <string name="passcode_erase_data">Cancella dati</string>
-    <string name="passcode_erase_data_summary">Cancella tutti i dati di Alfresco Mobile da questo dispositivo dopo 10 tentativi non riusciti di immissione del passcode.</string>
+    <string name="passcode_erase_data_summary">Cancella tutti i dati di Alfresco Mobile dal dispositivo dopo 10 tentativi non riusciti di immissione del passcode.</string>
     <string name="passcode_edit">Immetti nuovo passcode</string>
-    <string name="passcode_confirmation">Immetti nuovamente il passcode</string>
+    <string name="passcode_confirmation">Immetti di nuovo il passcode</string>
     <string name="passcode_error_confirmation">I passcode non corrispondono.</string>
     <string name="passcode_unknown">Passcode errato.</string>
     <string name="passcode_erase_data_complete">Tutti i dati locali sono stati cancellati.</string>
@@ -319,7 +318,7 @@
     <!-- Settings -->
     <string name="settings">Impostazioni</string>
     <string name="settings_enterprise">Impostazioni Enterprise</string>
-    <string name="settings_privatefolder_summary">La protezione dati rende l\'intero contenuto scaricato leggibile solo dall\'applicazione Alfresco. (solo clienti Enterprise)</string>
+    <string name="settings_privatefolder_summary">La protezione dati rende l\'intero contenuto scaricato leggibile solo dall\'applicazione Alfresco (solo Enterprise)</string>
     <string name="settings_privatefolder_title">Protezione dati</string>
     <string name="settings_links">Link</string>
     <string name="settings_links_website">Alfresco</string>
@@ -344,7 +343,7 @@
     <string name="settings_custom_menu_disable">Funzione disabilitata dall\'amministratore Alfresco.</string>
     <string name="settings.feedback">Commenti</string>
     <string name="settings.feedback.diagnostic">Invia diagnostica</string>
-    <string name="settings.feedback.diagnostic.summary">Al fine di migliorare Alfresco Mobile, vengono raccolti dati tecnici anonimi relativi alla diagnostica. Disattiva l\'opzione, se lo preferisci.</string>
+    <string name="settings.feedback.diagnostic.summary">Al fine di migliorare Alfresco Mobile, raccogliamo dati tecnici di diagnostica in modo anonimo. L\'opzione può essere disattivata.</string>
     <string name="settings.feedback.email">Invia commenti</string>
 
     <!-- Multi Selection -->
@@ -377,9 +376,9 @@
     <string name="favorites_deactivate">Disattiva sincronizzazione</string>
     <string name="favorites_deactivate_description"><![CDATA[<p>Disattivare la sincronizzazione?</p> Tutti i contenuti sincronizzati saranno rimossi dal dispositivo.]]></string>
     <string name="sync_error_title">Errori di sincronizzazione</string>
-    <string name="sync_error_node_unfavorited"><![CDATA[<p>Il contenuto è stato desincronizzato<b>%s</b> perché modificato. <br/> <b>Sincronizzare</b> la versione modificata con il server o <b>salvarla</b> nella cartella \"Download\". </p>]]></string>
+    <string name="sync_error_node_unfavorited"><![CDATA[<p>Il contenuto è stato desincronizzato<b>%s</b> perché modificato. <br/> <b>Sincronizza</b> la versione modificata con il server o <b>salvala</b> nella cartella \"Download\". </p>]]></string>
     <string name="sync_error_node_deleted"><![CDATA[<p> <b>%s</b> è stato cancellato dal server, ma una copia è stata salvata nella cartella \"Download\".</p>]]></string>
-    <string name="sync_error_no_permission"><![CDATA[<p> Non si dispone dei permessi necessari per caricare la versione modificata di <b>%s</b>. È possibile <b>salvarla</b> nella cartella \"Download\", oppure <b>sovrascriverla</b> con la versione presente sul server, che annullerà le modifiche.]]></string>
+    <string name="sync_error_no_permission"><![CDATA[<p> Non hai i permessi necessari per caricare la versione modificata di <b>%s</b>. Puoi <b>salvarla</b> nella cartella \"Download\" o <b>sovrascriverla</b> con la versione presente sul server, che annullerà le modifiche.]]></string>
     <string name="sync_error_node_local_modification">Errori di sincronizzazione</string>
     <string name="sync_action">Sincronizza</string>
     <string name="sync_override_action">Sovrascrivi</string>
@@ -396,20 +395,20 @@
     <string name="unsync">Desincronizza</string>
     <string name="sync_favorites">Preferiti</string>
     <string name="sync_empty_title">Mantieni file sincronizzati</string>
-    <string name="sync_empty_description">Sarà possibile visualizzare e modificare i file sincronizzati anche offline.</string>
+    <string name="sync_empty_description">Per visualizzare e modificare i file sincronizzati anche offline.</string>
 
     <string name="sync_info_one_title">La sincronizzazione è stata migliorata!</string>
-    <string name="sync_info_one_first_text">È ora possibile sincronizzare diversi file su diversi dispositivi. È sufficiente trovare un file e sincronizzarlo!</string>
-    <string name="sync_info_one_second_text">È possibile visualizzare e modificare i file sincronizzati anche offline. Quando si è di nuovo online, i file verranno sincronizzati automaticamente con Alfresco.</string>
-    <string name="sync_info_two_title">E per i file già contrassegnati come preferiti?</string>
+    <string name="sync_info_one_first_text">Ora puoi  sincronizzare diversi file su diversi dispositivi. È sufficiente trovare un file e sincronizzarlo!</string>
+    <string name="sync_info_one_second_text">Puoi visualizzare e modificare i file sincronizzati anche offline. Quando sei di nuovo online, i file verranno sincronizzati automaticamente con Alfresco.</string>
+    <string name="sync_info_two_title">E per i file già aggiunti ai preferiti?</string>
     <string name="sync_info_two_first_text">Nessun problema, tutti i file continuano a essere sincronizzati!</string>
-    <string name="sync_info_two_second_text">Se d\'ora in poi si contrassegnano file come preferiti, verranno inseriti nella scheda Preferiti, ma sarà necessario sincronizzarli per aprirli offline.</string>
+    <string name="sync_info_two_second_text">Se d\'ora in poi aggiungi dei file ai preferiti, verranno inseriti nella scheda Preferiti, ma dovrai sincronizzarli per aprirli offline.</string>
     <string name="sync_info_third_title">Dove si trovano i file sincronizzati?</string>
     <string name="sync_info_third_first_text">Tutti i file sincronizzati si trovano nella nuova vista Contenuti sincronizzati.</string>
     <string name="sync_info_third_second_text">Contenuti sincronizzati</string>
     <string name="sync_info_validation">OK, chiaro.</string>
     <string name="sync_info_more_information">Maggiori informazioni</string>
-    <string name="sync_info_skip">Salta</string>
+    <string name="sync_info_skip">Ignora</string>
     <string name="sync_info_next">Continua</string>
 
 
@@ -451,9 +450,9 @@
 
     <string name="sync_warning">Avviso di sincronizzazione</string>
     <string name="sync_error">Errore di sincronizzazione</string>
-    <string name="sync_warning_mobile_data"><![CDATA[<p> Si sta per eseguire la sincronizzazione di <b>%s</b> su una connessione portante.</p> Continuare?]]></string>
-    <string name="sync_error_storage"><![CDATA[<p> Si sta tentando di sincronizzare <b>%1$s</b>, ma sono disponibili solo %2$s.</p> Liberare un po\' di spazio sul dispositivo o rimuovere alcuni contenuti dai preferiti.]]></string>
-    <string name="sync_warning_storage"><![CDATA[<p> Si sta per eseguire la sincronizzazione di <b>%1$s</b>, ma sul dispositivo rimane soltanto %2$s.</p> Continuare?]]></string>
+    <string name="sync_warning_mobile_data"><![CDATA[<p> Stai per sincronizzare <b>%s</b> su una connessione portante.</p> Continuare?]]></string>
+    <string name="sync_error_storage"><![CDATA[<p> Stai tentando di sincronizzare <b>%1$s</b>, ma sono disponibili solo %2$s.</p> Libera spazio sul dispositivo o rimuovi alcuni contenuti dai preferiti.]]></string>
+    <string name="sync_warning_storage"><![CDATA[<p> Stai per sincronizzare <b>%1$s</b>, ma sul dispositivo rimangono solo %2$s.</p> Continuare?]]></string>
     <string name="sync_document_not_available">Questo documento non è disponibile sul dispositivo.</string>
 
     <!-- Handling duplicate name -->
@@ -539,7 +538,7 @@
     <string name="jobTitle">Professione</string>
     <string name="location">Luogo</string>
     <string name="summary">Riepilogo</string>
-    <string name="contactInformation">Informazioni di contatto</string>
+    <string name="contactInformation">Contatti</string>
     <string name="email">E-mail</string>
     <string name="telephone">Telefono</string>
     <string name="mobile">Cellulare</string>
@@ -555,7 +554,7 @@
     <string name="companyTelephone">Telefono</string>
     <string name="companyFax">Fax</string>
     <string name="companyEmail">E-mail</string>
-    <string name="call">Chiama</string>
+    <string name="call">Chiamata</string>
     <string name="skype">Skype</string>
     <string name="start_chat">Avvia chat</string>
     <string name="start_call">Avvia telefonata</string>
@@ -647,7 +646,7 @@
     <string name="process_start_title">Avvia processo</string>
     <string name="process_title">Titolo</string>
     <string name="process_title_hint">Titolo del nuovo compito (obbligatorio)</string>
-    <string name="process_due_on">Scade il</string>
+    <string name="process_due_on">Scadenza</string>
     <string name="process_assignees">Assegnatari</string>
     <string name="process_diagram">Diagramma del processo</string>
     <string name="task_review_document">Esaminare %s</string>
@@ -670,7 +669,7 @@
     <string name="process_starting">Avvio del processo</string>
     <string name="task_create">Crea compito</string>
     <string name="task_todo">Da fare</string>
-    <string name="task_todo_description">Assegna compito a una persona</string>
+    <string name="task_todo_description">Assegna un compito a una persona</string>
     <string name="task_review_approve">Esamina e approva</string>
     <string name="task_review_approve_description">Assegna un compito a una o più persone per l\'esame e l\'approvazione di contenuti.</string>
     <string name="task_delegate_in_progress">Riassegnazione in corso&#8230;</string>
@@ -684,9 +683,9 @@
 
     <!-- PROCESS NAME -->
     <string name="process_adhoc">Workflow ad hoc</string>
-    <string name="process_parallel_review">Esame e approvazione in parallelo</string>
-    <string name="process_review">Esame e approvazione</string>
-    <string name="process_pooled_review">Esame e approvazione in pool</string>
+    <string name="process_parallel_review">Esamina e approva in parallelo</string>
+    <string name="process_review">Esamina e approva</string>
+    <string name="process_pooled_review">Esamina e approva in pool</string>
 
     <!-- AGGREGATOR SEARCH -->
     <string name="search">Cerca</string>
@@ -726,7 +725,7 @@
     <string name="mimetype_videos">Video</string>
     <string name="mimetype_music">Musica</string>
     <string name="mimetype_text">Testo</string>
-    <string name="error_search_fields_empty">Compilare almeno un campo</string>
+    <string name="error_search_fields_empty">Compila almeno un campo</string>
     <string name="picker_user">Seleziona una persona</string>
     <string name="picker_date_from">Seleziona una data da</string>
     <string name="picker_date_to">Seleziona una data a</string>
@@ -779,13 +778,13 @@
     <string name="mdm_managed">Gestito dall\'amministratore</string>
     <string name="mdm_loading_configuration">Caricamento configurazione...</string>
     <string name="sign_in">Accedi</string>
-    <string name="error_mdm_loading_configuration"><![CDATA[<p><b>La configurazione dell\'applicazione è errata.</b><br/> Se il problema persiste, contattare l\'amministratore.</p> <br/> Errore: %s]]></string>
+    <string name="error_mdm_loading_configuration"><![CDATA[<p><b>La configurazione dell\'applicazione è errata.</b><br/> Se il problema persiste, contatta l\'amministratore.</p> <br/> Errore: %s]]></string>
     <string name="discardbutton">Elimina</string>
     <string name="filename_error_character">Nome file non valido</string>
     <string name="my_tasks">I miei compiti</string>
     <string name="waiting_operations">Attendere</string>
     <string name="shortcut_alfresco">Alfresco</string>
-    <string name="error_offline"><![CDATA[<p><b>Impossibile accedere alla sezione Aiuto di Alfresco Mobile perché si è offline.</b><br/></p> Riprovare quando si è di nuovo online.]]></string>
+    <string name="error_offline"><![CDATA[<p><b>Impossibile accedere alla sezione Aiuto di Alfresco Mobile perché sei offline.</b><br/></p> Riprova quando sei di nuovo online.]]></string>
     <string name="feature_disable">Questa funzione non è supportata o è stata disabilitata sul dispositivo.</string>
 
     <!-- ANDROID FOR WORK -->
@@ -809,17 +808,17 @@
     <string name="nodebrowser_empty_rw_title">@string/nodebrowser_empty_ro_title</string>
     <string name="nodebrowser_empty_rw_description">Utilizza + per aggiungere file alla cartella.</string>
     <string name="favorites_empty_title">Nessun preferito trovato</string>
-    <string name="favorites_empty_description">È possibile inserire file e cartelle tra i preferiti per accedervi rapidamente.</string>
+    <string name="favorites_empty_description">È possibile aggiungere file e cartelle ai preferiti per accedervi rapidamente.</string>
     <string name="sites_my_empty_title">Non hai ancora aderito a nessun sito</string>
-    <string name="sites_my_empty_description">Apri Ricerca sito per trovare nuovi siti a cui è possibile aderire.</string>
+    <string name="sites_my_empty_description">Apri Ricerca sito per trovare nuovi siti a cui puoi partecipare.</string>
     <string name="sites_favorites_empty_title">Nessun preferito trovato</string>
-    <string name="sites_favorites_empty_description">È possibile inserire i siti tra i preferiti per accedervi rapidamente.</string>
+    <string name="sites_favorites_empty_description">È possibile aggiungere siti ai preferiti per accedervi rapidamente.</string>
     <string name="sites_search_empty_title">Nessun sito trovato</string>
     <string name="sites_search_empty_description">Prova a utilizzare un termine di ricerca diverso.</string>
     <string name="tasks_list_empty_title">In questo momento non hai alcun compito</string>
     <string name="tasks_list_empty_description">Crea un compito da assegnare a te stesso o a qualcun altro.</string>
     <string name="activities_list_empty_title">Non ci sono attività da mostrare</string>
-    <string name="activities_list_empty_description">È possibile aderire a nuovi siti Alfresco per consultare le attività dei colleghi.</string>
+    <string name="activities_list_empty_description">È possibile aderire a nuovi siti Alfresco per visualizzare le attività dei colleghi.</string>
     <string name="node_search_empty_title">Nessun risultato trovato</string>
     <string name="node_search_empty_description">Prova a utilizzare un termine di ricerca diverso.</string>
     <string name="people_search_empty_title">Nessun utente trovato</string>
@@ -827,7 +826,7 @@
 
 
     <string name="empty_site">Nessun sito disponibile</string>
-    <string name="empty_version">Nessuna cronologia delle versioni disponibile</string>
+    <string name="empty_version">Nessuna cronologia versioni disponibile</string>
     <string name="empty_session">Nessuna sessione disponibile</string>
     <string name="empty_actvity">Nessuna attività trovata</string>
     <string name="empty_tag">Nessun tag trovato</string>
@@ -902,9 +901,9 @@
     <string name="form_message_unsupported_field_summary">Trasformazione non supportata</string>
     <string name="form_message_unsupported_field">Questo tipo di campo di input non è supportato sul dispositivo mobile</string>
     <string name="form_message_unsupported_title">Modulo non supportato</string>
-    <string name="form_message_unsupported_description"><![CDATA[<p>Questo modulo contiene uno o più campi obbligatori che non sono attualmente supportati sui dispositivi mobili.</p> Utilizzare l\'app web per questa operazione.]]></string>
+    <string name="form_message_unsupported_description"><![CDATA[<p>Questo modulo contiene uno o più campi obbligatori che non sono attualmente supportati sui dispositivi mobili.</p> Utilizza l\'app web per questa operazione.]]></string>
     <string name="form_message_link_error_title">Link non supportato</string>
-    <string name="form_message_link_error"><![CDATA[<p>Questi contenuti non provengono da una fonte supportata.</p> Selezionare altri contenuti.]]></string>
+    <string name="form_message_link_error"><![CDATA[<p>Questi contenuti non provengono da una fonte supportata.</p> Seleziona altri contenuti.]]></string>
 
 
 </resources>

@@ -32,6 +32,8 @@ import org.alfresco.mobile.android.ui.ListingModeFragment;
 import org.alfresco.mobile.android.ui.RefreshFragment;
 import org.alfresco.mobile.android.ui.template.ListingTemplate;
 
+import com.github.clans.fab.FloatingActionButton;
+
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -48,8 +50,6 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.github.clans.fab.FloatingActionButton;
 
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
@@ -413,6 +413,7 @@ public abstract class CommonGridFragment extends AlfrescoFragment
     {
         if (!isVisible()) { return; }
         gv.setEmptyView(ev);
+        pb.setVisibility(View.GONE);
         isFullLoad = Boolean.TRUE;
         if (adapter != null)
         {

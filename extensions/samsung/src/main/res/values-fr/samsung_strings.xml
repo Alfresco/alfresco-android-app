@@ -72,7 +72,7 @@
     <string name="editor_save_request">Le S Note a été modifié.</string>
     <string name="editor_save_description"><![CDATA[Voulez-vous quitter sans enregistrer ? <br/> Toutes vos modifications non enregistrées seront perdues.]]></string>
     <string name="editor_save">Enregistrer</string>
-    <string name="editor_discard">Ignorer</string>
+    <string name="editor_discard">Annuler</string>
     <string name="editor_save_confirmation">S Note a été enregistré.</string>
     <string name="editor_paging">Page %1$s/%2$s</string>
 
