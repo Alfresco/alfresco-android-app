@@ -58,6 +58,8 @@ import org.alfresco.mobile.android.ui.holder.TwoLinesCheckboxViewHolder;
 import org.alfresco.mobile.android.ui.holder.TwoLinesViewHolder;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Intent;
@@ -74,8 +76,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
-import com.afollestad.materialdialogs.MaterialDialog;
 
 /**
  * Manage global application preferences.
@@ -191,6 +191,18 @@ public class AccountSettingsFragment extends AlfrescoFragment implements EditTex
     {
         setRetainInstance(true);
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onStart()
+    {
+        super.onStart();
+        if (AlfrescoAccountManager.getInstance(getActivity()).isEmpty()
+                && AlfrescoAccountManager.getInstance(getActivity()).hasData())
+        {
+            dismiss();
+            getActivity().finish();
+        }
     }
 
     // ///////////////////////////////////////////////////////////////////////////

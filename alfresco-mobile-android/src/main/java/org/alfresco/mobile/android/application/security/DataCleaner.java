@@ -80,6 +80,7 @@ public class DataCleaner extends AsyncTask<String, Integer, Boolean>
 
             // Delete loaded accounts
             SessionManager.getInstance(activityRef.get()).shutdown();
+            AlfrescoAccountManager.getInstance(activityRef.get()).shutdown();
 
             // Find folders
             File cache = activityRef.get().getCacheDir();
