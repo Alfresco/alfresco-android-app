@@ -461,6 +461,7 @@ public class PassCodeDialogFragment extends DialogFragment
         if (maxAttempts > 0 && attempts >= maxAttempts)
         {
             WaitingDialogFragment fr = new WaitingDialogFragment();
+            fr.setCancelable(false);
             fr.show(getActivity().getSupportFragmentManager(), WaitingDialogFragment.TAG);
 
             DataCleaner cleaner = new DataCleaner(getActivity());

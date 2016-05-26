@@ -361,10 +361,13 @@ public class MainActivity extends BaseActivity
                 ((MainMenuFragment) getFragment(MainMenuFragment.TAG)).refreshAccount();
                 ((MainMenuFragment) getFragment(MainMenuFragment.SLIDING_TAG)).refreshAccount();
 
-                // Send Event
-                // ConfigManager.getInstance(this).loadAndUseCustom(getCurrentAccount());
-                EventBusManager.getInstance()
-                        .post(new ConfigManager.ConfigurationMenuEvent(getCurrentAccount().getId()));
+                if (getCurrentAccount() != null)
+                {
+                    // Send Event
+                    // ConfigManager.getInstance(this).loadAndUseCustom(getCurrentAccount());
+                    EventBusManager.getInstance()
+                            .post(new ConfigManager.ConfigurationMenuEvent(getCurrentAccount().getId()));
+                }
             }
         }
 

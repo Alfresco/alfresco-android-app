@@ -21,6 +21,7 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.configuration.features.PasscodeConfigFeature;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.preferences.PasscodePreferences;
+import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -55,6 +56,16 @@ public class PassCodeActivity extends FragmentActivity
                 f = PassCodeDialogFragment.requestPasscode();
             }
             FragmentDisplayer.with(this).load(f).back(false).animate(null).into(FragmentDisplayer.PANEL_LEFT);
+        }
+    }
+
+    @Override
+    protected void onStart()
+    {
+        super.onStart();
+        if (AlfrescoAccountManager.getInstance(this).isEmpty() && AlfrescoAccountManager.getInstance(this).hasData())
+        {
+            finish();
         }
     }
 
