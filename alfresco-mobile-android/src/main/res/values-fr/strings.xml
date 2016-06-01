@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+﻿<?xml version="1.0" encoding="utf-8"?><!--
   Copyright (C) 2005-2016 Alfresco Software Limited.
 
   This file is part of Alfresco Mobile for Android.
@@ -164,7 +164,7 @@
     <string name="share_content">Partager le contenu avec&#8230;</string>
 
     <!-- HELP -->
-    <string name="docs_prefix">fr</string>
+    <string name="docs_prefix" translatable="false" />
 
     <!-- About Message -->
     <string name="version_number">Version</string>
@@ -276,6 +276,7 @@
 
     <!-- PIN Code -->
     <string name="passcode_title">Entrer le code d\'accès</string>
+    <string name="passcode_admin_title">Votre administrateur Alfresco vous demande de protéger par un code d\'accès Alfresco Mobile.</string>
     <string name="passcode_enable_title">Activer le code d\'accès</string>
     <string name="passcode_preference">Protection par code d\'accès</string>
     <string name="passcode_enable">Activé</string>
@@ -833,6 +834,18 @@
     <string name="empty_comment">Aucun commentaire trouvé</string>
     <string name="empty_search">Aucun fichier trouvé</string>
     <string name="action_sign_in_short">Connexion</string>
+    <string name="node.details.file.not.found">Aucun fichier trouvé</string>
+    <string name="node.browser.folder.not.found">Aucun dossier trouvé</string>
+    <string name="user.details.user.not.found">Aucun utilisateur trouvé</string>
+    <string name="public.url.wrong.format">Lien non reconnu. Contactez votre administrateur Alfresco</string>
+    <string name="public.url.tasks.missing.filter">Informations de filtre manquantes. Contactez votre administrateur Alfresco</string>
+    <string name="public.url.file.missing.id">Informations d\'ID manquantes. Contactez votre administrateur Alfresco</string>
+    <string name="public.url.noderef.format">Informations NodeRef incorrectes. Contactez votre administrateur Alfresco</string>
+
+
+    <!-- ACCOUNTS SELECTION -->
+    <string name="accounts.title.select">Sélectionner un compte</string>
+    <string name="accounts.not.found">Aucun compte trouvé. Ajoutez-en un.</string>
 
 
     <!-- DATA PROTECTION -->
@@ -904,6 +917,9 @@
     <string name="form_message_unsupported_description"><![CDATA[<p>Ce formulaire contient un ou plusieurs champs obligatoires non pris en charge actuellement sur les appareils mobiles.</p> Veuillez utiliser l\'application Web pour effectuer cette étape.]]></string>
     <string name="form_message_link_error_title">Lien non pris en charge</string>
     <string name="form_message_link_error"><![CDATA[<p>Ce contenu ne provient pas d\'une source de contenu prise en charge.</p> Veuillez en sélectionner un autre.]]></string>
+
+
+    <string name="open_in_alfresco_editor">Ouvrir dans l\'Éditeur de texte Alfresco</string>
 
 
 </resources>

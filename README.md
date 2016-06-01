@@ -47,7 +47,7 @@ Before your code can be accepted into the project you must also sign the Individ
 
     Alfresco Mobile for Android 1.7
 
-    Copyright © 2015 Alfresco Software, Ltd. and others.
+    Copyright © 2016 Alfresco Software, Ltd. and others.
 
     This product distribution is made available under the [Apache 2.0 license](http://www.apache.org/licenses/LICENSE-2.0.html).
 
