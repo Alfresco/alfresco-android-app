@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+﻿<?xml version="1.0" encoding="utf-8"?><!--
   Copyright (C) 2005-2016 Alfresco Software Limited.
 
   This file is part of Alfresco Mobile for Android.
@@ -164,7 +164,7 @@
     <string name="share_content">与&#8230;共享内容</string>
 
     <!-- HELP -->
-    <string name="docs_prefix" />
+    <string name="docs_prefix" translatable="false" />
 
     <!-- About Message -->
     <string name="version_number">版本</string>
@@ -276,6 +276,7 @@
 
     <!-- PIN Code -->
     <string name="passcode_title">输入密码</string>
+    <string name="passcode_admin_title">您的 Alfresco 管理员要求您使用密码保护 Alfresco Mobile。</string>
     <string name="passcode_enable_title">启用密码</string>
     <string name="passcode_preference">密码保护</string>
     <string name="passcode_enable">已启用</string>
@@ -833,6 +834,18 @@
     <string name="empty_comment">未找到评论</string>
     <string name="empty_search">未找到文件</string>
     <string name="action_sign_in_short">登录</string>
+    <string name="node.details.file.not.found">未找到文件</string>
+    <string name="node.browser.folder.not.found">未找到文件夹</string>
+    <string name="user.details.user.not.found">未找到用户</string>
+    <string name="public.url.wrong.format">我们无法识别此链接。请尝试联系您的 Alfresco 管理员</string>
+    <string name="public.url.tasks.missing.filter">过滤信息缺失。请尝试联系您的 Alfresco 管理员</string>
+    <string name="public.url.file.missing.id">ID 信息缺失。请尝试联系您的 Alfresco 管理员</string>
+    <string name="public.url.noderef.format">NodeRef 信息似乎错误。请尝试联系您的 Alfresco 管理员</string>
+
+
+    <!-- ACCOUNTS SELECTION -->
+    <string name="accounts.title.select">选择一个帐户</string>
+    <string name="accounts.not.found">未找到帐户。尝试添加一个帐户。</string>
 
 
     <!-- DATA PROTECTION -->
@@ -904,6 +917,9 @@
     <string name="form_message_unsupported_description"><![CDATA[<p>此表单包含的一个或多个必填字段在移动设备上目前不受支持。</p>请使用 Web 应用程序执行此步骤。]]></string>
     <string name="form_message_link_error_title">链接不受支持</string>
     <string name="form_message_link_error"><![CDATA[<p>此内容不是来自受支持的内容源。</p>请选择其他内容源。]]></string>
+
+
+    <string name="open_in_alfresco_editor">在 Alfresco 文本编辑器中打开</string>
 
 
 </resources>
