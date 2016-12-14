@@ -26,10 +26,13 @@ import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.activity.PublicDispatcherActivity;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
+import org.alfresco.mobile.android.platform.mdm.MDMManager;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 import org.alfresco.mobile.android.ui.holder.TwoLinesViewHolder;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
+
+import com.squareup.picasso.Picasso;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -38,8 +41,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-
-import com.squareup.picasso.Picasso;
 
 public class AccountsAdapter extends BaseListAdapter<AlfrescoAccount, TwoLinesViewHolder>
 {
@@ -151,7 +152,10 @@ public class AccountsAdapter extends BaseListAdapter<AlfrescoAccount, TwoLinesVi
     {
         File f = AlfrescoStorageManager.getInstance(context).getPrivateFolder(acc);
         File icon = new File(f, acc.getUsername().concat(".jpg"));
-        Picasso.with(context).load(icon).placeholder(defaultIcon).into(imageView);
+        if (MDMManager.getInstance(context) == null)
+        {
+            Picasso.with(context).load(icon).placeholder(defaultIcon).into(imageView);
+        }
     }
 
     private void updateIconList(TwoLinesViewHolder vh, AlfrescoAccount acc)

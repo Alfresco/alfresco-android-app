@@ -67,8 +67,11 @@ public interface VersionNumber
     /** Release April 2016. */
     int VERSION_1_6_2 = 61;
 
-    /** Release XXX 2016. */
+    /** Release June 2016. */
     int VERSION_1_7_0 = 70;
 
-    int LATEST_VERSION = VERSION_1_7_0;
+    /** Release XXX 2017. */
+    int VERSION_1_8_0 = 80;
+
+    int LATEST_VERSION = VERSION_1_8_0;
 }
