@@ -61,6 +61,9 @@ public class UploadFolderAdapter extends BaseListAdapter<Integer, SingleLineView
             case R.string.menu_downloads:
                 iconId = R.drawable.ic_local_files_light;
                 break;
+            case R.string.menu_browse_userhome:
+                iconId = R.drawable.ic_myfiles_light;
+                break;
             case R.string.menu_browse_sites:
                 iconId = R.drawable.ic_site_light;
                 break;

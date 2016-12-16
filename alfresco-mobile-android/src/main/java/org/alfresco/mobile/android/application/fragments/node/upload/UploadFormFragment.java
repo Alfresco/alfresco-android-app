@@ -421,13 +421,14 @@ public class UploadFormFragment extends AlfrescoFragment
     }
 
     @SuppressWarnings("serial")
-    private static final List<Integer> IMPORT_FOLDER_LIST = new ArrayList<Integer>(3)
+    private static final List<Integer> IMPORT_FOLDER_LIST = new ArrayList<Integer>(5)
     {
         {
             add(R.string.menu_downloads);
             add(R.string.menu_browse_sites);
             add(R.string.menu_favorites_folder);
             add(R.string.menu_browse_root);
+            add(R.string.menu_browse_userhome);
         }
     };
 
@@ -440,6 +441,7 @@ public class UploadFormFragment extends AlfrescoFragment
             case R.string.menu_browse_sites:
             case R.string.menu_browse_root:
             case R.string.menu_favorites_folder:
+            case R.string.menu_browse_userhome:
 
                 if (getActivity() instanceof PublicDispatcherActivity)
                 {

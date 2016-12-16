@@ -64,8 +64,10 @@ public class DocumentFolderPickerFragment extends Fragment
     {
         {
             add(R.string.menu_browse_root);
+            add(R.string.menu_browse_userhome);
             add(R.string.menu_browse_sites);
             add(R.string.menu_favorites_folder);
+
         }
     };
 
@@ -73,6 +75,7 @@ public class DocumentFolderPickerFragment extends Fragment
     {
         {
             add(R.string.menu_browse_root);
+            add(R.string.menu_browse_userhome);
             add(R.string.menu_browse_sites);
             add(R.string.menu_favorites_folder);
             add(R.string.menu_downloads);
@@ -274,6 +277,7 @@ public class DocumentFolderPickerFragment extends Fragment
             case R.string.menu_browse_sites:
             case R.string.menu_browse_root:
             case R.string.menu_favorites_folder:
+            case R.string.menu_browse_userhome:
 
                 if (getActivity() instanceof BaseShortcutActivity)
                 {

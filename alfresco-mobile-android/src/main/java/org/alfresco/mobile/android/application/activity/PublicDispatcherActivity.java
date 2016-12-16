@@ -18,6 +18,7 @@
 package org.alfresco.mobile.android.application.activity;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
 
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
@@ -45,6 +46,7 @@ import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.intent.AlfrescoIntentAPI;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.ui.ListingModeFragment;
+import org.alfresco.mobile.android.ui.node.browse.NodeBrowserTemplate;
 
 import com.squareup.otto.Subscribe;
 
@@ -398,7 +400,7 @@ public class PublicDispatcherActivity extends BaseActivity
         // files.
         if (getCurrentSession() == null) { return; }
         String type = null;
-        Bundle b = null;
+        HashMap<String, Object> props = new HashMap<String, Object>();
         switch (uploadFolder)
         {
             case R.string.menu_browse_sites:
@@ -410,13 +412,17 @@ public class PublicDispatcherActivity extends BaseActivity
             case R.string.menu_favorites_folder:
                 FavoritesFragment.with(this).setMode(FavoriteNodesRequest.MODE_FOLDERS).display();
                 return;
+            case R.string.menu_browse_userhome:
+                type = ConfigurationConstant.KEY_REPOSITORY;
+                props.put(NodeBrowserTemplate.ARGUMENT_FOLDER_TYPE_ID, NodeBrowserTemplate.FOLDER_TYPE_USERHOME);
+                break;
             default:
                 break;
         }
 
         if (type != null)
         {
-            AlfrescoFragmentBuilder viewConfig = FragmentBuilderFactory.createViewConfig(this, type, null);
+            AlfrescoFragmentBuilder viewConfig = FragmentBuilderFactory.createViewConfig(this, type, props);
             if (viewConfig == null) { return; }
             viewConfig.display();
         }
