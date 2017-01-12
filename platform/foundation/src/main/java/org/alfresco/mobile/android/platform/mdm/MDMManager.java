@@ -135,6 +135,11 @@ public class MDMManager extends Manager implements MDMConstants
         return getConfig(MDMConstants.ALFRESCO_DISPLAY_NAME);
     }
 
+    public String getProfile()
+    {
+        return getConfig(MDMConstants.ALFRESCO_USER_PROFILE);
+    }
+
     // ///////////////////////////////////////////////////////////////////////////
     // CONFIG
     // ///////////////////////////////////////////////////////////////////////////

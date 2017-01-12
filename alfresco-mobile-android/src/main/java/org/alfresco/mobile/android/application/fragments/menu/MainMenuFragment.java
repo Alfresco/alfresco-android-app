@@ -30,6 +30,7 @@ import org.alfresco.mobile.android.api.model.config.ViewConfig;
 import org.alfresco.mobile.android.api.services.ConfigService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
+import org.alfresco.mobile.android.application.BuildConfig;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.activity.MainActivity;
@@ -55,6 +56,7 @@ import org.alfresco.mobile.android.platform.accounts.AccountsPreferences;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
+import org.alfresco.mobile.android.platform.mdm.MDMManager;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.sync.SyncContentManager;
 import org.alfresco.mobile.android.sync.SyncContentProvider;
@@ -65,6 +67,8 @@ import org.alfresco.mobile.android.sync.operations.SyncContentStatus;
 import org.alfresco.mobile.android.ui.activity.AlfrescoActivity;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
+
+import com.squareup.otto.Subscribe;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
@@ -91,8 +95,6 @@ import android.widget.LinearLayout;
 import android.widget.ListPopupWindow;
 import android.widget.TextView;
 
-import com.squareup.otto.Subscribe;
-
 public class MainMenuFragment extends AlfrescoFragment implements AdapterView.OnItemClickListener
 {
     private boolean showOperationsMenu = false;
@@ -110,6 +112,10 @@ public class MainMenuFragment extends AlfrescoFragment implements AdapterView.On
     private List<View> syncFavoritesMenuItem = new ArrayList<>();
 
     private ConfigManager configManager;
+
+    private MDMManager mdmManager;
+
+    private String mdmProfile;
 
     public static final String TAG = MainMenuFragment.class.getName();
 
@@ -160,6 +166,13 @@ public class MainMenuFragment extends AlfrescoFragment implements AdapterView.On
 
         // retrieve accounts
         configManager = ConfigManager.getInstance(getActivity());
+        // Todo replace elsewhere & improve request numbers?
+        mdmManager = MDMManager.getInstance(getActivity());
+        if (mdmManager != null)
+        {
+            mdmManager.requestConfig(getActivity(), BuildConfig.APPLICATION_ID);
+        }
+
         currentAccount = getAccount();
         if (currentAccount == null)
         {
@@ -439,8 +452,22 @@ public class MainMenuFragment extends AlfrescoFragment implements AdapterView.On
         if (configManager != null && configManager.getConfig(currentAccount.getId()) != null
                 && configManager.getConfig(currentAccount.getId()).getProfiles().size() > 1)
         {
-            list.add(new AlfrescoAccount(AccountsAdapter.PROFILES_ITEM, getString(R.string.profiles_switch), null, null,
-                    null, null, "0", null, "false"));
+            // If MDM enforce a specific profile
+            String mdmProfile = null;
+            if (mdmManager != null && mdmManager.hasConfig())
+            {
+                mdmProfile = mdmManager.getProfile();
+            }
+
+            if (mdmProfile == null || mdmProfile.isEmpty())
+            {
+                list.add(new AlfrescoAccount(AccountsAdapter.PROFILES_ITEM, getString(R.string.profiles_switch), null,
+                        null, null, null, "0", null, "false"));
+            }
+            else if (mdmProfile != null && !mdmProfile.equals(configManager.getCurrentProfileId()))
+            {
+                configManager.swapProfile(currentAccount, mdmManager.getProfile());
+            }
         }
 
         list.add(new AlfrescoAccount(AccountsAdapter.MANAGE_ITEM, getString(R.string.manage_accounts), null, null, null,

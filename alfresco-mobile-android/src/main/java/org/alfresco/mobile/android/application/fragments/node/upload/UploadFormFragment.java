@@ -145,6 +145,7 @@ public class UploadFormFragment extends AlfrescoFragment
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
             {
                 selectedAccount = (AlfrescoAccount) parent.getItemAtPosition(pos);
+                refreshImportFolder();
             }
 
             @Override
@@ -393,9 +394,15 @@ public class UploadFormFragment extends AlfrescoFragment
 
     private void refreshImportFolder()
     {
+        List<Integer> importList = IMPORT_FOLDER_LIST;
+        if (selectedAccount == null || selectedAccount.getTypeId() == AlfrescoAccount.TYPE_ALFRESCO_CLOUD)
+        {
+            importList = IMPORT_CLOUD_FOLDER_LIST;
+        }
+
         Spinner spinner = (Spinner) viewById(R.id.import_folder_spinner);
         UploadFolderAdapter upLoadadapter = new UploadFolderAdapter(getActivity(), R.layout.row_single_line,
-                IMPORT_FOLDER_LIST);
+                importList);
         spinner.setAdapter(upLoadadapter);
         spinner.setOnItemSelectedListener(new OnItemSelectedListener()
         {
@@ -429,6 +436,17 @@ public class UploadFormFragment extends AlfrescoFragment
             add(R.string.menu_favorites_folder);
             add(R.string.menu_browse_root);
             add(R.string.menu_browse_userhome);
+        }
+    };
+
+    @SuppressWarnings("serial")
+    private static final List<Integer> IMPORT_CLOUD_FOLDER_LIST = new ArrayList<Integer>(5)
+    {
+        {
+            add(R.string.menu_downloads);
+            add(R.string.menu_browse_sites);
+            add(R.string.menu_favorites_folder);
+            add(R.string.menu_browse_root);
         }
     };
 

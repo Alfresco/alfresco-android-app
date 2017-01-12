@@ -37,11 +37,11 @@ import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 
+import com.squareup.otto.Subscribe;
+
 import android.content.Context;
 import android.support.v4.util.LongSparseArray;
 import android.text.TextUtils;
-
-import com.squareup.otto.Subscribe;
 
 public class ConfigManager extends Manager
 {
@@ -289,6 +289,11 @@ public class ConfigManager extends Manager
 
     public ConfigService getConfig(long accountId)
     {
+        // Double check we use the remote instead of local
+        if (getRemoteConfig(accountId) != null && currentService != getRemoteConfig(accountId))
+        {
+            currentService.put(accountId, remoteConfigService.get(accountId));
+        }
         return (currentService != null) ? currentService.get(accountId) : null;
     }
 
