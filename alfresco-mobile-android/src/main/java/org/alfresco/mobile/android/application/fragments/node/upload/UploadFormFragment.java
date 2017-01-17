@@ -102,6 +102,8 @@ public class UploadFormFragment extends AlfrescoFragment
 
     private Spinner spinnerAccount;
 
+    private Spinner spinnerFolder;
+
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTUCTORS
     // ///////////////////////////////////////////////////////////////////////////
@@ -145,6 +147,12 @@ public class UploadFormFragment extends AlfrescoFragment
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
             {
                 selectedAccount = (AlfrescoAccount) parent.getItemAtPosition(pos);
+                folderImportId = null;
+                if (spinnerFolder != null)
+                {
+                    spinnerFolder.setAdapter(null);
+                    spinnerFolder.setSelection(0);
+                }
                 refreshImportFolder();
             }
 
@@ -400,11 +408,11 @@ public class UploadFormFragment extends AlfrescoFragment
             importList = IMPORT_CLOUD_FOLDER_LIST;
         }
 
-        Spinner spinner = (Spinner) viewById(R.id.import_folder_spinner);
+        spinnerFolder = (Spinner) viewById(R.id.import_folder_spinner);
         UploadFolderAdapter upLoadadapter = new UploadFolderAdapter(getActivity(), R.layout.row_single_line,
                 importList);
-        spinner.setAdapter(upLoadadapter);
-        spinner.setOnItemSelectedListener(new OnItemSelectedListener()
+        spinnerFolder.setAdapter(upLoadadapter);
+        spinnerFolder.setOnItemSelectedListener(new OnItemSelectedListener()
         {
 
             @Override
@@ -424,7 +432,7 @@ public class UploadFormFragment extends AlfrescoFragment
         {
             importFolderIndex = 0;
         }
-        spinner.setSelection(importFolderIndex);
+        spinnerFolder.setSelection(importFolderIndex);
     }
 
     @SuppressWarnings("serial")
