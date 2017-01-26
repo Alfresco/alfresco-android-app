@@ -223,6 +223,9 @@ public abstract class AnalyticsManager extends Manager
     // After a node has been synced
     public static final String LABEL_SYNC_ACTION = "Sync Action";
 
+    // After a node has been synced
+    public static final String LABEL_SYNC_ACTION_CHANGED = "Sync Period";
+
     // After a sync node has been edited
     public static final String LABEL_SYNC_SAVE_BACK = "Save Back";
 
