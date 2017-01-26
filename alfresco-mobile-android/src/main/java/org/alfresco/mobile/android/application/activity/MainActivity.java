@@ -977,11 +977,16 @@ public class MainActivity extends BaseActivity
         AnalyticHelper.analyzeSession(this, event.account, getCurrentSession());
 
         // Activate Automatic Sync for Sync Content & Favorite
-        SyncContentManager.getInstance(this).setActivateSync(getCurrentAccount(), true);
-        if (SyncContentManager.getInstance(this).canSync(getCurrentAccount()))
+        if (SyncContentManager.getInstance(this).hasActivateSync(getCurrentAccount()))
         {
-            SyncContentManager.getInstance(this).sync(AnalyticsManager.LABEL_SYNC_SESSION_LOADED, getCurrentAccount());
+            // SyncContentManager.getInstance(this).setActivateSync(getCurrentAccount(),
+            // true);
+            if (SyncContentManager.getInstance(this).canSync(getCurrentAccount()))
+            {
+                SyncContentManager.getInstance(this).sync(AnalyticsManager.LABEL_SYNC_SESSION_LOADED,
+                        getCurrentAccount());
 
+            }
         }
 
         FavoritesManager.getInstance(this).setActivateSync(getCurrentAccount(), true);

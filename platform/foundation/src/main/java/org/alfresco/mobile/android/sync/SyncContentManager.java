@@ -315,6 +315,18 @@ public class SyncContentManager extends Manager
                 SyncContentProvider.AUTHORITY, settingsBundle);
     }
 
+    public void syncPeriodically(AlfrescoAccount account, Long interval)
+    {
+        if (account == null) { return; }
+        Bundle settingsBundle = new Bundle();
+        settingsBundle.putString(ARGUMENT_ANALYTIC, AnalyticsManager.LABEL_SYNC_ACTION_CHANGED);
+        settingsBundle.putInt(ARGUMENT_MODE, SyncContentManager.MODE_BOTH);
+        settingsBundle.putBoolean(ARGUMENT_IGNORE_WARNING, false);
+        ContentResolver.addPeriodicSync(
+                AlfrescoAccountManager.getInstance(appContext).getAndroidAccount(account.getId()),
+                SyncContentProvider.AUTHORITY, settingsBundle, interval);
+    }
+
     public void unsync(AlfrescoAccount account)
     {
         if (account == null) { return; }
@@ -822,7 +834,8 @@ public class SyncContentManager extends Manager
         if (account != null)
         {
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(appContext);
-            return sharedPref.getBoolean(SYNCHRO_PREFIX + account.getId(), true);
+            if (sharedPref.contains(SYNCHRO_PREFIX
+                    + account.getId())) { return sharedPref.getBoolean(SYNCHRO_PREFIX + account.getId(), true); }
         }
         return false;
     }
