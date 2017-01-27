@@ -33,6 +33,7 @@ import org.alfresco.mobile.android.application.configuration.ConfigurableActionH
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
 import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsFragment;
+import org.alfresco.mobile.android.application.fragments.node.favorite.FavoritesFragment;
 import org.alfresco.mobile.android.async.Operation;
 import org.alfresco.mobile.android.async.OperationSchema;
 import org.alfresco.mobile.android.async.OperationsContentProvider;
@@ -92,13 +93,13 @@ public class ProgressNodeAdapter extends NodeAdapter
 
     protected Node parentNode;
 
-    private List<Node> selectedOptionItems = new ArrayList<Node>();
+    protected List<Node> selectedOptionItems = new ArrayList<Node>();
 
-    private Map<String, Node> placeHolderMap = new HashMap<String, Node>();
+    protected Map<String, Node> placeHolderMap = new HashMap<String, Node>();
 
-    private Map<String, SyncInfo> syncInfos;
+    protected Map<String, SyncInfo> syncInfos;
 
-    private boolean hasSync = false, hasFavorited = false;
+    protected boolean hasSync = false, hasFavorited = false;
 
     public ProgressNodeAdapter(Fragment fr, int textViewResourceId, Node parentNode, List<Node> listItems,
             List<Node> selectedItems, int mode)
@@ -113,6 +114,14 @@ public class ProgressNodeAdapter extends NodeAdapter
             fr.getActivity().getSupportLoaderManager().restartLoader(LOADER_FAVORITE_ID, null, this);
             hasParentFavorite();
         }
+    }
+
+    // Used by Favorites & Sync Fragments
+    public ProgressNodeAdapter(Fragment fr, int textViewResourceId, List<Node> listItems, List<Node> selectedItems,
+            int mode)
+    {
+        super(fr.getActivity(), textViewResourceId, listItems, selectedItems, mode);
+        fragmentRef = new WeakReference<>(fr);
     }
 
     public ProgressNodeAdapter(FragmentActivity context, int textViewResourceId, List<Node> listItems)
@@ -570,12 +579,21 @@ public class ProgressNodeAdapter extends NodeAdapter
     @Override
     public boolean onMenuItemClick(MenuItem item)
     {
+        boolean isFavoriteOrSync = (fragmentRef != null && fragmentRef.get() instanceof FavoritesFragment);
         boolean onMenuItemClick = true;
         switch (item.getItemId())
         {
             case R.id.menu_node_details:
                 onMenuItemClick = true;
-                NodeDetailsFragment.with(getActivity()).node(selectedOptionItems.get(0)).display();
+                if (isFavoriteOrSync)
+                {
+                    NodeDetailsFragment.with(getActivity()).nodeId(selectedOptionItems.get(0).getIdentifier())
+                            .display();
+                }
+                else
+                {
+                    NodeDetailsFragment.with(getActivity()).node(selectedOptionItems.get(0)).display();
+                }
                 if (DisplayUtils.hasCentralPane(getActivity()))
                 {
                     selectedItems.add(selectedOptionItems.get(0));
@@ -584,7 +602,14 @@ public class ProgressNodeAdapter extends NodeAdapter
                 break;
             case R.id.menu_action_edit:
                 onMenuItemClick = true;
-                NodeActions.edit(getActivity(), (Folder) parentNode, selectedOptionItems.get(0));
+                if (isFavoriteOrSync)
+                {
+                    NodeActions.edit(getActivity(), null, selectedOptionItems.get(0));
+                }
+                else
+                {
+                    NodeActions.edit(getActivity(), (Folder) parentNode, selectedOptionItems.get(0));
+                }
                 break;
             case R.id.menu_action_delete_folder:
                 onMenuItemClick = true;
