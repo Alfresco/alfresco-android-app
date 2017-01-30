@@ -60,6 +60,8 @@ import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.sync.SyncContentManager;
 import org.alfresco.mobile.android.ui.operation.OperationWaitingDialogFragment;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.os.Parcelable;
@@ -69,8 +71,6 @@ import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
-
-import com.afollestad.materialdialogs.MaterialDialog;
 
 public class NodeActions extends AbstractActions<Node>
 {
@@ -556,6 +556,14 @@ public class NodeActions extends AbstractActions<Node>
     // ///////////////////////////////////////////////////////////////////////////
     // ACTIONS
     // ///////////////////////////////////////////////////////////////////////////
+    public static void favorite(Fragment fr, boolean doFavorite, List<Node> selectedItems) {
+        List<String> ids = new ArrayList<>(selectedItems.size());
+        for (Node node : selectedItems) {
+            ids.add(node.getIdentifier());
+        }
+        favorite(fr, ids, doFavorite);
+    }
+
     public static void favorite(Fragment fr, List<String> selectedItems, boolean doFavorite)
     {
         List<OperationBuilder> requestsBuilder = new ArrayList<OperationBuilder>(selectedItems.size());
