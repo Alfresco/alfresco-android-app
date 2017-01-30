@@ -26,11 +26,18 @@ import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.ui.activity.AlfrescoActivity;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
+import android.util.Log;
 
 public final class FileExplorerHelper
 {
@@ -67,15 +74,15 @@ public final class FileExplorerHelper
                 switch (itemPosition)
                 {
                     case 1:
-                        currentLocation = AlfrescoStorageManager.getInstance(activity).getDownloadFolder(
-                                ((BaseActivity) activity).getCurrentAccount());
+                        currentLocation = AlfrescoStorageManager.getInstance(activity)
+                                .getDownloadFolder(((BaseActivity) activity).getCurrentAccount());
                         break;
                     case 3:
-                        currentLocation = Environment.getExternalStorageDirectory();
+                        currentLocation = FileExplorerHelper.requestWriteExternalStorage(activity, null);
                         break;
                     case 4:
-                        currentLocation = Environment
-                                .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+                        currentLocation = FileExplorerHelper.requestWriteExternalStorage(activity,
+                                Environment.DIRECTORY_DOWNLOADS);
                         break;
                     case 6:
                         mediatype = MediaStore.Files.FileColumns.MEDIA_TYPE_NONE;
@@ -96,11 +103,6 @@ public final class FileExplorerHelper
                         break;
                 }
 
-                if (!backStack)
-                {
-                    activity.getSupportFragmentManager().popBackStack();
-                }
-
                 if (thirdPartyApp)
                 {
                     if (activity instanceof PublicDispatcherActivity)
@@ -112,21 +114,71 @@ public final class FileExplorerHelper
                 }
                 else if (currentLocation != null)
                 {
+                    if (!backStack)
+                    {
+                        activity.getSupportFragmentManager().popBackStack();
+                    }
+
                     FileExplorerFragment.with(activity).menuId(itemPosition).isShortCut(true).file(currentLocation)
                             .mode(mode).display();
                 }
                 else if (mediatype >= 0)
                 {
-                    LibraryFragment.with(activity).mediaType(mediatype).mode(mode).isShortCut(true)
-                            .menuId(itemPosition).display();
+                    if (requestWriteExternalStorage(activity, null) != null)
+                    {
+                        if (!backStack)
+                        {
+                            activity.getSupportFragmentManager().popBackStack();
+                        }
+
+                        LibraryFragment.with(activity).mediaType(mediatype).mode(mode).isShortCut(true)
+                                .menuId(itemPosition).display();
+                    }
                 }
                 prefs.edit().putInt(FILEEXPLORER_DEFAULT, itemPosition).apply();
-
                 return true;
             }
 
         };
         bar.setListNavigationCallbacks(adapter, mOnNavigationListener);
         bar.setSelectedNavigationItem(menuId);
+    }
+
+    public static File requestWriteExternalStorage(Activity activity, final String externalFolder)
+    {
+        try
+        {
+            if (Build.VERSION.SDK_INT < 23) { return (externalFolder == null)
+                    ? Environment.getExternalStorageDirectory()
+                    : Environment.getExternalStoragePublicDirectory(externalFolder); }
+
+            int hasWriteExternalStoragePermission = ContextCompat.checkSelfPermission(activity,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            if (hasWriteExternalStoragePermission != PackageManager.PERMISSION_GRANTED)
+            {
+                if (!ActivityCompat.shouldShowRequestPermissionRationale(activity,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE))
+                {
+                    ActivityCompat.requestPermissions(activity,
+                            new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE }, externalFolder == null
+                                    ? BaseActivity.REQUEST_PERMISSION_SD : BaseActivity.REQUEST_PERMISSION_DL);
+                    return null;
+                }
+                ActivityCompat.requestPermissions(activity, new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE },
+                        externalFolder == null ? BaseActivity.REQUEST_PERMISSION_SD
+                                : BaseActivity.REQUEST_PERMISSION_DL);
+                return null;
+            }
+            else
+            {
+                return (externalFolder == null) ? Environment.getExternalStorageDirectory()
+                        : Environment.getExternalStoragePublicDirectory(externalFolder);
+            }
+        }
+        catch (Exception e)
+        {
+            Log.d(FileExplorerMenuFragment.TAG, Log.getStackTraceString(e));
+        }
+        return null;
     }
 }
