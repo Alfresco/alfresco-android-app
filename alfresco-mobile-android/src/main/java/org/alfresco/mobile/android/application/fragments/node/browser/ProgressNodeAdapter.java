@@ -24,7 +24,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
+import org.alfresco.mobile.android.api.model.Link;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.impl.publicapi.PublicAPIPropertyIds;
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
@@ -389,6 +391,21 @@ public class ProgressNodeAdapter extends NodeAdapter
                     popup.show();
                 }
             });
+        }
+        else if (item instanceof Link)
+        {
+            if (item instanceof Document)
+            {
+                vh.icon.setImageResource(MimeTypeManager.getInstance(getActivity()).getIcon(item.getName()));
+            }
+            else if (item instanceof Folder)
+            {
+                vh.icon.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.mime_256_folder));
+            }
+            displayStatut(vh, R.drawable.ic_shared_light);
+
+            vh.choose.setPadding(0, 0, 0, 0);
+            vh.choose.setVisibility(View.GONE);
         }
         else
         {
