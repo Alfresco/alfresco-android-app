@@ -25,7 +25,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
+import org.alfresco.mobile.android.api.model.Link;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.Permissions;
 import org.alfresco.mobile.android.api.model.Site;
@@ -654,9 +656,23 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment implement
                 DocumentFolderBrowserFragment.with(getActivity()).site(site).folder((Folder) item)
                         .shortcut(isShortcut()).display();
             }
-            else
+            else if (item.isDocument())
             {
                 NodeDetailsFragment.with(getActivity()).parentFolder(parentFolder).node(item).display();
+            }
+            else if (item instanceof Link)
+            {
+                if (item instanceof Document)
+                {
+                    NodeDetailsFragment.with(getActivity()).parentFolder(parentFolder)
+                            .nodeId(((Link) item).getDestination()).display();
+                }
+                else if (item instanceof Folder)
+                {
+                    FragmentDisplayer.clearCentralPane(getActivity());
+                    DocumentFolderBrowserFragment.with(getActivity()).site(site)
+                            .folderIdentifier(((Link) item).getDestination()).shortcut(isShortcut()).display();
+                }
             }
         }
     }
