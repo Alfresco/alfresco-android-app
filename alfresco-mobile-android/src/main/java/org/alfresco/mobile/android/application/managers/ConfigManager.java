@@ -23,10 +23,13 @@ import java.util.HashMap;
 import org.alfresco.mobile.android.api.model.config.ConfigConstants;
 import org.alfresco.mobile.android.api.model.config.ConfigScope;
 import org.alfresco.mobile.android.api.model.config.ConfigTypeIds;
+import org.alfresco.mobile.android.api.model.config.ViewConfig;
+import org.alfresco.mobile.android.api.model.config.ViewGroupConfig;
 import org.alfresco.mobile.android.api.services.ConfigService;
 import org.alfresco.mobile.android.api.services.impl.LocalConfigServiceImpl;
 import org.alfresco.mobile.android.api.services.impl.onpremise.OnPremiseConfigServiceImpl;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
+import org.alfresco.mobile.android.application.configuration.model.view.SyncConfigModel;
 import org.alfresco.mobile.android.async.LoaderResult;
 import org.alfresco.mobile.android.async.configuration.ConfigurationEvent;
 import org.alfresco.mobile.android.async.session.RequestSessionEvent;
@@ -339,6 +342,29 @@ public class ConfigManager extends Manager
             eventBus.post(new ConfigurationProfileEvent(acc.getId()));
         }
         return true;
+    }
+
+    public boolean hasSyncView(AlfrescoAccount acc, String profileId) {
+        ConfigService config = getConfig(acc.getId());
+        if (!config.hasViewConfig()) {
+            return false;
+        }
+
+        return parseViewConfigSearchingSyncView(config.getViewConfig(config.getProfile(profileId).getRootViewId(), new ConfigScope(profileId)));
+    }
+
+    private boolean parseViewConfigSearchingSyncView(ViewConfig viewConfig) {
+        if (viewConfig instanceof ViewGroupConfig && ((ViewGroupConfig) viewConfig).getItems().size() > 0) {
+            for (ViewConfig config : ((ViewGroupConfig) viewConfig).getItems()) {
+                if (SyncConfigModel.TYPE_ID.equals(config.getType())) {
+                    return true;
+                }
+                if (config instanceof ViewGroupConfig && ((ViewGroupConfig) config).getItems().size() > 0) {
+                    parseViewConfigSearchingSyncView(config);
+                }
+            }
+        }
+        return false;
     }
 
     public ConfigScope getCurrentScope()
