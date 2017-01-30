@@ -32,19 +32,13 @@ import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
-import android.Manifest;
 import android.content.DialogInterface;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -143,10 +137,11 @@ public class FileExplorerMenuFragment extends AlfrescoFragment
                             .getDownloadFolder(((BaseActivity) getActivity()).getCurrentAccount());
                     break;
                 case R.id.shortcut_local_sdcard:
-                    currentLocation = requestWriteExternalStorage(null);
+                    currentLocation = FileExplorerHelper.requestWriteExternalStorage(getActivity(), null);
                     break;
                 case R.id.shortcut_local_downloads:
-                    currentLocation = requestWriteExternalStorage(Environment.DIRECTORY_DOWNLOADS);
+                    currentLocation = FileExplorerHelper.requestWriteExternalStorage(getActivity(),
+                            Environment.DIRECTORY_DOWNLOADS);
                     break;
                 case R.id.shortcut_library_office:
                     mediatype = MediaStore.Files.FileColumns.MEDIA_TYPE_NONE;
@@ -174,7 +169,7 @@ public class FileExplorerMenuFragment extends AlfrescoFragment
             {
                 FileExplorerFragment.with(getActivity()).file(currentLocation).display();
             }
-            else if (mediatype >= 0 && requestWriteExternalStorage(null) != null)
+            else if (mediatype >= 0 && FileExplorerHelper.requestWriteExternalStorage(getActivity(), null) != null)
             {
                 LibraryFragment.with(getActivity()).mediaType(mediatype).display();
             }
@@ -191,44 +186,6 @@ public class FileExplorerMenuFragment extends AlfrescoFragment
         super.onCreateOptionsMenu(menu, inflater);
         if (!MenuFragmentHelper.canDisplayFragmentMenu(getActivity())) { return; }
         menu.clear();
-    }
-
-    private File requestWriteExternalStorage(final String externalFolder)
-    {
-        try
-        {
-            if (Build.VERSION.SDK_INT < 23) { return (externalFolder == null)
-                    ? Environment.getExternalStorageDirectory()
-                    : Environment.getExternalStoragePublicDirectory(externalFolder); }
-
-            int hasWriteExternalStoragePermission = ContextCompat.checkSelfPermission(getActivity(),
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE);
-            if (hasWriteExternalStoragePermission != PackageManager.PERMISSION_GRANTED)
-            {
-                if (!ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE))
-                {
-                    ActivityCompat.requestPermissions(getActivity(),
-                            new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE }, externalFolder == null
-                                    ? BaseActivity.REQUEST_PERMISSION_SD : BaseActivity.REQUEST_PERMISSION_DL);
-                    return null;
-                }
-                ActivityCompat.requestPermissions(getActivity(),
-                        new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE }, externalFolder == null
-                                ? BaseActivity.REQUEST_PERMISSION_SD : BaseActivity.REQUEST_PERMISSION_DL);
-                return null;
-            }
-            else
-            {
-                return (externalFolder == null) ? Environment.getExternalStorageDirectory()
-                        : Environment.getExternalStoragePublicDirectory(externalFolder);
-            }
-        }
-        catch (Exception e)
-        {
-            Log.d(FileExplorerMenuFragment.TAG, Log.getStackTraceString(e));
-        }
-        return null;
     }
 
     private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener)
