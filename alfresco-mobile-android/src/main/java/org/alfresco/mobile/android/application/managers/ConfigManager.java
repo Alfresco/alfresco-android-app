@@ -39,6 +39,7 @@ import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
+import org.alfresco.mobile.android.sync.SyncContentManager;
 
 import com.squareup.otto.Subscribe;
 
@@ -189,6 +190,13 @@ public class ConfigManager extends Manager
             if (embedConfigService != null)
             {
                 currentService.put(accountId, embedConfigService);
+            }
+
+            // Horrible hack to reset profile sync activation as its not
+            // implemented as feature
+            if (hasSyncView(embedConfigService, "default"))
+            {
+                SyncContentManager.getInstance(appContext).setActivateSync(accountId, true);
             }
         }
         currentProfileId = null;
@@ -344,13 +352,16 @@ public class ConfigManager extends Manager
         return true;
     }
 
-    public boolean hasSyncView(AlfrescoAccount acc, String profileId) {
-        ConfigService config = getConfig(acc.getId());
-        if (!config.hasViewConfig()) {
-            return false;
-        }
+    public boolean hasSyncView(long accountId, String profileId)
+    {
+        ConfigService config = getConfig(accountId);
+        return hasSyncView(config, profileId);
+    }
 
-        return parseViewConfigSearchingSyncView(config.getViewConfig(config.getProfile(profileId).getRootViewId(), new ConfigScope(profileId)));
+    private boolean hasSyncView(ConfigService config, String profileId)
+    {
+        return config.hasViewConfig() && parseViewConfigSearchingSyncView(
+                config.getViewConfig(config.getProfile(profileId).getRootViewId(), new ConfigScope(profileId)));
     }
 
     private boolean parseViewConfigSearchingSyncView(ViewConfig viewConfig) {

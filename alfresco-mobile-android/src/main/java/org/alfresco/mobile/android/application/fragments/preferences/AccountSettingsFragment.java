@@ -265,13 +265,13 @@ public class AccountSettingsFragment extends AlfrescoFragment implements EditTex
                             syncFavoritesVH.choose.isChecked());
                 }
             });
-        }
 
-        SyncCellularConfigFeature feature = new SyncCellularConfigFeature(getActivity());
-        if (feature.isProtected(account))
-        {
-            syncFavoritesVH.bottomText.setText(R.string.mdm_managed);
-            syncFavoritesVH.choose.setEnabled(false);
+            SyncCellularConfigFeature feature = new SyncCellularConfigFeature(getActivity());
+            if (feature.isProtected(account))
+            {
+                syncFavoritesVH.bottomText.setText(R.string.mdm_managed);
+                syncFavoritesVH.choose.setEnabled(false);
+            }
         }
     }
 

@@ -131,7 +131,7 @@ public class ProfilesConfigFragment extends BaseGridFragment
         // wipe out sync data based on profile level and not account level
         // We implement in this app for consistency with iOS
         // We have to disable this part to disable profile sync exclusivity
-        boolean hasSyncView = ConfigManager.getInstance(getActivity()).hasSyncView(getAccount(),
+        boolean hasSyncView = ConfigManager.getInstance(getActivity()).hasSyncView(getAccount().getId(),
                 profile.getIdentifier());
         boolean hasActivateSync = SyncContentManager.getInstance(getActivity()).hasActivateSync(getAccount());
         if (hasActivateSync && !hasSyncView)

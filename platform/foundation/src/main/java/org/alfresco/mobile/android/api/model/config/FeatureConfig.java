@@ -51,5 +51,11 @@ public interface FeatureConfig extends ItemConfig
     // the user.
     String FEATURE_CELLULAR_SYNC = PREFIX_FEATURE.concat(".sync.cellular");
 
+    // If ON ==> user can define the value
+    // If OFF ==> cellular sync is OFF / Sync only on Wifi and cant be changed
+    // If OFF then ON ==> cellular sync is still OFF but can be reactivated by
+    // the user.
+    String FEATURE_SCHEDULER_SYNC = PREFIX_FEATURE.concat(".sync.scheduler");
+
     boolean isEnable();
 }

@@ -63,6 +63,12 @@ import android.util.Log;
 
 public class SyncContentManager extends Manager
 {
+    // Default intervall every 12 hours
+    public static final long DEFAULT_INTERVAL = 12 * 60 * 60;
+
+    // minimum intervall every 1 hour
+    public static final long MIN_INTERVAL = 60 * 60;
+
     private static final String TAG = SyncContentManager.class.getName();
 
     protected static final Object LOCK = new Object();
@@ -315,16 +321,30 @@ public class SyncContentManager extends Manager
                 SyncContentProvider.AUTHORITY, settingsBundle);
     }
 
+    /**
+     * @param account
+     * @param interval must be in seconds
+     */
     public void syncPeriodically(AlfrescoAccount account, Long interval)
     {
         if (account == null) { return; }
+        long period = DEFAULT_INTERVAL;
+        if (interval != null)
+        {
+            period = interval;
+        }
         Bundle settingsBundle = new Bundle();
-        settingsBundle.putString(ARGUMENT_ANALYTIC, AnalyticsManager.LABEL_SYNC_ACTION_CHANGED);
+        if (period != DEFAULT_INTERVAL)
+        {
+            // only track sync done via server config and not the default one
+            settingsBundle.putString(ARGUMENT_ANALYTIC, AnalyticsManager.LABEL_SYNC_SCHEDULER_CHANGED);
+        }
         settingsBundle.putInt(ARGUMENT_MODE, SyncContentManager.MODE_BOTH);
         settingsBundle.putBoolean(ARGUMENT_IGNORE_WARNING, false);
         ContentResolver.addPeriodicSync(
                 AlfrescoAccountManager.getInstance(appContext).getAndroidAccount(account.getId()),
-                SyncContentProvider.AUTHORITY, settingsBundle, interval);
+                SyncContentProvider.AUTHORITY, settingsBundle, period);
+        Log.d("[SCHEDULER]", " syncPeriodically: " + interval);
     }
 
     public void unsync(AlfrescoAccount account)
