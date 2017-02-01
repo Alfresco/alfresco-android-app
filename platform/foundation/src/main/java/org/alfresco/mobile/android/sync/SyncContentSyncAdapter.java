@@ -85,7 +85,8 @@ public class SyncContentSyncAdapter extends AbstractThreadedSyncAdapter
         node = null;
         mode = SyncContentManager.MODE_BOTH;
 
-        Log.d("Alfresco", "onPerformSync for account[" + account.name + "]");
+        Log.d("Alfresco", "onPerformSync for account[" + account.name + "] + " + extras);
+
         try
         {
             // Retrieve account to sync

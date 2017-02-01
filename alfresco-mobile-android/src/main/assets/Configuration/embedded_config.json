@@ -31,6 +31,14 @@
       "id": "feature-passcode-default",
       "type": "org.alfresco.client.feature.passcode",
       "enable": false
+    },
+    {
+      "id": "feature-sync-scheduler",
+      "type": "org.alfresco.client.feature.sync.scheduler",
+      "enable": true,
+      "params": {
+        "interval": 720
+      }
     }
   ],
   "action-groups": [

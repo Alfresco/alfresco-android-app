@@ -876,10 +876,9 @@ public class MainActivity extends BaseActivity
             {
                 configManager.loadRemote(getCurrentAccount().getId(),
                         ((AlfrescoServiceRegistry) registry).getConfigService());
-
-                // Check feature config
-                ConfigFeatureHelper.check(this, getCurrentAccount(), getCurrentSession());
             }
+            // Check feature config
+            ConfigFeatureHelper.check(this, getCurrentAccount(), getCurrentSession());
         }
         configManager.setSession(getCurrentAccount().getId(), getCurrentSession());
 
