@@ -21,17 +21,24 @@ import java.io.File;
 
 import org.alfresco.mobile.android.foundation.R;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
+import org.alfresco.mobile.android.platform.exception.AlfrescoAppException;
+import org.alfresco.mobile.android.platform.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.platform.mimetype.MimeTypeManager;
-import org.alfresco.mobile.android.platform.provider.CursorUtils;
+import org.alfresco.mobile.android.platform.utils.AndroidVersion;
+import org.alfresco.mobile.android.ui.activity.AlfrescoActivity;
 
+import android.annotation.TargetApi;
 import android.content.ActivityNotFoundException;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
+import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.LocalBroadcastManager;
 
 public class BaseActionUtils
 {
@@ -159,42 +166,118 @@ public class BaseActionUtils
         f.startActivityForResult(Intent.createChooser(i, f.getText(R.string.content_app_pick_file)), requestCode);
     }
 
-    /**
-     * Utils to get File path
-     * 
-     * @param uri
-     * @return
-     */
+    @TargetApi(Build.VERSION_CODES.KITKAT)
     public static String getPath(Context context, Uri uri)
     {
-        String s = null;
+        // DocumentProvider
+        if (AndroidVersion.isKitKatOrAbove() && DocumentsContract.isDocumentUri(context, uri))
+        {
+            // ExternalStorageProvider
+            if (isExternalStorageDocument(uri))
+            {
+                final String docId = DocumentsContract.getDocumentId(uri);
+                final String[] split = docId.split(":");
+                final String type = split[0];
+
+                if ("primary"
+                        .equalsIgnoreCase(type)) { return Environment.getExternalStorageDirectory() + "/" + split[1]; }
+                // TODO handle non-primary volumes
+            }
+            // DownloadsProvider
+            else if (isDownloadsDocument(uri))
+            {
+                final String id = DocumentsContract.getDocumentId(uri);
+                final Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"),
+                        Long.valueOf(id));
+                return getDataColumn(context, contentUri, null, null);
+            }
+            // MediaProvider
+            else if (isMediaDocument(uri))
+            {
+                final String docId = DocumentsContract.getDocumentId(uri);
+                final String[] split = docId.split(":");
+                final String type = split[0];
+                Uri contentUri = null;
+                if ("image".equals(type))
+                {
+                    contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+                }
+                else if ("video".equals(type))
+                {
+                    contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+                }
+                else if ("audio".equals(type))
+                {
+                    contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+                }
+                final String selection = "_id=?";
+                final String[] selectionArgs = new String[] { split[1] };
+                return getDataColumn(context, contentUri, selection, selectionArgs);
+            }
+        }
+        // MediaStore (and general)
+        else if ("content".equalsIgnoreCase(uri.getScheme()))
+        {
+            // Return the remote address
+            if (isGooglePhotosUri(uri)) return uri.getLastPathSegment();
+            return getDataColumn(context, uri, null, null);
+        }
+        // File
+        else if ("file".equalsIgnoreCase(uri.getScheme())) { return uri.getPath(); }
+        return null;
+    }
+
+    public static String getDataColumn(Context context, Uri uri, String selection, String[] selectionArgs)
+    {
         Cursor cursor = null;
+        final String column = "_data";
+        final String[] projection = { column };
         try
         {
-            String scheme = uri.getScheme();
-            if (scheme.equals("content"))
+            cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, null);
+            if (cursor != null && cursor.moveToFirst())
             {
-                String[] projection = { MediaStore.Files.FileColumns.DATA };
-                cursor = context.getContentResolver().query(uri, projection, null, null, null);
-                int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATA);
-                cursor.moveToFirst();
-                s = cursor.getString(columnIndex);
+                final int index = cursor.getColumnIndexOrThrow(column);
+                return cursor.getString(index);
             }
-            else if (scheme.equals("file"))
-            {
-                s = uri.getPath();
-            }
-            // Log.d("ActionManager", "URI:" + uri + " - S:" + s);
-        }
-        catch (Exception e)
-        {
-
         }
         finally
         {
-            CursorUtils.closeCursor(cursor);
+            if (cursor != null) cursor.close();
         }
-        return s;
+        return null;
+    }
+
+    public static boolean isExternalStorageDocument(Uri uri)
+    {
+        return "com.android.externalstorage.documents".equals(uri.getAuthority());
+    }
+
+    /**
+     * @param uri The Uri to check.
+     * @return Whether the Uri authority is DownloadsProvider.
+     */
+    public static boolean isDownloadsDocument(Uri uri)
+    {
+        return "com.android.providers.downloads.documents".equals(uri.getAuthority());
+    }
+
+    /**
+     * @param uri The Uri to check.
+     * @return Whether the Uri authority is MediaProvider.
+     */
+    public static boolean isMediaDocument(Uri uri)
+    {
+        return "com.android.providers.media.documents".equals(uri.getAuthority());
+    }
+
+    /**
+     * @param uri The Uri to check.
+     * @return Whether the Uri authority is Google Photos.
+     */
+    public static boolean isGooglePhotosUri(Uri uri)
+    {
+        return "com.google.android.apps.photos.content".equals(uri.getAuthority());
     }
 
     public interface ActionManagerListener
@@ -207,11 +290,16 @@ public class BaseActionUtils
     // ///////////////////////////////////////////////////////////////////////////
     public static void actionDisplayError(Fragment f, Exception e)
     {
-        Intent i = new Intent(PrivateIntent.ACTION_DISPLAY_ERROR);
-        if (e != null)
+        AlfrescoActivity activity = (AlfrescoActivity) f.getActivity();
+
+        activity.removeWaitingDialog();
+        String errorMessage = activity.getString(R.string.error_general);
+        if (e instanceof AlfrescoAppException && ((AlfrescoAppException) e).isDisplayMessage())
         {
-            i.putExtra(PrivateIntent.EXTRA_ERROR_DATA, e);
+            errorMessage = e.getMessage();
         }
-        LocalBroadcastManager.getInstance(f.getActivity()).sendBroadcast(i);
+        AlfrescoNotificationManager.getInstance(activity).showLongToast(errorMessage);
+        CloudExceptionUtils.handleCloudException(activity, e, false);
     }
+
 }
