@@ -194,7 +194,7 @@ public class UploadFormFragment extends AlfrescoFragment
                 if (AndroidVersion.isJBOrAbove())
                 {
                     ClipData clipdata = intent.getClipData();
-                    if (clipdata != null && clipdata.getItemCount() > 1)
+                    if (clipdata != null && clipdata.getItemCount() > 0)
                     {
                         Item item = null;
                         for (int i = 0; i < clipdata.getItemCount(); i++)
