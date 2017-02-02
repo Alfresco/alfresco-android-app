@@ -410,7 +410,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
             case RequestCode.FILEPICKER:
                 if (data != null && PrivateIntent.ACTION_PICK_FILE.equals(data.getAction()))
                 {
-                    ActionUtils.actionPickFile(getFragmentManager().findFragmentByTag(getTag()),
+                    ActionUtils.actionPickFile(this,
                             RequestCode.FILEPICKER);
                 }
                 else if (data != null && data.getData() != null)
