@@ -59,6 +59,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -69,8 +71,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
-
-import com.afollestad.materialdialogs.MaterialDialog;
 
 /**
  * Created by jpascal on 21/01/2015.
@@ -96,7 +96,7 @@ public class MenuConfigFragment extends AlfrescoFragment implements DefaultMenuC
 
     private Button save;
 
-    private boolean originalSyncState;
+    private boolean originalSyncState = true;
 
     private AlfrescoAccount account;
 
@@ -148,6 +148,10 @@ public class MenuConfigFragment extends AlfrescoFragment implements DefaultMenuC
         if (customConfiguration != null)
         {
             updateMenu();
+        }
+        else
+        {
+            originalSyncState = defaultMenuItems.get(VIEW_SYNC).isEnable();
         }
 
         menuConfigItems = new ArrayList<>(defaultMenuItems.values());
