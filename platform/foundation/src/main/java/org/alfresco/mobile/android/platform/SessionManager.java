@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2015 Alfresco Software Limited.
+ *  Copyright (C) 2005-2017 Alfresco Software Limited.
  *
  *  This file is part of Alfresco Mobile for Android.
  *
@@ -30,7 +30,10 @@ import org.alfresco.mobile.android.api.services.impl.onpremise.AlfrescoOnPremise
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
+import org.alfresco.mobile.android.api.session.authentication.SamlData;
 import org.alfresco.mobile.android.api.session.authentication.impl.OAuth2DataImpl;
+import org.alfresco.mobile.android.api.session.authentication.impl.Saml2TicketImpl;
+import org.alfresco.mobile.android.api.session.authentication.impl.SamlDataImpl;
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.session.LoadSessionCallBack.LoadAccountCompletedEvent;
 import org.alfresco.mobile.android.async.session.LoadSessionCallBack.LoadAccountErrorEvent;
@@ -48,14 +51,14 @@ import org.alfresco.mobile.android.platform.network.NetworkTrustManager;
 import org.alfresco.mobile.android.platform.utils.ConnectivityUtils;
 import org.apache.chemistry.opencmis.commons.SessionParameter;
 
+import com.squareup.otto.Subscribe;
+
 import android.accounts.AccountManager;
 import android.accounts.NetworkErrorException;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.util.LongSparseArray;
 import android.text.TextUtils;
-
-import com.squareup.otto.Subscribe;
 
 /**
  * Responsible to manage sessions across activities.
@@ -186,8 +189,8 @@ public abstract class SessionManager extends Manager
         if (hasSession(accountToLoad.getId()))
         {
             session = getSession(accountToLoad.getId());
-            EventBusManager.getInstance().post(
-                    new LoadAccountCompletedEvent(LoadAccountCompletedEvent.SWAP, accountToLoad));
+            EventBusManager.getInstance()
+                    .post(new LoadAccountCompletedEvent(LoadAccountCompletedEvent.SWAP, accountToLoad));
         }
         else if (getCurrentAccount() == null || accountToLoad.getId() != getCurrentAccount().getId())
         {
@@ -212,8 +215,8 @@ public abstract class SessionManager extends Manager
         // Check Connectivity
         if (!ConnectivityUtils.hasInternetAvailable(appContext))
         {
-            EventBusManager.getInstance().post(
-                    new LoadAccountErrorEvent(null, currentAccount, new NetworkErrorException("Not Online"),
+            EventBusManager.getInstance()
+                    .post(new LoadAccountErrorEvent(null, currentAccount, new NetworkErrorException("Not Online"),
                             AlfrescoExceptionHelper.getMessageId(appContext, new NetworkErrorException("Not Online"))));
             return;
         }
@@ -294,6 +297,11 @@ public abstract class SessionManager extends Manager
         return new SettingsBuilder(appContext).prepare(acc).build();
     }
 
+    public AlfrescoSessionSettings prepareSettings(AlfrescoAccount acc, SamlData data)
+    {
+        return new SettingsBuilder(appContext).prepare(acc).build();
+    }
+
     public AlfrescoSessionSettings prepareSettings(String baseUrl, String username, String password)
     {
         return new SettingsBuilder(appContext).prepare(baseUrl, username, password).build();
@@ -302,6 +310,11 @@ public abstract class SessionManager extends Manager
     public AlfrescoSessionSettings prepareSettings(OAuthData oauthData)
     {
         return new SettingsBuilder(appContext).prepare(oauthData).build();
+    }
+
+    public AlfrescoSessionSettings prepareSettings(String baseUrl, SamlData samlData)
+    {
+        return new SettingsBuilder(appContext).prepare(baseUrl, samlData).build();
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -323,6 +336,8 @@ public abstract class SessionManager extends Manager
 
         protected OAuthData oAuthData;
 
+        protected SamlData samlData;
+
         protected boolean isCloud = false;
 
         // ///////////////////////////////////////////////////////////////////////////
@@ -342,6 +357,10 @@ public abstract class SessionManager extends Manager
             if (isCloud)
             {
                 return new AlfrescoSessionSettings(oAuthData, extraSettings, true);
+            }
+            else if (samlData != null)
+            {
+                return new AlfrescoSessionSettings(baseUrl, samlData, extraSettings);
             }
             else
             {
@@ -370,6 +389,18 @@ public abstract class SessionManager extends Manager
             this.isCloud = true;
             this.oAuthData = oauthData;
             prepareData(acc);
+            return this;
+        }
+
+        public SettingsBuilder prepare(String baseUrl, SamlData samlData)
+        {
+            this.isCloud = false;
+            this.baseUrl = baseUrl;
+            this.samlData = samlData;
+            this.username = samlData.getUserId();
+            this.password = null;
+            prepareConfigurationSettings(new AlfrescoAccount(baseUrl, username));
+            prepareSSLSettings();
             return this;
         }
 
@@ -412,8 +443,9 @@ public abstract class SessionManager extends Manager
                 case AlfrescoAccount.TYPE_ALFRESCO_CLOUD:
                     isCloud = true;
                     baseUrl = acc.getUrl();
-                    oAuthData = new OAuth2DataImpl(getContext().getString(R.string.oauth_api_key), getContext()
-                            .getString(R.string.oauth_api_secret), acc.getAccessToken(), acc.getRefreshToken());
+                    oAuthData = new OAuth2DataImpl(getContext().getString(R.string.oauth_api_key),
+                            getContext().getString(R.string.oauth_api_secret), acc.getAccessToken(),
+                            acc.getRefreshToken());
                     prepareCloudSettings(acc.getRepositoryId());
                     break;
                 case AlfrescoAccount.TYPE_ALFRESCO_TEST_BASIC:
@@ -425,6 +457,15 @@ public abstract class SessionManager extends Manager
                     prepareConfigurationSettings(acc);
                     prepareSSLSettings();
                     break;
+                case AlfrescoAccount.TYPE_ALFRESCO_CMIS_SAML:
+                    // TODO Improve SAML Data handling
+                    isCloud = false;
+                    baseUrl = acc.getUrl();
+                    username = acc.getUsername();
+                    samlData = new SamlDataImpl(new Saml2TicketImpl(acc.getPassword(), username), null);
+                    prepareConfigurationSettings(acc);
+                    prepareSSLSettings();
+                    break;
                 default:
                     break;
             }
@@ -433,8 +474,8 @@ public abstract class SessionManager extends Manager
         protected void prepareConfigurationSettings(AlfrescoAccount acc)
         {
             extraSettings.put(ConfigService.CONFIGURATION_INIT, ConfigService.CONFIGURATION_INIT_DEFAULT);
-            extraSettings.put(ConfigService.CONFIGURATION_FOLDER, AlfrescoStorageManager.getInstance(getContext())
-                    .getConfigurationFolder(acc).getPath());
+            extraSettings.put(ConfigService.CONFIGURATION_FOLDER,
+                    AlfrescoStorageManager.getInstance(getContext()).getConfigurationFolder(acc).getPath());
         }
 
         protected void prepareCommonSettings()
@@ -449,8 +490,8 @@ public abstract class SessionManager extends Manager
             extraSettings.put(AlfrescoSession.HTTP_CHUNK_TRANSFERT, "true");
             // extraSettings.put(SessionParameter.CLIENT_COMPRESSION, "true");
             extraSettings.put(AlfrescoSession.HTTP_INVOKER_CLASSNAME, NetworkHttpInvoker.class.getName());
-            extraSettings.put(AlfrescoSession.CACHE_FOLDER, AlfrescoStorageManager.getInstance(getContext())
-                    .getCacheDir("AlfrescoMobile").getPath());
+            extraSettings.put(AlfrescoSession.CACHE_FOLDER,
+                    AlfrescoStorageManager.getInstance(getContext()).getCacheDir("AlfrescoMobile").getPath());
         }
 
         protected void prepareCloudSettings(String repositoryId)
@@ -470,8 +511,8 @@ public abstract class SessionManager extends Manager
             try
             {
                 URI url = new URI(baseUrl);
-                File f = AlfrescoStorageManager.getInstance(getContext()).getFileInPrivateFolder(
-                        url.getHost() + ".properties");
+                File f = AlfrescoStorageManager.getInstance(getContext())
+                        .getFileInPrivateFolder(url.getHost() + ".properties");
                 if (f.exists() && f.isFile())
                 {
                     AlfrescoNotificationManager.getInstance(getContext()).showToast(R.string.security_ssl_disable);

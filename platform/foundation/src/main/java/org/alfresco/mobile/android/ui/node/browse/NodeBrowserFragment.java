@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2016 Alfresco Software Limited.
+ *  Copyright (C) 2005-2017 Alfresco Software Limited.
  *
  *  This file is part of Alfresco Mobile for Android.
  *
@@ -146,8 +146,16 @@ public class NodeBrowserFragment extends BaseGridFragment implements RefreshFrag
         }
         else
         {
-            title = getSession().getRootFolder().getName();
-            request = new NodeChildrenRequest.Builder(getSession().getRootFolder());
+            if (getSession() == null)
+            {
+                title = "/";
+                request = new NodeChildrenRequest.Builder("/");
+            }
+            else
+            {
+                title = getSession().getRootFolder().getName();
+                request = new NodeChildrenRequest.Builder(getSession().getRootFolder());
+            }
         }
 
         // Uncomment to display document & folder links

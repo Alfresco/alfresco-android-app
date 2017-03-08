@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+ * Copyright (C) 2005-2017 Alfresco Software Limited.
  *
  * This file is part of Alfresco Mobile for Android.
  *
@@ -18,6 +18,7 @@
 package org.alfresco.mobile.android.async.account;
 
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
+import org.alfresco.mobile.android.api.session.authentication.SamlData;
 import org.alfresco.mobile.android.async.OperationRequestIds;
 import org.alfresco.mobile.android.async.impl.BaseOperationRequest;
 
@@ -42,12 +43,14 @@ public class CreateAccountRequest extends BaseOperationRequest
 
     final OAuthData data;
 
+    final SamlData samlData;
+
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
     protected CreateAccountRequest(Context context, long accountId, String networkId, int notificationVisibility,
             String title, String mimeType, int requestTypeId, String url, String username, String password,
-            String accountDescription, OAuthData data)
+            String accountDescription, OAuthData data, SamlData samlData)
     {
         super(context, accountId, networkId, notificationVisibility, title, mimeType, requestTypeId);
         this.data = data;
@@ -55,6 +58,7 @@ public class CreateAccountRequest extends BaseOperationRequest
         this.username = username;
         this.password = password;
         this.description = accountDescription;
+        this.samlData = samlData;
     }
 
     public CreateAccountRequest(Cursor cursor)
@@ -78,6 +82,8 @@ public class CreateAccountRequest extends BaseOperationRequest
     public static class Builder extends BaseOperationRequest.Builder
     {
         protected OAuthData data;
+
+        protected SamlData samlData;
 
         protected String baseUrl;
 
@@ -113,6 +119,16 @@ public class CreateAccountRequest extends BaseOperationRequest
             this.data = data;
         }
 
+        public Builder(String url, SamlData data)
+        {
+            super();
+            this.baseUrl = url;
+            this.requestTypeId = TYPE_ID;
+            this.mimeType = SESSION_MIME;
+            this.samlData = data;
+            this.username = data.getUserId();
+        }
+
         // ///////////////////////////////////////////////////////////////////////////
         // SETTERS
         // ///////////////////////////////////////////////////////////////////////////
@@ -122,13 +138,19 @@ public class CreateAccountRequest extends BaseOperationRequest
             return this;
         }
 
+        public Builder setSamlData(SamlData data)
+        {
+            this.samlData = data;
+            return this;
+        }
+
         // ///////////////////////////////////////////////////////////////////////////
         // CREATE REQUEST
         // ///////////////////////////////////////////////////////////////////////////
         public CreateAccountRequest build(Context context)
         {
             return new CreateAccountRequest(context, accountId, networkId, notificationVisibility, title, mimeType,
-                    requestTypeId, baseUrl, username, password, description, data);
+                    requestTypeId, baseUrl, username, password, description, data, samlData);
         }
     }
 }

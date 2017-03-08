@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+ * Copyright (C) 2005-2017 Alfresco Software Limited.
  *
  * This file is part of Alfresco Mobile for Android.
  *
@@ -21,6 +21,7 @@ import java.io.Serializable;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
+import org.alfresco.mobile.android.api.session.authentication.SamlData;
 
 public class AlfrescoSessionSettings
 {
@@ -38,6 +39,8 @@ public class AlfrescoSessionSettings
 
     public final OAuthData oAuthData;
 
+    public final SamlData samlData;
+
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
@@ -52,6 +55,7 @@ public class AlfrescoSessionSettings
         this.password = null;
         this.oAuthData = oAuthData;
         this.requestNewOAuthToken = requestNewOAuthToken;
+        this.samlData = null;
     }
 
     public AlfrescoSessionSettings(String baseUrl, OAuthData oAuthData, Map<String, Serializable> extraSettings,
@@ -65,6 +69,7 @@ public class AlfrescoSessionSettings
         this.password = null;
         this.oAuthData = oAuthData;
         this.requestNewOAuthToken = requestNewOAuthToken;
+        this.samlData = null;
     }
 
     public AlfrescoSessionSettings(String baseUrl, String username, String password,
@@ -78,5 +83,19 @@ public class AlfrescoSessionSettings
         this.password = password;
         this.oAuthData = null;
         this.requestNewOAuthToken = false;
+        this.samlData = null;
+    }
+
+    public AlfrescoSessionSettings(String baseUrl, SamlData data, Map<String, Serializable> extraSettings)
+    {
+        super();
+        this.baseUrl = baseUrl;
+        this.isCloud = false;
+        this.extraSettings = extraSettings;
+        this.username = data.getUserId();
+        this.password = data.getTicket();
+        this.oAuthData = null;
+        this.requestNewOAuthToken = false;
+        this.samlData = data;
     }
 }

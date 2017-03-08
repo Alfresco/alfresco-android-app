@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2016 Alfresco Software Limited.
+ *  Copyright (C) 2005-2017 Alfresco Software Limited.
  *
  *  This file is part of Alfresco Mobile for Android.
  *
@@ -91,10 +91,21 @@ public class LoadSessionCallBack implements Operation.OperationCallback<Alfresco
                 break;
             case AlfrescoAccount.TYPE_ALFRESCO_TEST_BASIC:
             case AlfrescoAccount.TYPE_ALFRESCO_CMIS:
+
+                // Neeed to define SAML specific
+
                 EventBusManager.getInstance()
                         .post(new LoadAccountErrorEvent(task.getRequestId(), ((LoadSessionOperation) task).getAccount(),
                                 e, AlfrescoExceptionHelper.getMessageId(context, e)));
                 break;
+
+            case AlfrescoAccount.TYPE_ALFRESCO_CMIS_SAML:
+
+                EventBusManager.getInstance()
+                        .post(new LoadAccountErrorEvent(task.getRequestId(), ((LoadSessionOperation) task).getAccount(),
+                                e, AlfrescoExceptionHelper.getMessageId(context, e)));
+                break;
+
             default:
                 break;
         }
