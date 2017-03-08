@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2015 Alfresco Software Limited.
+ *  Copyright (C) 2005-2017 Alfresco Software Limited.
  *
  *  This file is part of Alfresco Mobile for Android.
  *
@@ -147,6 +147,8 @@ public abstract class AnalyticsManager extends Manager
 
     public static final String ACTION_DENY_PERMISSION = "Deny Permission";
 
+    public static final String ACTION_CHANGE_AUTHENTICATION = "Change Authentication";
+
     ///////////////////////////////////////////////////////////
     // EVENTS : LABELS
     ///////////////////////////////////////////////////////////
@@ -206,6 +208,10 @@ public abstract class AnalyticsManager extends Manager
 
     public static final String LABEL_STORAGE = "Storage";
 
+    public static final String LABEL_BASIC_AUTH = "Basic";
+
+    public static final String LABEL_SAML_AUTH = "SAML";
+
     public static final String LABEL_ADD = "Add";
 
     // Default
@@ -242,6 +248,8 @@ public abstract class AnalyticsManager extends Manager
     public static final int INDEX_SERVER_TYPE = 1;
 
     public static final String SERVER_TYPE_ONPREMISE = "OnPremise";
+
+    public static final String SERVER_TYPE_ONPREMISE_SAML = "OnPremise SAML";
 
     public static final String SERVER_TYPE_CLOUD = "Cloud";
 
@@ -377,6 +385,8 @@ public abstract class AnalyticsManager extends Manager
     public static final String SCREEN_ACCOUNT_SIGNIN = PREFIX_ACCOUNT + "Sign In";
 
     public static final String SCREEN_ACCOUNT_OAUTH = PREFIX_ACCOUNT + "OAuth";
+
+    public static final String SCREEN_ACCOUNT_SAML = PREFIX_ACCOUNT + "Saml";
 
     public static final String SCREEN_ACCOUNT_NETWORK = PREFIX_ACCOUNT + "Networks";
 

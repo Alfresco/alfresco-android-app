@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2015 Alfresco Software Limited.
+ *  Copyright (C) 2005-2017 Alfresco Software Limited.
  *
  *  This file is part of Alfresco Mobile for Android.
  *
@@ -81,6 +81,9 @@ public class CheckSessionOperation extends BaseOperation<AlfrescoSession>
         }
         catch (Exception e)
         {
+            // We retrieve account in case the type has changed
+            acc = AlfrescoAccountManager.getInstance(context).retrieveAccount(accountId);
+
             if (e instanceof AlfrescoSessionException)
             {
                 result.setException((Exception) e.getCause());

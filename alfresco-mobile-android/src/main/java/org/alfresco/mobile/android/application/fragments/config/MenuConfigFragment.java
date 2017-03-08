@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2015 Alfresco Software Limited.
+ *  Copyright (C) 2005-2017 Alfresco Software Limited.
  *
  *  This file is part of Alfresco Mobile for Android.
  *
@@ -188,9 +188,7 @@ public class MenuConfigFragment extends AlfrescoFragment implements DefaultMenuC
                 }
 
                 AnalyticsHelper.reportOperationEvent(getActivity(), AnalyticsManager.CATEGORY_ACCOUNT,
-                        AnalyticsManager.ACTION_UPDATE_MENU,
-                        getAccount().getTypeId() == AlfrescoAccount.TYPE_ALFRESCO_CLOUD
-                                ? AnalyticsManager.SERVER_TYPE_CLOUD : AnalyticsManager.SERVER_TYPE_ONPREMISE,
+                        AnalyticsManager.ACTION_UPDATE_MENU, AnalyticsHelper.getAccountType(getAccount().getTypeId()),
                         1, false);
 
             }

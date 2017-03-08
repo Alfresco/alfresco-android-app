@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2015 Alfresco Software Limited.
+ *  Copyright (C) 2005-2017 Alfresco Software Limited.
  *
  *  This file is part of Alfresco Mobile for Android.
  *
@@ -53,6 +53,15 @@ import android.support.v7.app.AppCompatActivity;
  */
 public abstract class AlfrescoActivity extends AppCompatActivity
 {
+    // SESSION FLAG
+    public static final int SESSION_LOADING = 1;
+
+    public static final int SESSION_ACTIVE = 2;
+
+    public static final int SESSION_INACTIVE = 4;
+
+    public static final int SESSION_ERROR = 8;
+
     protected LocalBroadcastManager broadcastManager;
 
     protected SessionManager sessionManager;
@@ -191,11 +200,8 @@ public abstract class AlfrescoActivity extends AppCompatActivity
     public void swapAccount(AlfrescoAccount account)
     {
         // Analytics
-        AnalyticsHelper
-                .reportOperationEvent(this, AnalyticsManager.CATEGORY_SESSION,
-                        AnalyticsManager.ACTION_SWITCH, account.getTypeId() == AlfrescoAccount.TYPE_ALFRESCO_CLOUD
-                                ? AnalyticsManager.SERVER_TYPE_CLOUD : AnalyticsManager.SERVER_TYPE_ONPREMISE,
-                        1, false);
+        AnalyticsHelper.reportOperationEvent(this, AnalyticsManager.CATEGORY_SESSION, AnalyticsManager.ACTION_SWITCH,
+                AnalyticsHelper.getAccountType(account.getTypeId()), 1, false);
 
         setCurrentAccount(account);
         SessionManager.getInstance(this).loadSession(account);
@@ -230,6 +236,11 @@ public abstract class AlfrescoActivity extends AppCompatActivity
         }
 
         return getCurrentAccount() != null ? sessionManager.getSession(getCurrentAccount().getId()) : null;
+    }
+
+    public void setSessionState(int state)
+    {
+
     }
 
     // ///////////////////////////////////////////////////////////////////////////

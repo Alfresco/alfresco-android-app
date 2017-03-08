@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+ *  Copyright (C) 2005-2017 Alfresco Software Limited.
  *
  * This file is part of Alfresco Mobile for Android.
  *
@@ -18,6 +18,7 @@
 package org.alfresco.mobile.android.async.session;
 
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
+import org.alfresco.mobile.android.api.session.authentication.SamlData;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 
 public class RequestSessionEvent
@@ -25,6 +26,8 @@ public class RequestSessionEvent
     public final AlfrescoAccount accountToLoad;
 
     public final OAuthData data;
+
+    public final SamlData samlData;
 
     public final String networkId;
 
@@ -36,6 +39,7 @@ public class RequestSessionEvent
         this.data = null;
         this.requestReload = false;
         this.networkId = null;
+        this.samlData = null;
     }
 
     public RequestSessionEvent(AlfrescoAccount accountToLoad, OAuthData data)
@@ -44,6 +48,16 @@ public class RequestSessionEvent
         this.data = data;
         this.requestReload = false;
         this.networkId = null;
+        this.samlData = null;
+    }
+
+    public RequestSessionEvent(AlfrescoAccount accountToLoad, SamlData samlData)
+    {
+        this.accountToLoad = accountToLoad;
+        this.samlData = samlData;
+        this.requestReload = false;
+        this.networkId = null;
+        this.data = null;
     }
 
     public RequestSessionEvent(AlfrescoAccount accountToLoad, boolean reload)
@@ -52,6 +66,7 @@ public class RequestSessionEvent
         this.networkId = null;
         this.data = null;
         this.requestReload = reload;
+        this.samlData = null;
     }
 
     public RequestSessionEvent(AlfrescoAccount accountToLoad, String networkId, boolean reload)
@@ -60,5 +75,6 @@ public class RequestSessionEvent
         this.networkId = networkId;
         this.data = null;
         this.requestReload = reload;
+        this.samlData = null;
     }
 }

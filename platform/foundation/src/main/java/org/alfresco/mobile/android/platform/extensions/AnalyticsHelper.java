@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2016 Alfresco Software Limited.
+ *  Copyright (C) 2005-2017 Alfresco Software Limited.
  *
  *  This file is part of Alfresco Mobile for Android.
  *
@@ -27,6 +27,7 @@ import org.alfresco.mobile.android.api.services.impl.AlfrescoServiceRegistry;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.RepositorySession;
+import org.alfresco.mobile.android.api.session.authentication.SamlAuthenticationProvider;
 import org.alfresco.mobile.android.platform.SessionManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
@@ -108,12 +109,9 @@ public class AnalyticsHelper
             customMetrics.append(AnalyticsManager.INDEX_SYNCED_SIZE, getSizeOfSyncedFiles(context, account));
 
             // Via EVENT
-            AnalyticsManager.getInstance(context).reportEvent(AnalyticsManager.CATEGORY_SYNC,
- analyticInfo,
-                    AnalyticsManager.SYNCED_FILES, syncedFile, customDimensions,
-                    customMetrics);
-            AnalyticsManager.getInstance(context).reportEvent(AnalyticsManager.CATEGORY_SYNC,
- analyticInfo,
+            AnalyticsManager.getInstance(context).reportEvent(AnalyticsManager.CATEGORY_SYNC, analyticInfo,
+                    AnalyticsManager.SYNCED_FILES, syncedFile, customDimensions, customMetrics);
+            AnalyticsManager.getInstance(context).reportEvent(AnalyticsManager.CATEGORY_SYNC, analyticInfo,
                     AnalyticsManager.SYNCED_FOLDERS, syncedFolder, customDimensions, null);
 
         }
@@ -300,4 +298,35 @@ public class AnalyticsHelper
         }
     }
 
+    public static String getAccountType(int typeId)
+    {
+        switch (typeId)
+        {
+            case AlfrescoAccount.TYPE_ALFRESCO_CLOUD:
+                return AnalyticsManager.SERVER_TYPE_CLOUD;
+            case AlfrescoAccount.TYPE_ALFRESCO_CMIS:
+                return AnalyticsManager.SERVER_TYPE_ONPREMISE;
+            case AlfrescoAccount.TYPE_ALFRESCO_CMIS_SAML:
+                return AnalyticsManager.SERVER_TYPE_ONPREMISE_SAML;
+            default:
+                return AnalyticsManager.SERVER_TYPE_ONPREMISE;
+        }
+    }
+
+    public static String getAccountType(AlfrescoSession session)
+    {
+        if (session instanceof RepositorySession
+                && ((RepositorySession) session).getAuthenticationProvider() instanceof SamlAuthenticationProvider)
+        {
+            return AnalyticsManager.SERVER_TYPE_ONPREMISE_SAML;
+        }
+        else if (session instanceof CloudSession)
+        {
+            return AnalyticsManager.SERVER_TYPE_CLOUD;
+        }
+        else
+        {
+            return AnalyticsManager.SERVER_TYPE_ONPREMISE;
+        }
+    }
 }

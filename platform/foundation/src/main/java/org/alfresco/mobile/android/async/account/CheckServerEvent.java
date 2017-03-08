@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2015 Alfresco Software Limited.
+ *  Copyright (C) 2005-2017 Alfresco Software Limited.
  *
  *  This file is part of Alfresco Mobile for Android.
  *
@@ -20,9 +20,9 @@ package org.alfresco.mobile.android.async.account;
 import org.alfresco.mobile.android.async.LoaderResult;
 import org.alfresco.mobile.android.async.OperationEvent;
 
-public class CheckServerEvent extends OperationEvent<CheckServerOperation.URLInfo>
+public class CheckServerEvent extends OperationEvent<URLInfo>
 {
-    public CheckServerEvent(String operationId, LoaderResult<CheckServerOperation.URLInfo> result)
+    public CheckServerEvent(String operationId, LoaderResult<URLInfo> result)
     {
         super(operationId, result);
     }

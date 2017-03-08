@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2015 Alfresco Software Limited.
+ *  Copyright (C) 2005-2017 Alfresco Software Limited.
  *
  *  This file is part of Alfresco Mobile for Android.
  *
@@ -98,6 +98,18 @@ public class BundleUtils
         if (arguments.containsKey(key))
         {
             return arguments.getInt(key);
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    public static Serializable getSerializable(Bundle arguments, String key)
+    {
+        if (arguments.containsKey(key))
+        {
+            return arguments.getSerializable(key);
         }
         else
         {

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2015 Alfresco Software Limited.
+ *  Copyright (C) 2005-2017 Alfresco Software Limited.
  *
  * This file is part of Alfresco Activiti Mobile for Android.
  *
@@ -418,8 +418,7 @@ public class AccountSettingsFragment extends AlfrescoFragment implements EditTex
         // Analytics
         AnalyticsHelper
                 .reportOperationEvent(getActivity(), AnalyticsManager.CATEGORY_ACCOUNT,
-                        AnalyticsManager.ACTION_DELETE, account.getTypeId() == AlfrescoAccount.TYPE_ALFRESCO_CLOUD
-                                ? AnalyticsManager.SERVER_TYPE_CLOUD : AnalyticsManager.SERVER_TYPE_ONPREMISE,
+                        AnalyticsManager.ACTION_DELETE, AnalyticsHelper.getAccountType(getAccount().getTypeId()),
                         1, false);
 
         // In case where currentAccount is the one deleted.

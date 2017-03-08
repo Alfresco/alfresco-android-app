@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2015 Alfresco Software Limited.
+ *  Copyright (C) 2005-2017 Alfresco Software Limited.
  *
  *  This file is part of Alfresco Mobile for Android.
  *
@@ -21,6 +21,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 
+import org.alfresco.mobile.android.api.exceptions.AlfrescoSessionException;
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.configuration.ConfigurationConstant;
@@ -34,11 +35,13 @@ import org.alfresco.mobile.android.application.fragments.node.favorite.Favorites
 import org.alfresco.mobile.android.application.fragments.node.upload.UploadFormFragment;
 import org.alfresco.mobile.android.application.fragments.preferences.PasscodePreferences;
 import org.alfresco.mobile.android.application.fragments.signin.AccountOAuthFragment;
+import org.alfresco.mobile.android.application.fragments.signin.AccountSigninSamlFragment;
 import org.alfresco.mobile.android.application.fragments.sync.SyncFragment;
 import org.alfresco.mobile.android.application.intent.PublicIntentAPIUtils;
 import org.alfresco.mobile.android.application.managers.NotificationManager;
 import org.alfresco.mobile.android.application.security.PassCodeActivity;
 import org.alfresco.mobile.android.async.node.favorite.FavoriteNodesRequest;
+import org.alfresco.mobile.android.async.session.LoadSessionCallBack;
 import org.alfresco.mobile.android.async.session.LoadSessionCallBack.LoadAccountCompletedEvent;
 import org.alfresco.mobile.android.async.session.RequestSessionEvent;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
@@ -48,12 +51,14 @@ import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.ui.ListingModeFragment;
 import org.alfresco.mobile.android.ui.node.browse.NodeBrowserTemplate;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.squareup.otto.Subscribe;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -394,6 +399,12 @@ public class PublicDispatcherActivity extends BaseActivity
                     FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
 
+        if (getFragment(AccountSigninSamlFragment.TAG) != null)
+        {
+            getSupportFragmentManager().popBackStack(AccountSigninSamlFragment.TAG,
+                    FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
+
         removeWaitingDialog();
 
         // Upload process : Display the view where the user wants to upload
@@ -434,5 +445,33 @@ public class PublicDispatcherActivity extends BaseActivity
         requestedAccountId = event.accountToLoad.getId();
         setCurrentAccount(event.accountToLoad);
         displayWaitingDialog();
+    }
+
+    @Subscribe
+    public void onAccountErrorEvent(LoadSessionCallBack.LoadAccountErrorEvent event)
+    {
+        // SAML Exception ?
+        if (event.exception instanceof AlfrescoSessionException
+                && event.account.getTypeId() == AlfrescoAccount.TYPE_ALFRESCO_CMIS_SAML)
+        {
+            AccountSigninSamlFragment.with(this).isCreation(false).account(event.account).display();
+            removeWaitingDialog();
+        }
+        else
+        {
+            // General Errors
+            // Display error dialog message
+            new MaterialDialog.Builder(this).iconRes(R.drawable.ic_application_logo)
+                    .title(R.string.error_session_creation_message).content(Html.fromHtml(getString(event.messageId)))
+                    .positiveText(android.R.string.ok).show();
+        }
+
+        // Reset currentAccount & references
+        setCurrentAccount(AlfrescoAccountManager.getInstance(this).retrieveAccount(event.data));
+
+        // Stop progress indication
+        setSupportProgressBarIndeterminateVisibility(false);
+
+        invalidateOptionsMenu();
     }
 }

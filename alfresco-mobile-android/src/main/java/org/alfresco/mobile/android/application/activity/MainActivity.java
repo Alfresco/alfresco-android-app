@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2015 Alfresco Software Limited.
+ *  Copyright (C) 2005-2017 Alfresco Software Limited.
  *
  * This file is part of Alfresco Mobile for Android.
  *
@@ -34,6 +34,7 @@ import org.alfresco.mobile.android.application.configuration.features.ConfigFeat
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.about.AboutFragment;
+import org.alfresco.mobile.android.application.fragments.account.AccountEditFragment;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.builder.FragmentBuilderFactory;
 import org.alfresco.mobile.android.application.fragments.help.HelpDialogFragment;
@@ -41,6 +42,7 @@ import org.alfresco.mobile.android.application.fragments.menu.MainMenuFragment;
 import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.fragments.signin.AccountOAuthFragment;
+import org.alfresco.mobile.android.application.fragments.signin.AccountSigninSamlFragment;
 import org.alfresco.mobile.android.application.fragments.sync.SyncFragment;
 import org.alfresco.mobile.android.application.fragments.sync.SyncMigrationFragment;
 import org.alfresco.mobile.android.application.intent.PublicIntentAPIUtils;
@@ -82,6 +84,7 @@ import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.node.browse.NodeBrowserTemplate;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.squareup.otto.Subscribe;
 
@@ -99,6 +102,7 @@ import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -121,15 +125,6 @@ import android.view.ViewGroup;
 public class MainActivity extends BaseActivity
 {
     private static final String TAG = MainActivity.class.getName();
-
-    // SESSION FLAG
-    private static final int SESSION_LOADING = 1;
-
-    private static final int SESSION_ACTIVE = 2;
-
-    private static final int SESSION_INACTIVE = 4;
-
-    private static final int SESSION_ERROR = 8;
 
     private int sessionState = 0;
 
@@ -190,6 +185,7 @@ public class MainActivity extends BaseActivity
             setCurrentAccount(helper.getCurrentAccount());
             importParent = helper.getFolder();
             fragmentQueue = helper.getFragmentQueue();
+            sessionState = helper.getSessionState();
 
             if (helper.getDeviceCapture() != null)
             {
@@ -440,8 +436,8 @@ public class MainActivity extends BaseActivity
     protected void onSaveInstanceState(Bundle outState)
     {
         super.onSaveInstanceState(outState);
-        outState.putBundle(MainActivityHelper.TAG,
-                MainActivityHelper.createBundle(outState, getCurrentAccount(), capture, fragmentQueue, importParent));
+        outState.putBundle(MainActivityHelper.TAG, MainActivityHelper.createBundle(outState, getCurrentAccount(),
+                capture, fragmentQueue, importParent, sessionState));
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -592,9 +588,9 @@ public class MainActivity extends BaseActivity
             finish();
             return;
         }
-        else if (getCurrentAccount() == null && getCurrentSession() == null)
+        else if (getCurrentSession() == null)
         {
-            sessionManager.loadSession();
+            sessionManager.loadSession(getCurrentAccount());
         }
         else if (sessionState == SESSION_ERROR && getCurrentSession() == null
                 && ConnectivityUtils.hasInternetAvailable(this))
@@ -614,10 +610,7 @@ public class MainActivity extends BaseActivity
         switch (sessionState)
         {
             case SESSION_ERROR:
-                new MaterialDialog.Builder(this).iconRes(R.drawable.ic_application_logo)
-                        .title(R.string.error_session_creation_message)
-                        .content(Html.fromHtml(getString(sessionStateErrorMessageId))).positiveText(android.R.string.ok)
-                        .show();
+                showSessionErrorAlert(sessionStateErrorMessageId, getCurrentAccount());
                 return false;
             case SESSION_LOADING:
                 displayWaitingDialog();
@@ -781,6 +774,8 @@ public class MainActivity extends BaseActivity
                 prefs.edit().putBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, true).apply();
             }
         }
+
+        setSessionState(SESSION_ACTIVE);
     }
 
     private void swapSession(AlfrescoAccount currentAccount)
@@ -994,6 +989,8 @@ public class MainActivity extends BaseActivity
             FavoritesManager.getInstance(this).sync(getCurrentAccount());
         }
 
+        // SAML Things
+
         invalidateOptionsMenu();
     }
 
@@ -1012,12 +1009,10 @@ public class MainActivity extends BaseActivity
     }
 
     @Subscribe
-    public void onAccountErrorEvent(LoadAccountErrorEvent event)
+    public void onAccountErrorEvent(final LoadAccountErrorEvent event)
     {
-        // Display error dialog message
-        new MaterialDialog.Builder(this).iconRes(R.drawable.ic_application_logo)
-                .title(R.string.error_session_creation_message).content(Html.fromHtml(getString(event.messageId)))
-                .positiveText(android.R.string.ok).show();
+        // Display Error Session
+        showSessionErrorAlert(event.messageId, event.account);
 
         // Change status
         setSessionErrorMessageId(event.messageId);
@@ -1114,5 +1109,42 @@ public class MainActivity extends BaseActivity
     private boolean isCurrentAccountToLoad(LoadAccountCompletedEvent event)
     {
         return getCurrentAccount() != null && event != null && (getCurrentAccount().getId() == event.account.getId());
+    }
+
+    private void showSessionErrorAlert(int messageId, final AlfrescoAccount account)
+    {
+        // General Errors
+        // Display error dialog message
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(this).iconRes(R.drawable.ic_application_logo)
+                .title(R.string.error_session_creation_message).content(Html.fromHtml(getString(messageId)))
+                .positiveText(android.R.string.ok);
+
+        if (messageId == R.string.error_session_unauthorized)
+        {
+            if (account.getTypeId() == AlfrescoAccount.TYPE_ALFRESCO_CMIS_SAML)
+            {
+                builder.content(Html.fromHtml(getString(R.string.error_session_expired)));
+            }
+
+            builder.negativeText(R.string.sign_in);
+            builder.onNegative(new MaterialDialog.SingleButtonCallback()
+            {
+                @Override
+                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which)
+                {
+                    if (account.getTypeId() == AlfrescoAccount.TYPE_ALFRESCO_CMIS_SAML)
+                    {
+                        // SAML Exception ?
+                        AccountSigninSamlFragment.with(MainActivity.this).isCreation(false).account(account).display();
+                    }
+                    else
+                    {
+                        AccountEditFragment.with(MainActivity.this).accountId(account.getId()).display();
+                    }
+                }
+            });
+        }
+
+        builder.show();
     }
 }
