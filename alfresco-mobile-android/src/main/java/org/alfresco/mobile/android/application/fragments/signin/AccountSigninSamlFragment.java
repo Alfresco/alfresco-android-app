@@ -262,7 +262,10 @@ public class AccountSigninSamlFragment extends DialogFragment implements Analyti
                     super.onPageFinished(view, url);
                 }
 
-                ((AlfrescoActivity) getActivity()).removeWaitingDialog();
+                if (getActivity() != null)
+                {
+                    ((AlfrescoActivity) getActivity()).removeWaitingDialog();
+                }
             }
         });
 
