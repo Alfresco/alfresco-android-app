@@ -45,6 +45,7 @@ import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.platform.utils.AndroidVersion;
 import org.alfresco.mobile.android.platform.utils.BundleUtils;
 import org.alfresco.mobile.android.ui.activity.AlfrescoActivity;
+import org.alfresco.mobile.android.ui.activity.AlfrescoAppCompatActivity;
 
 import com.squareup.otto.Subscribe;
 
@@ -264,7 +265,14 @@ public class AccountSigninSamlFragment extends DialogFragment implements Analyti
 
                 if (getActivity() != null)
                 {
-                    ((AlfrescoActivity) getActivity()).removeWaitingDialog();
+                    if (getActivity() instanceof AlfrescoActivity)
+                    {
+                        ((AlfrescoActivity) getActivity()).removeWaitingDialog();
+                    }
+                    else if (getActivity() instanceof AlfrescoAppCompatActivity)
+                    {
+                        ((AlfrescoAppCompatActivity) getActivity()).removeWaitingDialog();
+                    }
                 }
             }
         });
@@ -339,6 +347,7 @@ public class AccountSigninSamlFragment extends DialogFragment implements Analyti
     // ///////////////////////////////////////////////////////////////////////////
     protected boolean checkAuthResponseURLResponse(String receivedUrl)
     {
+        if (receivedUrl == null) { return false; }
         String authResponseURL = helper.getAuthenticateUrl();
 
         // If HTTP we check the response can be HTTPS

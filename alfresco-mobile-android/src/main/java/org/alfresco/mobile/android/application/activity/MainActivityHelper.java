@@ -47,6 +47,8 @@ public class MainActivityHelper
 
     private static final String ARGUMENT_SESSION_STATE = "sessionState";
 
+    private static final String ARGUMENT_SESSION_STATE_ERROR_ID = "sessionStateErrorMessageId";
+
     private Bundle savedInstanceBundle = new Bundle();
 
     public MainActivityHelper()
@@ -59,7 +61,8 @@ public class MainActivityHelper
     }
 
     public static Bundle createBundle(Bundle outState, AlfrescoAccount currentAccount,
-            DeviceCapture capture, int fragmentQueue, Folder importParent, int sessionState)
+            DeviceCapture capture, int fragmentQueue, Folder importParent, int sessionState,
+            int sessionStateErrorMessageId)
     {
         Bundle savedInstanceBundle = new Bundle();
 
@@ -78,6 +81,7 @@ public class MainActivityHelper
         }
 
         outState.putInt(ARGUMENT_SESSION_STATE, sessionState);
+        outState.putInt(ARGUMENT_SESSION_STATE_ERROR_ID, sessionStateErrorMessageId);
 
         return savedInstanceBundle;
     }
@@ -114,6 +118,12 @@ public class MainActivityHelper
     {
         return (savedInstanceBundle.containsKey(ARGUMENT_SESSION_STATE))
                 ? (Integer) savedInstanceBundle.getSerializable(ARGUMENT_SESSION_STATE) : -1;
+    }
+
+    public Integer getSessionErrorMessageId()
+    {
+        return (savedInstanceBundle.containsKey(ARGUMENT_SESSION_STATE_ERROR_ID))
+                ? (Integer) savedInstanceBundle.getSerializable(ARGUMENT_SESSION_STATE_ERROR_ID) : -1;
     }
 
     public DeviceCapture getDeviceCapture()
