@@ -186,6 +186,7 @@ public class MainActivity extends BaseActivity
             importParent = helper.getFolder();
             fragmentQueue = helper.getFragmentQueue();
             sessionState = helper.getSessionState();
+            sessionStateErrorMessageId = helper.getSessionErrorMessageId();
 
             if (helper.getDeviceCapture() != null)
             {
@@ -437,7 +438,7 @@ public class MainActivity extends BaseActivity
     {
         super.onSaveInstanceState(outState);
         outState.putBundle(MainActivityHelper.TAG, MainActivityHelper.createBundle(outState, getCurrentAccount(),
-                capture, fragmentQueue, importParent, sessionState));
+                capture, fragmentQueue, importParent, sessionState, sessionStateErrorMessageId));
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -577,6 +578,10 @@ public class MainActivity extends BaseActivity
     public void setSessionErrorMessageId(int messageId)
     {
         sessionState = SESSION_ERROR;
+        if (messageId == 0 || messageId == -1)
+        {
+            messageId = R.string.error_general;
+        }
         sessionStateErrorMessageId = messageId;
     }
 
@@ -1113,6 +1118,10 @@ public class MainActivity extends BaseActivity
 
     private void showSessionErrorAlert(int messageId, final AlfrescoAccount account)
     {
+        if (messageId == 0)
+        {
+            messageId = R.string.error_general;
+        }
         // General Errors
         // Display error dialog message
         MaterialDialog.Builder builder = new MaterialDialog.Builder(this).iconRes(R.drawable.ic_application_logo)
