@@ -65,6 +65,7 @@ import android.webkit.ConsoleMessage;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -227,6 +228,13 @@ public class AccountSigninSamlFragment extends DialogFragment implements Analyti
 
         webview.setWebViewClient(new WebViewClient()
         {
+
+            @Override
+            public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse)
+            {
+                Log.d("SAML", "onReceivedHttpError: " + lastUrl);
+                super.onReceivedHttpError(view, request, errorResponse);
+            }
 
             @Override
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error)
