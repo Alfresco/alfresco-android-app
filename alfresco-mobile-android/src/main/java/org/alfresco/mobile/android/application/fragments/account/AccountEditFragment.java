@@ -203,6 +203,8 @@ public class AccountEditFragment extends AlfrescoFragment
             usernameField.setEnabled(false);
             usernameField.setVisibility(View.GONE);
 
+            validate.setText(R.string.validate);
+
             show(R.id.saml_signin_panel);
             Button signIn = (Button) viewById(R.id.saml_sign_in_button);
             signIn.setOnClickListener(new View.OnClickListener()
@@ -325,12 +327,48 @@ public class AccountEditFragment extends AlfrescoFragment
             if (focusView == null)
             {
                 int messageId = AlfrescoExceptionHelper.getMessageId(getActivity(), event.exception);
+
+                if (messageId == R.string.error_session_unauthorized)
+                {
+
+                    // Reload account information in case of authentication
+                    // switch
+                    AlfrescoAccount tmpAccount = AlfrescoAccountManager.getInstance(getActivity())
+                            .retrieveAccount(acc.getId());
+
+                    // SAML? Switch account happened
+                    if (tmpAccount.getTypeId() == AlfrescoAccount.TYPE_ALFRESCO_CMIS_SAML)
+                    {
+                        AccountSigninSamlFragment.with(getActivity()).isCreation(false).account(tmpAccount).display();
+                        return;
+                    }
+                    else if (acc.getTypeId() == AlfrescoAccount.TYPE_ALFRESCO_CMIS_SAML
+                            && tmpAccount.getTypeId() == AlfrescoAccount.TYPE_ALFRESCO_CMIS)
+                    {
+                        acc = tmpAccount;
+
+                        passwordField.setText(acc.getUsername());
+                        passwordField.setEnabled(true);
+                        passwordField.setVisibility(View.VISIBLE);
+
+                        passwordField.setText(null);
+                        usernameField.setEnabled(true);
+                        usernameField.setVisibility(View.VISIBLE);
+
+                        Button validate = (Button) viewById(R.id.email_sign_in_button);
+                        validate.setText(R.string.save);
+
+                        hide(R.id.saml_signin_panel);
+                    }
+                }
+
                 // Revert to Alfresco WebApp
                 MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity())
                         .title(R.string.error_session_creation_title)
-                        .content(
-                                Html.fromHtml(messageId == R.string.error_unknown ? String.format(getString(messageId),
-                                        event.exception.getCause()) : getString(messageId))).positiveText(R.string.ok);
+                        .content(Html.fromHtml(messageId == R.string.error_unknown
+                                ? String.format(getString(messageId), event.exception.getCause())
+                                : getString(messageId)))
+                        .positiveText(R.string.ok);
                 builder.show();
             }
         }
@@ -350,8 +388,8 @@ public class AccountEditFragment extends AlfrescoFragment
             AnalyticsHelper.reportOperationEvent(getActivity(), AnalyticsManager.CATEGORY_ACCOUNT,
                     AnalyticsManager.ACTION_EDIT, AnalyticsManager.LABEL_CREDENTIALS, 1, false);
 
-            EventBusManager.getInstance().post(
-                    new LoadSessionCallBack.LoadAccountCompletedEvent(updatedAccount.getTitle(), updatedAccount));
+            EventBusManager.getInstance()
+                    .post(new LoadSessionCallBack.LoadAccountCompletedEvent(updatedAccount.getTitle(), updatedAccount));
 
             getActivity().onBackPressed();
         }
