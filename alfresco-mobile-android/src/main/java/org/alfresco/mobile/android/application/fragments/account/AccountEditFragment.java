@@ -325,6 +325,23 @@ public class AccountEditFragment extends AlfrescoFragment
             if (focusView == null)
             {
                 int messageId = AlfrescoExceptionHelper.getMessageId(getActivity(), event.exception);
+
+                if (messageId == R.string.error_session_unauthorized)
+                {
+
+                    // Reload account information in case of authentication
+                    // switch
+                    AlfrescoAccount tmpAccount = AlfrescoAccountManager.getInstance(getActivity())
+                            .retrieveAccount(acc.getId());
+
+                    // SAML? Switch account happened
+                    if (tmpAccount.getTypeId() == AlfrescoAccount.TYPE_ALFRESCO_CMIS_SAML)
+                    {
+                        AccountSigninSamlFragment.with(getActivity()).isCreation(false).account(tmpAccount).display();
+                        return;
+                    }
+                }
+
                 // Revert to Alfresco WebApp
                 MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity())
                         .title(R.string.error_session_creation_title)

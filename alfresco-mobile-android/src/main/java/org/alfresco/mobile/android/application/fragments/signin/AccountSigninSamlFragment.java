@@ -38,6 +38,7 @@ import org.alfresco.mobile.android.async.account.URLInfo;
 import org.alfresco.mobile.android.async.session.RequestSessionEvent;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.EventBusManager;
+import org.alfresco.mobile.android.platform.SessionManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.exception.AlfrescoExceptionHelper;
@@ -309,14 +310,18 @@ public class AccountSigninSamlFragment extends DialogFragment implements Analyti
 
         if (getArguments() != null && getArguments().containsKey(ARGUMENT_ACCOUNT))
         {
+            // Update account across managers
             AlfrescoAccountManager.getInstance(getActivity()).setSamlToken(account.getId(), samlData.getTicket());
-
             AlfrescoAccountManager.getInstance(getActivity()).update(account.getId(), AlfrescoAccount.ACCOUNT_USERNAME,
                     samlData.getUserId());
+            SessionManager.getInstance(getActivity())
+                    .saveAccount(AlfrescoAccountManager.getInstance(getActivity()).retrieveAccount(account.getId()));
+            SessionManager.getInstance(getActivity()).saveSession(null);
+
 
             // TODO Replace by SessionMAnager
             EventBusManager.getInstance().post(new RequestSessionEvent(
-                    (AlfrescoAccount) getArguments().getSerializable(ARGUMENT_ACCOUNT), samlData));
+                    AlfrescoAccountManager.getInstance(getActivity()).retrieveAccount(account.getId()), samlData));
         }
         else
         {

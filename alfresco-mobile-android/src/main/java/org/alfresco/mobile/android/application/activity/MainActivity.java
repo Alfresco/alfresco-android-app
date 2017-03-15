@@ -1118,15 +1118,17 @@ public class MainActivity extends BaseActivity
 
     private void showSessionErrorAlert(int messageId, final AlfrescoAccount account)
     {
-        if (messageId == 0)
-        {
-            messageId = R.string.error_general;
-        }
+
         // General Errors
         // Display error dialog message
         MaterialDialog.Builder builder = new MaterialDialog.Builder(this).iconRes(R.drawable.ic_application_logo)
-                .title(R.string.error_session_creation_message).content(Html.fromHtml(getString(messageId)))
-                .positiveText(android.R.string.ok);
+                .title(R.string.error_session_creation_message).positiveText(android.R.string.ok);
+
+        if (messageId == 0 || messageId == -1)
+        {
+            messageId = R.string.error_general;
+        }
+        builder.content(Html.fromHtml(getString(messageId)));
 
         if (messageId == R.string.error_session_unauthorized)
         {

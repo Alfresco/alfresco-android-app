@@ -137,9 +137,12 @@ public class LoadSessionHelper
                     AnalyticsHelper.reportOperationEvent(context, AnalyticsManager.CATEGORY_ACCOUNT,
                             AnalyticsManager.ACTION_CHANGE_AUTHENTICATION, AnalyticsManager.LABEL_SAML_AUTH, 1, false);
 
-                    AlfrescoAccountManager.getInstance(context).resetPassword(account.getId(),
+                    account = AlfrescoAccountManager.getInstance(context).resetPassword(account.getId(),
                             AlfrescoAccount.ACCOUNT_REPOSITORY_TYPE_ID,
                             String.valueOf(AlfrescoAccount.TYPE_ALFRESCO_CMIS_SAML));
+
+                    SessionManager.getInstance(context)
+                            .saveAccount(AlfrescoAccountManager.getInstance(context).retrieveAccount(account.getId()));
 
                     // Error ?
                     return RepositorySession.connect(sessionSettings.baseUrl, sessionSettings.samlData,
@@ -168,9 +171,12 @@ public class LoadSessionHelper
 
                     // SAML has been deactivated...
                     // We revert to normal account
-                    AlfrescoAccountManager.getInstance(context).resetPassword(account.getId(),
+                    account = AlfrescoAccountManager.getInstance(context).resetPassword(account.getId(),
                             AlfrescoAccount.ACCOUNT_REPOSITORY_TYPE_ID,
                             String.valueOf(AlfrescoAccount.TYPE_ALFRESCO_CMIS));
+
+                    SessionManager.getInstance(context)
+                            .saveAccount(AlfrescoAccountManager.getInstance(context).retrieveAccount(account.getId()));
 
                     // Error ?
                     return RepositorySession.connect(sessionSettings.baseUrl, sessionSettings.username,

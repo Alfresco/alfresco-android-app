@@ -127,6 +127,10 @@ public final class AlfrescoExceptionHelper
             {
                 messageId = R.string.error_session_unauthorized;
             }
+            else if (e.getCause().getCause() instanceof CmisObjectNotFoundException)
+            {
+                messageId = R.string.error_session_unauthorized;
+            }
         }
         // Case where the user has no right (server configuration or wrong
         // username/password)
