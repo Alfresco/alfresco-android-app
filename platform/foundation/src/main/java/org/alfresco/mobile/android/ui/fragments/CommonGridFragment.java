@@ -587,7 +587,7 @@ public abstract class CommonGridFragment extends AlfrescoFragment
         {
             if (messageId == R.string.error_session_unauthorized && getActivity() instanceof AlfrescoActivity)
             {
-                ((AlfrescoActivity) getActivity()).setSessionState(AlfrescoActivity.SESSION_ERROR);
+                ((AlfrescoActivity) getActivity()).setSessionState(AlfrescoActivity.SESSION_ERROR, messageId);
             }
 
             AlfrescoNotificationManager.getInstance(getActivity()).showAlertCrouton(getActivity(),
