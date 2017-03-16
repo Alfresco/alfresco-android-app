@@ -26,7 +26,6 @@ import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.activity.PublicDispatcherActivity;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
-import org.alfresco.mobile.android.platform.mdm.MDMManager;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 import org.alfresco.mobile.android.ui.holder.TwoLinesViewHolder;
@@ -152,10 +151,7 @@ public class AccountsAdapter extends BaseListAdapter<AlfrescoAccount, TwoLinesVi
     {
         File f = AlfrescoStorageManager.getInstance(context).getPrivateFolder(acc);
         File icon = new File(f, acc.getUsername().concat(".jpg"));
-        if (MDMManager.getInstance(context) == null)
-        {
-            Picasso.with(context).load(icon).placeholder(defaultIcon).into(imageView);
-        }
+        Picasso.with(context).load(icon).placeholder(defaultIcon).into(imageView);
     }
 
     private void updateIconList(TwoLinesViewHolder vh, AlfrescoAccount acc)
