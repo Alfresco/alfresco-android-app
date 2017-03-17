@@ -72,7 +72,7 @@ import android.webkit.WebViewClient;
 
 public class AccountSigninSamlFragment extends DialogFragment implements AnalyticsManager.FragmentAnalyzed
 {
-    public static final String TAG = "AccountSigninSamlFragment";
+    public static final String TAG = AccountSigninSamlFragment.class.getName();
 
     public static final String LAYOUT_ID = "OAuthLayoutId";
 

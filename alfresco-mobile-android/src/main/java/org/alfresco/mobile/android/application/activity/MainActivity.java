@@ -573,16 +573,22 @@ public class MainActivity extends BaseActivity
     public void setSessionState(int state)
     {
         sessionState = state;
+        sessionStateErrorMessageId = 0;
     }
 
-    public void setSessionErrorMessageId(int messageId)
+    public void setSessionState(int state, int messageId)
     {
-        sessionState = SESSION_ERROR;
+        sessionState = state;
         if (messageId == 0 || messageId == -1)
         {
             messageId = R.string.error_general;
         }
         sessionStateErrorMessageId = messageId;
+    }
+
+    public void setSessionErrorMessageId(int messageId)
+    {
+        setSessionState(SESSION_ERROR, messageId);
     }
 
     private void checkSession()
@@ -902,6 +908,19 @@ public class MainActivity extends BaseActivity
         }
 
         removeWaitingDialog();
+
+        if (getFragment(AccountSigninSamlFragment.TAG) != null)
+        {
+            if (DisplayUtils.hasCentralPane(this))
+            {
+                FragmentDisplayer.clearCentralPane(this);
+            }
+            else
+            {
+                getSupportFragmentManager().popBackStack(AccountSigninSamlFragment.TAG,
+                        FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            }
+        }
 
         // Used for launching last pressed action button from main menu
         if (fragmentQueue != -1)
