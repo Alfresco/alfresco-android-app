@@ -791,6 +791,11 @@ public class MainActivity extends BaseActivity
 
     private void swapSession(AlfrescoAccount currentAccount)
     {
+        swapSession(currentAccount, false);
+    }
+
+    private void swapSession(AlfrescoAccount currentAccount, boolean resetStack)
+    {
         // Change activity state to loading.
         setSessionState(SESSION_LOADING);
 
@@ -809,7 +814,10 @@ public class MainActivity extends BaseActivity
         }
 
         // Return to root screen
-        getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        if (resetStack)
+        {
+            getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
 
         // Display progress
         setSupportProgressBarIndeterminateVisibility(true);
@@ -823,7 +831,7 @@ public class MainActivity extends BaseActivity
     @Subscribe
     public void onSessionRequested(RequestSessionEvent event)
     {
-        swapSession(event.accountToLoad);
+        swapSession(event.accountToLoad, event.resetStack);
         fromSessionRequested = true;
     }
 

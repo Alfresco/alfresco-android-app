@@ -26,6 +26,8 @@ import org.alfresco.mobile.android.api.session.authentication.impl.SamlDataImpl;
 import org.alfresco.mobile.android.api.utils.JsonUtils;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.BaseActivity;
+import org.alfresco.mobile.android.application.activity.MainActivity;
+import org.alfresco.mobile.android.application.activity.PrivateDialogActivity;
 import org.alfresco.mobile.android.application.activity.WelcomeActivity;
 import org.alfresco.mobile.android.application.fragments.builder.LeafFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.preferences.GeneralPreferences;
@@ -329,7 +331,13 @@ public class AccountSigninSamlFragment extends DialogFragment implements Analyti
 
             // TODO Replace by SessionMAnager
             EventBusManager.getInstance().post(new RequestSessionEvent(
-                    AlfrescoAccountManager.getInstance(getActivity()).retrieveAccount(account.getId()), samlData));
+                    AlfrescoAccountManager.getInstance(getActivity()).retrieveAccount(account.getId()), samlData,
+                    getActivity() instanceof MainActivity));
+
+            if (getActivity() instanceof PrivateDialogActivity)
+            {
+                getActivity().finish();
+            }
         }
         else
         {

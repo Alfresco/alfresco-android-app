@@ -33,6 +33,8 @@ public class RequestSessionEvent
 
     public final boolean requestReload;
 
+    public final boolean resetStack;
+
     public RequestSessionEvent(AlfrescoAccount accountToLoad)
     {
         this.accountToLoad = accountToLoad;
@@ -40,6 +42,7 @@ public class RequestSessionEvent
         this.requestReload = false;
         this.networkId = null;
         this.samlData = null;
+        this.resetStack = true;
     }
 
     public RequestSessionEvent(AlfrescoAccount accountToLoad, OAuthData data)
@@ -49,6 +52,7 @@ public class RequestSessionEvent
         this.requestReload = false;
         this.networkId = null;
         this.samlData = null;
+        this.resetStack = true;
     }
 
     public RequestSessionEvent(AlfrescoAccount accountToLoad, SamlData samlData)
@@ -58,6 +62,17 @@ public class RequestSessionEvent
         this.requestReload = false;
         this.networkId = null;
         this.data = null;
+        this.resetStack = true;
+    }
+
+    public RequestSessionEvent(AlfrescoAccount accountToLoad, SamlData samlData, boolean resetStack)
+    {
+        this.accountToLoad = accountToLoad;
+        this.samlData = samlData;
+        this.requestReload = false;
+        this.networkId = null;
+        this.data = null;
+        this.resetStack = resetStack;
     }
 
     public RequestSessionEvent(AlfrescoAccount accountToLoad, boolean reload)
@@ -67,6 +82,7 @@ public class RequestSessionEvent
         this.data = null;
         this.requestReload = reload;
         this.samlData = null;
+        this.resetStack = true;
     }
 
     public RequestSessionEvent(AlfrescoAccount accountToLoad, String networkId, boolean reload)
@@ -76,5 +92,6 @@ public class RequestSessionEvent
         this.data = null;
         this.requestReload = reload;
         this.samlData = null;
+        this.resetStack = true;
     }
 }
