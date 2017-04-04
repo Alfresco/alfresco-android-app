@@ -216,6 +216,12 @@ public class CreateDocumentOperation extends UpNodeOperation
                 UploadRetryService.retryDelay(context, acc != null ? acc.getId() : null, getRequestId(),
                         UploadRetryService.DEFAULT_DELAY);
             }
+            else if (result.getException() instanceof AlfrescoServiceException
+                    && result.getException().getCause() instanceof CmisConnectionException)
+            {
+                UploadRetryService.retryDelay(context, acc != null ? acc.getId() : null, getRequestId(),
+                        UploadRetryService.DEFAULT_DELAY);
+            }
         }
         else if (!result.hasException())
         {
