@@ -51,13 +51,17 @@ import org.alfresco.mobile.android.ui.activity.AlfrescoActivity;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.ClipData;
 import android.content.ClipData.Item;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -381,8 +385,21 @@ public class UploadFormFragment extends AlfrescoFragment
         {
             file = new File(tmpPath);
 
-            if (file == null || !file
-                    .exists()) { throw new AlfrescoAppException(getString(R.string.error_unknown_filepath), true); }
+            if (!file.exists()) { throw new AlfrescoAppException(getString(R.string.error_unknown_filepath), true); }
+
+            if (!file.getPath()
+                    .startsWith(AlfrescoStorageManager.getInstance(getContext()).getRootPrivateFolder().getPath()))
+            {
+                int hasWriteExternalStoragePermission = ContextCompat.checkSelfPermission(getActivity(),
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                if (hasWriteExternalStoragePermission != PackageManager.PERMISSION_GRANTED)
+                {
+                    ActivityCompat.requestPermissions(getActivity(),
+                            new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE },
+                            BaseActivity.REQUEST_PERMISSION_IMPORT_SD);
+                }
+            }
+
             fileName = file.getName();
 
             if (getActivity() instanceof PublicDispatcherActivity)

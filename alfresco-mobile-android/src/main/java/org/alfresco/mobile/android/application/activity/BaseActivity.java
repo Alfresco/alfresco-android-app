@@ -21,6 +21,7 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerFragment;
 import org.alfresco.mobile.android.application.fragments.preferences.PasscodePreferences;
 import org.alfresco.mobile.android.application.security.PassCodeActivity;
+import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.SessionManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.extensions.AnalyticsHelper;
@@ -52,6 +53,8 @@ public abstract class BaseActivity extends AlfrescoActivity
     public final static int REQUEST_PERMISSION_SD = 70;
 
     public final static int REQUEST_PERMISSION_DL = 80;
+
+    public final static int REQUEST_PERMISSION_IMPORT_SD = 90;
 
     // ///////////////////////////////////////////////////////////////////////////
     // LIFECYCLE
@@ -202,12 +205,21 @@ public abstract class BaseActivity extends AlfrescoActivity
         {
             case REQUEST_PERMISSION_SD:
             case REQUEST_PERMISSION_DL:
+            case REQUEST_PERMISSION_IMPORT_SD:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
                 {
-                    FileExplorerFragment.with(this)
-                            .file(requestCode == REQUEST_PERMISSION_DL ? Environment.getExternalStorageDirectory()
-                                    : Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS))
-                            .display();
+                    if (requestCode == REQUEST_PERMISSION_IMPORT_SD)
+                    {
+
+                    }
+                    else
+                    {
+                        FileExplorerFragment.with(this)
+                                .file(requestCode == REQUEST_PERMISSION_DL ? Environment.getExternalStorageDirectory()
+                                        : Environment
+                                                .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS))
+                                .display();
+                    }
 
                     // Permission Granted
                     AnalyticsHelper.reportOperationEvent(this, AnalyticsManager.CATEGORY_SETTINGS,
@@ -215,6 +227,12 @@ public abstract class BaseActivity extends AlfrescoActivity
                 }
                 else
                 {
+                    if (requestCode == REQUEST_PERMISSION_IMPORT_SD)
+                    {
+                        finish();
+                        AlfrescoNotificationManager.getInstance(this).showLongToast(R.string.permission_not_enough);
+                    }
+
                     // Permission Denied
                     AnalyticsHelper.reportOperationEvent(this, AnalyticsManager.CATEGORY_SETTINGS,
                             AnalyticsManager.ACTION_DENY_PERMISSION, AnalyticsManager.LABEL_STORAGE, 1, false);

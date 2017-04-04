@@ -921,5 +921,9 @@
 
     <string name="open_in_alfresco_editor">Open in Alfresco Text Editor</string>
 
+    <!-- PERMISSION -->
+    <!-- ################################################################################## -->
+    <string name="permission.not.enough">Not enough permission to access the file.</string>
+
 
 </resources>
