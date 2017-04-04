@@ -131,7 +131,7 @@ public class SyncContentSyncAdapter extends AbstractThreadedSyncAdapter
                 {
                     analyticInfo = extras.getString(SyncContentManager.ARGUMENT_ANALYTIC);
                 }
-                else
+                else if (analyticInfo == null)
                 {
                     analyticInfo = AnalyticsManager.LABEL_SYNC_SYSTEM;
                 }
@@ -251,6 +251,7 @@ public class SyncContentSyncAdapter extends AbstractThreadedSyncAdapter
             if (node == null && nodeIdentifier == null)
             {
                 AnalyticsHelper.analyzeSync(getContext(), acc, analyticInfo);
+                analyticInfo = null;
             }
 
             Log.d("SYNC", "Total:" + syncResult.stats.numEntries);
