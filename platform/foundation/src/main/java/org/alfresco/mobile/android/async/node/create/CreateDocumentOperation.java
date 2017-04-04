@@ -39,6 +39,8 @@ import org.alfresco.mobile.android.platform.security.DataProtectionManager;
 import org.alfresco.mobile.android.platform.security.EncryptionUtils;
 import org.alfresco.mobile.android.platform.utils.ConnectivityUtils;
 import org.alfresco.mobile.android.sync.SyncContentManager;
+import org.apache.chemistry.opencmis.commons.exceptions.CmisConnectionException;
+import org.apache.chemistry.opencmis.commons.exceptions.CmisContentAlreadyExistsException;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisUnauthorizedException;
 
 import android.content.ContentValues;
@@ -223,9 +225,51 @@ public class CreateDocumentOperation extends UpNodeOperation
             }
 
             // Analytics
+            // Define exactly whats wrong ?
+            // try to identify why there's an error
+            String label = AnalyticsManager.TYPE_FOLDER;
+            boolean hasException = false;
+            try
+            {
+                if (result.hasException())
+                {
+                    if (result.getException() instanceof AlfrescoServiceException
+                            && result.getException().getCause() != null)
+                    {
+                        if (result.getException().getCause() instanceof CmisUnauthorizedException)
+                        {
+                            hasException = false;
+                            label = AnalyticsManager.LABEL_UNAUTHORIZED;
+                        }
+                        else if (result.getException().getCause() instanceof CmisConnectionException)
+                        {
+                            if (ConnectivityUtils.hasInternetAvailable(context))
+                            {
+                                hasException = false;
+                                label = AnalyticsManager.LABEL_UNKNOWN_SERVER;
+                            }
+                            else
+                            {
+                                hasException = false;
+                                label = AnalyticsManager.LABEL_OFFLINE;
+                            }
+                        }
+                        else if (result.getException().getCause() instanceof CmisContentAlreadyExistsException)
+                        {
+                            hasException = false;
+                            label = AnalyticsManager.LABEL_CONTENT_ALREADY_EXIST;
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                hasException = true;
+                label = AnalyticsManager.LABEL_FAILED;
+            }
+
             AnalyticsHelper.reportOperationEvent(context, AnalyticsManager.CATEGORY_DOCUMENT_MANAGEMENT,
-                    AnalyticsManager.ACTION_CREATE, doc != null ? doc.getContentStreamMimeType() : null, 1,
-                    result.hasException(), AnalyticsManager.INDEX_SYNCED_SIZE,
+                    AnalyticsManager.ACTION_CREATE, label, 1, hasException, AnalyticsManager.INDEX_SYNCED_SIZE,
                     doc != null ? doc.getContentStreamLength() : -1L);
         }
 

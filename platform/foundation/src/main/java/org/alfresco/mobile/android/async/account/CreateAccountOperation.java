@@ -40,7 +40,10 @@ import org.alfresco.mobile.android.platform.accounts.AlfrescoSessionSettings;
 import org.alfresco.mobile.android.platform.extensions.AnalyticsHelper;
 import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.platform.favorite.FavoritesManager;
+import org.alfresco.mobile.android.platform.utils.ConnectivityUtils;
 import org.alfresco.mobile.android.sync.SyncContentManager;
+import org.apache.chemistry.opencmis.commons.exceptions.CmisConnectionException;
+import org.apache.chemistry.opencmis.commons.exceptions.CmisUnauthorizedException;
 
 import android.util.Log;
 
@@ -272,8 +275,45 @@ public class CreateAccountOperation extends BaseOperation<AlfrescoAccount>
         super.onPostExecute(result);
 
         // Analytics
+        // try to identify why theres an error
+        String label = AnalyticsHelper.getAccountType(session);
+        boolean hasException = false;
+        try
+        {
+            if (result.hasException())
+            {
+                if (result.getException() instanceof AlfrescoSessionException
+                        && result.getException().getCause() != null)
+                {
+                    if (result.getException().getCause() instanceof CmisUnauthorizedException)
+                    {
+                        hasException = false;
+                        label = AnalyticsManager.LABEL_UNAUTHORIZED;
+                    }
+                    else if (result.getException().getCause() instanceof CmisConnectionException)
+                    {
+                        if (ConnectivityUtils.hasInternetAvailable(context))
+                        {
+                            hasException = false;
+                            label = AnalyticsManager.LABEL_UNKNOWN_SERVER;
+                        }
+                        else
+                        {
+                            hasException = false;
+                            label = AnalyticsManager.LABEL_OFFLINE;
+                        }
+                    }
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            hasException = true;
+            label = AnalyticsManager.LABEL_FAILED;
+        }
+
         AnalyticsHelper.reportOperationEvent(context, AnalyticsManager.CATEGORY_ACCOUNT, AnalyticsManager.ACTION_CREATE,
-                AnalyticsHelper.getAccountType(session), 1, result.hasException());
+                label, 1, hasException);
 
         if (result.getData() != null)
         {

@@ -160,6 +160,14 @@ public abstract class AnalyticsManager extends Manager
 
     public static final String LABEL_FAILED = "Failed";
 
+    public static final String LABEL_UNAUTHORIZED = "Unauthorized";
+
+    public static final String LABEL_OFFLINE = "Offline";
+
+    public static final String LABEL_CONTENT_ALREADY_EXIST = "Content Already Exist";
+
+    public static final String LABEL_UNKNOWN_SERVER = "Unknown Server";
+
     public static final String LABEL_NETWORK = "Network";
 
     public static final String LABEL_PROFILE = "Profile";
