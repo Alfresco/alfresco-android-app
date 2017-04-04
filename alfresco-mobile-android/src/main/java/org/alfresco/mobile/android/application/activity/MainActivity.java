@@ -104,6 +104,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
@@ -238,18 +239,18 @@ public class MainActivity extends BaseActivity
                 invalidateOptionsMenu();
 
                 // Refresh Title from Fragments
-                AlfrescoFragment fr = (AlfrescoFragment) getSupportFragmentManager()
+                Fragment fr = getSupportFragmentManager()
                         .findFragmentById(DisplayUtils.getLeftFragmentId(MainActivity.this));
-                if (fr != null)
+                if (fr != null && fr instanceof AlfrescoFragment)
                 {
-                    fr.displayTitle();
+                    ((AlfrescoFragment) fr).displayTitle();
                     if (DisplayUtils.hasCentralPane(MainActivity.this))
                     {
                         fr = (AlfrescoFragment) getSupportFragmentManager()
                                 .findFragmentById(DisplayUtils.getCentralFragmentId(MainActivity.this));
                         if (fr != null)
                         {
-                            fr.displayTitle();
+                            ((AlfrescoFragment) fr).displayTitle();
                         }
                     }
                 }

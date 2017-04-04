@@ -127,7 +127,8 @@ public class PrivateDialogActivity extends BaseAppCompatActivity
             return;
         }
 
-        if (PrivateIntent.ACTION_START_PROCESS.equals(action) && getFragment(CreateTaskTypePickerFragment.TAG) == null)
+        if (PrivateIntent.ACTION_START_PROCESS.equals(action) && getFragment(CreateTaskTypePickerFragment.TAG) == null
+                && getFragment(CreateTaskFragment.TAG) == null)
         {
             List<Document> docs = new ArrayList<Document>();
             if (getIntent().getExtras() != null && getIntent().getExtras().containsKey(PrivateIntent.EXTRA_DOCUMENT))
