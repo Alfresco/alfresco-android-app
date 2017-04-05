@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2015 Alfresco Software Limited.
+ *  Copyright (C) 2005-2017 Alfresco Software Limited.
  *
  * This file is part of Alfresco Activiti Mobile for Android.
  *
@@ -36,6 +36,10 @@ import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.rengwuxian.materialedittext.MaterialEditText;
+import com.squareup.otto.Subscribe;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.os.Bundle;
@@ -50,10 +54,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
-
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.rengwuxian.materialedittext.MaterialEditText;
-import com.squareup.otto.Subscribe;
 
 public class AccountServerFragment extends AlfrescoFragment
 {
@@ -112,8 +112,8 @@ public class AccountServerFragment extends AlfrescoFragment
                 }
                 else
                 {
-                    Operator.with(getActivity()).load(
-                            new CheckServerRequest.Builder(https.isChecked(), hostname.getText().toString()));
+                    Operator.with(getActivity())
+                            .load(new CheckServerRequest.Builder(https.isChecked(), hostname.getText().toString()));
                 }
             }
         });
@@ -192,8 +192,8 @@ public class AccountServerFragment extends AlfrescoFragment
                 }
 
                 int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-                if (https.getVisibility() == View.VISIBLE && hideHTTPS || https.getVisibility() == View.INVISIBLE
-                        && !hideHTTPS)
+                if (https.getVisibility() == View.VISIBLE && hideHTTPS
+                        || https.getVisibility() == View.INVISIBLE && !hideHTTPS)
                 {
                     https.setVisibility(hideHTTPS ? View.INVISIBLE : View.VISIBLE);
                     https.animate().setDuration(shortAnimTime).alpha(hideHTTPS ? 0 : 1)
@@ -274,8 +274,9 @@ public class AccountServerFragment extends AlfrescoFragment
             int fieldMessageId = AlfrescoExceptionHelper.getMessageErrorId(getActivity(), event.exception, true);
             int messageId = AlfrescoExceptionHelper.getMessageErrorId(getActivity(), event.exception, false);
 
-            hostname.setError(Html.fromHtml(fieldMessageId == R.string.error_unknown ? String.format(
-                    getString(fieldMessageId), event.exception.getCause()) : getString(fieldMessageId)));
+            hostname.setError(Html.fromHtml(fieldMessageId == R.string.error_unknown
+                    ? String.format(getString(fieldMessageId), event.exception.getCause())
+                    : getString(fieldMessageId)));
             MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity())
                     .title(R.string.general_login_check_server).neutralText("Ignore and Continue")
                     .callback(new MaterialDialog.ButtonCallback()
@@ -288,17 +289,26 @@ public class AccountServerFragment extends AlfrescoFragment
                                     .display();
                         }
                     })
-                    .content(
-                            Html.fromHtml(messageId == R.string.error_unknown ? String.format(getString(messageId),
-                                    event.exception.getCause()) : getString(messageId))).positiveText(R.string.ok);
+                    .content(Html.fromHtml(messageId == R.string.error_unknown
+                            ? String.format(getString(messageId), event.exception.getCause()) : getString(messageId)))
+                    .positiveText(R.string.ok);
             builder.show();
             return;
         }
         else
         {
-            // We got our ticket
-            AccountCredentialsFragment.with(getActivity())
-                    .hostname(event.data.enforceCMIS ? event.data.baseUrl : event.data.testUrl).display();
+            // SAML enabled so
+            // SAML is enforced by default (need to check server side config)
+            if (event.data.samlData != null && event.data.samlData.isSamlEnabled())
+            {
+                AccountSigninSamlFragment.with(getActivity()).urlInfo(event.data).isCreation(true).display();
+            }
+            else
+            {
+                // Default case: we request credentials
+                AccountCredentialsFragment.with(getActivity())
+                        .hostname(event.data.enforceCMIS ? event.data.baseUrl : event.data.testUrl).display();
+            }
         }
     }
 

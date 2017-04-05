@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2015 Alfresco Software Limited.
+ *  Copyright (C) 2005-2017 Alfresco Software Limited.
  *
  * This file is part of Alfresco Activiti Mobile for Android.
  *
@@ -28,6 +28,7 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.activity.BaseAppCompatActivity;
 import org.alfresco.mobile.android.application.activity.WelcomeActivity;
+import org.alfresco.mobile.android.application.configuration.features.SyncCellularConfigFeature;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.account.AccountEditFragment;
@@ -57,6 +58,8 @@ import org.alfresco.mobile.android.ui.holder.TwoLinesCheckboxViewHolder;
 import org.alfresco.mobile.android.ui.holder.TwoLinesViewHolder;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Intent;
@@ -73,8 +76,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
-import com.afollestad.materialdialogs.MaterialDialog;
 
 /**
  * Manage global application preferences.
@@ -192,6 +193,18 @@ public class AccountSettingsFragment extends AlfrescoFragment implements EditTex
         super.onCreate(savedInstanceState);
     }
 
+    @Override
+    public void onStart()
+    {
+        super.onStart();
+        if (AlfrescoAccountManager.getInstance(getActivity()).isEmpty()
+                && AlfrescoAccountManager.getInstance(getActivity()).hasData())
+        {
+            dismiss();
+            getActivity().finish();
+        }
+    }
+
     // ///////////////////////////////////////////////////////////////////////////
     // INTERNAL
     // ///////////////////////////////////////////////////////////////////////////
@@ -241,7 +254,7 @@ public class AccountSettingsFragment extends AlfrescoFragment implements EditTex
             viewById(R.id.settings_sync_container).setVisibility(View.VISIBLE);
             syncFavoritesVH = HolderUtils.configure(viewById(R.id.favorite_sync_wifi),
                     getString(R.string.settings_favorite_sync_data),
-                    getString(R.string.settings_favorite_sync_data_all), !syncWifiEnable);
+                    getString(R.string.settings_favorite_sync_data_all), syncWifiEnable);
 
             syncFavoritesVH.choose.setOnClickListener(new View.OnClickListener()
             {
@@ -252,6 +265,13 @@ public class AccountSettingsFragment extends AlfrescoFragment implements EditTex
                             syncFavoritesVH.choose.isChecked());
                 }
             });
+
+            SyncCellularConfigFeature feature = new SyncCellularConfigFeature(getActivity());
+            if (feature.isProtected(account))
+            {
+                syncFavoritesVH.bottomText.setText(R.string.mdm_managed);
+                syncFavoritesVH.choose.setEnabled(false);
+            }
         }
     }
 
@@ -398,8 +418,7 @@ public class AccountSettingsFragment extends AlfrescoFragment implements EditTex
         // Analytics
         AnalyticsHelper
                 .reportOperationEvent(getActivity(), AnalyticsManager.CATEGORY_ACCOUNT,
-                        AnalyticsManager.ACTION_DELETE, account.getTypeId() == AlfrescoAccount.TYPE_ALFRESCO_CLOUD
-                                ? AnalyticsManager.SERVER_TYPE_CLOUD : AnalyticsManager.SERVER_TYPE_ONPREMISE,
+                        AnalyticsManager.ACTION_DELETE, AnalyticsHelper.getAccountType(getAccount().getTypeId()),
                         1, false);
 
         // In case where currentAccount is the one deleted.
@@ -532,6 +551,13 @@ public class AccountSettingsFragment extends AlfrescoFragment implements EditTex
         {
             ((BaseActivity) getActivity()).setCurrentAccount(account);
         }
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // CONFIG
+    // ///////////////////////////////////////////////////////////////////////////
+    private void getSyncWifi()
+    {
     }
 
     // ///////////////////////////////////////////////////////////////////////////

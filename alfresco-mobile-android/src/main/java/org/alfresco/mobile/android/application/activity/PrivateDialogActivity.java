@@ -32,20 +32,22 @@ import org.alfresco.mobile.android.application.fragments.operation.OperationsFra
 import org.alfresco.mobile.android.application.fragments.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.fragments.workflow.CreateTaskFragment;
 import org.alfresco.mobile.android.application.fragments.workflow.CreateTaskTypePickerFragment;
+import org.alfresco.mobile.android.application.security.PassCodeActivity;
 import org.alfresco.mobile.android.application.ui.form.picker.DocumentPickerFragment.onPickDocumentFragment;
 import org.alfresco.mobile.android.async.file.encryption.AccountProtectionEvent;
 import org.alfresco.mobile.android.platform.extensions.AnalyticsHelper;
 import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 
+import com.squareup.otto.Subscribe;
+
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-
-import com.squareup.otto.Subscribe;
 
 /**
  * @author Jean Marie Pascal
@@ -115,15 +117,18 @@ public class PrivateDialogActivity extends BaseAppCompatActivity
                 getSupportActionBar().hide();
             }
 
-            Folder folder = (Folder) getIntent().getExtras().get(PrivateIntent.EXTRA_FOLDER);
-            Node node = (Node) getIntent().getExtras().get(PrivateIntent.EXTRA_NODE);
+            Folder folder = (getIntent().hasExtra(PrivateIntent.EXTRA_FOLDER))
+                    ? (Folder) getIntent().getExtras().get(PrivateIntent.EXTRA_FOLDER) : null;
+            Node node = (getIntent().hasExtra(PrivateIntent.EXTRA_NODE))
+                    ? (Node) getIntent().getExtras().get(PrivateIntent.EXTRA_NODE) : null;
 
             Fragment f = EditPropertiesFragment.with(this).parentFolder(folder).node(node).createFragment();
             FragmentDisplayer.with(this).back(false).load(f).animate(null).into(FragmentDisplayer.PANEL_LEFT);
             return;
         }
 
-        if (PrivateIntent.ACTION_START_PROCESS.equals(action) && getFragment(CreateTaskTypePickerFragment.TAG) == null)
+        if (PrivateIntent.ACTION_START_PROCESS.equals(action) && getFragment(CreateTaskTypePickerFragment.TAG) == null
+                && getFragment(CreateTaskFragment.TAG) == null)
         {
             List<Document> docs = new ArrayList<Document>();
             if (getIntent().getExtras() != null && getIntent().getExtras().containsKey(PrivateIntent.EXTRA_DOCUMENT))
@@ -171,6 +176,16 @@ public class PrivateDialogActivity extends BaseAppCompatActivity
             broadcastManager.unregisterReceiver(receiver);
         }
         super.onStop();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        if (requestCode == PassCodeActivity.REQUEST_CODE_PASSCODE && resultCode == RESULT_CANCELED)
+        {
+            setResult(Activity.RESULT_CANCELED);
+            finish();
+        }
     }
 
     // ///////////////////////////////////////////////////////////////////////////

@@ -18,8 +18,10 @@
 package org.alfresco.mobile.android.application.security;
 
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.configuration.features.PasscodeConfigFeature;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.preferences.PasscodePreferences;
+import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -29,6 +31,8 @@ import android.support.v4.app.FragmentActivity;
 public class PassCodeActivity extends FragmentActivity
 {
     public static final int REQUEST_CODE_PASSCODE = 48976;
+
+    public static final String REQUEST_DEFINE_PASSCODE = "definePasscode";
 
     // ///////////////////////////////////////////
     // LIFECYCLE
@@ -42,14 +46,50 @@ public class PassCodeActivity extends FragmentActivity
 
         if (getSupportFragmentManager().findFragmentByTag(PassCodeDialogFragment.TAG) == null)
         {
-            PassCodeDialogFragment f = PassCodeDialogFragment.requestPasscode();
+            PassCodeDialogFragment f;
+            if (getIntent() != null && getIntent().getAction() != null)
+            {
+                f = PassCodeDialogFragment.define();
+            }
+            else
+            {
+                f = PassCodeDialogFragment.requestPasscode();
+            }
             FragmentDisplayer.with(this).load(f).back(false).animate(null).into(FragmentDisplayer.PANEL_LEFT);
+        }
+    }
+
+    @Override
+    protected void onStart()
+    {
+        super.onStart();
+        if (AlfrescoAccountManager.getInstance(this).isEmpty() && AlfrescoAccountManager.getInstance(this).hasData())
+        {
+            finish();
+        }
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        if (!PasscodePreferences.hasPasscodeEnable(this))
+        {
+            setResult(Activity.RESULT_OK);
+            finish();
         }
     }
 
     public static void requestUserPasscode(FragmentActivity activity)
     {
-        if (PasscodePreferences.hasPasscodeEnable(activity))
+        PasscodeConfigFeature feature = new PasscodeConfigFeature(activity);
+        if (feature.isProtected() && !PasscodePreferences.hasPasscode(activity))
+        {
+            Intent i = new Intent(activity, PassCodeActivity.class);
+            i.setAction(REQUEST_DEFINE_PASSCODE);
+            activity.startActivityForResult(i, REQUEST_CODE_PASSCODE);
+        }
+        else if (PasscodePreferences.hasPasscodeEnable(activity))
         {
             activity.startActivityForResult(new Intent(activity, PassCodeActivity.class), REQUEST_CODE_PASSCODE);
         }

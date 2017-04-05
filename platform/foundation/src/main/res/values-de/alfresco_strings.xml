@@ -95,12 +95,12 @@
     <string name="org_alfresco_wiki_page_edited">{0} Wiki-Seite aktualisiert von {1}</string>
     <string name="org_alfresco_wiki_page_renamed">{2} Wiki-Seite umbenannt in {0} von {1}</string>
     <string name="org_alfresco_wiki_page_deleted">{0} Wiki-Seite gelöscht von {1}</string>
-    <string name="org_alfresco_site_group_added">{1} Gruppe zur Site {4} mit Rolle {2} hinzugefügt</string>
-    <string name="org_alfresco_site_group_removed">{1} Gruppe von Site {4} entfernt</string>
-    <string name="org_alfresco_site_group_role_changed">{1} Rolle der Gruppe in {2} geändert</string>
+    <string name="org_alfresco_site_group_added">Gruppe {1} zur Site {4} mit Rolle {2} hinzugefügt</string>
+    <string name="org_alfresco_site_group_removed">Gruppe {1} von Site {4} entfernt</string>
+    <string name="org_alfresco_site_group_role_changed">Rolle der Gruppe von {1} zu {2} geändert</string>
     <string name="org_alfresco_site_user_joined">{1} trat der Site {4} mit der Rolle {2} bei</string>
     <string name="org_alfresco_site_user_left">{1} hat Site {4} verlassen</string>
-    <string name="org_alfresco_site_user_role_changed">{1} Rolle geändert in {2}</string>
+    <string name="org_alfresco_site_user_role_changed">Rolle von {1} zu {2} geändert</string>
     <string name="org_alfresco_links_link_created">{0} Link erstellt von {1}</string>
     <string name="org_alfresco_links_link_updated">{0} Link aktualisiert von {1}</string>
     <string name="org_alfresco_links_link_deleted">{0} Link gelöscht von {1}</string>
@@ -110,7 +110,7 @@
     <string name="org_alfresco_subscriptions_followed">{1} folgt jetzt {5}</string>
     <string name="org_alfresco_subscriptions_subscribed">{1} hat {2} abonniert</string>
     <string name="org_alfresco_profile_status_changed">{1}: {6}</string>
-    <string name="org_alfresco_documentlibrary_file_previewed">{1} hat Dokument {0} zur Vorschau angezeigt</string>
+    <string name="org_alfresco_documentlibrary_file_previewed">{1} hat eine Vorschau auf Dokument {0} angezeigt</string>
     <string name="org_alfresco_documentlibrary_file_downloaded">{1} hat Dokument {0} heruntergeladen</string>
     <string name="activity_role_None">Keine Berechtigungen</string>
     <string name="activity_role_SiteConsumer">Verbraucher</string>
@@ -208,7 +208,7 @@
     <string name="empty_users">Keine Benutzer gefunden</string>
     <string name="empty_child">Keine Dateien gefunden</string>
     <string name="empty_site">Keine Sites verfügbar</string>
-    <string name="empty_version">Keine Versionshistorie verfügbar</string>
+    <string name="empty_version">Kein Versionsverlauf verfügbar</string>
     <string name="empty_session">Keine Sitzung verfügbar</string>
     <string name="empty_actvity">Keine Aktivitäten gefunden</string>
     <string name="empty_tag">Kein Tag gefunden</string>
@@ -234,7 +234,7 @@
     <string name="take_photo">Foto aufnehmen</string>
     <string name="make_video">Video aufnehmen</string>
     <string name="record_audio">Audio aufnehmen</string>
-    <string name="version_history">Versionshistorie</string>
+    <string name="version_history">Versionsverlauf</string>
     <string name="tags">Tags</string>
     <string name="share">Freigeben</string>
     <string name="refresh">Aktualisieren</string>
@@ -318,8 +318,8 @@
     <!-- Workflow FILTERS -->
     <string name="empty_tasks">Keine Aufgaben</string>
     <string name="tasks_assignee_unassigned">Nicht zugewiesen</string>
-    <string name="task_delegate_in_progress">Erneute Zuweisung wird durchgeführt&#8230;</string>
-    <string name="task_delegate_complete">Erneute Zuweisung abgeschlossen</string>
+    <string name="task_delegate_in_progress">Neuzuweisung wird durchgeführt&#8230;</string>
+    <string name="task_delegate_complete">Neuzuweisung abgeschlossen</string>
     <string name="update_sucess">\"%s\" wurde erfolgreich aktualisiert.</string>
 
     <!-- Delete -->
@@ -391,7 +391,7 @@
     <string name="favorites_deactivate">Synchronisierung deaktivieren</string>
     <string name="favorites_deactivate_description"><![CDATA[<p>Möchten Sie die Synchronisierung deaktivieren?</p> Alle synchronisierten Inhalte werden von Ihrem Gerät gelöscht.]]></string>
     <string name="sync_error_title">Synchronisierungsfehler</string>
-    <string name="sync_error_node_unfavorited"><![CDATA[<p>Sie haben die Auswahl von <b>%s</b> als Favorit aufgehoben, da Sie begonnen haben, dieses Element zu bearbeiten. <br/> <b>Synchronisieren</b> Sie Ihre bearbeitete Version auf dem Server oder <b>speichern</b> Sie diese im Ordner \"Downloads\". </p>]]></string>
+    <string name="sync_error_node_unfavorited"><![CDATA[<p>Sie haben <b>%s</b> aus Ihren Favoriten entfernt, seit Sie begonnen haben, dieses Element zu bearbeiten. <br/> <b>Synchronisieren</b> Sie Ihre bearbeitete Version auf dem Server oder <b>speichern</b> Sie sie im Ordner \"Downloads\". </p>]]></string>
     <string name="sync_error_node_deleted"><![CDATA[<p> <b>%s</b> wurde auf dem Server gelöscht, jedoch wurde eine Kopie im Ordner \"Downloads\" gespeichert.</p>]]></string>
     <string name="sync_error_no_permission"><![CDATA[<p> Sie besitzen nicht die erforderliche Berechtigung, um Ihre bearbeitete Version von <b>%s</b> hochzuladen. Sie können diese in Ihrem Ordner \"Downloads\" <b>speichern</b> oder mit der Serverversion <b>überschreiben</b>. Dadurch werden Ihre Bearbeitungen verworfen.]]></string>
     <string name="sync_error_node_local_modification">Synchronisierungsfehler</string>
@@ -444,7 +444,7 @@
     <string name="sync_warning">Synchronisierungswarnung</string>
     <string name="sync_error">Synchronisierungsfehler</string>
     <string name="sync_warning_mobile_data"><![CDATA[<p> Sie sind im Begriff, <b>%s</b> über eine Carrier-Verbindung zu synchronisieren.</p> Möchten Sie fortfahren?]]></string>
-    <string name="sync_error_storage"><![CDATA[<p> Sie versuchen, <b>%1$s</b> zu synchronisieren; nur %2$s sind verfügbar.</p> Sie müssen Speicherplatz auf Ihrem Gerät freigeben oder für einige Inhalte die Markierung als Favoriten aufheben.]]></string>
+    <string name="sync_error_storage"><![CDATA[<p> Sie versuchen, <b>%1$s</b> zu synchronisieren, es sind jedoch nur %2$s verfügbar.</p> Sie müssen Speicherplatz auf Ihrem Gerät freigeben oder Inhalte aus Ihren Favoriten entfernen.]]></string>
     <string name="sync_warning_storage"><![CDATA[<p> Sie sind im Begriff, <b>%1$s</b> zu synchronisieren; nur noch %2$s auf Ihrem Gerät.</p> Möchten Sie fortfahren?]]></string>
     <string name="sync_document_not_available">Das Dokument ist auf Ihrem Gerät nicht verfügbar.</string>
 

@@ -164,7 +164,6 @@
     <string name="share_content">Share Content with&#8230;</string>
 
     <!-- HELP -->
-    <string name="asset_folder_prefix">en</string>
     <string name="docs_prefix" translatable="false" />
 
     <!-- About Message -->
@@ -173,9 +172,11 @@
     <string name="sdknumber_version">SDK: </string>
     <string name="about_description">
 <![CDATA[
-<p>Alfresco Mobile connects to Alfresco in the Cloud and Alfresco on premise servers (3.4 and above) to provide safe access to your corporate content on the go.</p>
+<p>Alfresco is the open platform for business-critical content management and collaboration.</p>
 
-<p>Alfresco Mobile connects to your Alfresco repository using your Alfresco log-in credentials (over HTTP or HTTPS), and manages user access based on their permissions.</p>
+<p>Alfresco Mobile was designed and developed by Alfresco Software, Inc. and connects to Alfresco Content Services Cloud, Alfresco Content Services and Alfresco Community Edition (versions 3.4.8 and above) to provide safe access to your corporate files on the go.</p>
+
+<p>This mobile application connects to your Alfresco repository using your Alfresco login credentials (over HTTP or HTTPS), and manages access based on your permissions.</p>
 ]]>
     </string>
 
@@ -277,6 +278,7 @@
 
     <!-- PIN Code -->
     <string name="passcode_title">Enter Passcode</string>
+    <string name="passcode_admin_title">Your Alfresco Administrator requires you to protect Alfresco Mobile with a Passcode.</string>
     <string name="passcode_enable_title">Enable Passcode</string>
     <string name="passcode_preference">Passcode Protection</string>
     <string name="passcode_enable">Enabled</string>
@@ -464,6 +466,8 @@
     <string name="action_view_properties">View Properties</string>
     <string name="action_edit_properties">Edit Properties</string>
     <string name="like_in_progress">"Like" in progress</string>
+    <string name="like_completed">Like completed</string>
+    <string name="like_complete">Like complete</string>
     <string name="favorite">Favorite</string>
     <string name="unfavorite">Unfavorite</string>
 
@@ -832,6 +836,18 @@
     <string name="empty_comment">No comments found</string>
     <string name="empty_search">No files found</string>
     <string name="action_sign_in_short">Sign in</string>
+    <string name="node.details.file.not.found">No file found</string>
+    <string name="node.browser.folder.not.found">No folder found</string>
+    <string name="user.details.user.not.found">No user found</string>
+    <string name="public.url.wrong.format">We didn\'t recognize this link. Try contacting your Alfresco administrator</string>
+    <string name="public.url.tasks.missing.filter">Filter information is missing. Try contacting your Alfresco administrator</string>
+    <string name="public.url.file.missing.id">Id information is missing. Try contacting your Alfresco administrator</string>
+    <string name="public.url.noderef.format">NodeRef information seems wrong. Try contacting your Alfresco administrator</string>
+
+
+    <!-- ACCOUNTS SELECTION -->
+    <string name="accounts.title.select">Select an account</string>
+    <string name="accounts.not.found">No accounts found. Try adding one.</string>
 
 
     <!-- DATA PROTECTION -->
@@ -903,6 +919,13 @@
     <string name="form_message_unsupported_description"><![CDATA[<p>This form contains one or more required fields that are not currently supported on mobile devices.</p> Please use the web app to action this step.]]></string>
     <string name="form_message_link_error_title">Link unsupported</string>
     <string name="form_message_link_error"><![CDATA[<p>This content is not from a supported source of content.</p> Please select another one.]]></string>
+
+
+    <string name="open_in_alfresco_editor">Open in Alfresco Text Editor</string>
+
+    <!-- PERMISSION -->
+    <!-- ################################################################################## -->
+    <string name="permission.not.enough">Not enough permission to access the file.</string>
 
 
 </resources>

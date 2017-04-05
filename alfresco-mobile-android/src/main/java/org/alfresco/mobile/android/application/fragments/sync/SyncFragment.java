@@ -248,7 +248,7 @@ public class SyncFragment extends BaseCursorGridFragment
                     // Start sync if possible
                     if (SyncContentManager.getInstance(getActivity()).canSync(acc))
                     {
-                        SyncContentManager.getInstance(getActivity()).sync(acc);
+                        SyncContentManager.getInstance(getActivity()).sync(AnalyticsManager.LABEL_SYNC_SAVE_BACK, acc);
                     }
                 }
                 break;
@@ -709,7 +709,7 @@ public class SyncFragment extends BaseCursorGridFragment
             return;
         }
 
-        SyncContentManager.getInstance(getActivity()).sync(acc);
+        SyncContentManager.getInstance(getActivity()).sync(AnalyticsManager.LABEL_SYNC_REFRESH, acc);
         if (mi != null)
         {
             // Display spinning wheel instead of refresh

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+ * Copyright (C) 2005-2017 Alfresco Software Limited.
  *
  * This file is part of Alfresco Mobile for Android.
  *
@@ -34,6 +34,10 @@ public class AlfrescoAccount implements Serializable
     public static final int TYPE_ALFRESCO_CMIS = 2;
 
     public static final String REPOSITORY_TYPE_ALFRESCO_CMIS = String.valueOf(TYPE_ALFRESCO_CMIS);
+
+    public static final int TYPE_ALFRESCO_CMIS_SAML = 3;
+
+    public static final String REPOSITORY_TYPE_ALFRESCO_CMIS_SAML = String.valueOf(TYPE_ALFRESCO_CMIS_SAML);
 
     public static final int TYPE_ALFRESCO_CLOUD = 4;
 

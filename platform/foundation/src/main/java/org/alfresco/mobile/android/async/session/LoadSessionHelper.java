@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2015 Alfresco Software Limited.
+ *  Copyright (C) 2005-2017 Alfresco Software Limited.
  *
  *  This file is part of Alfresco Mobile for Android.
  *
@@ -25,12 +25,17 @@ import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.RepositorySession;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
+import org.alfresco.mobile.android.api.session.authentication.SamlData;
+import org.alfresco.mobile.android.api.session.authentication.SamlInfo;
 import org.alfresco.mobile.android.api.session.authentication.impl.OAuthHelper;
+import org.alfresco.mobile.android.async.account.CheckServerOperation;
 import org.alfresco.mobile.android.async.session.oauth.AccountOAuthHelper;
 import org.alfresco.mobile.android.platform.SessionManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoSessionSettings;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsHelper;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 
 import android.content.Context;
 
@@ -56,16 +61,22 @@ public class LoadSessionHelper
 
     public LoadSessionHelper(Context context, long accountId)
     {
-        this(context, AlfrescoAccountManager.getInstance(context).retrieveAccount(accountId), null);
+        this(context, AlfrescoAccountManager.getInstance(context).retrieveAccount(accountId));
     }
 
     public LoadSessionHelper(Context context, AlfrescoAccount account)
     {
-        this(context, SessionManager.getInstance(context).prepareSettings(account, null));
+        this(context, SessionManager.getInstance(context).prepareSettings(account));
         this.account = account;
     }
 
     public LoadSessionHelper(Context context, AlfrescoAccount account, OAuthData data)
+    {
+        this(context, SessionManager.getInstance(context).prepareSettings(account, data));
+        this.account = account;
+    }
+
+    public LoadSessionHelper(Context context, AlfrescoAccount account, SamlData data)
     {
         this(context, SessionManager.getInstance(context).prepareSettings(account, data));
         this.account = account;
@@ -116,9 +127,66 @@ public class LoadSessionHelper
         }
         else
         {
-            // ON PREMISE
-            return RepositorySession.connect(sessionSettings.baseUrl, sessionSettings.username,
-                    sessionSettings.password, sessionSettings.extraSettings);
+            SamlInfo info = CheckServerOperation.getSamlInfo(sessionSettings.baseUrl);
+
+            if (sessionSettings.samlData == null)
+            {
+                if (info != null && info.isSamlEnabled())
+                {
+                    // Permission Granted
+                    AnalyticsHelper.reportOperationEvent(context, AnalyticsManager.CATEGORY_ACCOUNT,
+                            AnalyticsManager.ACTION_CHANGE_AUTHENTICATION, AnalyticsManager.LABEL_SAML_AUTH, 1, false);
+
+                    account = AlfrescoAccountManager.getInstance(context).resetPassword(account.getId(),
+                            AlfrescoAccount.ACCOUNT_REPOSITORY_TYPE_ID,
+                            String.valueOf(AlfrescoAccount.TYPE_ALFRESCO_CMIS_SAML));
+
+                    SessionManager.getInstance(context)
+                            .saveAccount(AlfrescoAccountManager.getInstance(context).retrieveAccount(account.getId()));
+
+                    // Error ?
+                    return RepositorySession.connect(sessionSettings.baseUrl, sessionSettings.samlData,
+                            sessionSettings.extraSettings);
+                }
+                else
+                {
+                    // ON PREMISE
+                    return RepositorySession.connect(sessionSettings.baseUrl, sessionSettings.username,
+                            sessionSettings.password, sessionSettings.extraSettings);
+                }
+            }
+            else if (info != null)
+            {
+                // Check SAML Status ?
+                if (info.isSamlEnabled())
+                {
+                    // ON PREMISE + SAML
+                    return RepositorySession.connect(sessionSettings.baseUrl, sessionSettings.samlData,
+                            sessionSettings.extraSettings);
+                }
+                else
+                {
+                    AnalyticsHelper.reportOperationEvent(context, AnalyticsManager.CATEGORY_ACCOUNT,
+                            AnalyticsManager.ACTION_CHANGE_AUTHENTICATION, AnalyticsManager.LABEL_BASIC_AUTH, 1, false);
+
+                    // SAML has been deactivated...
+                    // We revert to normal account
+                    account = AlfrescoAccountManager.getInstance(context).resetPassword(account.getId(),
+                            AlfrescoAccount.ACCOUNT_REPOSITORY_TYPE_ID,
+                            String.valueOf(AlfrescoAccount.TYPE_ALFRESCO_CMIS));
+
+                    SessionManager.getInstance(context)
+                            .saveAccount(AlfrescoAccountManager.getInstance(context).retrieveAccount(account.getId()));
+
+                    // Error ?
+                    return RepositorySession.connect(sessionSettings.baseUrl, sessionSettings.username,
+                            sessionSettings.password, sessionSettings.extraSettings);
+                }
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 

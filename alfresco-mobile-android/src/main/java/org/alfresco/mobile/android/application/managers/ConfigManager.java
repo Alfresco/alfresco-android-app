@@ -23,10 +23,13 @@ import java.util.HashMap;
 import org.alfresco.mobile.android.api.model.config.ConfigConstants;
 import org.alfresco.mobile.android.api.model.config.ConfigScope;
 import org.alfresco.mobile.android.api.model.config.ConfigTypeIds;
+import org.alfresco.mobile.android.api.model.config.ViewConfig;
+import org.alfresco.mobile.android.api.model.config.ViewGroupConfig;
 import org.alfresco.mobile.android.api.services.ConfigService;
 import org.alfresco.mobile.android.api.services.impl.LocalConfigServiceImpl;
 import org.alfresco.mobile.android.api.services.impl.onpremise.OnPremiseConfigServiceImpl;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
+import org.alfresco.mobile.android.application.configuration.model.view.SyncConfigModel;
 import org.alfresco.mobile.android.async.LoaderResult;
 import org.alfresco.mobile.android.async.configuration.ConfigurationEvent;
 import org.alfresco.mobile.android.async.session.RequestSessionEvent;
@@ -36,12 +39,13 @@ import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
+import org.alfresco.mobile.android.sync.SyncContentManager;
+
+import com.squareup.otto.Subscribe;
 
 import android.content.Context;
 import android.support.v4.util.LongSparseArray;
 import android.text.TextUtils;
-
-import com.squareup.otto.Subscribe;
 
 public class ConfigManager extends Manager
 {
@@ -187,6 +191,13 @@ public class ConfigManager extends Manager
             {
                 currentService.put(accountId, embedConfigService);
             }
+
+            // Horrible hack to reset profile sync activation as its not
+            // implemented as feature
+            if (hasSyncView(embedConfigService, "default"))
+            {
+                SyncContentManager.getInstance(appContext).setActivateSync(accountId, true);
+            }
         }
         currentProfileId = null;
         eventBus.post(new ConfigurationMenuEvent(accountId));
@@ -289,6 +300,11 @@ public class ConfigManager extends Manager
 
     public ConfigService getConfig(long accountId)
     {
+        // Double check we use the remote instead of local
+        if (getRemoteConfig(accountId) != null && currentService != getRemoteConfig(accountId))
+        {
+            currentService.put(accountId, remoteConfigService.get(accountId));
+        }
         return (currentService != null) ? currentService.get(accountId) : null;
     }
 
@@ -334,6 +350,32 @@ public class ConfigManager extends Manager
             eventBus.post(new ConfigurationProfileEvent(acc.getId()));
         }
         return true;
+    }
+
+    public boolean hasSyncView(long accountId, String profileId)
+    {
+        ConfigService config = getConfig(accountId);
+        return hasSyncView(config, profileId);
+    }
+
+    private boolean hasSyncView(ConfigService config, String profileId)
+    {
+        return config.hasViewConfig() && parseViewConfigSearchingSyncView(
+                config.getViewConfig(config.getProfile(profileId).getRootViewId(), new ConfigScope(profileId)));
+    }
+
+    private boolean parseViewConfigSearchingSyncView(ViewConfig viewConfig) {
+        if (viewConfig instanceof ViewGroupConfig && ((ViewGroupConfig) viewConfig).getItems().size() > 0) {
+            for (ViewConfig config : ((ViewGroupConfig) viewConfig).getItems()) {
+                if (SyncConfigModel.TYPE_ID.equals(config.getType())) {
+                    return true;
+                }
+                if (config instanceof ViewGroupConfig && ((ViewGroupConfig) config).getItems().size() > 0) {
+                    parseViewConfigSearchingSyncView(config);
+                }
+            }
+        }
+        return false;
     }
 
     public ConfigScope getCurrentScope()

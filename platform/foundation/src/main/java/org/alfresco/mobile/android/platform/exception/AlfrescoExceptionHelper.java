@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2015 Alfresco Software Limited.
+ *  Copyright (C) 2005-2017 Alfresco Software Limited.
  *
  *  This file is part of Alfresco Mobile for Android.
  *
@@ -37,14 +37,14 @@ import org.apache.chemistry.opencmis.commons.exceptions.CmisObjectNotFoundExcept
 import org.apache.chemistry.opencmis.commons.exceptions.CmisRuntimeException;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisUnauthorizedException;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+
 import android.accounts.NetworkErrorException;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
-
-import com.afollestad.materialdialogs.MaterialDialog;
 
 /**
  * Helper class to find the right user message to display when an exception has
@@ -112,10 +112,22 @@ public final class AlfrescoExceptionHelper
         {
             messageId = R.string.error_session_unauthorized;
         }
+        // SAML Token not provided as Saml Disabled or enabled.
+        else if (e instanceof IllegalArgumentException)
+        {
+            if (e.getMessage().contains("saml token"))
+            {
+                messageId = R.string.error_session_unauthorized;
+            }
+        }
         // USername error during session creation
         else if (e.getCause() instanceof AlfrescoSessionException)
         {
             if (e.getCause().getCause() instanceof CmisUnauthorizedException)
+            {
+                messageId = R.string.error_session_unauthorized;
+            }
+            else if (e.getCause().getCause() instanceof CmisObjectNotFoundException)
             {
                 messageId = R.string.error_session_unauthorized;
             }

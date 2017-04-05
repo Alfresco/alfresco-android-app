@@ -31,6 +31,8 @@ import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 import org.alfresco.mobile.android.ui.holder.TwoLinesViewHolder;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
+import com.squareup.picasso.Picasso;
+
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
@@ -38,8 +40,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-
-import com.squareup.picasso.Picasso;
 
 public class AccountsAdapter extends BaseListAdapter<AlfrescoAccount, TwoLinesViewHolder>
 {

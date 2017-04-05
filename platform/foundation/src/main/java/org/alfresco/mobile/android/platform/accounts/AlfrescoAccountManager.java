@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2015 Alfresco Software Limited.
+ *  Copyright (C) 2005-2017 Alfresco Software Limited.
  *
  *  This file is part of Alfresco Mobile for Android.
  *
@@ -28,14 +28,14 @@ import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.Manager;
 import org.alfresco.mobile.android.platform.utils.BundleUtils;
 
+import com.squareup.otto.Subscribe;
+
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
-
-import com.squareup.otto.Subscribe;
 
 /**
  * Responsible to manage accounts.
@@ -328,6 +328,23 @@ public class AlfrescoAccountManager extends Manager
         manager.setUserData(acc, AlfrescoAccount.ACCOUNT_ACCESS_TOKEN, accessToken);
         manager.setUserData(acc, AlfrescoAccount.ACCOUNT_REFRESH_TOKEN, refreshToken);
         manager.setPassword(acc, pass);
+        return retrieveAccount(accountId);
+    }
+
+    public AlfrescoAccount resetPassword(long accountId, String key, String value)
+    {
+        Account acc = getAndroidAccount(accountId);
+        AccountManager manager = AccountManager.get(appContext);
+        manager.setUserData(acc, key, value);
+        manager.setPassword(acc, "");
+        return retrieveAccount(accountId);
+    }
+
+    public AlfrescoAccount setSamlToken(long accountId, String value)
+    {
+        Account acc = getAndroidAccount(accountId);
+        AccountManager manager = AccountManager.get(appContext);
+        manager.setPassword(acc, value);
         return retrieveAccount(accountId);
     }
 

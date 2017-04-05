@@ -28,6 +28,7 @@ import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.SessionManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.extensions.AnalyticsHelper;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.sync.operations.SyncContent;
 import org.alfresco.mobile.android.sync.prepare.PrepareSyncHelper;
 
@@ -61,6 +62,8 @@ public class SyncContentSyncAdapter extends AbstractThreadedSyncAdapter
 
     private String nodeIdentifier;
 
+    private String analyticInfo;
+
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTOR
     // ///////////////////////////////////////////////////////////////////////////
@@ -82,7 +85,8 @@ public class SyncContentSyncAdapter extends AbstractThreadedSyncAdapter
         node = null;
         mode = SyncContentManager.MODE_BOTH;
 
-        Log.d("Alfresco", "onPerformSync for account[" + account.name + "]");
+        Log.d("Alfresco", "onPerformSync for account[" + account.name + "] + " + extras);
+
         try
         {
             // Retrieve account to sync
@@ -121,6 +125,15 @@ public class SyncContentSyncAdapter extends AbstractThreadedSyncAdapter
                 else
                 {
                     nodeIdentifier = null;
+                }
+
+                if (extras.containsKey(SyncContentManager.ARGUMENT_ANALYTIC))
+                {
+                    analyticInfo = extras.getString(SyncContentManager.ARGUMENT_ANALYTIC);
+                }
+                else if (analyticInfo == null)
+                {
+                    analyticInfo = AnalyticsManager.LABEL_SYNC_SYSTEM;
                 }
             }
 
@@ -237,7 +250,8 @@ public class SyncContentSyncAdapter extends AbstractThreadedSyncAdapter
 
             if (node == null && nodeIdentifier == null)
             {
-                AnalyticsHelper.analyzeSync(getContext(), acc);
+                AnalyticsHelper.analyzeSync(getContext(), acc, analyticInfo);
+                analyticInfo = null;
             }
 
             Log.d("SYNC", "Total:" + syncResult.stats.numEntries);

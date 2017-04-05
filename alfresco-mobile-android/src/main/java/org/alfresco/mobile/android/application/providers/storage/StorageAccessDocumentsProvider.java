@@ -1781,7 +1781,8 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
                     }
                     else
                     {
-                        SyncContentManager.getInstance(getContext()).sync(SessionUtils.getAccount(getContext()));
+                        SyncContentManager.getInstance(getContext()).sync(AnalyticsManager.LABEL_SYNC_DOC_PROVIDER,
+                                SessionUtils.getAccount(getContext()));
                     }
                     return;
                 }

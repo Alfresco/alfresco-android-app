@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+ *  Copyright (C) 2005-2017 Alfresco Software Limited.
  *
  * This file is part of Alfresco Mobile for Android.
  *
@@ -66,10 +66,14 @@ public class LoadSessionOperation extends BaseOperation<AlfrescoSession>
         }
         catch (Exception e)
         {
+            // We retrieve account in case the type has changed
+            acc = AlfrescoAccountManager.getInstance(context).retrieveAccount(accountId);
+
             if (sHelper != null)
             {
                 oauthData = sHelper.getOAuthData();
             }
+
             result.setException(e);
         }
 

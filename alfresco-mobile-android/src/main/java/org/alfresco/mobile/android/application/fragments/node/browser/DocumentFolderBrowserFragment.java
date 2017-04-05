@@ -25,7 +25,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
+import org.alfresco.mobile.android.api.model.Link;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.Permissions;
 import org.alfresco.mobile.android.api.model.Site;
@@ -97,12 +99,17 @@ import org.alfresco.mobile.android.ui.node.browse.NodeBrowserFragment;
 import org.alfresco.mobile.android.ui.node.browse.NodeBrowserTemplate;
 import org.alfresco.mobile.android.ui.operation.OperationWaitingDialogFragment;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
+import org.apache.chemistry.opencmis.commons.exceptions.CmisObjectNotFoundException;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
+
+import com.cocosw.bottomsheet.BottomSheet;
+import com.squareup.otto.Subscribe;
 
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.ActionBar;
@@ -120,9 +127,6 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
-
-import com.cocosw.bottomsheet.BottomSheet;
-import com.squareup.otto.Subscribe;
 
 /**
  * Display a dialogFragment to retrieve information about the content of a
@@ -165,6 +169,8 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment implement
     private boolean doFavorite;
 
     private Permissions permission;
+
+    private boolean hasAudioRecorder = false;
 
     // //////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
@@ -247,6 +253,10 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment implement
         {
             setActivateThumbnail(true);
         }
+
+        // Test Audio Recording
+        Intent intent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
+        hasAudioRecorder = intent.resolveActivity(getActivity().getPackageManager()) != null;
     }
 
     @Override
@@ -646,9 +656,23 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment implement
                 DocumentFolderBrowserFragment.with(getActivity()).site(site).folder((Folder) item)
                         .shortcut(isShortcut()).display();
             }
-            else
+            else if (item.isDocument())
             {
                 NodeDetailsFragment.with(getActivity()).parentFolder(parentFolder).node(item).display();
+            }
+            else if (item instanceof Link)
+            {
+                if (item instanceof Document)
+                {
+                    NodeDetailsFragment.with(getActivity()).parentFolder(parentFolder)
+                            .nodeId(((Link) item).getDestination()).display();
+                }
+                else if (item instanceof Folder)
+                {
+                    FragmentDisplayer.clearCentralPane(getActivity());
+                    DocumentFolderBrowserFragment.with(getActivity()).site(site)
+                            .folderIdentifier(((Link) item).getDestination()).shortcut(isShortcut()).display();
+                }
             }
         }
     }
@@ -765,7 +789,19 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment implement
             {
                 ev.setVisibility(View.VISIBLE);
             }
-            onResultError(event.exception);
+
+            if (event.exception != null && event.exception.getCause() instanceof CmisObjectNotFoundException)
+            {
+                displayEmptyView();
+                if (viewById(R.id.empty_text) != null)
+                {
+                    ((TextView) viewById(R.id.empty_text)).setText(R.string.node_browser_folder_not_found);
+                }
+            }
+            else
+            {
+                onResultError(event.exception);
+            }
         }
         else
         {
@@ -986,7 +1022,11 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment implement
                     builder.sheet(R.id.menu_create_document, R.drawable.ic_doc_light, R.string.create_document);
                     builder.sheet(R.id.menu_device_capture_camera_photo, R.drawable.ic_camera, R.string.take_photo);
                     builder.sheet(R.id.menu_device_capture_camera_video, R.drawable.ic_videos, R.string.make_video);
-                    builder.sheet(R.id.menu_device_capture_mic_audio, R.drawable.ic_microphone, R.string.record_audio);
+                    if (hasAudioRecorder)
+                    {
+                        builder.sheet(R.id.menu_device_capture_mic_audio, R.drawable.ic_microphone,
+                                R.string.record_audio);
+                    }
                     if (ScanSnapManager.getInstance(getActivity()) != null
                             && ScanSnapManager.getInstance(getActivity()).hasScanSnapApplication())
                     {

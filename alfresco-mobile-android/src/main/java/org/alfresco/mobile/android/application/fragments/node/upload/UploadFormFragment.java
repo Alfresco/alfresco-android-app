@@ -51,13 +51,17 @@ import org.alfresco.mobile.android.ui.activity.AlfrescoActivity;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.ClipData;
 import android.content.ClipData.Item;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -102,6 +106,8 @@ public class UploadFormFragment extends AlfrescoFragment
 
     private Spinner spinnerAccount;
 
+    private Spinner spinnerFolder;
+
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTUCTORS
     // ///////////////////////////////////////////////////////////////////////////
@@ -145,6 +151,13 @@ public class UploadFormFragment extends AlfrescoFragment
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
             {
                 selectedAccount = (AlfrescoAccount) parent.getItemAtPosition(pos);
+                folderImportId = null;
+                if (spinnerFolder != null)
+                {
+                    spinnerFolder.setAdapter(null);
+                    spinnerFolder.setSelection(0);
+                }
+                refreshImportFolder();
             }
 
             @Override
@@ -185,7 +198,7 @@ public class UploadFormFragment extends AlfrescoFragment
                 if (AndroidVersion.isJBOrAbove())
                 {
                     ClipData clipdata = intent.getClipData();
-                    if (clipdata != null && clipdata.getItemCount() > 1)
+                    if (clipdata != null && clipdata.getItemCount() > 0)
                     {
                         Item item = null;
                         for (int i = 0; i < clipdata.getItemCount(); i++)
@@ -372,8 +385,21 @@ public class UploadFormFragment extends AlfrescoFragment
         {
             file = new File(tmpPath);
 
-            if (file == null || !file
-                    .exists()) { throw new AlfrescoAppException(getString(R.string.error_unknown_filepath), true); }
+            if (!file.exists()) { throw new AlfrescoAppException(getString(R.string.error_unknown_filepath), true); }
+
+            if (!file.getPath()
+                    .startsWith(AlfrescoStorageManager.getInstance(getContext()).getRootPrivateFolder().getPath()))
+            {
+                int hasWriteExternalStoragePermission = ContextCompat.checkSelfPermission(getActivity(),
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                if (hasWriteExternalStoragePermission != PackageManager.PERMISSION_GRANTED)
+                {
+                    ActivityCompat.requestPermissions(getActivity(),
+                            new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE },
+                            BaseActivity.REQUEST_PERMISSION_IMPORT_SD);
+                }
+            }
+
             fileName = file.getName();
 
             if (getActivity() instanceof PublicDispatcherActivity)
@@ -393,11 +419,17 @@ public class UploadFormFragment extends AlfrescoFragment
 
     private void refreshImportFolder()
     {
-        Spinner spinner = (Spinner) viewById(R.id.import_folder_spinner);
+        List<Integer> importList = IMPORT_FOLDER_LIST;
+        if (selectedAccount == null || selectedAccount.getTypeId() == AlfrescoAccount.TYPE_ALFRESCO_CLOUD)
+        {
+            importList = IMPORT_CLOUD_FOLDER_LIST;
+        }
+
+        spinnerFolder = (Spinner) viewById(R.id.import_folder_spinner);
         UploadFolderAdapter upLoadadapter = new UploadFolderAdapter(getActivity(), R.layout.row_single_line,
-                IMPORT_FOLDER_LIST);
-        spinner.setAdapter(upLoadadapter);
-        spinner.setOnItemSelectedListener(new OnItemSelectedListener()
+                importList);
+        spinnerFolder.setAdapter(upLoadadapter);
+        spinnerFolder.setOnItemSelectedListener(new OnItemSelectedListener()
         {
 
             @Override
@@ -417,11 +449,23 @@ public class UploadFormFragment extends AlfrescoFragment
         {
             importFolderIndex = 0;
         }
-        spinner.setSelection(importFolderIndex);
+        spinnerFolder.setSelection(importFolderIndex);
     }
 
     @SuppressWarnings("serial")
-    private static final List<Integer> IMPORT_FOLDER_LIST = new ArrayList<Integer>(3)
+    private static final List<Integer> IMPORT_FOLDER_LIST = new ArrayList<Integer>(5)
+    {
+        {
+            add(R.string.menu_downloads);
+            add(R.string.menu_browse_sites);
+            add(R.string.menu_favorites_folder);
+            add(R.string.menu_browse_root);
+            add(R.string.menu_browse_userhome);
+        }
+    };
+
+    @SuppressWarnings("serial")
+    private static final List<Integer> IMPORT_CLOUD_FOLDER_LIST = new ArrayList<Integer>(5)
     {
         {
             add(R.string.menu_downloads);
@@ -440,6 +484,7 @@ public class UploadFormFragment extends AlfrescoFragment
             case R.string.menu_browse_sites:
             case R.string.menu_browse_root:
             case R.string.menu_favorites_folder:
+            case R.string.menu_browse_userhome:
 
                 if (getActivity() instanceof PublicDispatcherActivity)
                 {

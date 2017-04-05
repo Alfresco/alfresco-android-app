@@ -119,6 +119,15 @@
                 <data
                     android:scheme="alfresco"
                     android:host="file" />
+                <data
+                    android:scheme="alfresco"
+                    android:host="site" />
+                <data
+                    android:scheme="alfresco"
+                    android:host="user" />
+                <data
+                    android:scheme="alfresco"
+                    android:host="tasks" />
                 <data />
             </intent-filter>
             <intent-filter>
@@ -214,6 +223,16 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="alfresco" />
+            </intent-filter>
+
         </activity>
 
         <!-- Internal : Activity As a Dialog -->

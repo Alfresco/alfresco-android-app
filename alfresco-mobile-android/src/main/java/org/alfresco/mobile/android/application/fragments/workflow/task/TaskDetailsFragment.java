@@ -429,9 +429,9 @@ public class TaskDetailsFragment extends AlfrescoFragment implements UserPickerC
     {
         String s = "";
 
-        if (node.getCreatedAt() != null)
+        if (node.getModifiedAt() != null)
         {
-            s = Formatter.formatToRelativeDate(context, node.getCreatedAt().getTime());
+            s = Formatter.formatToRelativeDate(context, node.getModifiedAt().getTime());
             if (node.isDocument())
             {
                 Document doc = (Document) node;

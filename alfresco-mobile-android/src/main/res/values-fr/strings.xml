@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+﻿<?xml version="1.0" encoding="utf-8"?><!--
   Copyright (C) 2005-2016 Alfresco Software Limited.
 
   This file is part of Alfresco Mobile for Android.
@@ -164,7 +164,6 @@
     <string name="share_content">Partager le contenu avec&#8230;</string>
 
     <!-- HELP -->
-    <string name="asset_folder_prefix">fr</string>
     <string name="docs_prefix" translatable="false" />
 
     <!-- About Message -->
@@ -173,9 +172,11 @@
     <string name="sdknumber_version">SDK : </string>
     <string name="about_description">
 <![CDATA[
-<p>Alfresco Mobile se connecte aux serveurs Alfresco in the Cloud et Alfresco sur site (3.4 et supérieur) pour fournir un accès sécurisé à vos contenus en mode mobile.</p>
+<p>Alfresco est une plateforme de collaboration et de gestion des contenus critiques de l\'entreprise.</p>
 
-<p>Alfresco Mobile se connecte à votre entrepôt Alfresco au moyen de vos identifiants Alfresco (par HTTP ou HTTPS), et gère les accès des utilisateurs en fonction de leurs autorisations.</p>
+<p>Conçue et développée par Alfresco Software, Inc., la solution Alfresco Mobile se connecte à Alfresco Content Services Cloud, Alfresco Content Services et Alfresco Community Edition (versions 3.4.8 et ultérieures) pour un accès sécurisé aux contenus en mode mobile. </p>
+
+<p>L\'application se connecte à votre entrepôt Alfresco avec vos identifiants Alfresco (via HTTP ou HTTPS) et gère l\'accès en fonction de vos permissions.</p>
 ]]>
     </string>
 
@@ -243,11 +244,11 @@
     <string name="sites_empty_title">Aucun site trouvé</string>
     <string name="action_join_site">Rejoindre</string>
     <string name="action_join_request_site">Demander à rejoindre</string>
-    <string name="action_leave_site">Quitter</string>
+    <string name="action_leave_site">Se désabonner</string>
     <string name="action_favorite_site">Favori</string>
-    <string name="action_unfavorite_site">Retirer des favoris</string>
+    <string name="action_unfavorite_site">Supprimer des favoris</string>
     <string name="action_join_site_validation">Vous êtes maintenant membre de \"%s\".</string>
-    <string name="action_leave_site_validation">Vous avez quitté \"%s\".</string>
+    <string name="action_leave_site_validation">Vous vous êtes désabonné de \"%s\".</string>
     <string name="action_favorite_site_validation">\"%s\" fait maintenant partie des favoris.</string>
     <string name="action_unfavorite_site_validation">\"%s\" ne figure plus dans les favoris.</string>
     <string name="action_join_request_site_validation">Vous avez demandé à rejoindre \"%s\"</string>
@@ -255,13 +256,13 @@
     <string name="joinsiterequest_cancel_description">Annuler votre demande à rejoindre le site \"%s\"</string>
     <string name="action_cancel_join_site_request">Votre demande à rejoindre \"%s\" a été annulée.</string>
     <string name="action_join_site_error">Un problème vous a empêché de rejoindre le site \"%s\".</string>
-    <string name="action_leave_site_error">Un problème vous a empêché de quitter le site \"%s\".</string>
+    <string name="action_leave_site_error">Un problème vous a empêché de vous désabonner du site \"%s\".</string>
     <string name="action_favorite_error">Un problème vous a empêché d\'inclure le site \"%s\" dans les favoris.</string>
     <string name="action_unfavorite_site_error">Un problème vous a empêché de supprimer le site \"%s\" de vos favoris.</string>
 
     <!-- IMPORT -->
     <string name="import_document_title">Ajouter avec Alfresco Mobile</string>
-    <string name="import_document_name">Nom du fichier</string>
+    <string name="import_document_name">Nom de fichier</string>
     <string name="import_documents">Fichier</string>
     <string name="import_account">Compte</string>
     <string name="import_folder">Dossier Ajout</string>
@@ -277,6 +278,7 @@
 
     <!-- PIN Code -->
     <string name="passcode_title">Entrer le code d\'accès</string>
+    <string name="passcode_admin_title">Votre administrateur Alfresco vous demande de protéger par un code d\'accès Alfresco Mobile.</string>
     <string name="passcode_enable_title">Activer le code d\'accès</string>
     <string name="passcode_preference">Protection par code d\'accès</string>
     <string name="passcode_enable">Activé</string>
@@ -467,7 +469,7 @@
     <string name="like_completed">J\'aime effectué</string>
     <string name="like_complete">J\'aime terminé</string>
     <string name="favorite">Favori</string>
-    <string name="unfavorite">Retirer des favoris</string>
+    <string name="unfavorite">Supprimer des favoris</string>
 
     <!-- Operations Status -->
     <string name="status_pending">En attente</string>
@@ -522,7 +524,7 @@
     <string name="file_editor_save_request">Le fichier a été modifié.</string>
     <string name="file_editor_save_description"><![CDATA[Voulez-vous quitter sans enregistrer ? <br/> Toutes vos modifications non enregistrées seront perdues.]]></string>
     <string name="file_editor_save">Enregistrer</string>
-    <string name="file_editor_discard">Ignorer</string>
+    <string name="file_editor_discard">Annuler</string>
     <string name="file_editor_save_confirmation">Le fichier a été enregistré.</string>
     <string name="file_editor_encoding">Encodage</string>
     <string name="file_editor_text_size">Taille du texte</string>
@@ -539,7 +541,7 @@
     <string name="jobTitle">Intitulé du poste</string>
     <string name="location">Emplacement</string>
     <string name="summary">Récapitulatif</string>
-    <string name="contactInformation">Informations du contact</string>
+    <string name="contactInformation">Informations de contact</string>
     <string name="email">E-mail</string>
     <string name="telephone">Téléphone</string>
     <string name="mobile">Mobile</string>
@@ -555,7 +557,7 @@
     <string name="companyTelephone">Téléphone</string>
     <string name="companyFax">Fax</string>
     <string name="companyEmail">E-mail</string>
-    <string name="call">Appeler</string>
+    <string name="call">Appel</string>
     <string name="skype">Skype</string>
     <string name="start_chat">Démarrer un chat</string>
     <string name="start_call">Démarrer un appel</string>
@@ -597,8 +599,8 @@
     <string name="tasks_priority">Priorité</string>
     <string name="tasks_priority_low">Basse</string>
     <string name="tasks_priority_medium">Moyenne</string>
-    <string name="tasks_priority_high">Élevée</string>
-    <string name="tasks_assignee">Acteur</string>
+    <string name="tasks_priority_high">Elevée</string>
+    <string name="tasks_assignee">Personne assignée</string>
     <string name="tasks_assignee_me">Moi</string>
     <string name="tasks_assignee_all">Tout</string>
     <string name="tasks_assignee_unassigned">Non assignée</string>
@@ -622,7 +624,7 @@
     <string name="task_reassign">Réassigner</string>
     <string name="task_reassign_long">Réassigner cette tâche à&#8230;</string>
     <string name="task_claim">Récupérer</string>
-    <string name="task_unclaim">Remettre dans le pot commun</string>
+    <string name="task_unclaim">Replacer dans le pot commun</string>
     <string name="task_priority">Priorité</string>
     <string name="task_type">Type de tâche</string>
     <string name="task_initiator">Initiateur de la tâche</string>
@@ -631,7 +633,7 @@
 
     <!-- Tasks Filters -->
     <string name="task_filter_active">Tâches actives</string>
-    <string name="task_filter_initiator">Tâches que j\'ai démarrées</string>
+    <string name="task_filter_initiator">Tâches que j\'ai initiées</string>
     <string name="task_filter_completed">Tâches terminées</string>
     <string name="task_filter_high_priority">Tâches de priorité élevée</string>
     <string name="task_filter_due_today">Tâches pour aujourd\'hui</string>
@@ -641,22 +643,22 @@
 
     <!-- Process Start -->
     <string name="process_start_review">Envoyer pour révision</string>
-    <string name="process_choose_definition">Choisir un type de tâche</string>
+    <string name="process_choose_definition">Choisir le type de tâche</string>
     <string name="process_create_task">Créer une tâche</string>
-    <string name="process_choose_attachments">Choisir les éléments attachés</string>
-    <string name="process_start_title">Démarrer la tâche</string>
+    <string name="process_choose_attachments">Sélectionner les pièces jointes</string>
+    <string name="process_start_title">Démarrer le processus</string>
     <string name="process_title">Titre</string>
     <string name="process_title_hint">Nouveau titre de tâche (requis)</string>
-    <string name="process_due_on">À échéance le</string>
-    <string name="process_assignees">Acteurs</string>
+    <string name="process_due_on">A échéance le</string>
+    <string name="process_assignees">Personnes assignées</string>
     <string name="process_diagram">Diagramme du processus</string>
     <string name="task_review_document">Veuillez réviser %s</string>
     <string name="task_review_documents">Veuillez réviser ce contenu</string>
-    <string name="task_assignees_plurals">{0,choice,0#Aucun acteur|1#1 acteur|1&lt;{0} acteurs}</string>
-    <string name="task_assignees">Acteurs</string>
-    <string name="task_assignees_selection">Sélectionner les acteurs&#8230;</string>
+    <string name="task_assignees_plurals">{0,choice,0#Aucune personne assignée|1#1 personne assignée|1&lt;{0} personnes assignées}</string>
+    <string name="task_assignees">Personnes assignées</string>
+    <string name="task_assignees_selection">Sélectionner les personnes assignées&#8230;</string>
     <string name="process_approvers_plurals">{0,choice,0#Aucun approbateur|1#1 sur 1 approbateur|1&lt;%s sur {0} approbateurs}</string>
-    <string name="task_attachments_plurals">{0,choice,0#Aucun pièce jointe|1#1 pièce jointe|1&lt;{0} pièces jointes}</string>
+    <string name="task_attachments_plurals">{0,choice,0#Aucune pièce jointe|1#1 pièce jointe|1&lt;{0} pièces jointes}</string>
     <string name="task_attachments_selection">Sélectionner les pièces jointes&#8230;</string>
     <string name="task_attachments">Pièces jointes</string>
     <string name="process_no_description">(aucun message)</string>
@@ -675,7 +677,7 @@
     <string name="task_review_approve_description">Assigner une tâche à une ou plusieurs personnes pour revoir et approuver les contenus.</string>
     <string name="task_delegate_in_progress">Réaffectation en cours&#8230;</string>
     <string name="task_delegate_complete">Réaffectation terminée</string>
-    <string name="picker_assignees">Sélectionner les acteurs</string>
+    <string name="picker_assignees">Sélectionner les personnes assignées</string>
     <string name="picker_due_date">Sélectionner une date d\'échéance</string>
     <string name="picker_attachments">Sélectionner les pièces jointes</string>
     <string name="action_remove_approvers">Supprimer un approbateur</string>
@@ -780,7 +782,7 @@
     <string name="mdm_loading_configuration">Chargement de la configuration en cours...</string>
     <string name="sign_in">Connexion</string>
     <string name="error_mdm_loading_configuration"><![CDATA[<p><b>La configuration de votre application semble incorrecte.</b><br/> Si le problème persiste, contactez votre administrateur.</p> <br/> Erreur : %s]]></string>
-    <string name="discardbutton">Ignorer</string>
+    <string name="discardbutton">Annuler</string>
     <string name="filename_error_character">Nom de fichier non valide</string>
     <string name="my_tasks">Mes tâches</string>
     <string name="waiting_operations">Veuillez patienter</string>
@@ -827,13 +829,25 @@
 
 
     <string name="empty_site">Aucun site disponible</string>
-    <string name="empty_version">Aucun historique de version disponible</string>
+    <string name="empty_version">Aucun historique des versions disponible</string>
     <string name="empty_session">Aucune session disponible</string>
     <string name="empty_actvity">Aucune activité trouvée</string>
     <string name="empty_tag">Aucun tag trouvé</string>
     <string name="empty_comment">Aucun commentaire trouvé</string>
     <string name="empty_search">Aucun fichier trouvé</string>
     <string name="action_sign_in_short">Connexion</string>
+    <string name="node.details.file.not.found">Aucun fichier trouvé</string>
+    <string name="node.browser.folder.not.found">Aucun dossier trouvé</string>
+    <string name="user.details.user.not.found">Aucun utilisateur trouvé</string>
+    <string name="public.url.wrong.format">Lien non reconnu. Contactez votre administrateur Alfresco</string>
+    <string name="public.url.tasks.missing.filter">Informations de filtre manquantes. Contactez votre administrateur Alfresco</string>
+    <string name="public.url.file.missing.id">Informations d\'ID manquantes. Contactez votre administrateur Alfresco</string>
+    <string name="public.url.noderef.format">Informations NodeRef incorrectes. Contactez votre administrateur Alfresco</string>
+
+
+    <!-- ACCOUNTS SELECTION -->
+    <string name="accounts.title.select">Sélectionner un compte</string>
+    <string name="accounts.not.found">Aucun compte trouvé. Ajoutez-en un.</string>
 
 
     <!-- DATA PROTECTION -->
@@ -905,6 +919,9 @@
     <string name="form_message_unsupported_description"><![CDATA[<p>Ce formulaire contient un ou plusieurs champs obligatoires non pris en charge actuellement sur les appareils mobiles.</p> Veuillez utiliser l\'application Web pour effectuer cette étape.]]></string>
     <string name="form_message_link_error_title">Lien non pris en charge</string>
     <string name="form_message_link_error"><![CDATA[<p>Ce contenu ne provient pas d\'une source de contenu prise en charge.</p> Veuillez en sélectionner un autre.]]></string>
+
+
+    <string name="open_in_alfresco_editor">Ouvrir dans l\'Éditeur de texte Alfresco</string>
 
 
 </resources>

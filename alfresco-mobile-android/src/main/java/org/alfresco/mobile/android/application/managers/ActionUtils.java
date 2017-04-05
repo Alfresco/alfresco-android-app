@@ -26,6 +26,7 @@ import java.util.Map;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.PublicDispatcherActivity;
+import org.alfresco.mobile.android.application.editors.text.TextEditorActivity;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.extensions.SamsungManager;
 import org.alfresco.mobile.android.platform.intent.BaseActionUtils;
@@ -80,6 +81,31 @@ public class ActionUtils extends BaseActionUtils
         {
             AlfrescoNotificationManager.getInstance(fr.getActivity()).showAlertCrouton(fr.getActivity(),
                     R.string.error_unable_open_file);
+        }
+    }
+
+    public static void openWithAlfrescoTextEditor(Fragment fr, File myFile, String mimeType, int requestCode)
+    {
+        Intent intent = new Intent(fr.getActivity(), TextEditorActivity.class);
+        intent.setAction(Intent.ACTION_VIEW);
+        Uri data = Uri.fromFile(myFile);
+        intent.setDataAndType(data, mimeType.toLowerCase());
+
+        try
+        {
+            if (fr.getParentFragment() != null)
+            {
+                fr.getParentFragment().startActivityForResult(intent, requestCode);
+            }
+            else
+            {
+                fr.startActivityForResult(intent, requestCode);
+            }
+        }
+        catch (ActivityNotFoundException e)
+        {
+            AlfrescoNotificationManager.getInstance(fr.getActivity()).showAlertCrouton(fr.getActivity(),
+                    org.alfresco.mobile.android.foundation.R.string.error_unable_open_file);
         }
     }
 

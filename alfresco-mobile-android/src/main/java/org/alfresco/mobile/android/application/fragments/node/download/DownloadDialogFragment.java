@@ -48,6 +48,8 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
 
     public static final int ACTION_OPEN = 1;
 
+    public static final int ACTION_OPEN_WITH_ALFRESCO = 4;
+
     public static final int ACTION_EMAIL = 2;
 
     public static final int ACTION_EDIT = 3;
@@ -167,6 +169,7 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
         {
             switch (action)
             {
+                case ACTION_OPEN_WITH_ALFRESCO:
                 case ACTION_OPEN:
                     AlfrescoNotificationManager.getInstance(getActivity()).showToast(
                             getActivity().getText(R.string.download_complete) + " " + contentFile.getFileName());
@@ -177,8 +180,16 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
                     {
                         long datetime = contentFile.getFile().lastModified();
                         detailsFragment.setDownloadDateTime(new Date(datetime));
-                        ActionUtils.openIn(detailsFragment, contentFile.getFile(), doc.getContentStreamMimeType(),
-                                RequestCode.SAVE_BACK);
+                        if (action == ACTION_OPEN_WITH_ALFRESCO)
+                        {
+                            ActionUtils.openWithAlfrescoTextEditor(detailsFragment, contentFile.getFile(),
+                                    doc.getContentStreamMimeType(), RequestCode.SAVE_BACK);
+                        }
+                        else
+                        {
+                            ActionUtils.openIn(detailsFragment, contentFile.getFile(), doc.getContentStreamMimeType(),
+                                    RequestCode.SAVE_BACK);
+                        }
                     }
                     break;
 

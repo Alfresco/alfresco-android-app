@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+﻿<?xml version="1.0" encoding="utf-8"?><!--
   Copyright (C) 2005-2016 Alfresco Software Limited.
 
   This file is part of Alfresco Mobile for Android.
@@ -164,7 +164,6 @@
     <string name="share_content">Compartir contenido con&#8230;</string>
 
     <!-- HELP -->
-    <string name="asset_folder_prefix">es</string>
     <string name="docs_prefix" translatable="false" />
 
     <!-- About Message -->
@@ -173,9 +172,11 @@
     <string name="sdknumber_version">SDK: </string>
     <string name="about_description">
 <![CDATA[
-<p>Alfresco Mobile se conecta a Alfresco in the Cloud y servidores en instalaciones de Alfresco (3.4 y superior) para proporcionar acceso seguro a su contenido corporativo cuando no esté en la oficina.</p>
+<p>Alfresco es la plataforma de código abierto para la colaboración y gestión de contenido crítico para la empresa.</p>
 
-<p>Alfresco Mobile se conecta a su repositorio de Alfresco usando las credenciales de inicio de sesión de Alfresco (en HTTP o HTTPS) y gestiona el acceso del usuario basado en sus permisos.</p>
+<p>Alfresco Mobile ha sido diseñado y desarrollado por Alfresco Software Inc. y se conecta a Alfresco Content Services Cloud, Alfresco Content Services y Alfresco Community Edition (versiones 3.4.8 y superiores) para ofrecer acceso seguro a los ficheros corporativos desde cualquier lugar.</p>
+
+<p>Esta aplicación móvil se conecta al repositorios de Alfresco utilizando las credenciales de inicio de sesión de Alfresco (a través de HTTP o HTTPS) y gestiona el acceso en función de sus permisos.</p>
 ]]>
     </string>
 
@@ -277,6 +278,7 @@
 
     <!-- PIN Code -->
     <string name="passcode_title">Introduzca la contraseña</string>
+    <string name="passcode_admin_title">El administrador de Alfresco solicita que proteja Alfresco Mobile con una contraseña</string>
     <string name="passcode_enable_title">Activar contraseña</string>
     <string name="passcode_preference">Protección de contraseña</string>
     <string name="passcode_enable">Habilitado</string>
@@ -344,7 +346,7 @@
     <string name="settings_custom_menu_disable">Su administrador de Alfresco ha deshabilitado esta función.</string>
     <string name="settings.feedback">Comentarios</string>
     <string name="settings.feedback.diagnostic">Enviar diagnósticos</string>
-    <string name="settings.feedback.diagnostic.summary">Para ayudarnos a mejorar Alfresco Mobile, recopilamos datos de diagnósticos técnicos anónimos. Puede desactivar esta opción si lo prefiere.</string>
+    <string name="settings.feedback.diagnostic.summary">Para ayudarnos a mejorar Alfresco Mobile, recogemos datos de diagnóstico técnicos de forma anónima. Puede desactivar esta opción si lo prefiere.</string>
     <string name="settings.feedback.email">Enviar comentarios</string>
 
     <!-- Multi Selection -->
@@ -576,8 +578,8 @@
     <string name="activity_profile">Perfil de %s</string>
 
     <!-- Workflow -->
-    <string name="empty_tasks">Sin tareas</string>
-    <string name="empty_items">Sin adjuntos</string>
+    <string name="empty_tasks">Ninguna tarea</string>
+    <string name="empty_items">Ningún adjunto</string>
     <string name="task_items">Adjunto(s)</string>
     <string name="workflow_start">Crear tarea</string>
     <string name="task_actions">Respuesta</string>
@@ -593,7 +595,7 @@
     <string name="tasks_due_tomorrow">Mañana</string>
     <string name="tasks_due_week">Próximos 7 días</string>
     <string name="tasks_due_over">Vencido</string>
-    <string name="tasks_due_no_date">Sin fecha</string>
+    <string name="tasks_due_no_date">Ninguna fecha</string>
     <string name="tasks_priority">Prioridad</string>
     <string name="tasks_priority_low">Baja</string>
     <string name="tasks_priority_medium">Media</string>
@@ -606,9 +608,9 @@
     <!-- Tasks -->
     <string name="task_filter_view">Ver tareas</string>
     <string name="validate">Validar</string>
-    <string name="workflow_priority_low">Prioridad baja</string>
+    <string name="workflow_priority_low">Baja prioridad</string>
     <string name="workflow_priority_medium">Prioridad media</string>
-    <string name="workflow_priority_high">Prioridad alta</string>
+    <string name="workflow_priority_high">Alta prioridad</string>
     <string name="task_user_approved"><![CDATA[%s <b>aprobó el contenido</b>]]></string>
     <string name="task_user_rejected"><![CDATA[%s <b>rechazó el contenido</b>]]></string>
     <string name="task_user_commented">y comentó:</string>
@@ -633,7 +635,7 @@
     <string name="task_filter_active">Tareas activas</string>
     <string name="task_filter_initiator">Tareas que he iniciado</string>
     <string name="task_filter_completed">Tareas completadas</string>
-    <string name="task_filter_high_priority">Tareas de prioridad alta</string>
+    <string name="task_filter_high_priority">Tareas de alta prioridad</string>
     <string name="task_filter_due_today">Tareas que vencen hoy</string>
     <string name="task_filter_overdue">Tareas vencidas</string>
     <string name="task_filter_assigned_me">Tareas que se me han asignado</string>
@@ -683,14 +685,14 @@
 
 
     <!-- PROCESS NAME -->
-    <string name="process_adhoc">Flujo de trabajo adhoc</string>
-    <string name="process_parallel_review">Revisión y aprobación paralelas</string>
+    <string name="process_adhoc">Flujo de trabajo ad hoc</string>
+    <string name="process_parallel_review">Revisión y aprobación en paralelo</string>
     <string name="process_review">Revisión y aprobación</string>
     <string name="process_pooled_review">Revisión y aprobación en grupo</string>
 
     <!-- AGGREGATOR SEARCH -->
     <string name="search">Buscar</string>
-    <string name="search_person">Gente</string>
+    <string name="search_person">Personas</string>
     <string name="search_documents">Ficheros</string>
     <string name="search_folders">Carpetas</string>
     <string name="search_site">Sitio</string>
@@ -834,6 +836,18 @@
     <string name="empty_comment">No se encontró ningún comentario</string>
     <string name="empty_search">No se encontró ningún fichero</string>
     <string name="action_sign_in_short">Iniciar sesión</string>
+    <string name="node.details.file.not.found">No se encontró ningún fichero</string>
+    <string name="node.browser.folder.not.found">No se encontró ninguna carpeta</string>
+    <string name="user.details.user.not.found">No se encontró ningún usuario</string>
+    <string name="public.url.wrong.format">No se ha reconocido este enlace. Intente ponerse en contacto con su administrador de Alfresco</string>
+    <string name="public.url.tasks.missing.filter">Falta información de filtro. Intente ponerse en contacto con su administrador de Alfresco</string>
+    <string name="public.url.file.missing.id">Falta información de ID. Intente ponerse en contacto con su administrador de Alfresco</string>
+    <string name="public.url.noderef.format">Parece que la información NodeRef es errónea. Intente ponerse en contacto con su administrador de Alfresco</string>
+
+
+    <!-- ACCOUNTS SELECTION -->
+    <string name="accounts.title.select">Seleccionar una cuenta</string>
+    <string name="accounts.not.found">No se encontró ninguna cuenta. Intentar añadir una.</string>
 
 
     <!-- DATA PROTECTION -->
@@ -905,6 +919,9 @@
     <string name="form_message_unsupported_description"><![CDATA[<p>Este formulario tiene uno o más campos obligatorios que no son compatibles con dispositivos móviles.</p> Utilice la aplicación web para realizar este paso.]]></string>
     <string name="form_message_link_error_title">Enlace no compatible</string>
     <string name="form_message_link_error"><![CDATA[<p>Este contenido no proviene de una fuente de contenido compatible.</p> Seleccione otro.]]></string>
+
+
+    <string name="open_in_alfresco_editor">Abrir en el editor de texto de Alfresco</string>
 
 
 </resources>

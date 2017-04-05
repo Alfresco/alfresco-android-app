@@ -38,6 +38,7 @@ import org.alfresco.mobile.android.async.clean.CleanSyncFavoriteRequest;
 import org.alfresco.mobile.android.platform.Manager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.provider.CursorUtils;
 import org.alfresco.mobile.android.platform.provider.MapUtil;
@@ -62,6 +63,12 @@ import android.util.Log;
 
 public class SyncContentManager extends Manager
 {
+    // Default intervall every 12 hours
+    public static final long DEFAULT_INTERVAL = 12 * 60 * 60;
+
+    // minimum intervall every 1 hour
+    public static final long MIN_INTERVAL = 60 * 60;
+
     private static final String TAG = SyncContentManager.class.getName();
 
     protected static final Object LOCK = new Object();
@@ -91,6 +98,8 @@ public class SyncContentManager extends Manager
     public static final int MODE_BOTH = 4;
 
     public static final String ARGUMENT_IGNORE_WARNING = "ignoreWarning";
+
+    public static final String ARGUMENT_ANALYTIC = "analytic";
 
     public static final String ARGUMENT_NODE = "node";
 
@@ -269,11 +278,12 @@ public class SyncContentManager extends Manager
         return Uri.parse(SyncContentProvider.CONTENT_URI + "/" + id);
     }
 
-    public void sync(AlfrescoAccount account)
+    public void sync(String analyticInfo, AlfrescoAccount account)
     {
         if (account == null) { return; }
         Bundle settingsBundle = new Bundle();
         settingsBundle.putInt(ARGUMENT_MODE, SyncContentManager.MODE_BOTH);
+        settingsBundle.putString(ARGUMENT_ANALYTIC, analyticInfo);
         settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
         settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
         settingsBundle.putBoolean(ARGUMENT_IGNORE_WARNING, false);
@@ -281,10 +291,16 @@ public class SyncContentManager extends Manager
                 SyncContentProvider.AUTHORITY, settingsBundle);
     }
 
+    public void sync(AlfrescoAccount account)
+    {
+        sync(AnalyticsManager.LABEL_SYNC_SYSTEM, account);
+    }
+
     public void sync(AlfrescoAccount account, String nodeIdentifier)
     {
         if (account == null) { return; }
         Bundle settingsBundle = new Bundle();
+        settingsBundle.putString(ARGUMENT_ANALYTIC, AnalyticsManager.LABEL_SYNC_ACTION);
         settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
         settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
         settingsBundle.putInt(ARGUMENT_MODE, SyncContentManager.MODE_NODE);
@@ -303,6 +319,32 @@ public class SyncContentManager extends Manager
         settingsBundle.putInt(SyncContentManager.ARGUMENT_MODE, SyncContentManager.MODE_BOTH);
         ContentResolver.requestSync(AlfrescoAccountManager.getInstance(appContext).getAndroidAccount(account.getId()),
                 SyncContentProvider.AUTHORITY, settingsBundle);
+    }
+
+    /**
+     * @param account
+     * @param interval must be in seconds
+     */
+    public void syncPeriodically(AlfrescoAccount account, Long interval)
+    {
+        if (account == null) { return; }
+        long period = DEFAULT_INTERVAL;
+        if (interval != null)
+        {
+            period = interval;
+        }
+        Bundle settingsBundle = new Bundle();
+        if (period != DEFAULT_INTERVAL)
+        {
+            // only track sync done via server config and not the default one
+            settingsBundle.putString(ARGUMENT_ANALYTIC, AnalyticsManager.LABEL_SYNC_SCHEDULER_CHANGED);
+        }
+        settingsBundle.putInt(ARGUMENT_MODE, SyncContentManager.MODE_BOTH);
+        settingsBundle.putBoolean(ARGUMENT_IGNORE_WARNING, false);
+        ContentResolver.addPeriodicSync(
+                AlfrescoAccountManager.getInstance(appContext).getAndroidAccount(account.getId()),
+                SyncContentProvider.AUTHORITY, settingsBundle, period);
+        Log.d("[SCHEDULER]", " syncPeriodically: " + interval);
     }
 
     public void unsync(AlfrescoAccount account)
@@ -493,7 +535,7 @@ public class SyncContentManager extends Manager
         long lastTime = sharedPref.getLong(LAST_SYNC_ACTIVATED_AT + account.getId(), now);
         if ((lastTime + 3600000) < now && canSync(account))
         {
-            sync(account);
+            sync(AnalyticsManager.LABEL_SYNC_CRON, account);
         }
     }
 
@@ -812,7 +854,8 @@ public class SyncContentManager extends Manager
         if (account != null)
         {
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(appContext);
-            return sharedPref.getBoolean(SYNCHRO_PREFIX + account.getId(), true);
+            if (sharedPref.contains(SYNCHRO_PREFIX
+                    + account.getId())) { return sharedPref.getBoolean(SYNCHRO_PREFIX + account.getId(), true); }
         }
         return false;
     }

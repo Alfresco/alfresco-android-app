@@ -86,7 +86,7 @@
     <string name="org_alfresco_documentlibrary_folders_added">{0} 個のフォルダが {1} によって追加されました</string>
     <string name="org_alfresco_documentlibrary_folder_deleted">{0} が {1} によって削除されました</string>
     <string name="org_alfresco_documentlibrary_folders_deleted">{0} 個のフォルダが {1} によって削除されました</string>
-    <string name="org_alfresco_documentlibrary_google_docs_checkout">{0} ファイルが {1} によってGoogle ドキュメント™ にチェックアウトされました</string>
+    <string name="org_alfresco_documentlibrary_google_docs_checkout">{0} ファイルが {1} によって Google ドキュメント™ にチェックアウトされました</string>
     <string name="org_alfresco_documentlibrary_google_docs_checkin">{0} ファイルが {1} によって Google ドキュメント™ からチェックインされました</string>
     <string name="org_alfresco_documentlibrary_inline_edit">{0} ファイルが {1} によって編集されました</string>
     <string name="org_alfresco_documentlibrary_file_liked">{1} がファイル {0} に [いいね !] を付けました</string>
@@ -108,7 +108,7 @@
     <string name="org_alfresco_datalists_list_updated">{0} データリストの詳細が {1} によって更新されました</string>
     <string name="org_alfresco_datalists_list_deleted">{0} データリストが {1} によって削除されました</string>
     <string name="org_alfresco_subscriptions_followed">{1} は現在 {5} をフォローしています</string>
-    <string name="org_alfresco_subscriptions_subscribed">{1} が {2} を購読しました</string>
+    <string name="org_alfresco_subscriptions_subscribed">{1} は {2} を購読しています</string>
     <string name="org_alfresco_profile_status_changed">{1}: {6}</string>
     <string name="org_alfresco_documentlibrary_file_previewed">{1} が文書 {0} をプレビューしました</string>
     <string name="org_alfresco_documentlibrary_file_downloaded">{1} が文書 {0} をダウンロードしました</string>
@@ -231,9 +231,9 @@
     <string name="add">追加</string>
     <string name="like">いいね!</string>
     <string name="open_in">プログラムから開く</string>
-    <string name="take_photo">写真を撮影する</string>
-    <string name="make_video">ビデオを録画する</string>
-    <string name="record_audio">オーディオを録音する</string>
+    <string name="take_photo">写真の撮影</string>
+    <string name="make_video">ビデオの録画</string>
+    <string name="record_audio">オーディオの録音</string>
     <string name="version_history">バージョン履歴</string>
     <string name="tags">タグ</string>
     <string name="share">共有</string>

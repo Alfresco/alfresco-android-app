@@ -9,10 +9,12 @@ import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.exception.AlfrescoAppException;
 import org.alfresco.mobile.android.platform.extensions.MobileIronManager;
 import org.alfresco.mobile.android.platform.mdm.MDMEvent;
+import org.alfresco.mobile.android.platform.mdm.MDMManager;
 
 import android.app.IntentService;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 public class AppConnectService extends IntentService
 {
@@ -36,28 +38,36 @@ public class AppConnectService extends IntentService
     @Override
     protected void onHandleIntent(Intent intent)
     {
-        if (ACTION_HANDLE_CONFIG.equals(intent.getAction()))
+
+        try
         {
-            Intent i;
-            try
+            if (ACTION_HANDLE_CONFIG.equals(intent.getAction()))
             {
-                Bundle config = intent.getBundleExtra(CONFIG);
+                Intent i;
+                try
+                {
+                    Bundle config = intent.getBundleExtra(CONFIG);
 
-                if (config == null) { throw new AlfrescoAppException("No Config."); }
+                    if (config == null) { throw new AlfrescoAppException("No Config."); }
 
-                MobileIronManager.getInstance(getApplicationContext()).setConfig(config);
-                i = intent.getParcelableExtra(CONFIG_APPLIED_INTENT);
+                    MobileIronManager.getInstance(getApplicationContext()).setConfig(config);
+                    i = intent.getParcelableExtra(CONFIG_APPLIED_INTENT);
 
-                EventBusManager.getInstance().post(new MDMEvent());
+                    EventBusManager.getInstance().post(new MDMEvent());
+                }
+                catch (Exception e)
+                {
+                    i = intent.getParcelableExtra(CONFIG_ERROR_INTENT);
+                    i.putExtra(ERROR_STRING, e.getMessage());
+
+                    EventBusManager.getInstance().post(new MDMEvent(e));
+                }
+                startService(MDMManager.createExplicitFromImplicitIntent(getApplicationContext(), i));
             }
-            catch (Exception e)
-            {
-                i = intent.getParcelableExtra(CONFIG_ERROR_INTENT);
-                i.putExtra(ERROR_STRING, e.getMessage());
-
-                EventBusManager.getInstance().post(new MDMEvent(e));
-            }
-            startService(i);
+        }
+        catch (Exception e)
+        {
+            Log.i(TAG, "Error during handle config");
         }
     }
 }

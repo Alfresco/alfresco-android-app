@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.alfresco.mobile.android.api.exceptions.AlfrescoException;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
@@ -40,6 +41,7 @@ import org.alfresco.mobile.android.async.impl.ListingOperation;
 import org.alfresco.mobile.android.async.utils.ISO9075;
 import org.alfresco.mobile.android.platform.EventBusManager;
 import org.apache.chemistry.opencmis.client.bindings.spi.http.Response;
+import org.apache.chemistry.opencmis.commons.exceptions.CmisObjectNotFoundException;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 
@@ -100,6 +102,7 @@ public class NodeChildrenOperation extends ListingOperation<PagingResult<Node>>
                 if (siteId != null && site == null)
                 {
                     site = session.getServiceRegistry().getSiteService().getSite(siteId);
+                    if (site == null) { throw new AlfrescoServiceException(AlfrescoException.DOCFOLDER_GENERIC, new CmisObjectNotFoundException()); }
                 }
                 if (site != null)
                 {

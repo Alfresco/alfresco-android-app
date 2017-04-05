@@ -19,6 +19,7 @@ package org.alfresco.mobile.android.application.fragments.user;
 
 import java.util.Map;
 
+import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.model.Company;
 import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
@@ -40,6 +41,8 @@ import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.person.PersonProfileTemplate;
 import org.alfresco.mobile.android.ui.rendition.RenditionManager;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
+
+import com.squareup.otto.Subscribe;
 
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
@@ -63,8 +66,6 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.TextView;
-
-import com.squareup.otto.Subscribe;
 
 /**
  * @since 1.3
@@ -203,8 +204,15 @@ public class UserProfileFragment extends AlfrescoFragment implements OnMenuItemC
         {
             hide(R.id.progressbar);
             show(R.id.empty);
-            ((TextView) viewById(R.id.empty_text)).setText(R.string.empty_child);
-            CloudExceptionUtils.handleCloudException(getActivity(), event.exception, false);
+            if (event.exception instanceof AlfrescoServiceException
+                    && event.exception.getMessage().contains("not found"))
+            {
+                ((TextView) viewById(R.id.empty_text)).setText(R.string.empty_users);
+            }
+            else
+            {
+                CloudExceptionUtils.handleCloudException(getActivity(), event.exception, false);
+            }
         }
         else
         {

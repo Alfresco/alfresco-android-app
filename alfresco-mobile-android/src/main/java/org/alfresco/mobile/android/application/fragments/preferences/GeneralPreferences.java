@@ -25,6 +25,8 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.activity.PrivateDialogActivity;
 import org.alfresco.mobile.android.application.activity.WelcomeActivity;
+import org.alfresco.mobile.android.application.configuration.features.DataProtectionConfigFeature;
+import org.alfresco.mobile.android.application.configuration.features.PasscodeConfigFeature;
 import org.alfresco.mobile.android.application.fragments.about.AboutFragment;
 import org.alfresco.mobile.android.application.fragments.account.AccountsAdapter;
 import org.alfresco.mobile.android.application.fragments.builder.LeafFragmentBuilder;
@@ -289,25 +291,36 @@ public class GeneralPreferences extends AlfrescoFragment
                             ? R.string.data_protection_on : R.string.data_protection_off);
         }
 
-        viewById(R.id.settings_privatefolder_container).setOnClickListener(new View.OnClickListener()
+        DataProtectionConfigFeature feature = new DataProtectionConfigFeature(getActivity());
+        if (feature.isProtected())
         {
-            @Override
-            public void onClick(View v)
+            viewById(R.id.settings_privatefolder_container).setFocusable(false);
+            viewById(R.id.settings_privatefolder_container).setClickable(false);
+            viewById(R.id.settings_privatefolder_container).setEnabled(false);
+            dataProtectionVH.bottomText.setText(R.string.mdm_managed);
+        }
+        else if (sharedPref.getBoolean(HAS_ACCESSED_PAID_SERVICES, false))
+        {
+            viewById(R.id.settings_privatefolder_container).setOnClickListener(new View.OnClickListener()
             {
-                final File folder = AlfrescoStorageManager.getInstance(getActivity()).getPrivateFolder("", null);
-                if (folder != null)
+                @Override
+                public void onClick(View v)
                 {
-                    DataProtectionUserDialogFragment.newInstance(false).show(getActivity().getSupportFragmentManager(),
-                            DataProtectionUserDialogFragment.TAG);
-                }
-                else
-                {
-                    AlfrescoNotificationManager.getInstance(getActivity())
-                            .showLongToast(getString(R.string.sdinaccessible));
-                }
+                    final File folder = AlfrescoStorageManager.getInstance(getActivity()).getPrivateFolder("", null);
+                    if (folder != null)
+                    {
+                        DataProtectionUserDialogFragment.newInstance(false)
+                                .show(getActivity().getSupportFragmentManager(), DataProtectionUserDialogFragment.TAG);
+                    }
+                    else
+                    {
+                        AlfrescoNotificationManager.getInstance(getActivity())
+                                .showLongToast(getString(R.string.sdinaccessible));
+                    }
 
-            }
-        });
+                }
+            });
+        }
 
         // PASSCODE
         passcodeVH = HolderUtils.configure(viewById(R.id.passcode_preference), getString(R.string.passcode_title),
@@ -329,6 +342,12 @@ public class GeneralPreferences extends AlfrescoFragment
             }
         });
 
+        PasscodeConfigFeature passcodeConfig = new PasscodeConfigFeature(getActivity());
+        if (passcodeConfig.isProtected())
+        {
+            passcodeVH.bottomText.setText(R.string.mdm_managed);
+        }
+
         // In case of MDM we disable all enterprise feature
         if (mdmManager.hasConfig())
         {
@@ -342,7 +361,8 @@ public class GeneralPreferences extends AlfrescoFragment
         if (AnalyticsManager.getInstance(getActivity()) == null
                 || AnalyticsManager.getInstance(getActivity()).isBlocked())
         {
-            boolean isEnable = AnalyticsManager.getInstance(getActivity()).isEnable();
+            boolean isEnable = AnalyticsManager.getInstance(getActivity()) != null
+                    && AnalyticsManager.getInstance(getActivity()).isEnable();
 
             diagnosticVH = HolderUtils.configure(viewById(R.id.settings_diagnostic),
                     getString(R.string.settings_feedback_diagnostic), getString(R.string.settings_custom_menu_disable),
@@ -353,7 +373,8 @@ public class GeneralPreferences extends AlfrescoFragment
         }
         else
         {
-            boolean isEnable = AnalyticsManager.getInstance(getActivity()).isEnable();
+            boolean isEnable = AnalyticsManager.getInstance(getActivity()) != null
+                    && AnalyticsManager.getInstance(getActivity()).isEnable();
 
             diagnosticVH = HolderUtils.configure(viewById(R.id.settings_diagnostic),
                     getString(R.string.settings_feedback_diagnostic),
@@ -377,9 +398,9 @@ public class GeneralPreferences extends AlfrescoFragment
         }
     }
 
-    private void startPlayStore()
+    private void retrieveServerConfigFeature()
     {
-        ActionUtils.startPlayStore(getActivity(), getString(R.string.settings_rating_packagename));
+
     }
 
     // ///////////////////////////////////////////////////////////////////////////

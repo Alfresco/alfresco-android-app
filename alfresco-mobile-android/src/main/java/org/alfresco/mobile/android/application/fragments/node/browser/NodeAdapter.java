@@ -352,9 +352,9 @@ public class NodeAdapter extends BaseListAdapter<Node, TwoLinesProgressViewHolde
     {
         String s = "";
 
-        if (node.getCreatedAt() != null)
+        if (node.getModifiedAt() != null)
         {
-            s = formatDate(context, node.getCreatedAt().getTime());
+            s = formatDate(context, node.getModifiedAt().getTime());
             if (node.isDocument())
             {
                 Document doc = (Document) node;
@@ -368,10 +368,10 @@ public class NodeAdapter extends BaseListAdapter<Node, TwoLinesProgressViewHolde
     {
         StringBuilder s = new StringBuilder();
 
-        if (node.getCreatedAt() != null)
+        if (node.getModifiedAt() != null)
         {
             s.append(context.getString(R.string.metadata_modified));
-            s.append(formatDate(context, node.getCreatedAt().getTime()));
+            s.append(formatDate(context, node.getModifiedAt().getTime()));
             if (node.isDocument())
             {
                 Document doc = (Document) node;
