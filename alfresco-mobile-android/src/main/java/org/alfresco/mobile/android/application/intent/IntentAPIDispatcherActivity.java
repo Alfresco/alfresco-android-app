@@ -129,6 +129,7 @@ public class IntentAPIDispatcherActivity extends BaseActivity
             // Image capture
             if (MIMETYPE_JPG.equals(mimetype))
             {
+                // NB: Need to be updated if targetSDK >= 24
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 File folder = AlfrescoStorageManager.getInstance(this).getFileInPrivateFolder("/temp");
                 if (!folder.exists())
