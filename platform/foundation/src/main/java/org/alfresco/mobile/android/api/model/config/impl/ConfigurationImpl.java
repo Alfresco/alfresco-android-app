@@ -479,6 +479,10 @@ public class ConfigurationImpl
 
     public String getPersonId()
     {
+        if (personId == null && getSession() != null)
+        {
+            personId = getSession().getPersonIdentifier();
+        }
         return personId;
     }
 
