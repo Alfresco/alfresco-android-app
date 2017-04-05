@@ -172,9 +172,11 @@
     <string name="sdknumber_version">SDK: </string>
     <string name="about_description">
 <![CDATA[
-<p>Alfresco Mobile se conecta a Alfresco in the Cloud y servidores en instalaciones de Alfresco (3.4 y superior) para proporcionar acceso seguro a su contenido corporativo cuando no esté en la oficina.</p>
+<p>Alfresco es la plataforma de código abierto para la colaboración y gestión de contenido crítico para la empresa.</p>
 
-<p>Alfresco Mobile se conecta a su repositorio de Alfresco usando las credenciales de inicio de sesión de Alfresco (en HTTP o HTTPS) y gestiona el acceso del usuario basado en sus permisos.</p>
+<p>Alfresco Mobile ha sido diseñado y desarrollado por Alfresco Software Inc. y se conecta a Alfresco Content Services Cloud, Alfresco Content Services y Alfresco Community Edition (versiones 3.4.8 y superiores) para ofrecer acceso seguro a los ficheros corporativos desde cualquier lugar.</p>
+
+<p>Esta aplicación móvil se conecta al repositorios de Alfresco utilizando las credenciales de inicio de sesión de Alfresco (a través de HTTP o HTTPS) y gestiona el acceso en función de sus permisos.</p>
 ]]>
     </string>
 
