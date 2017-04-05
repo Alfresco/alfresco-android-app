@@ -246,9 +246,9 @@ public class MainActivity extends BaseActivity
                     ((AlfrescoFragment) fr).displayTitle();
                     if (DisplayUtils.hasCentralPane(MainActivity.this))
                     {
-                        fr = (AlfrescoFragment) getSupportFragmentManager()
+                        fr = getSupportFragmentManager()
                                 .findFragmentById(DisplayUtils.getCentralFragmentId(MainActivity.this));
-                        if (fr != null)
+                        if (fr != null && fr instanceof AlfrescoFragment)
                         {
                             ((AlfrescoFragment) fr).displayTitle();
                         }
