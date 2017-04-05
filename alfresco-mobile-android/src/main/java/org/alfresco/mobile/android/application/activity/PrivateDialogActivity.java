@@ -117,15 +117,18 @@ public class PrivateDialogActivity extends BaseAppCompatActivity
                 getSupportActionBar().hide();
             }
 
-            Folder folder = (Folder) getIntent().getExtras().get(PrivateIntent.EXTRA_FOLDER);
-            Node node = (Node) getIntent().getExtras().get(PrivateIntent.EXTRA_NODE);
+            Folder folder = (getIntent().hasExtra(PrivateIntent.EXTRA_FOLDER))
+                    ? (Folder) getIntent().getExtras().get(PrivateIntent.EXTRA_FOLDER) : null;
+            Node node = (getIntent().hasExtra(PrivateIntent.EXTRA_NODE))
+                    ? (Node) getIntent().getExtras().get(PrivateIntent.EXTRA_NODE) : null;
 
             Fragment f = EditPropertiesFragment.with(this).parentFolder(folder).node(node).createFragment();
             FragmentDisplayer.with(this).back(false).load(f).animate(null).into(FragmentDisplayer.PANEL_LEFT);
             return;
         }
 
-        if (PrivateIntent.ACTION_START_PROCESS.equals(action) && getFragment(CreateTaskTypePickerFragment.TAG) == null)
+        if (PrivateIntent.ACTION_START_PROCESS.equals(action) && getFragment(CreateTaskTypePickerFragment.TAG) == null
+                && getFragment(CreateTaskFragment.TAG) == null)
         {
             List<Document> docs = new ArrayList<Document>();
             if (getIntent().getExtras() != null && getIntent().getExtras().containsKey(PrivateIntent.EXTRA_DOCUMENT))

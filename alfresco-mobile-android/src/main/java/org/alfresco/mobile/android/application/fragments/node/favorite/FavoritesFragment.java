@@ -45,6 +45,8 @@ import org.alfresco.mobile.android.ui.SelectableFragment;
 import org.alfresco.mobile.android.ui.node.favorite.FavoritesNodeFragment;
 import org.alfresco.mobile.android.ui.template.ListingTemplate;
 
+import com.squareup.otto.Subscribe;
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -53,8 +55,6 @@ import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.squareup.otto.Subscribe;
 
 public class FavoritesFragment extends FavoritesNodeFragment implements SelectableFragment
 {
@@ -117,7 +117,7 @@ public class FavoritesFragment extends FavoritesNodeFragment implements Selectab
     @Override
     protected ArrayAdapter<?> onAdapterCreation()
     {
-        return new NodeAdapter(getActivity(), R.layout.row_two_lines_progress, new ArrayList<Node>(0), selectedItems,
+        return new FavoriteNodeAdapter(this, R.layout.row_two_lines_progress, new ArrayList<Node>(0), selectedItems,
                 ListingModeFragment.MODE_LISTING);
     }
 

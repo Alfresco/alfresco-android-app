@@ -1,5 +1,5 @@
 <!--
-  ~  Copyright (C) 2005-2015 Alfresco Software Limited.
+  ~  Copyright (C) 2005-2017 Alfresco Software Limited.
   ~
   ~ This file is part of Alfresco Activiti Mobile for Android.
   ~
@@ -104,6 +104,33 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/saml_signin_panel"
+                style="?android:attr/buttonBarStyle"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginTop="@dimen/d_16"
+                android:background="@color/blue_light"
+                android:gravity="bottom"
+                android:measureWithLargestChild="true"
+                android:orientation="horizontal"
+                android:paddingLeft="2dip"
+                android:paddingRight="2dip"
+                android:paddingTop="0dip">
+
+                <Button
+                    android:id="@+id/saml_sign_in_button"
+                    style="@style/AlfrescoMaterialTheme.Text.Title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/alfrescohololight_item_background_holo_light"
+                    android:gravity="center"
+                    android:onClick="samlSignIn"
+                    android:text="@string/action_sign_in_short"
+                    android:textColor="@color/secondary_background" />
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/validation_panel"

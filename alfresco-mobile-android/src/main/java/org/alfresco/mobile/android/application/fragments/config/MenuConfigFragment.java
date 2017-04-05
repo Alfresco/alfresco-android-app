@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2015 Alfresco Software Limited.
+ *  Copyright (C) 2005-2017 Alfresco Software Limited.
  *
  *  This file is part of Alfresco Mobile for Android.
  *
@@ -59,6 +59,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -69,8 +71,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
-
-import com.afollestad.materialdialogs.MaterialDialog;
 
 /**
  * Created by jpascal on 21/01/2015.
@@ -96,7 +96,7 @@ public class MenuConfigFragment extends AlfrescoFragment implements DefaultMenuC
 
     private Button save;
 
-    private boolean originalSyncState;
+    private boolean originalSyncState = true;
 
     private AlfrescoAccount account;
 
@@ -149,6 +149,10 @@ public class MenuConfigFragment extends AlfrescoFragment implements DefaultMenuC
         {
             updateMenu();
         }
+        else
+        {
+            originalSyncState = defaultMenuItems.get(VIEW_SYNC).isEnable();
+        }
 
         menuConfigItems = new ArrayList<>(defaultMenuItems.values());
 
@@ -184,9 +188,7 @@ public class MenuConfigFragment extends AlfrescoFragment implements DefaultMenuC
                 }
 
                 AnalyticsHelper.reportOperationEvent(getActivity(), AnalyticsManager.CATEGORY_ACCOUNT,
-                        AnalyticsManager.ACTION_UPDATE_MENU,
-                        getAccount().getTypeId() == AlfrescoAccount.TYPE_ALFRESCO_CLOUD
-                                ? AnalyticsManager.SERVER_TYPE_CLOUD : AnalyticsManager.SERVER_TYPE_ONPREMISE,
+                        AnalyticsManager.ACTION_UPDATE_MENU, AnalyticsHelper.getAccountType(getAccount().getTypeId()),
                         1, false);
 
             }

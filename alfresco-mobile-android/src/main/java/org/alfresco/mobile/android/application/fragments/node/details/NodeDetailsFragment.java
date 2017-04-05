@@ -106,6 +106,9 @@ import org.alfresco.mobile.android.ui.utils.Formatter;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.squareup.otto.Subscribe;
+
 import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.content.Context;
@@ -128,9 +131,6 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.squareup.otto.Subscribe;
 
 import it.sephiroth.android.library.imagezoom.ImageViewTouch;
 import it.sephiroth.android.library.imagezoom.ImageViewTouchBase;
@@ -410,7 +410,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
             case RequestCode.FILEPICKER:
                 if (data != null && PrivateIntent.ACTION_PICK_FILE.equals(data.getAction()))
                 {
-                    ActionUtils.actionPickFile(getFragmentManager().findFragmentByTag(getTag()),
+                    ActionUtils.actionPickFile(this.getParentFragment(),
                             RequestCode.FILEPICKER);
                 }
                 else if (data != null && data.getData() != null)
@@ -498,7 +498,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         {
             bottomText = Formatter.createContentBottomText(getActivity(), node, true);
         }
-        else if (node.isFolder())
+        else if (node.isFolder() && node.getPropertyValue(PropertyIds.PATH) != null)
         {
             bottomText = UIUtils.getParentDirPath((String) node.getPropertyValue(PropertyIds.PATH));
         }

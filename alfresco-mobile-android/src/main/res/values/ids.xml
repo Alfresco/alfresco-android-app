@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  Copyright (C) 2005-2013 Alfresco Software Limited.
+  Copyright (C) 2005-2017 Alfresco Software Limited.
   
   This file is part of Alfresco Mobile for Android.
   
@@ -125,6 +125,7 @@
 
     <!-- MENU CONFIGURATION -->
     <item name="config_menu_add" type="id" />
+    <item name="menu_login_ticket" type="id" />
 
 
     <!-- FRAGMENT ID -->

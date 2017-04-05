@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2015 Alfresco Software Limited.
+ *  Copyright (C) 2005-2017 Alfresco Software Limited.
  *
  *  This file is part of Alfresco Mobile for Android.
  *
@@ -22,8 +22,13 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.alfresco.mobile.android.api.network.NetworkHttpInvoker;
+import org.alfresco.mobile.android.api.session.authentication.SamlInfo;
+import org.alfresco.mobile.android.api.session.authentication.impl.Saml2AuthHelper;
+import org.alfresco.mobile.android.api.session.authentication.impl.Saml2InfoImpl;
+import org.alfresco.mobile.android.api.utils.JsonUtils;
 import org.alfresco.mobile.android.api.utils.OnPremiseUrlRegistry;
 import org.alfresco.mobile.android.api.utils.PublicAPIUrlRegistry;
 import org.alfresco.mobile.android.async.LoaderResult;
@@ -35,7 +40,7 @@ import org.alfresco.mobile.android.platform.EventBusManager;
 import org.apache.chemistry.opencmis.client.bindings.spi.http.Response;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 
-public class CheckServerOperation extends BaseOperation<CheckServerOperation.URLInfo>
+public class CheckServerOperation extends BaseOperation<URLInfo>
 {
     protected String baseUrl, username, password;
 
@@ -170,6 +175,21 @@ public class CheckServerOperation extends BaseOperation<CheckServerOperation.URL
             {
                 latestError = new UnknownHostException("Unable to find Alfresco server.");
             }
+            else
+            {
+                // Time to Test SAML configuration
+                Saml2AuthHelper helper = new Saml2AuthHelper(finalUrlInfo.baseUrl);
+                UrlBuilder builder = new UrlBuilder(helper.getInfoUrl());
+                Response resp = NetworkHttpInvoker.invokeGET(builder, new HashMap<String, List<String>>(0));
+
+                if (resp.getResponseCode() == HttpURLConnection.HTTP_OK)
+                {
+                    Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
+                    Saml2InfoImpl data = new Saml2InfoImpl(json);
+                    finalUrlInfo = new URLInfo(finalUrlInfo.baseUrl, finalUrlInfo.testUrl, finalUrlInfo.enforceCMIS,
+                            finalUrlInfo.isComplete, data);
+                }
+            }
         }
         catch (Exception e)
         {
@@ -194,6 +214,28 @@ public class CheckServerOperation extends BaseOperation<CheckServerOperation.URL
         return baseUrl;
     }
 
+    public static SamlInfo getSamlInfo(String baseSamlUrl)
+    {
+        try
+        {
+            // Time to Test SAML configuration
+            Saml2AuthHelper helper = new Saml2AuthHelper(baseSamlUrl);
+            UrlBuilder builder = new UrlBuilder(helper.getInfoUrl());
+            Response resp = NetworkHttpInvoker.invokeGET(builder, new HashMap<String, List<String>>(0));
+
+            if (resp.getResponseCode() == HttpURLConnection.HTTP_OK)
+            {
+                Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
+                return new Saml2InfoImpl(json);
+            }
+        }
+        catch (Exception e)
+        {
+            return null;
+        }
+        return null;
+    }
+
     // ///////////////////////////////////////////////////////////////////////////
     // EVENTS
     // ///////////////////////////////////////////////////////////////////////////
@@ -202,40 +244,5 @@ public class CheckServerOperation extends BaseOperation<CheckServerOperation.URL
     {
         super.onPostExecute(result);
         EventBusManager.getInstance().post(new CheckServerEvent(getRequestId(), result));
-    }
-
-    public class URLInfo
-    {
-        public final String baseUrl;
-
-        public final String testUrl;
-
-        public final boolean enforceCMIS;
-
-        public final boolean isComplete;
-
-        public URLInfo(String baseUrl, String testUrl, boolean enforceCMIS, boolean isComplete)
-        {
-            this.baseUrl = baseUrl;
-            this.testUrl = testUrl;
-            this.enforceCMIS = enforceCMIS;
-            this.isComplete = isComplete;
-        }
-
-        public URLInfo(String baseUrl, String testUrl)
-        {
-            this.baseUrl = baseUrl;
-            this.testUrl = testUrl;
-            this.enforceCMIS = false;
-            this.isComplete = true;
-        }
-
-        public URLInfo(String baseUrl)
-        {
-            this.baseUrl = baseUrl;
-            this.testUrl = baseUrl;
-            this.enforceCMIS = false;
-            this.isComplete = true;
-        }
     }
 }

@@ -39,7 +39,8 @@ public class ConfigFeatureHelper
     {
         try
         {
-            FeatureConfig passcodeFeature = null, cellularFeature = null, dataProtectionFeature = null;
+            FeatureConfig passcodeFeature = null, cellularFeature = null, dataProtectionFeature = null,
+                    syncSchedulerFeature = null;
 
             if (session instanceof RepositorySession && session.getServiceRegistry() instanceof AlfrescoServiceRegistry)
             {
@@ -63,10 +64,15 @@ public class ConfigFeatureHelper
                         {
                             dataProtectionFeature = feature;
                         }
+                        else if (FeatureConfig.FEATURE_SCHEDULER_SYNC.equals(feature.getType()))
+                        {
+                            syncSchedulerFeature = feature;
+                        }
                     }
                 }
 
                 new SyncCellularConfigFeature(activity).check(session, acc, cellularFeature);
+                new SyncSchedulerConfigFeature(activity).check(session, acc, syncSchedulerFeature);
 
                 if (OnPremiseConstant.ALFRESCO_EDITION_ENTERPRISE.equals(session.getRepositoryInfo().getEdition()))
                 {

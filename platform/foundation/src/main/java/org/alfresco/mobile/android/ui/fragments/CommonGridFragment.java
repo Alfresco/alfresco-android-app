@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2015 Alfresco Software Limited.
+ *  Copyright (C) 2005-2017 Alfresco Software Limited.
  *
  *  This file is part of Alfresco Mobile for Android.
  *
@@ -30,6 +30,7 @@ import org.alfresco.mobile.android.platform.utils.BundleUtils;
 import org.alfresco.mobile.android.ui.GridFragment;
 import org.alfresco.mobile.android.ui.ListingModeFragment;
 import org.alfresco.mobile.android.ui.RefreshFragment;
+import org.alfresco.mobile.android.ui.activity.AlfrescoActivity;
 import org.alfresco.mobile.android.ui.template.ListingTemplate;
 
 import com.github.clans.fab.FloatingActionButton;
@@ -584,6 +585,11 @@ public abstract class CommonGridFragment extends AlfrescoFragment
         int messageId = AlfrescoExceptionHelper.getMessageId(getActivity(), e);
         if (messageId != R.string.error_unknown)
         {
+            if (messageId == R.string.error_session_unauthorized && getActivity() instanceof AlfrescoActivity)
+            {
+                ((AlfrescoActivity) getActivity()).setSessionState(AlfrescoActivity.SESSION_ERROR, messageId);
+            }
+
             AlfrescoNotificationManager.getInstance(getActivity()).showAlertCrouton(getActivity(),
                     getString(messageId));
         }

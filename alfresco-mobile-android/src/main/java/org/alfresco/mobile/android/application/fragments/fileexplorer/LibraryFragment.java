@@ -32,6 +32,8 @@ import org.alfresco.mobile.android.ui.ListingModeFragment;
 import org.alfresco.mobile.android.ui.activity.AlfrescoActivity;
 import org.alfresco.mobile.android.ui.fragments.BaseCursorGridFragment;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -52,8 +54,6 @@ import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
-
-import com.afollestad.materialdialogs.MaterialDialog;
 
 public class LibraryFragment extends BaseCursorGridFragment
 {
@@ -100,7 +100,9 @@ public class LibraryFragment extends BaseCursorGridFragment
         {
             getActionBar().show();
             FileExplorerHelper.displayNavigationMode((AlfrescoActivity) getActivity(), getMode(), false, menuId);
-            getActionBar().setDisplayShowTitleEnabled(true);
+            getActionBar().setDisplayUseLogoEnabled(false);
+            getActionBar().setDisplayShowTitleEnabled(false);
+            getActionBar().setDisplayShowCustomEnabled(false);
         }
         else
         {

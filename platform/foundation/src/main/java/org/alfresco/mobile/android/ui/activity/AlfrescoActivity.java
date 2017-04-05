@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2015 Alfresco Software Limited.
+ *  Copyright (C) 2005-2017 Alfresco Software Limited.
  *
  *  This file is part of Alfresco Mobile for Android.
  *
@@ -22,13 +22,10 @@ import java.util.List;
 
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.foundation.R;
-import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.SessionManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
-import org.alfresco.mobile.android.platform.exception.AlfrescoAppException;
-import org.alfresco.mobile.android.platform.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.platform.extensions.AnalyticsHelper;
 import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.platform.extensions.HockeyAppManager;
@@ -37,20 +34,17 @@ import org.alfresco.mobile.android.ui.fragments.WaitingDialogFragment;
 import org.alfresco.mobile.android.ui.operation.OperationWaitingDialogFragment;
 import org.alfresco.mobile.android.ui.rendition.RenditionManager;
 
+import com.mattprecious.telescope.EmailDeviceInfoLens;
+import com.mattprecious.telescope.TelescopeLayout;
+
 import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-
-import com.mattprecious.telescope.EmailDeviceInfoLens;
-import com.mattprecious.telescope.TelescopeLayout;
 
 /**
  * Base class for all activities.
@@ -59,6 +53,15 @@ import com.mattprecious.telescope.TelescopeLayout;
  */
 public abstract class AlfrescoActivity extends AppCompatActivity
 {
+    // SESSION FLAG
+    public static final int SESSION_LOADING = 1;
+
+    public static final int SESSION_ACTIVE = 2;
+
+    public static final int SESSION_INACTIVE = 4;
+
+    public static final int SESSION_ERROR = 8;
+
     protected LocalBroadcastManager broadcastManager;
 
     protected SessionManager sessionManager;
@@ -86,8 +89,6 @@ public abstract class AlfrescoActivity extends AppCompatActivity
 
         IntentFilter filters = new IntentFilter();
         filters.addAction(PrivateIntent.ACTION_DISPLAY_ERROR);
-        utilsReceiver = new UtilsReceiver();
-        receivers.add(utilsReceiver);
         broadcastManager.registerReceiver(utilsReceiver, filters);
 
         // HockeyApp
@@ -199,11 +200,8 @@ public abstract class AlfrescoActivity extends AppCompatActivity
     public void swapAccount(AlfrescoAccount account)
     {
         // Analytics
-        AnalyticsHelper
-                .reportOperationEvent(this, AnalyticsManager.CATEGORY_SESSION,
-                        AnalyticsManager.ACTION_SWITCH, account.getTypeId() == AlfrescoAccount.TYPE_ALFRESCO_CLOUD
-                                ? AnalyticsManager.SERVER_TYPE_CLOUD : AnalyticsManager.SERVER_TYPE_ONPREMISE,
-                        1, false);
+        AnalyticsHelper.reportOperationEvent(this, AnalyticsManager.CATEGORY_SESSION, AnalyticsManager.ACTION_SWITCH,
+                AnalyticsHelper.getAccountType(account.getTypeId()), 1, false);
 
         setCurrentAccount(account);
         SessionManager.getInstance(this).loadSession(account);
@@ -238,6 +236,16 @@ public abstract class AlfrescoActivity extends AppCompatActivity
         }
 
         return getCurrentAccount() != null ? sessionManager.getSession(getCurrentAccount().getId()) : null;
+    }
+
+    public void setSessionState(int state)
+    {
+
+    }
+
+    public void setSessionState(int state, int sessionMessageId)
+    {
+
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -299,38 +307,4 @@ public abstract class AlfrescoActivity extends AppCompatActivity
         }
     }
 
-    /**
-     * Utility BroadcastReceiver for displaying dialog after an error or to
-     * display custom message. Use ACTION_DISPLAY_DIALOG or ACTION_DISPLAY_ERROR
-     * Action inside an Intent and send it with localBroadcastManager instance.
-     *
-     * @author Jean Marie Pascal
-     */
-    private class UtilsReceiver extends BroadcastReceiver
-    {
-        @Override
-        public void onReceive(Context context, Intent intent)
-        {
-            FragmentActivity activity = AlfrescoActivity.this;
-
-            if (activity.isFinishing() || activity.isChangingConfigurations()) { return; }
-
-            // Intent for Display Errors
-            if (PrivateIntent.ACTION_DISPLAY_ERROR.equals(intent.getAction()))
-            {
-                removeWaitingDialog();
-                Exception e = (Exception) intent.getExtras().getSerializable(PrivateIntent.EXTRA_ERROR_DATA);
-
-                String errorMessage = getString(R.string.error_general);
-                if (e instanceof AlfrescoAppException && ((AlfrescoAppException) e).isDisplayMessage())
-                {
-                    errorMessage = e.getMessage();
-                }
-
-                AlfrescoNotificationManager.getInstance(activity).showLongToast(errorMessage);
-
-                CloudExceptionUtils.handleCloudException(activity, e, false);
-            }
-        }
-    }
 }

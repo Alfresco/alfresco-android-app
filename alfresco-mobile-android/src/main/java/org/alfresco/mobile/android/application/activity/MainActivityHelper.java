@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+ *  Copyright (C) 2005-2017 Alfresco Software Limited.
  *
  * This file is part of Alfresco Mobile for Android.
  *
@@ -45,6 +45,10 @@ public class MainActivityHelper
 
     private static final String ARGUMENT_CAPTURE = "capture";
 
+    private static final String ARGUMENT_SESSION_STATE = "sessionState";
+
+    private static final String ARGUMENT_SESSION_STATE_ERROR_ID = "sessionStateErrorMessageId";
+
     private Bundle savedInstanceBundle = new Bundle();
 
     public MainActivityHelper()
@@ -57,7 +61,8 @@ public class MainActivityHelper
     }
 
     public static Bundle createBundle(Bundle outState, AlfrescoAccount currentAccount,
-            DeviceCapture capture, int fragmentQueue, Folder importParent)
+            DeviceCapture capture, int fragmentQueue, Folder importParent, int sessionState,
+            int sessionStateErrorMessageId)
     {
         Bundle savedInstanceBundle = new Bundle();
 
@@ -74,6 +79,9 @@ public class MainActivityHelper
         {
             savedInstanceBundle.putParcelable(ARGUMENT_IMPORT_PARENT, importParent);
         }
+
+        outState.putInt(ARGUMENT_SESSION_STATE, sessionState);
+        outState.putInt(ARGUMENT_SESSION_STATE_ERROR_ID, sessionStateErrorMessageId);
 
         return savedInstanceBundle;
     }
@@ -104,6 +112,18 @@ public class MainActivityHelper
     {
         return (savedInstanceBundle.containsKey(ARGUMENT_FRAGMENT_QUEUE)) ? (Integer) savedInstanceBundle
                 .getSerializable(ARGUMENT_FRAGMENT_QUEUE) : -1;
+    }
+
+    public Integer getSessionState()
+    {
+        return (savedInstanceBundle.containsKey(ARGUMENT_SESSION_STATE))
+                ? (Integer) savedInstanceBundle.getSerializable(ARGUMENT_SESSION_STATE) : -1;
+    }
+
+    public Integer getSessionErrorMessageId()
+    {
+        return (savedInstanceBundle.containsKey(ARGUMENT_SESSION_STATE_ERROR_ID))
+                ? (Integer) savedInstanceBundle.getSerializable(ARGUMENT_SESSION_STATE_ERROR_ID) : -1;
     }
 
     public DeviceCapture getDeviceCapture()

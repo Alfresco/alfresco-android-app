@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2015 Alfresco Software Limited.
+ *  Copyright (C) 2005-2017 Alfresco Software Limited.
  *
  *  This file is part of Alfresco Mobile for Android.
  *
@@ -57,7 +57,12 @@ android {
     }
 }
 
+/*configurations.all {
+    // Don't cache changing modules at all.
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}*/
+
 dependencies {
-    compile 'org.alfresco.mobile.android.sdk:alfresco-mobile-android-client-api:1.4.1'
+    compile 'org.alfresco.mobile.android.sdk:alfresco-mobile-android-client-api:1.5'
     compile project(':platform:thirdparty')
 }

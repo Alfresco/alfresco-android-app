@@ -69,6 +69,17 @@ public class PassCodeActivity extends FragmentActivity
         }
     }
 
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        if (!PasscodePreferences.hasPasscodeEnable(this))
+        {
+            setResult(Activity.RESULT_OK);
+            finish();
+        }
+    }
+
     public static void requestUserPasscode(FragmentActivity activity)
     {
         PasscodeConfigFeature feature = new PasscodeConfigFeature(activity);

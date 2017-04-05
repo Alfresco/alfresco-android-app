@@ -172,9 +172,11 @@
     <string name="sdknumber_version">SDK: </string>
     <string name="about_description">
 <![CDATA[
-<p>Alfresco Mobile は Alfresco in the Cloud とオンプレミスの Alfresco サーバー (3.4 以上) に接続して、社内のコンテンツに外出先から安全にアクセスできるようにします。</p>
+<p>Alfrescoは、業務に重要なコンテンツを管理したり、共同作業を行えるオープンプラットフォームです。</p>
 
-<p>Alfresco Mobile は、Alfresco のログイン資格情報を使用して (HTTP または HTTPS 経由で) Alfresco のリポジトリに接続し、権限に基づいてユーザーのアクセスを管理します。</p>
+<p>Alfresco MobileはAlfresco Software, Inc.によって開発されたソフトウェアで、Alfresco Content Services Cloud、Alfresco Content Services、およびAlfresco Communityエディション（バージョン3.4.8以降）に接続することで、社内のコンテンツに外出先から安全にアクセスできるようにします。</p>
+
+<p>このモバイルアプリケーションでは、Alfrescoのログイン資格情報を使ってAlfrescoのリポジトリに（HTTPまたはHTTPS経由で）接続し、ユーザーの権限に基づいてアクセスを制御します。</p>
 ]]>
     </string>
 

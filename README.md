@@ -45,12 +45,12 @@ Before your code can be accepted into the project you must also sign the Individ
 ## What's the code License ?
 
 
-    Alfresco Mobile for Android 1.7
+    Alfresco Mobile for Android 1.8
 
-    Copyright © 2016 Alfresco Software, Ltd. and others.
+    Copyright © 2017 Alfresco Software, Ltd. and others.
 
-    This product distribution is made available under the [Apache 2.0 license](http://www.apache.org/licenses/LICENSE-2.0.html).
+    This product distribution is made available under the Apache 2.0 license http://www.apache.org/licenses/LICENSE-2.0.html.
 
 
 Portions of this product distribution require certain copyright or other notices to be included with the product distribution. These notices may also appear in individual source files. 
-Follow [[3rd-Party-Librairies]] to have the list of librairies licenses used.
+Follow [3rd Party Librairies](https://github.com/Alfresco/alfresco-android-app/wiki/3rd-Party-Librairies) to have the list of librairies licenses used.

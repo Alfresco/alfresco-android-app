@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2015 Alfresco Software Limited.
+ *  Copyright (C) 2005-2017 Alfresco Software Limited.
  *
  *  This file is part of Alfresco Mobile for Android.
  *
@@ -18,8 +18,10 @@
 package org.alfresco.mobile.android.application.activity;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
 
+import org.alfresco.mobile.android.api.exceptions.AlfrescoSessionException;
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.configuration.ConfigurationConstant;
@@ -33,11 +35,13 @@ import org.alfresco.mobile.android.application.fragments.node.favorite.Favorites
 import org.alfresco.mobile.android.application.fragments.node.upload.UploadFormFragment;
 import org.alfresco.mobile.android.application.fragments.preferences.PasscodePreferences;
 import org.alfresco.mobile.android.application.fragments.signin.AccountOAuthFragment;
+import org.alfresco.mobile.android.application.fragments.signin.AccountSigninSamlFragment;
 import org.alfresco.mobile.android.application.fragments.sync.SyncFragment;
 import org.alfresco.mobile.android.application.intent.PublicIntentAPIUtils;
 import org.alfresco.mobile.android.application.managers.NotificationManager;
 import org.alfresco.mobile.android.application.security.PassCodeActivity;
 import org.alfresco.mobile.android.async.node.favorite.FavoriteNodesRequest;
+import org.alfresco.mobile.android.async.session.LoadSessionCallBack;
 import org.alfresco.mobile.android.async.session.LoadSessionCallBack.LoadAccountCompletedEvent;
 import org.alfresco.mobile.android.async.session.RequestSessionEvent;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
@@ -45,13 +49,16 @@ import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.intent.AlfrescoIntentAPI;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.ui.ListingModeFragment;
+import org.alfresco.mobile.android.ui.node.browse.NodeBrowserTemplate;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.squareup.otto.Subscribe;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -392,13 +399,19 @@ public class PublicDispatcherActivity extends BaseActivity
                     FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
 
+        if (getFragment(AccountSigninSamlFragment.TAG) != null)
+        {
+            getSupportFragmentManager().popBackStack(AccountSigninSamlFragment.TAG,
+                    FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
+
         removeWaitingDialog();
 
         // Upload process : Display the view where the user wants to upload
         // files.
         if (getCurrentSession() == null) { return; }
         String type = null;
-        Bundle b = null;
+        HashMap<String, Object> props = new HashMap<String, Object>();
         switch (uploadFolder)
         {
             case R.string.menu_browse_sites:
@@ -410,13 +423,17 @@ public class PublicDispatcherActivity extends BaseActivity
             case R.string.menu_favorites_folder:
                 FavoritesFragment.with(this).setMode(FavoriteNodesRequest.MODE_FOLDERS).display();
                 return;
+            case R.string.menu_browse_userhome:
+                type = ConfigurationConstant.KEY_REPOSITORY;
+                props.put(NodeBrowserTemplate.ARGUMENT_FOLDER_TYPE_ID, NodeBrowserTemplate.FOLDER_TYPE_USERHOME);
+                break;
             default:
                 break;
         }
 
         if (type != null)
         {
-            AlfrescoFragmentBuilder viewConfig = FragmentBuilderFactory.createViewConfig(this, type, null);
+            AlfrescoFragmentBuilder viewConfig = FragmentBuilderFactory.createViewConfig(this, type, props);
             if (viewConfig == null) { return; }
             viewConfig.display();
         }
@@ -428,5 +445,33 @@ public class PublicDispatcherActivity extends BaseActivity
         requestedAccountId = event.accountToLoad.getId();
         setCurrentAccount(event.accountToLoad);
         displayWaitingDialog();
+    }
+
+    @Subscribe
+    public void onAccountErrorEvent(LoadSessionCallBack.LoadAccountErrorEvent event)
+    {
+        // SAML Exception ?
+        if (event.exception instanceof AlfrescoSessionException
+                && event.account.getTypeId() == AlfrescoAccount.TYPE_ALFRESCO_CMIS_SAML)
+        {
+            AccountSigninSamlFragment.with(this).isCreation(false).account(event.account).display();
+            removeWaitingDialog();
+        }
+        else
+        {
+            // General Errors
+            // Display error dialog message
+            new MaterialDialog.Builder(this).iconRes(R.drawable.ic_application_logo)
+                    .title(R.string.error_session_creation_message).content(Html.fromHtml(getString(event.messageId)))
+                    .positiveText(android.R.string.ok).show();
+        }
+
+        // Reset currentAccount & references
+        setCurrentAccount(AlfrescoAccountManager.getInstance(this).retrieveAccount(event.data));
+
+        // Stop progress indication
+        setSupportProgressBarIndeterminateVisibility(false);
+
+        invalidateOptionsMenu();
     }
 }

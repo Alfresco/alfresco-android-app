@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2015 Alfresco Software Limited.
+ *  Copyright (C) 2005-2017 Alfresco Software Limited.
  *
  *  This file is part of Alfresco Mobile for Android.
  *
@@ -147,6 +147,8 @@ public abstract class AnalyticsManager extends Manager
 
     public static final String ACTION_DENY_PERMISSION = "Deny Permission";
 
+    public static final String ACTION_CHANGE_AUTHENTICATION = "Change Authentication";
+
     ///////////////////////////////////////////////////////////
     // EVENTS : LABELS
     ///////////////////////////////////////////////////////////
@@ -157,6 +159,14 @@ public abstract class AnalyticsManager extends Manager
     public static final String LABEL_TAKE_PHOTO = "Take Photo";
 
     public static final String LABEL_FAILED = "Failed";
+
+    public static final String LABEL_UNAUTHORIZED = "Unauthorized";
+
+    public static final String LABEL_OFFLINE = "Offline";
+
+    public static final String LABEL_CONTENT_ALREADY_EXIST = "Content Already Exist";
+
+    public static final String LABEL_UNKNOWN_SERVER = "Unknown Server";
 
     public static final String LABEL_NETWORK = "Network";
 
@@ -206,6 +216,10 @@ public abstract class AnalyticsManager extends Manager
 
     public static final String LABEL_STORAGE = "Storage";
 
+    public static final String LABEL_BASIC_AUTH = "Basic";
+
+    public static final String LABEL_SAML_AUTH = "SAML";
+
     public static final String LABEL_ADD = "Add";
 
     // Default
@@ -223,6 +237,9 @@ public abstract class AnalyticsManager extends Manager
     // After a node has been synced
     public static final String LABEL_SYNC_ACTION = "Sync Action";
 
+    // After a server side config changed the scheduler
+    public static final String LABEL_SYNC_SCHEDULER_CHANGED = "Sync Period";
+
     // After a sync node has been edited
     public static final String LABEL_SYNC_SAVE_BACK = "Save Back";
 
@@ -239,6 +256,8 @@ public abstract class AnalyticsManager extends Manager
     public static final int INDEX_SERVER_TYPE = 1;
 
     public static final String SERVER_TYPE_ONPREMISE = "OnPremise";
+
+    public static final String SERVER_TYPE_ONPREMISE_SAML = "OnPremise SAML";
 
     public static final String SERVER_TYPE_CLOUD = "Cloud";
 
@@ -374,6 +393,8 @@ public abstract class AnalyticsManager extends Manager
     public static final String SCREEN_ACCOUNT_SIGNIN = PREFIX_ACCOUNT + "Sign In";
 
     public static final String SCREEN_ACCOUNT_OAUTH = PREFIX_ACCOUNT + "OAuth";
+
+    public static final String SCREEN_ACCOUNT_SAML = PREFIX_ACCOUNT + "Saml";
 
     public static final String SCREEN_ACCOUNT_NETWORK = PREFIX_ACCOUNT + "Networks";
 

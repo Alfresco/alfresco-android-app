@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
@@ -32,6 +33,7 @@ import org.alfresco.mobile.android.async.node.sync.SyncNodeRequest;
 import org.alfresco.mobile.android.platform.mimetype.MimeType;
 import org.alfresco.mobile.android.platform.mimetype.MimeTypeManager;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
+import org.alfresco.mobile.android.platform.utils.ConnectivityUtils;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.sync.SyncContentManager;
 import org.alfresco.mobile.android.sync.SyncContentSchema;
@@ -155,6 +157,7 @@ public class SyncCursorAdapter extends BaseCursorLoader<TwoLinesProgressViewHold
     {
         int status = cursor.getInt(SyncContentSchema.COLUMN_STATUS_ID);
         String nodeId = cursor.getString(SyncContentSchema.COLUMN_NODE_ID_ID);
+        String nodeType = cursor.getString(SyncContentSchema.COLUMN_MIMETYPE_ID);
         long favoriteId = cursor.getLong(SyncContentSchema.COLUMN_ID_ID);
         boolean syncRoot = cursor.getInt(SyncContentSchema.COLUMN_IS_SYNC_ROOT_ID) > 0;
 
@@ -243,7 +246,8 @@ public class SyncCursorAdapter extends BaseCursorLoader<TwoLinesProgressViewHold
 
         if (mode == SyncFragment.MODE_LISTING && fragmentRef.get().getActivity() instanceof MainActivity)
         {
-            if (status != SyncContentStatus.STATUS_REQUEST_USER)
+            if (!ConnectivityUtils.hasInternetAvailable(fragmentRef.get().getActivity())
+                    || (status != SyncContentStatus.STATUS_REQUEST_USER && !ContentModel.TYPE_FOLDER.equals(nodeType)))
             {
                 UIUtils.setBackground(vh.choose, null);
                 return;
@@ -358,6 +362,9 @@ public class SyncCursorAdapter extends BaseCursorLoader<TwoLinesProgressViewHold
     public void getMenu(Menu menu, Integer statut, boolean rootSynced)
     {
         MenuItem mi;
+
+        mi = menu.add(Menu.NONE, R.id.menu_node_details, Menu.FIRST, R.string.action_view_properties);
+        mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
 
         switch (statut)
         {

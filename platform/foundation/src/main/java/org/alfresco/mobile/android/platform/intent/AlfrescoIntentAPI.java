@@ -90,6 +90,8 @@ public interface AlfrescoIntentAPI
 
     String EXTRA_ALFRESCO_USERNAME = "AlfrescoUserName";
 
+    String EXTRA_ALFRESCO_USER_PROFILE = "AlfrescoUserProfile";
+
     String EXTRA_ALFRESCO_DISPLAY_NAME = "AlfrescoDisplayName";
 
     String EXTRA_ALFRESCO_REPOSITORY_URL = "AlfrescoRepositoryURL";

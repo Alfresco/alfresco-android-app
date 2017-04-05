@@ -28,13 +28,17 @@ import org.alfresco.mobile.android.async.OperationRequest.OperationBuilder;
 import org.alfresco.mobile.android.foundation.R;
 import org.alfresco.mobile.android.platform.extensions.AnalyticsHelper;
 import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
+import org.alfresco.mobile.android.sync.SyncContentManager;
 import org.alfresco.mobile.android.ui.fragments.BaseGridFragment;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.text.Html;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
@@ -120,6 +124,60 @@ public class ProfilesConfigFragment extends BaseGridFragment
     {
         super.onListItemClick(l, v, position, id);
         ProfileConfig profile = (ProfileConfig) l.getItemAtPosition(position);
+
+        // Before swapping profile we need to check if there's a view with
+        // sync...
+        // NB: Sync views are now profile exclusive which means swapping might
+        // wipe out sync data based on profile level and not account level
+        // We implement in this app for consistency with iOS
+        // We have to disable this part to disable profile sync exclusivity
+        boolean hasSyncView = ConfigManager.getInstance(getActivity()).hasSyncView(getAccount().getId(),
+                profile.getIdentifier());
+        boolean hasActivateSync = SyncContentManager.getInstance(getActivity()).hasActivateSync(getAccount());
+        if (hasActivateSync && !hasSyncView)
+        {
+            // Display warning
+            manageSyncSetting(profile);
+        }
+        else if (!hasActivateSync && hasSyncView)
+        {
+            // Reactivate sync
+            SyncContentManager.getInstance(getActivity()).setActivateSync(getAccount(), true);
+            swapProfile(profile);
+        }
+        else
+        {
+            // Business as usual
+            swapProfile(profile);
+        }
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // HELPER
+    // ///////////////////////////////////////////////////////////////////////////
+    public void manageSyncSetting(final ProfileConfig profile)
+    {
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity()).cancelable(false)
+                .title(org.alfresco.mobile.android.application.R.string.favorites_deactivate)
+                .callback(new MaterialDialog.ButtonCallback()
+                {
+                    @Override
+                    public void onPositive(MaterialDialog dialog)
+                    {
+                        SyncContentManager.getInstance(getActivity()).setActivateSync(getAccount(), false);
+                        SyncContentManager.getInstance(getActivity()).unsync(getAccount());
+                        swapProfile(profile);
+                    }
+                })
+                .content(Html.fromHtml(
+                        getString(org.alfresco.mobile.android.application.R.string.favorites_deactivate_description)))
+                .positiveText(org.alfresco.mobile.android.application.R.string.ok)
+                .negativeText(org.alfresco.mobile.android.application.R.string.cancel);
+        builder.show();
+    }
+
+    private void swapProfile(ProfileConfig profile)
+    {
         ConfigManager.getInstance(getActivity()).swapProfile(getAccount(), profile.getIdentifier());
         getActivity().getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
 

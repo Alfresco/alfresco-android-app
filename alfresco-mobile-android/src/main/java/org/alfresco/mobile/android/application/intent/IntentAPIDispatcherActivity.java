@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2016 Alfresco Software Limited.
+ *  Copyright (C) 2005-2017 Alfresco Software Limited.
  *
  *  This file is part of Alfresco Mobile for Android.
  *
@@ -129,6 +129,7 @@ public class IntentAPIDispatcherActivity extends BaseActivity
             // Image capture
             if (MIMETYPE_JPG.equals(mimetype))
             {
+                // NB: Need to be updated if targetSDK >= 24
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 File folder = AlfrescoStorageManager.getInstance(this).getFileInPrivateFolder("/temp");
                 if (!folder.exists())
@@ -330,4 +331,10 @@ public class IntentAPIDispatcherActivity extends BaseActivity
      * send(files); } else { // TODO: show no image data received message } } }
      * finish(); }
      */
+
+    @Override
+    public void setSessionState(int state)
+    {
+
+    }
 }
