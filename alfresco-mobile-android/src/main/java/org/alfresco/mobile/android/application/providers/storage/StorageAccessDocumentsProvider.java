@@ -1334,25 +1334,32 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
             @Override
             protected Void doInBackground(Void... params)
             {
-                checkSession(row);
+                try
+                {
+                    checkSession(row);
 
-                List<Node> nodes = new ArrayList<Node>();
-                if (row.id == null)
-                {
-                    nodes = session.getServiceRegistry().getDocumentFolderService()
-                            .getChildren(session.getRootFolder());
-                }
-                else
-                {
-                    currentFolder = (Folder) session.getServiceRegistry().getDocumentFolderService()
-                            .getNodeByIdentifier(NodeRefUtils.createNodeRefByIdentifier(row.id));
-                    pathIndex.put(currentFolder.getIdentifier(), currentFolder);
-                    nodes = session.getServiceRegistry().getDocumentFolderService().getChildren(currentFolder);
-                }
+                    List<Node> nodes = new ArrayList<Node>();
+                    if (row.id == null)
+                    {
+                        nodes = session.getServiceRegistry().getDocumentFolderService()
+                                .getChildren(session.getRootFolder());
+                    }
+                    else
+                    {
+                        currentFolder = (Folder) session.getServiceRegistry().getDocumentFolderService()
+                                .getNodeByIdentifier(NodeRefUtils.createNodeRefByIdentifier(row.id));
+                        pathIndex.put(currentFolder.getIdentifier(), currentFolder);
+                        nodes = session.getServiceRegistry().getDocumentFolderService().getChildren(currentFolder);
+                    }
 
-                for (Node node : nodes)
+                    for (Node node : nodes)
+                    {
+                        nodesIndex.put(NodeRefUtils.getVersionIdentifier(node.getIdentifier()), node);
+                    }
+                }
+                catch (Exception e)
                 {
-                    nodesIndex.put(NodeRefUtils.getVersionIdentifier(node.getIdentifier()), node);
+                    Log.e(TAG, Log.getStackTraceString(e));
                 }
 
                 return null;
