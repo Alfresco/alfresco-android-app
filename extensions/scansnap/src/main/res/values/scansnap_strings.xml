@@ -19,8 +19,8 @@
     <!-- SCANSNAP EXTENSIONS -->
 
     <!-- ERRORS -->
-    <string name="err_msg_launch_failed">Failed to start up ScanSnap Connect Application.</string>
-    <string name="err_msg_url_parse">Failed to parse the URL. Check whether the specified URL parameters are correct, and try again.</string>
+    <string name="err_msg_launch_failed">Couldn\'t start up ScanSnap Connect Application.</string>
+    <string name="err_msg_url_parse">Couldn\'t parse the URL. Check whether the specified URL parameters are correct, and try again.</string>
 
     <!-- PRESETS -->
     <string name="scan_preset">Scan Presets</string>

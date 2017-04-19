@@ -111,8 +111,8 @@
     <string name="org_alfresco_subscriptions_followed">{1} is now following {5}</string>
     <string name="org_alfresco_subscriptions_subscribed">{1} has subscribed to {2}</string>
     <string name="org_alfresco_profile_status_changed">{1}: {6}</string>
-    <string name="org_alfresco_documentlibrary_file_previewed">{1} previewed document {0}</string>
-    <string name="org_alfresco_documentlibrary_file_downloaded">{1} downloaded document {0}</string>
+    <string name="org_alfresco_documentlibrary_file_previewed">{1} previewed file {0}</string>
+    <string name="org_alfresco_documentlibrary_file_downloaded">{1} downloaded file {0}</string>
     <string name="activity_role_None">No privileges</string>
     <string name="activity_role_SiteConsumer">Consumer</string>
     <string name="activity_role_SiteManager">Manager</string>
@@ -124,7 +124,7 @@
     <string name="metadata_prop_name">Name</string>
     <string name="metadata_prop_path">Path</string>
     <string name="metadata_prop_type">Type</string>
-    <string name="metadata_prop_content_mimetype">Mimetype</string>
+    <string name="metadata_prop_content_mimetype">File Type</string>
     <string name="metadata_prop_content_size">Size</string>
     <!-- Metadata Titled -->
     <string name="metadata_aspect_titled">Titled</string>
@@ -243,51 +243,51 @@
     <string name="save_back">Save Back</string>
 
     <!-- MESSAGE ERROR -->
-    <string name="error_general">An error has occurred. Please try again.</string>
-    <string name="error_general_title">An error has occurred.</string>
-    <string name="error_unable_open_file">Unable to open this file</string>
-    <string name="error_unable_share_link">Unable to share link</string>
-    <string name="error_unable_share_content">Unable to share content</string>
-    <string name="error_unable_open_map">Unable to open map</string>
+    <string name="error_general">We hit a problem, try again.</string>
+    <string name="error_general_title">We hit a problem.</string>
+    <string name="error_unable_open_file">Couldn\'t open this file</string>
+    <string name="error_unable_share_link">Couldn\'t share link</string>
+    <string name="error_unable_share_content">Couldn\'t share content</string>
+    <string name="error_unable_open_map">Couldn\'t open map</string>
 
     <!-- SESSION ERROR -->
     <string name="retry_account_loading">Retry</string>
     <string name="error_session_creation_title">Save Account</string>
     <string name="error_session_creation_message">Connection Error</string>
-    <string name="error_session_creation">Unable to authenticate. Check your Alfresco account settings.</string>
-    <string name="error_session_hostname_short">Your <b>hostname</b> value seems to be wrong.</string>
-    <string name="error_session_hostname"><![CDATA[Your <b>hostname</b> value seems to be wrong or you may need to <b>activate your VPN</b>.<br/> Please check your values and settings.]]></string>
+    <string name="error_session_creation">Unable to authenticate. Check your account settings.</string>
+    <string name="error_session_hostname_short">Your <b>connect to</b> URL isn\'t right.</string>
+    <string name="error_session_hostname"><![CDATA[Your <b>connect to</b> URL seems isn\'t right or you may need to <b>activate your VPN</b>.<br/> Check your values and settings.]]></string>
     <string name="error_session_nodata_short">Your device has no data connection.</string>
-    <string name="error_session_nodata"><![CDATA[<p><b>Your device has no data connection.</b><br/></p> Please check your device settings and enable a data connection.]]></string>
-    <string name="error_session_unauthorized"><![CDATA[You are not allowed to access this server.<br/> Please check your Alfresco account settings <b>(Username/Password)</b>.]]></string>
-    <string name="error_session_service_url"><![CDATA[Your <b>service url</b> value is incorrect.<br/> Please check your Alfresco account settings.]]></string>
-    <string name="error_session_service_unavailable"><![CDATA[The server is temporarily unable to service your request due to maintenance downtime or capacity problems.<br/> Please try again later.]]></string>
-    <string name="error_session_notfound"><![CDATA[Your server couldn\'t be reached.<br/> Please check your Alfresco account settings.]]></string>
-    <string name="error_session_port"><![CDATA[Your <b>port</b> value is incorrect.<br/> Please check your Alfresco account settings.]]></string>
+    <string name="error_session_nodata"><![CDATA[<p><b>Your device has no data connection.</b><br/></p> Check your device settings and enable a data connection.]]></string>
+    <string name="error_session_unauthorized"><![CDATA[You\'re not allowed to access this server.<br/> Check your account settings <b>(Username/Password)</b>.]]></string>
+    <string name="error_session_service_url"><![CDATA[Your <b>service url</b> value is incorrect.<br/> Check your account settings.]]></string>
+    <string name="error_session_service_unavailable"><![CDATA[The server has temporary maintenance downtime or capacity problems.<br/> Try again later.]]></string>
+    <string name="error_session_notfound"><![CDATA[Your server couldn\'t be reached.<br/> Check your account settings.]]></string>
+    <string name="error_session_port"><![CDATA[Your <b>port</b> value is incorrect.<br/> Check your account settings.]]></string>
     <string name="error_session_certificate">
 <![CDATA[<p><b>The server\'s security certificate is not trusted!</b><br/></p>
 		The third-party organization that issued your server destination\'s certificate is not one that your device recognizes.<br/>
-		In order for Alfresco Mobile to verify that you\'re connecting with the appropriate server, its certificate must be from a trusted organization.<br/>
-		If your server has a self-signed certificate please add it to your device to successfully connect.<br/> ]]>
+		To verify that you\'re connecting with the appropriate server, its certificate must be from a trusted organization.<br/>
+		If your server has a self-signed certificate then add it to your device to successfully connect.<br/> ]]>
     </string>
     <string name="error_session_certificate_expired">
-<![CDATA[<p><b>The server\'s security certificate has expired or is not yet valid!</b><br/></p>
-		Please check the date and time your device is set to.<br/> If the problem persists please contact your administrator. ]]>
+<![CDATA[<p><b>The servers security certificate has expired or isn\'t valid yet.</b><br/></p>
+		heck the date and time your device is set to.<br/> If the issue continues contact your IT Team. ]]>
     </string>
     <string name="error_session_ssl">
-<![CDATA[<p><b>An error occurred with the SSL protocol.</b><br/></p>
-        Please check your Alfresco account settings and try again.<br/> If the problem persists please contact your administrator.]]>
+<![CDATA[<p><b>There was an issue with the SSL protocol.</b><br/></p>
+        Check your account settings and try again.<br/> If the issue continues contact your IT Team.]]>
     </string>
     <string name="error_session_cloud_unavailable">
-<![CDATA[<p><b>Alfresco in the Cloud is under heavy load right now!</b><br/></p>
-        Please try again in a few minutes.<br/>]]>
+<![CDATA[<p><b>Content Services in the Cloud is under heavy load right now.</b><br/></p>
+        Try again in a few minutes.<br/>]]>
     </string>
-    <string name="error_session_expired">Your session has expired. Please sign in again.</string>
+    <string name="error_session_expired">Your session has expired. Sign in to continue.</string>
     <string name="error_session_refresh">Refreshing session.</string>
-    <string name="error_chunk_transfert"><![CDATA[The server doesn\'t support chunk transfers.<br/> Please reload your account</b>.]]></string>
+    <string name="error_chunk_transfert"><![CDATA[The server doesn\'t support chunk transfers.<br/> Reload your account</b>.]]></string>
 
-    <string name="error_account_url">The URL is incorrect. Please check your Alfresco account settings.</string>
-    <string name="error_unknown_filepath">Failed to find the resource.</string>
+    <string name="error_account_url">The URL is incorrect. Check your account settings.</string>
+    <string name="error_unknown_filepath">Couldn\'t find the resource.</string>
     <string name="error_name_already_exist">Couldn\'t rename file. Another file may exist with the same name.</string>
     <string name="error_unknown_exception">An error occurred : %s</string>
     <string name="error_unknown">An error occurred : %s</string>
@@ -295,17 +295,17 @@
     <!-- Share -->
     <string name="share_url">Share Link</string>
     <string name="share_content">Share Content</string>
-    <string name="share_url_long">Sharing Link from Alfresco Android Mobile</string>
+    <string name="share_url_long">Sharing Link from Alfresco Content Services</string>
     <string name="validate">Validate</string>
 
     <!-- SSL -->
-    <string name="security_ssl_disable">SSL certificate validation has been disabled.</string>
+    <string name="security_ssl_disable">SSL certificate validation has been turned off.</string>
 
     <!-- ACCOUNT -->
     <string name="account_verify">Verifying Account Information&#8230;</string>
     <string name="account_wizard_alldone_description">Your account is ready for you to use.</string>
-    <string name="account_default_onpremise">Alfresco Server</string>
-    <string name="account_default_cloud">Alfresco in the Cloud</string>
+    <string name="account_default_onpremise">Content Services</string>
+    <string name="account_default_cloud">Content Services in the Cloud</string>
 
     <!-- WAITING SESSION -->
     <string name="wait_title">Please wait</string>
@@ -342,12 +342,12 @@
 
     <!-- Accessibility -->
     <string name="mime_folder">Folder</string>
-    <string name="mime_document">Document</string>
+    <string name="mime_document">File</string>
     <string name="more_options_folder">More options for folder %s</string>
     <string name="more_options_favorite">More options for %s</string>
     <string name="mime_site">Site</string>
     <string name="more_options_site">More options for site %s</string>
-    <string name="navigation_drawer_description">Alfresco: Open Home panel</string>
+    <string name="navigation_drawer_description">Content Services: Open Home panel</string>
     <string name="metadata_modified">Modified </string>
     <string name="metadata_created_by">Created by %s</string>
     <string name="metadata_size">Size </string>
@@ -360,7 +360,7 @@
     <string name="empty_joinsiterequest">No Pending requests</string>
 
     <!-- Update Properties -->
-    <string name="filename_error_character">This name is invalid.</string>
+    <string name="filename_error_character">Name not valid, use different characters.</string>
 
     <!-- NETWORKS -->
     <string name="cloud_networks_empty">No networks available</string>
@@ -386,11 +386,11 @@
     <string name="synced_content">Synced Content</string>
     <string name="empty_favorites">No Favorites</string>
     <string name="favorites_document">Favorite</string>
-    <string name="error_retrieve_favorite">Favorite info for this content could not be retrieved.</string>
+    <string name="error_retrieve_favorite">Favorite info for this content couldn\'t be retrieved.</string>
     <string name="favorites_activate">Sync content for \"%s\"</string>
-    <string name="favorites_activate_description">Would you like to automatically keep your favorite content in sync with this device?</string>
-    <string name="favorites_deactivate">Deactivate Sync</string>
-    <string name="favorites_deactivate_description"><![CDATA[<p>Do you want to deactivate sync?</p> All synced content will be deleted from your device.]]></string>
+    <string name="favorites_activate_description">Do you want to automatically keep your favorite content in sync with this device?</string>
+    <string name="favorites_deactivate">Turn off Sync</string>
+    <string name="favorites_deactivate_description"><![CDATA[<p>Do you want to turn off sync?</p> All synced content will be deleted from your device.]]></string>
     <string name="sync_error_title">Sync Errors</string>
     <string name="sync_error_node_unfavorited"><![CDATA[<p>You\'ve unfavorited <b>%s</b> since you started editing it. <br/> <b>Sync</b> your edited version to the server or <b>Save</b> it to your \"Downloads\" folder. </p>]]></string>
     <string name="sync_error_node_deleted"><![CDATA[<p> <b>%s</b> has been deleted on the server but a copy has been saved in your \"Downloads\" folder.</p>]]></string>
@@ -427,9 +427,9 @@
         <item quantity="other">%1$s files updated.</item>
     </plurals>
     <plurals name="batch_failed">
-        <item quantity="zero">no transfers failed.</item>
-        <item quantity="one">1 transfer failed.</item>
-        <item quantity="other">%1$s transfers failed.</item>
+        <item quantity="zero">no transfers unsuccessful.</item>
+        <item quantity="one">1 transfer unsuccessful.</item>
+        <item quantity="other">%1$s transfers unsuccessful.</item>
     </plurals>
     <plurals name="batch_in_progress">
         <item quantity="zero">no transfers in progress.</item>
@@ -444,10 +444,10 @@
 
     <string name="sync_warning">Sync Warning</string>
     <string name="sync_error">Sync Error</string>
-    <string name="sync_warning_mobile_data"><![CDATA[<p> You are about to sync <b>%s</b> over a carrier connection.</p> Would you like to proceed?]]></string>
-    <string name="sync_error_storage"><![CDATA[<p> You are trying to sync  <b>%1$s</b>, only  %2$s are available.</p> You need to free some space in your device or unfavorite some content.]]></string>
-    <string name="sync_warning_storage"><![CDATA[<p> You are about to sync  <b>%1$s</b>, only  %2$s remain on your device.</p> Would you like to proceed?]]></string>
-    <string name="sync_document_not_available">This document is not available on your device.</string>
+    <string name="sync_warning_mobile_data"><![CDATA[<p> You\'re about to sync <b>%s</b> over a carrier connection.</p> Do you want to continue?]]></string>
+    <string name="sync_error_storage"><![CDATA[<p> You\'re trying to sync  <b>%1$s</b>, only  %2$s are available.</p> You need to free some space on your device or unfavorite some content.]]></string>
+    <string name="sync_warning_storage"><![CDATA[<p> You\'re about to sync  <b>%1$s</b>, only  %2$s remain on your device.</p> Do you want to continue?]]></string>
+    <string name="sync_document_not_available">This file isn\'t available on your device.</string>
 
     <!-- NOTIFICATION -->
     <string name="upload">Upload </string>
