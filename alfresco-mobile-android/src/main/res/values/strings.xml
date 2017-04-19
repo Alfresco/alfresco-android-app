@@ -21,8 +21,8 @@
     <string name="empty_accounts">No account available</string>
 
     <!-- SIGN IN & CREATE ACCOUNT SCREEN -->
-    <string name="general_login_server_title">Enter your hostname</string>
-    <string name="general_login_server_hostname">Hostname</string>
+    <string name="general_login_server_title">Enter the URL to connect to</string>
+    <string name="general_login_server_hostname">www.example.com</string>
     <string name="general_login_server_next">Continue</string>
     <string name="general_login_server_done">Done</string>
     <string name="general_login_credentials_title">Enter your credentials</string>
@@ -60,8 +60,8 @@
     <string name="account_username_required_hint">Username (Required)</string>
     <string name="account_password">Password</string>
     <string name="account_password_required_hint">Password (Required)</string>
-    <string name="account_hostname">Hostname</string>
-    <string name="account_hostname_required_hint">Hostname such as www.example.com (Required)</string>
+    <string name="account_hostname">Connect to</string>
+    <string name="account_hostname_required_hint">Connection such as www.example.com (Required)</string>
     <string name="account_hostname_hint">www.example.com (Required)</string>
     <string name="account_description">Description</string>
     <string name="account_description_optional_hint">Description (Optional). By default it\'s Content Services</string>
@@ -737,7 +737,7 @@
     <!-- Storage Access Framework -->
     <string name="menu_browse_sync_content_folder">Synced Content</string>
     <string name="menu_browse_favorites_folder">Favorites Folder</string>
-    <string name="account_alfresco">Alfresco</string>
+    <string name="account_alfresco">Content Services</string>
     <string name="account_alfresco_cloud">Content Services in the Cloud</string>
     <string name="account_alfresco_onpremise">Content Services</string>
 
@@ -859,7 +859,7 @@
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
-    <string name="error_invalid_url">This hostname is invalid</string>
+    <string name="error_invalid_url">This connection is invalid</string>
 
 
     <!-- CONFIG VALUES -->
