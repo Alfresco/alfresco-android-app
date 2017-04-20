@@ -21,7 +21,7 @@
     <string name="empty_accounts">No account available</string>
 
     <!-- SIGN IN & CREATE ACCOUNT SCREEN -->
-    <string name="general_login_server_title">Enter the URL to connect to</string>
+    <string name="general_login_server_title">Enter the address to connect to</string>
     <string name="general_login_server_hostname">www.example.com</string>
     <string name="general_login_server_next">Continue</string>
     <string name="general_login_server_done">Done</string>

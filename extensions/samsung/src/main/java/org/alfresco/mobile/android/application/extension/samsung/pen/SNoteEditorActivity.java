@@ -30,6 +30,29 @@ import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.platform.intent.BaseActionUtils;
 import org.alfresco.mobile.android.ui.activity.AlfrescoActivity;
 
+import com.samsung.android.sdk.SsdkUnsupportedException;
+import com.samsung.android.sdk.pen.Spen;
+import com.samsung.android.sdk.pen.SpenSettingEraserInfo;
+import com.samsung.android.sdk.pen.SpenSettingPenInfo;
+import com.samsung.android.sdk.pen.SpenSettingTextInfo;
+import com.samsung.android.sdk.pen.document.SpenNoteDoc;
+import com.samsung.android.sdk.pen.document.SpenObjectBase;
+import com.samsung.android.sdk.pen.document.SpenObjectImage;
+import com.samsung.android.sdk.pen.document.SpenObjectTextBox;
+import com.samsung.android.sdk.pen.document.SpenPageDoc;
+import com.samsung.android.sdk.pen.engine.SpenContextMenuItemInfo;
+import com.samsung.android.sdk.pen.engine.SpenControlBase;
+import com.samsung.android.sdk.pen.engine.SpenControlListener;
+import com.samsung.android.sdk.pen.engine.SpenFlickListener;
+import com.samsung.android.sdk.pen.engine.SpenSurfaceView;
+import com.samsung.android.sdk.pen.engine.SpenTouchListener;
+import com.samsung.android.sdk.pen.pen.SpenPenInfo;
+import com.samsung.android.sdk.pen.pen.SpenPenManager;
+import com.samsung.android.sdk.pen.settingui.SpenSettingEraserLayout;
+import com.samsung.android.sdk.pen.settingui.SpenSettingPenLayout;
+import com.samsung.android.sdk.pen.settingui.SpenSettingSelectionLayout;
+import com.samsung.android.sdk.pen.settingui.SpenSettingTextLayout;
+
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
@@ -62,29 +85,6 @@ import android.view.View.OnTouchListener;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import com.samsung.android.sdk.SsdkUnsupportedException;
-import com.samsung.android.sdk.pen.Spen;
-import com.samsung.android.sdk.pen.SpenSettingEraserInfo;
-import com.samsung.android.sdk.pen.SpenSettingPenInfo;
-import com.samsung.android.sdk.pen.SpenSettingTextInfo;
-import com.samsung.android.sdk.pen.document.SpenNoteDoc;
-import com.samsung.android.sdk.pen.document.SpenObjectBase;
-import com.samsung.android.sdk.pen.document.SpenObjectImage;
-import com.samsung.android.sdk.pen.document.SpenObjectTextBox;
-import com.samsung.android.sdk.pen.document.SpenPageDoc;
-import com.samsung.android.sdk.pen.engine.SpenContextMenuItemInfo;
-import com.samsung.android.sdk.pen.engine.SpenControlBase;
-import com.samsung.android.sdk.pen.engine.SpenControlListener;
-import com.samsung.android.sdk.pen.engine.SpenFlickListener;
-import com.samsung.android.sdk.pen.engine.SpenSurfaceView;
-import com.samsung.android.sdk.pen.engine.SpenTouchListener;
-import com.samsung.android.sdk.pen.pen.SpenPenInfo;
-import com.samsung.android.sdk.pen.pen.SpenPenManager;
-import com.samsung.android.sdk.pen.settingui.SpenSettingEraserLayout;
-import com.samsung.android.sdk.pen.settingui.SpenSettingPenLayout;
-import com.samsung.android.sdk.pen.settingui.SpenSettingSelectionLayout;
-import com.samsung.android.sdk.pen.settingui.SpenSettingTextLayout;
 
 public class SNoteEditorActivity extends AlfrescoActivity
 {
@@ -267,7 +267,7 @@ public class SNoteEditorActivity extends AlfrescoActivity
 
         // Display Document
         spenSurfaceView.setPageDoc(spenPageDoc, true);
-        spenSurfaceView.setBlankColor(getResources().getColor(R.color.grey_light));
+        spenSurfaceView.setBlankColor(getResources().getColor(R.color.alfresco_dbp_gray));
 
         if (!isSpenFeatureEnabled)
         {

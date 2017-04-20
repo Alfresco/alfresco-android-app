@@ -232,7 +232,7 @@
 
     <style name="AlfrescoHoloTheme.TextView.Secondary">
         <item name="android:textAppearance">?android:textAppearanceSmall</item>
-        <item name="android:textColor">@color/grey_text</item>
+        <item name="android:textColor">@color/alfresco_dbp_gray_dark</item>
     </style>
 
     <style name="AlfrescoHoloTheme.TextView.SecondaryBold">
@@ -305,7 +305,7 @@
 
     <style name="AlfrescoHoloTheme.TextView.SectionHeader.Grey">
         <item name="android:drawableBottom">@drawable/grey_section_header</item>
-        <item name="android:textColor">@color/grey_text</item>
+        <item name="android:textColor">@color/alfresco_dbp_gray_dark</item>
         <item name="android:ellipsize">end</item>
         <item name="android:maxLines">1</item>
         <item name="android:singleLine">true</item>
@@ -318,12 +318,12 @@
 
     <style name="AlfrescoHoloTheme.TextView.SectionHeader.Primary">
         <item name="android:drawableBottom">@drawable/section_header</item>
-        <item name="android:textColor">@color/emphasis</item>
+        <item name="android:textColor">@color/accent</item>
     </style>
 
     <style name="AlfrescoHoloTheme.TextView.SectionHeader.Primary.D">
         <item name="android:drawableBottom">@drawable/section_header</item>
-        <item name="android:textColor">@color/emphasis</item>
+        <item name="android:textColor">@color/accent</item>
         <item name="android:padding">0dip</item>
     </style>
 

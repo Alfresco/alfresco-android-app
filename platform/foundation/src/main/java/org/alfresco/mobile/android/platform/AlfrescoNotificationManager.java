@@ -252,7 +252,7 @@ public class AlfrescoNotificationManager extends Manager
         if (AndroidVersion.isLollipopOrAbove())
         {
             builder.setSmallIcon(R.drawable.ic_notification);
-            builder.setColor(appContext.getResources().getColor(R.color.alfresco_sky));
+            builder.setColor(appContext.getResources().getColor(R.color.alfresco_dbp_blue));
         }
         else
         {

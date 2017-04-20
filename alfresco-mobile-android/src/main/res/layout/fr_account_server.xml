@@ -55,6 +55,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/general_login_server_hostname"
+                app:met_floatingLabelText=""
                 app:met_floatingLabel="highlight"
                 android:inputType="text"
                 app:met_primaryColor="@color/accent" />

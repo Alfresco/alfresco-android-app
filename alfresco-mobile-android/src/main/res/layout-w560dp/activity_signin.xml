@@ -22,7 +22,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/alfresco_lime_darker">
+    android:background="@color/alfresco_dbp_blue">
 
     <FrameLayout
         android:id="@+id/double_panel"
@@ -57,13 +57,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ImageView
+        <!--<ImageView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:scaleType="fitXY"
             android:layout_gravity="bottom"
             android:src="@drawable/login_banner"
-            android:adjustViewBounds="true" />
+            android:adjustViewBounds="true" />-->
 
         <LinearLayout
             android:layout_width="500dp"

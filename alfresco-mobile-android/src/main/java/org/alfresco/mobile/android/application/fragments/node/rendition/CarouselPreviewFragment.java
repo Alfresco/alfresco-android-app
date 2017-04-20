@@ -34,6 +34,8 @@ import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.node.browse.NodeBrowserTemplate;
 
+import com.squareup.otto.Subscribe;
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -47,8 +49,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
-import com.squareup.otto.Subscribe;
 
 public class CarouselPreviewFragment extends AlfrescoFragment implements DetailsFragmentTemplate
 {
@@ -187,7 +187,7 @@ public class CarouselPreviewFragment extends AlfrescoFragment implements Details
 
         PagerTabStrip pagerTabStrip = (PagerTabStrip) viewById(R.id.pager_header);
         pagerTabStrip.setDrawFullUnderline(true);
-        pagerTabStrip.setTabIndicatorColor(getResources().getColor(R.color.blue_light));
+        pagerTabStrip.setTabIndicatorColor(getResources().getColor(R.color.accent));
 
         getActivity().invalidateOptionsMenu();
     }

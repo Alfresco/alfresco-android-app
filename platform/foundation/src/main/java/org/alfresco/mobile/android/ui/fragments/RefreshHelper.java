@@ -51,8 +51,8 @@ public class RefreshHelper implements OnRefreshListener
         else
         {
             swipeLayout.setOnRefreshListener(this);
-            swipeLayout.setColorSchemeResources(R.color.alfresco_lime, R.color.alfresco_lemon,
-                    R.color.alfresco_tangerine, R.color.alfresco_sky);
+            swipeLayout.setColorSchemeResources(R.color.alfresco_dbp_green_dark, R.color.alfresco_dbp_orange,
+                    R.color.alfresco_dbp_blue_dark, R.color.alfresco_dbp_orange_dark);
         }
     }
 
