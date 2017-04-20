@@ -27,7 +27,7 @@
         android:layout_width="@dimen/list_icon_size"
         android:layout_height="@dimen/list_icon_size"
         app:border_width="1dp"
-        app:border_color="@color/grey_light"
+        app:border_color="@color/alfresco_dbp_gray_harbor"
         style="@style/AlfrescoMaterialTheme.Icon.Left" />
 
     <LinearLayout

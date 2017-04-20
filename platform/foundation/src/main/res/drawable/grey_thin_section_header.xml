@@ -23,6 +23,6 @@
         android:height="0.5dp"
         android:width="10000dp" />
 
-    <solid android:color="@color/grey_light" />
+    <solid android:color="@color/alfresco_dbp_gray" />
 
 </shape>

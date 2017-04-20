@@ -21,54 +21,57 @@
     <!-- =============================================================== -->
     <!-- DEFAULT COLOR -->
     <!-- =============================================================== -->
-    <color name="actionbar_grey_bottom">#757575</color>
-    <color name="emphasis">#31b6e7</color>
-    <color name="grey_light">#8C8E8D</color>
-    <color name="grey_text">#818282</color>
-    <color name="grey_underline">#535554</color>
-    <color name="grey_lighter">#eeeeee</color>
-    <color name="sliding_account_background">#282828</color>
-    <color name="dark_red">#ffcc0000</color>
-    <color name="holo_blue_dark">#ff0099cc</color>
-    <color name="hint_foreground_holo_light">#808080</color>
-    <color name="blue_light">#33B5E5</color>
-
     <!-- Alfresco Colors -->
-    <color name="alfresco_lime_darker">#8FBE6F</color>
-    <color name="alfresco_lime">#8DC63F</color>
-    <color name="alfresco_lemon">#FFE14F</color>
-    <color name="alfresco_tangerine">#F89829</color>
-    <color name="alfresco_sky">#0082C8</color>
-    <color name="alfresco_blueberry">#005DAB</color>
-    <color name="alfresco_leaf">#47AA42</color>
-    <color name="alfresco_chalkboard">#717174</color>
-    <color name="alfresco_soil">#7D6A55</color>
-    <color name="alfresco_clay">#80561B</color>
-    <color name="alfresco_sand">#A99A6F</color>
-    <color name="white">#FFFFFF</color>
+    <color name="alfresco_dbp_blue">#2196f3</color>
+    <color name="alfresco_dbp_blue_dark">#01579b</color>
+    <color name="alfresco_dbp_blue_aqua">#00bcd4</color>
+    <color name="alfresco_dbp_blue_baby">#81d4fa</color>
+
+    <color name="alfresco_dbp_green">#8bc34a</color>
+    <color name="alfresco_dbp_green_dark">#43a047</color>
+    <color name="alfresco_dbp_green_jade">#22be73</color>
+    <color name="alfresco_dbp_green_pear">#cddc39</color>
+
+    <color name="alfresco_dbp_orange">#ff9901</color>
+    <color name="alfresco_dbp_orange_dark">#e65100</color>
+    <color name="alfresco_dbp_orange_gold">#f2b20f</color>
+    <color name="alfresco_dbp_orange_sunlight">#ffd600</color>
+
+    <color name="alfresco_dbp_gray">#727174</color>
+    <color name="alfresco_dbp_gray_harbor">#e3e3e4</color>
+    <color name="alfresco_dbp_gray_silver">#eef0f0</color>
+    <color name="alfresco_dbp_gray_dark">#36373a</color>
+    <color name="alfresco_dbp_gray_fog">#e6e6ec</color>
+    <color name="alfresco_dbp_gray_silk">#f9f9f9</color>
 
 
     <!-- =============================================================== -->
     <!-- Palette Alfresco -->
     <!-- =============================================================== -->
     <color name="primary">#424242</color>
-    <color name="primary_dark">#212121</color>
-    <color name="primary_light">#607D8B</color>
-    <color name="accent">#36A7C4</color>
-    <color name="accent_disable">#94AEB4</color>
-    <color name="accent_pressed">#298096</color>
-    <color name="primary_text">#212121</color>
-    <color name="secondary_text">#727272</color>
-    <color name="accent_text">#36A7C8</color>
-    <color name="icons">#FFFFFF</color>
+    <color name="primary_dark">@color/alfresco_dbp_gray_dark</color>
+    <color name="primary_light">@color/alfresco_dbp_gray</color>
+
+    <color name="accent">@color/alfresco_dbp_blue</color>
+    <color name="accent_disable">@color/alfresco_dbp_blue_baby</color>
+    <color name="accent_pressed">@color/alfresco_dbp_blue_dark</color>
+
+    <color name="primary_text">@color/alfresco_dbp_gray_dark</color>
+    <color name="secondary_text">@color/alfresco_dbp_gray</color>
+    <color name="accent_text">@color/alfresco_dbp_blue</color>
+
     <color name="divider">#B6B6B6</color>
     <color name="divider_translucent">#80ffffff</color>
-    <color name="subtitle">#54ffffff</color>
+    <color name="emphasis">@color/accent</color>
+    <color name="grey_text">@color/alfresco_dbp_gray</color>
+    <color name="grey_lighter">@color/alfresco_dbp_gray_fog</color>
+    <color name="dark_red">#ffcc0000</color>
+    <color name="hint_foreground_holo_light">#808080</color>
+    <color name="white">#FFFFFF</color>
 
 
     <color name="primary_background">@color/background_material_light</color>
-    <color name="secondary_background">#FFFFFF</color>
+    <color name="secondary_background">@color/white</color>
     <color name="secondary_background_translucent">#EFFFFFFF</color>
-    <color name="login_background">#fff3f3f3</color>
 
 </resources>

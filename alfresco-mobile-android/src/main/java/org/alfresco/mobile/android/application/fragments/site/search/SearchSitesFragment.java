@@ -38,6 +38,9 @@ import org.alfresco.mobile.android.async.site.search.SiteSearchRequest;
 import org.alfresco.mobile.android.ui.holder.TwoLinesViewHolder;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 
+import com.rengwuxian.materialedittext.MaterialAutoCompleteTextView;
+import com.squareup.otto.Subscribe;
+
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -48,6 +51,7 @@ import android.support.v4.content.Loader;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -57,9 +61,6 @@ import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.rengwuxian.materialedittext.MaterialAutoCompleteTextView;
-import com.squareup.otto.Subscribe;
 
 /**
  * Fragment to display the list of sites depending on criteria like favorite,
@@ -280,6 +281,12 @@ public class SearchSitesFragment extends CommonBrowserSitesFragment implements L
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args)
     {
+        String searchTextValue = "*";
+        if (searchText != null && !TextUtils.isEmpty(searchText.getText().toString()))
+        {
+            searchTextValue = searchText.getText().toString();
+        }
+
         if (searchText == null || TextUtils.isEmpty(searchText.getText().toString()))
         {
             return new CursorLoader(getActivity(), HistorySearchManager.CONTENT_URI, HistorySearchManager.COLUMN_ALL,
@@ -292,8 +299,8 @@ public class SearchSitesFragment extends CommonBrowserSitesFragment implements L
             return new CursorLoader(getActivity(), HistorySearchManager.CONTENT_URI, HistorySearchManager.COLUMN_ALL,
                     HistorySearchSchema.COLUMN_ACCOUNT_ID + " = " + getAccount().getId() + " AND "
                             + HistorySearchSchema.COLUMN_TYPE + " = " + HistorySearch.TYPE_SITE + " AND "
-                            + HistorySearchSchema.COLUMN_DESCRIPTION + " LIKE ?",
-                    new String[] { "%" + searchText.getText().toString() + "%" },
+                            + HistorySearchSchema.COLUMN_DESCRIPTION + " LIKE " + "'%" + searchTextValue + "%'",
+                    null,
                     HistorySearchSchema.COLUMN_LAST_REQUEST_TIMESTAMP + " DESC " + " LIMIT 5");
         }
     }
@@ -301,6 +308,7 @@ public class SearchSitesFragment extends CommonBrowserSitesFragment implements L
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data)
     {
+        Log.d("DATA", data.isClosed() + "");
         if (!data.isClosed())
         {
             searchAdapter.changeCursor(data);

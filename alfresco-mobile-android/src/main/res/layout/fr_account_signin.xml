@@ -99,6 +99,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/general_login_server_hostname"
+                    app:met_floatingLabelText=""
                     app:met_floatingLabel="highlight"
                     app:met_primaryColor="@color/accent" />
 
@@ -112,7 +113,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
                 android:layout_marginTop="@dimen/d_16"
-                android:background="@color/blue_light"
+                android:background="@color/accent"
                 android:gravity="bottom"
                 android:measureWithLargestChild="true"
                 android:orientation="horizontal"
