@@ -110,8 +110,8 @@
     <string name="org_alfresco_subscriptions_followed">{1} está siguiendo a {5}</string>
     <string name="org_alfresco_subscriptions_subscribed">{1} se ha suscrito a {2}</string>
     <string name="org_alfresco_profile_status_changed">{1}: {6}</string>
-    <string name="org_alfresco_documentlibrary_file_previewed">{1} previsualizó el documento {0}</string>
-    <string name="org_alfresco_documentlibrary_file_downloaded">{1} descargó el documento {0}</string>
+    <string name="org_alfresco_documentlibrary_file_previewed">{1} fichero previsualizado {0}</string>
+    <string name="org_alfresco_documentlibrary_file_downloaded">{1} fichero descargado {0}</string>
     <string name="activity_role_None">Ningún privilegio</string>
     <string name="activity_role_SiteConsumer">Consumidor</string>
     <string name="activity_role_SiteManager">Administrador</string>
@@ -123,7 +123,7 @@
     <string name="metadata_prop_name">Nombre</string>
     <string name="metadata_prop_path">Ruta</string>
     <string name="metadata_prop_type">Tipo</string>
-    <string name="metadata_prop_content_mimetype">Tipo de mime</string>
+    <string name="metadata_prop_content_mimetype">Tipo de fichero</string>
     <string name="metadata_prop_content_size">Tamaño</string>
     <!-- Metadata Titled -->
     <string name="metadata_aspect_titled">Titulado</string>
@@ -242,51 +242,51 @@
     <string name="save_back">Volver a guardar</string>
 
     <!-- MESSAGE ERROR -->
-    <string name="error_general">Se ha producido un error. Vuelva a intentarlo.</string>
-    <string name="error_general_title">Se ha producido un error.</string>
-    <string name="error_unable_open_file">No se puede abrir este fichero</string>
-    <string name="error_unable_share_link">No se puede compartir el enlace</string>
-    <string name="error_unable_share_content">No se puede compartir el contenido</string>
-    <string name="error_unable_open_map">No se puede abrir el mapa</string>
+    <string name="error_general">Se produjo un error, vuelva a intentarlo.</string>
+    <string name="error_general_title">Se produjo un error.</string>
+    <string name="error_unable_open_file">No se pudo abrir este fichero</string>
+    <string name="error_unable_share_link">No se pudo compartir el enlace</string>
+    <string name="error_unable_share_content">No se pudo compartir el contenido</string>
+    <string name="error_unable_open_map">No se pudo abrir el mapa</string>
 
     <!-- SESSION ERROR -->
     <string name="retry_account_loading">Reintentar</string>
     <string name="error_session_creation_title">Guardar cuenta</string>
     <string name="error_session_creation_message">Error de conexión</string>
-    <string name="error_session_creation">No se puede autenticar. Compruebe la configuración de su cuenta de Alfresco.</string>
-    <string name="error_session_hostname_short">El <b>valor del nombre de host</b> parece ser incorrecto.</string>
-    <string name="error_session_hostname"><![CDATA[El valor del <b>nombre de host</b> parece ser incorrecto o puede ser necesario <b>activar la VPN</b>.<br/> Compruebe la configuración de los valores.]]></string>
+    <string name="error_session_creation">No se puede autenticar. Compruebe la configuración de su cuenta.</string>
+    <string name="error_session_hostname_short">Su <b>conexión a la</b> URL no es correcta.</string>
+    <string name="error_session_hostname"><![CDATA[Su <b>conexión a la</b> URL parece que no es correcta o necesita <b>activar su VPN</b>.<br/> Compruebe los valores y configuración.]]></string>
     <string name="error_session_nodata_short">El dispositivo no tiene conexión de datos.</string>
     <string name="error_session_nodata"><![CDATA[<p><b>El dispositivo no tiene conexión de datos.</b><br/></p> Compruebe la configuración del dispositivo y active la conexión de datos.]]></string>
-    <string name="error_session_unauthorized"><![CDATA[No tiene permiso para acceder a este servidor.<br/> Compruebe la configuración de su cuenta de Alfresco <b>(nombre de usuario/contraseña)</b>.]]></string>
-    <string name="error_session_service_url"><![CDATA[El valor de <b>url del servicio</b> es incorrecto.<br/> Compruebe la configuración de su cuenta de Alfresco.]]></string>
-    <string name="error_session_service_unavailable"><![CDATA[El servidor no está disponible temporalmente para el servicio que ha solicitado debido a un tiempo de inactividad para mantenimiento o problemas de capacidad.<br/> Inténtelo más tarde.]]></string>
-    <string name="error_session_notfound"><![CDATA[No se pudo acceder al servidor.<br/> Compruebe la configuración de su cuenta de Alfresco.]]></string>
-    <string name="error_session_port"><![CDATA[El valor de <b>puerto</b> es incorrecto.<br/> Compruebe la configuración de su cuenta de Alfresco.]]></string>
+    <string name="error_session_unauthorized"><![CDATA[No tiene permiso para acceder a este servidor.<br/> Compruebe la configuración de su cuenta <b>(Nombre de usuario/Contraseña)</b>.]]></string>
+    <string name="error_session_service_url"><![CDATA[El valor de <b>url del servicio</b> es incorrecto.<br/> Compruebe la configuración de su cuenta.]]></string>
+    <string name="error_session_service_unavailable"><![CDATA[El servidor no está disponible temporalmente por mantenimiento o problemas de capacidad.<br/> Vuelva a intentarlo más tarde.]]></string>
+    <string name="error_session_notfound"><![CDATA[No se pudo acceder al servidor.<br/> Compruebe la configuración de su cuenta.]]></string>
+    <string name="error_session_port"><![CDATA[El valor de <b>puerto</b> es incorrecto.<br/> Compruebe la configuración de su cuenta.]]></string>
     <string name="error_session_certificate">
 <![CDATA[<p><b>El certificado de seguridad del servidor no es de confianza.</b><br/></p>
-		La organización externa que emitió el certificado de destino del servidor no ha sido reconocida por el dispositivo.<br/>
-		Para que Alfresco Mobile verifique que se está conectando al servidor adecuado, su certificado debe ser de una organización de confianza.<br/>
-		Si su servidor tiene un certificado autofirmado, añádalo a su dispositivo para conectarse correctamente.<br/> ]]>
+		Su dispositivo no reconoce la organización externa que emitió el certificado de destino del servidor.<br/>
+		Para verificar que se está conectando al servidor adecuado, su certificado debe ser de una organización de confianza.<br/>
+		Si su servidor tiene un certificado autofirmado, añádalo a su dispositivo para poder conectarse.<br/> ]]>
     </string>
     <string name="error_session_certificate_expired">
-<![CDATA[<p><b>El certificado de seguridad del servidor ha caducado o aún no es válido.</b><br/></p>
-		Compruebe la fecha y hora establecida en su dispositivo.<br/> Si el problema persiste, póngase en contacto con su administrador. ]]>
+<![CDATA[<p><b>El certificado de seguridad del servidor ha caducado o no es válido todavía.</b><br/></p>
+		Compruebe la fecha y hora de su dispositivo.<br/> Si el problema continúa, póngase en contacto con el equipo de TI. ]]>
     </string>
     <string name="error_session_ssl">
-<![CDATA[<p><b>Se ha producido un error con el protocolo SSL.</b><br/></p>
-        Compruebe la configuración de su cuenta de Alfresco y vuelva a intentarlo.<br/> Si el problema persiste, póngase en contacto con su administrador.]]>
+<![CDATA[<p><b>Se produjo un problema con el protocolo de SSL.</b><br/></p>
+        Compruebe la configuración de su cuenta y vuelva a intentarlo.<br/> Si el problema continúa, póngase en contacto con el equipo de TI.]]>
     </string>
     <string name="error_session_cloud_unavailable">
-<![CDATA[<p><b>Alfresco en la nube tiene una carga muy grande ahora mismo.</b><br/></p>
-        Vuelva a intentarlo en unos minutos.<br/>]]>
+<![CDATA[<p><b>Content Services in the Cloud tiene una gran carga en estos momentos.</b><br/></p>
+        Vuelva a intentarlo pasados unos minutos.<br/>]]>
     </string>
-    <string name="error_session_expired">Su sesión ha caducado. Vuelva a iniciar una sesión.</string>
+    <string name="error_session_expired">Su sesión ha caducado. Inicie sesión para continuar.</string>
     <string name="error_session_refresh">Actualizando sesión.</string>
     <string name="error_chunk_transfert"><![CDATA[El servidor no es compatible con transferencias en bloques.<br/> Vuelva a cargar su cuenta</b>.]]></string>
 
-    <string name="error_account_url">La URL es incorrecta. Compruebe la configuración de su cuenta de Alfresco.</string>
-    <string name="error_unknown_filepath">Error al encontrar el recurso.</string>
+    <string name="error_account_url">La URL es incorrecta. Compruebe la configuración de su cuenta.</string>
+    <string name="error_unknown_filepath">No se pudo encontrar el recurso.</string>
     <string name="error_name_already_exist">No se pudo cambiar el nombre del fichero. Es posible que ya exista otro fichero con el mismo nombre.</string>
     <string name="error_unknown_exception">Se ha producido un error: %s</string>
     <string name="error_unknown">Se ha producido un error: %s</string>
@@ -294,17 +294,17 @@
     <!-- Share -->
     <string name="share_url">Compartir enlace</string>
     <string name="share_content">Compartir contenido</string>
-    <string name="share_url_long">Compartiendo enlace desde Alfresco Android Mobile</string>
+    <string name="share_url_long">Compartiendo enlace desde Alfresco Content Services</string>
     <string name="validate">Validar</string>
 
     <!-- SSL -->
-    <string name="security_ssl_disable">La validación del certificado SSL se ha deshabilitado.</string>
+    <string name="security_ssl_disable">La validación del certificado SSL se ha desactivado.</string>
 
     <!-- ACCOUNT -->
     <string name="account_verify">Verificando información de cuenta&#8230;</string>
     <string name="account_wizard_alldone_description">Su cuenta está lista para usarse.</string>
-    <string name="account_default_onpremise">Servidor de Alfresco</string>
-    <string name="account_default_cloud">Alfresco in the Cloud</string>
+    <string name="account_default_onpremise">Content Services</string>
+    <string name="account_default_cloud">Content Services in the Cloud</string>
 
     <!-- WAITING SESSION -->
     <string name="wait_title">Espere</string>
@@ -327,9 +327,9 @@
     <string name="delete_complete">Eliminación completada</string>
 
     <!-- Quick Action Folder -->
-    <string name="like_in_progress">"Me gusta" en curso</string>
-    <string name="like_completed">"Me gusta" completado</string>
-    <string name="like_complete">"Me gusta" completado</string>
+    <string name="like_in_progress">\"Me gusta\" en curso</string>
+    <string name="like_completed">\"Me gusta\" completado</string>
+    <string name="like_complete">\"Me gusta\" completado</string>
 
     <!-- MEMBERS -->
     <string name="members">Lista de miembros</string>
@@ -341,12 +341,12 @@
 
     <!-- Accessibility -->
     <string name="mime_folder">Carpeta</string>
-    <string name="mime_document">Documento</string>
+    <string name="mime_document">Fichero</string>
     <string name="more_options_folder">Más opciones para carpeta %s</string>
     <string name="more_options_favorite">Más opciones para %s</string>
     <string name="mime_site">Sitio</string>
     <string name="more_options_site">Más opciones para sitio %s</string>
-    <string name="navigation_drawer_description">Alfresco: abrir panel de inicio</string>
+    <string name="navigation_drawer_description">Content Services: abrir panel de inicio</string>
     <string name="metadata_modified">Modificado </string>
     <string name="metadata_created_by">Creado por %s</string>
     <string name="metadata_size">Tamaño </string>
@@ -359,7 +359,7 @@
     <string name="empty_joinsiterequest">Ninguna solicitud pendiente</string>
 
     <!-- Update Properties -->
-    <string name="filename_error_character">Este nombre no es válido.</string>
+    <string name="filename_error_character">Nombre no válido, utilice caracteres diferentes.</string>
 
     <!-- NETWORKS -->
     <string name="cloud_networks_empty">Ninguna red disponible</string>
@@ -426,9 +426,9 @@
         <item quantity="other">%1$s ficheros actualizados.</item>
     </plurals>
     <plurals name="batch_failed">
-        <item quantity="zero">ninguna transferencia ha fallado.</item>
-        <item quantity="one">1 transferencia ha fallado.</item>
-        <item quantity="other">%1$s transferencias han fallado.</item>
+        <item quantity="zero">ninguna transferencia con errores.</item>
+        <item quantity="one">1 transferencia con errores.</item>
+        <item quantity="other">%1$s transferencias con errores.</item>
     </plurals>
     <plurals name="batch_in_progress">
         <item quantity="zero">ninguna transferencia en curso.</item>
@@ -446,7 +446,7 @@
     <string name="sync_warning_mobile_data"><![CDATA[<p> Está a punto de sincronizar <b>%s</b> con una conexión de operador.</p> ¿Desea continuar?]]></string>
     <string name="sync_error_storage"><![CDATA[<p> Está intentando sincronizar <b>%1$s</b>, solo %2$s están disponibles.</p> Es necesario liberar espacio en el dispositivo o quitar de favoritos algún contenido.]]></string>
     <string name="sync_warning_storage"><![CDATA[<p> Está a punto de sincronizar <b>%1$s</b>, solo hay %2$s disponibles en su dispositivo.</p> ¿Desea continuar?]]></string>
-    <string name="sync_document_not_available">Este documento no está disponible en su dispositivo.</string>
+    <string name="sync_document_not_available">Este fichero no está disponible en su dispositivo.</string>
 
     <!-- NOTIFICATION -->
     <string name="upload">Cargar </string>

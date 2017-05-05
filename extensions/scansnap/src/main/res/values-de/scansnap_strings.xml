@@ -19,7 +19,7 @@
     <!-- SCANSNAP EXTENSIONS -->
 
     <!-- ERRORS -->
-    <string name="err_msg_launch_failed">Starten der ScanSnap Connect-Anwendung fehlgeschlagen.</string>
+    <string name="err_msg_launch_failed">ScanSnap Connect-Anwendung konnte nicht gestartet werden.</string>
     <string name="err_msg_url_parse">Parsen der URL fehlgeschlagen. Überprüfen Sie, ob die angegebenen URL-Parameter korrekt sind, und versuchen Sie es erneut.</string>
 
     <!-- PRESETS -->

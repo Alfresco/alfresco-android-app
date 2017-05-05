@@ -110,8 +110,8 @@
     <string name="org_alfresco_subscriptions_followed">{1} suit maintenant {5}</string>
     <string name="org_alfresco_subscriptions_subscribed">{1} s\'est abonné à {2}</string>
     <string name="org_alfresco_profile_status_changed">{1} : {6}</string>
-    <string name="org_alfresco_documentlibrary_file_previewed">{1} a prévisualisé le document {0}</string>
-    <string name="org_alfresco_documentlibrary_file_downloaded">{1} a téléchargé le document {0}</string>
+    <string name="org_alfresco_documentlibrary_file_previewed">{1} a prévisualisé le fichier {0}</string>
+    <string name="org_alfresco_documentlibrary_file_downloaded">{1} a téléchargé le fichier {0}</string>
     <string name="activity_role_None">Aucun privilège</string>
     <string name="activity_role_SiteConsumer">Lecteur</string>
     <string name="activity_role_SiteManager">Gestionnaire</string>
@@ -123,7 +123,7 @@
     <string name="metadata_prop_name">Nom</string>
     <string name="metadata_prop_path">Chemin d\'accès</string>
     <string name="metadata_prop_type">Type</string>
-    <string name="metadata_prop_content_mimetype">Mimetype</string>
+    <string name="metadata_prop_content_mimetype">Type de fichier</string>
     <string name="metadata_prop_content_size">Taille</string>
     <!-- Metadata Titled -->
     <string name="metadata_aspect_titled">Intitulé</string>
@@ -242,8 +242,8 @@
     <string name="save_back">Enregistrer et retour</string>
 
     <!-- MESSAGE ERROR -->
-    <string name="error_general">Une erreur s\'est produite. Veuillez réessayer.</string>
-    <string name="error_general_title">Une erreur s\'est produite.</string>
+    <string name="error_general">Un problème est survenu, veuillez réessayer.</string>
+    <string name="error_general_title">Un problème est survenu.</string>
     <string name="error_unable_open_file">Impossible d\'ouvrir ce fichier</string>
     <string name="error_unable_share_link">Impossible de partager un lien</string>
     <string name="error_unable_share_content">Impossible de partager du contenu</string>
@@ -253,39 +253,39 @@
     <string name="retry_account_loading">Réessayer</string>
     <string name="error_session_creation_title">Enregistrer le compte</string>
     <string name="error_session_creation_message">Erreur de connexion</string>
-    <string name="error_session_creation">Impossibilité de s\'authentifier. Vérifiez les paramètres de votre compte Alfresco.</string>
-    <string name="error_session_hostname_short">La valeur de votre <b>nom d\'hôte</b> semble erronée.</string>
-    <string name="error_session_hostname"><![CDATA[La valeur de votre <b>nom d\'hôte</b> semble erronée ou vous devez peut-être <b>activer votre VPN</b>.<br/> Vérifiez vos valeurs et paramètres.]]></string>
+    <string name="error_session_creation">Impossibilité de s\'authentifier. Vérifiez les paramètres de votre compte.</string>
+    <string name="error_session_hostname_short">Votre <b>connexion à</b> l\'URL n\'est pas correcte.</string>
+    <string name="error_session_hostname"><![CDATA[Votre <b>connexion à</b> l\'URL n\'est pas correcte ou vous devez peut-être <b>activer votre VPN</b>.<br/> Vérifiez vos valeurs et paramètres.]]></string>
     <string name="error_session_nodata_short">Votre appareil n\'a aucune connexion aux données.</string>
     <string name="error_session_nodata"><![CDATA[<p><b>Votre appareil n\'a aucune connexion aux données.</b><br/></p> Vérifiez les paramètres de votre appareil et activez une connexion aux données.]]></string>
-    <string name="error_session_unauthorized"><![CDATA[Vous n\'êtes pas autorisé à accéder à ce serveur.<br/> Vérifiez les paramètres de votre compte Alfresco <b>(nom d\'utilisateur/mot de passe)</b>.]]></string>
-    <string name="error_session_service_url"><![CDATA[La valeur de votre <b>URL de service</b> est incorrecte.<br/> Vérifiez les paramètres de votre compte Alfresco.]]></string>
-    <string name="error_session_service_unavailable"><![CDATA[En raison d\'un arrêt de maintenance ou de problèmes de capacité, le serveur ne peut traiter votre demande pour l\'instant.<br/>Réessayez ultérieurement.]]></string>
-    <string name="error_session_notfound"><![CDATA[Impossible d\'atteindre votre serveur.<br/> Vérifiez les paramètres de votre compte Alfresco.]]></string>
-    <string name="error_session_port"><![CDATA[La valeur de votre <b>port</b> est incorrecte.<br/> Vérifiez les paramètres de votre compte Alfresco.]]></string>
+    <string name="error_session_unauthorized"><![CDATA[Vous n\'êtes pas autorisé à accéder à ce serveur.<br/> Vérifiez les paramètres de votre compte <b>(nom d\'utilisateur/mot de passe)</b>.]]></string>
+    <string name="error_session_service_url"><![CDATA[La valeur de votre <b>URL de service</b> est incorrecte.<br/> Vérifiez les paramètres de votre compte.]]></string>
+    <string name="error_session_service_unavailable"><![CDATA[Le serveur rencontre un arrêt de maintenance temporaire ou des problèmes de capacité.<br/> Réessayez ultérieurement.]]></string>
+    <string name="error_session_notfound"><![CDATA[Impossible d\'atteindre votre serveur.<br/> Vérifiez les paramètres de votre compte.]]></string>
+    <string name="error_session_port"><![CDATA[La valeur de votre <b>port</b> est incorrecte.<br/> Vérifiez les paramètres de votre compte.]]></string>
     <string name="error_session_certificate">
 <![CDATA[<p><b>Le certificat de sécurité du serveur n\'est pas vérifié !</b><br/></p>
 		L\'organisation de tierce partie qui a émis le certificat de destination de votre serveur ne fait pas partie de celles que votre appareil reconnaît.<br/>
-		Afin qu\'Alfresco Mobile puisse vérifier que vous vous connectez avec le serveur approprié, son certificat doit provenir d\'une organisation de confiance.<br/>
+		Pour vérifier que vous vous connectez avec le serveur approprié, son certificat doit provenir d\'une organisation de confiance.<br/>
 		Si votre serveur dispose d\'un certificat auto-signé, ajoutez-le à votre appareil pour vous connecter.<br/> ]]>
     </string>
     <string name="error_session_certificate_expired">
-<![CDATA[<p><b>Le certificat de sécurité du serveur a expiré ou n\'est pas encore valide !</b><br/></p>
-		Vérifiez la date et l\'heure de votre appareil.<br/> Si le problème persiste, contactez votre administrateur. ]]>
+<![CDATA[<p><b>Le certificat de sécurité du serveur a expiré ou n\'est pas encore valide.</b><br/></p>
+		Vérifiez la date et l\'heure de votre appareil.<br/> Si le problème persiste, contactez votre service informatique. ]]>
     </string>
     <string name="error_session_ssl">
 <![CDATA[<p><b>Une erreur s\'est produite avec le protocole SSL.</b><br/></p>
-        Vérifiez vos paramètres de compte Alfresco et réessayez.<br/> Si le problème persiste, contactez votre administrateur.]]>
+        Vérifiez vos paramètres de compte et réessayez.<br/> Si le problème persiste, contactez votre service informatique.]]>
     </string>
     <string name="error_session_cloud_unavailable">
-<![CDATA[<p><b>Alfresco in the Cloud est actuellement surchargé !</b><br/></p>
+<![CDATA[<p><b>Content Services in the Cloud est actuellement surchargé.</b><br/></p>
         Réessayez dans quelques minutes.<br/>]]>
     </string>
-    <string name="error_session_expired">Votre session a expiré. Veuillez vous reconnecter.</string>
+    <string name="error_session_expired">Votre session a expiré. Connectez-vous pour continuer.</string>
     <string name="error_session_refresh">Rafraîchissement de la session.</string>
     <string name="error_chunk_transfert"><![CDATA[Le serveur ne prend pas en charge les transferts par bloc.<br/> Rechargez votre compte</b>.]]></string>
 
-    <string name="error_account_url">L\'URL est incorrecte. Vérifiez les paramètres de votre compte Alfresco.</string>
+    <string name="error_account_url">L\'URL est incorrecte. Vérifiez les paramètres de votre compte.</string>
     <string name="error_unknown_filepath">Ressource introuvable.</string>
     <string name="error_name_already_exist">Impossible de renommer le fichier. Un fichier du même nom existe déjà.</string>
     <string name="error_unknown_exception">Une erreur s\'est produite : %s</string>
@@ -294,7 +294,7 @@
     <!-- Share -->
     <string name="share_url">Partager un lien</string>
     <string name="share_content">Partager du contenu</string>
-    <string name="share_url_long">Partage de lien à partir d\'Alfresco Android Mobile</string>
+    <string name="share_url_long">Partage de lien à partir d\'Alfresco Content Services</string>
     <string name="validate">Valider</string>
 
     <!-- SSL -->
@@ -303,8 +303,8 @@
     <!-- ACCOUNT -->
     <string name="account_verify">Vérification des informations du compte&#8230;</string>
     <string name="account_wizard_alldone_description">Vous pouvez maintenant utiliser votre compte.</string>
-    <string name="account_default_onpremise">Serveur Alfresco</string>
-    <string name="account_default_cloud">Alfresco in the Cloud</string>
+    <string name="account_default_onpremise">Content Services</string>
+    <string name="account_default_cloud">Content Services in the Cloud</string>
 
     <!-- WAITING SESSION -->
     <string name="wait_title">Veuillez patienter</string>
@@ -327,7 +327,7 @@
     <string name="delete_complete">Suppression terminée</string>
 
     <!-- Quick Action Folder -->
-    <string name="like_in_progress">"J\'aime" en cours</string>
+    <string name="like_in_progress">\"J\'aime\" en cours</string>
     <string name="like_completed">J\'aime effectué</string>
     <string name="like_complete">J\'aime terminé</string>
 
@@ -341,12 +341,12 @@
 
     <!-- Accessibility -->
     <string name="mime_folder">Dossier</string>
-    <string name="mime_document">Document</string>
+    <string name="mime_document">Fichier</string>
     <string name="more_options_folder">Plus d\'options pour le dossier %s</string>
     <string name="more_options_favorite">Plus d\'options pour %s</string>
     <string name="mime_site">Site</string>
     <string name="more_options_site">Plus d\'options pour le site %s</string>
-    <string name="navigation_drawer_description">Alfresco : panneau Ouvrir l\'accueil</string>
+    <string name="navigation_drawer_description">Content Services : panneau Ouvrir l\'accueil</string>
     <string name="metadata_modified">Modifié </string>
     <string name="metadata_created_by">Créé par %s</string>
     <string name="metadata_size">Taille </string>
@@ -359,7 +359,7 @@
     <string name="empty_joinsiterequest">Aucune demande en attente</string>
 
     <!-- Update Properties -->
-    <string name="filename_error_character">Ce nom n\'est pas valide.</string>
+    <string name="filename_error_character">Le nom n\'est pas valide, utilisez des caractères différents.</string>
 
     <!-- NETWORKS -->
     <string name="cloud_networks_empty">Aucun réseau disponible</string>
@@ -387,7 +387,7 @@
     <string name="favorites_document">Favori</string>
     <string name="error_retrieve_favorite">Impossible de récupérer les infos de favori de ce contenu.</string>
     <string name="favorites_activate">Synchroniser le contenu pour \"%s\"</string>
-    <string name="favorites_activate_description">Voulez-vous conserver automatiquement vos contenus favoris en synchronisation avec cet appareil ?</string>
+    <string name="favorites_activate_description">Voulez-vous garder automatiquement vos contenus favoris synchronisés avec cet appareil ?</string>
     <string name="favorites_deactivate">Désactiver la synchronisation</string>
     <string name="favorites_deactivate_description"><![CDATA[<p>Voulez-vous désactiver la synchronisation ?</p> Tous les contenus synchronisés seront supprimés de votre appareil.]]></string>
     <string name="sync_error_title">Erreurs de synchronisation</string>
@@ -426,9 +426,9 @@
         <item quantity="other">%1$s fichiers mis à jour.</item>
     </plurals>
     <plurals name="batch_failed">
-        <item quantity="zero">aucun échec de transfert.</item>
-        <item quantity="one">1 transfert échoué.</item>
-        <item quantity="other">%1$s transferts échoués.</item>
+        <item quantity="zero">aucun transfert n\'a échoué.</item>
+        <item quantity="one">1 transfert a échoué.</item>
+        <item quantity="other">%1$s transferts ont échoué.</item>
     </plurals>
     <plurals name="batch_in_progress">
         <item quantity="zero">aucun transfert en cours.</item>
@@ -446,7 +446,7 @@
     <string name="sync_warning_mobile_data"><![CDATA[<p> Vous êtes sur le point de synchroniser <b>%s</b> sur une connexion de données.</p> Voulez-vous continuer ?]]></string>
     <string name="sync_error_storage"><![CDATA[<p> Vous essayez de synchroniser <b>%1$s</b>, seulement %2$s sont disponibles.</p> Vous devez libérer de l\'espace sur votre appareil ou supprimer des contenus de vos favoris.]]></string>
     <string name="sync_warning_storage"><![CDATA[<p> Vous êtes sur le point de synchroniser <b>%1$s</b>, seulement %2$s sont disponibles sur votre appareil.</p> Voulez-vous continuer ?]]></string>
-    <string name="sync_document_not_available">Ce document n\'est pas disponible sur votre appareil.</string>
+    <string name="sync_document_not_available">Ce fichier n\'est pas disponible sur votre appareil.</string>
 
     <!-- NOTIFICATION -->
     <string name="upload">Ajouter </string>

@@ -19,8 +19,8 @@
     <!-- SCANSNAP EXTENSIONS -->
 
     <!-- ERRORS -->
-    <string name="err_msg_launch_failed">Error al iniciar la aplicación ScanSnap Connect.</string>
-    <string name="err_msg_url_parse">Error al analizar la URL. Compruebe si son correctos los parámetros de URL y vuelva a intentarlo.</string>
+    <string name="err_msg_launch_failed">No se pudo iniciar la aplicación ScanSnap Connect.</string>
+    <string name="err_msg_url_parse">No se pudo analizar la URL. Compruebe si son correctos los parámetros de URL y vuelva a intentarlo.</string>
 
     <!-- PRESETS -->
     <string name="scan_preset">Valores preestablecidos de examen</string>

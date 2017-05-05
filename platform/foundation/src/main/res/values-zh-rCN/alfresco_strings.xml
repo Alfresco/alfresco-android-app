@@ -110,8 +110,8 @@
     <string name="org_alfresco_subscriptions_followed">{1} 正在关注 {5}</string>
     <string name="org_alfresco_subscriptions_subscribed">{1} 已订阅 {2}</string>
     <string name="org_alfresco_profile_status_changed">{1}：{6}</string>
-    <string name="org_alfresco_documentlibrary_file_previewed">{1} 已预览文档 {0}</string>
-    <string name="org_alfresco_documentlibrary_file_downloaded">{1} 已下载文档 {0}</string>
+    <string name="org_alfresco_documentlibrary_file_previewed">{1} 已预览文件 {0}</string>
+    <string name="org_alfresco_documentlibrary_file_downloaded">{1} 已下载文件 {0}</string>
     <string name="activity_role_None">无权限</string>
     <string name="activity_role_SiteConsumer">使用者</string>
     <string name="activity_role_SiteManager">管理员</string>
@@ -123,7 +123,7 @@
     <string name="metadata_prop_name">名称</string>
     <string name="metadata_prop_path">路径</string>
     <string name="metadata_prop_type">类型</string>
-    <string name="metadata_prop_content_mimetype">MIME 类型</string>
+    <string name="metadata_prop_content_mimetype">文件类型</string>
     <string name="metadata_prop_content_size">大小</string>
     <!-- Metadata Titled -->
     <string name="metadata_aspect_titled">带标题</string>
@@ -242,8 +242,8 @@
     <string name="save_back">存回</string>
 
     <!-- MESSAGE ERROR -->
-    <string name="error_general">出错了。请重试。</string>
-    <string name="error_general_title">出错了。</string>
+    <string name="error_general">遇到问题，请重试。</string>
+    <string name="error_general_title">遇到问题。</string>
     <string name="error_unable_open_file">无法打开此文件</string>
     <string name="error_unable_share_link">无法共享链接</string>
     <string name="error_unable_share_content">无法共享内容</string>
@@ -253,40 +253,40 @@
     <string name="retry_account_loading">重试</string>
     <string name="error_session_creation_title">保存帐户</string>
     <string name="error_session_creation_message">连接错误</string>
-    <string name="error_session_creation">无法进行身份验证。检查您的 Alfresco 帐户设置。</string>
-    <string name="error_session_hostname_short">您的 <b>主机名</b> 值好像错误。</string>
-    <string name="error_session_hostname"><![CDATA[您的<b>主机名</b>值好像错误或者您可能需要<b>打开您的 VPN</b>。<br/>请检查您的值和设置。]]></string>
+    <string name="error_session_creation">无法进行身份验证。检查您的帐户设置。</string>
+    <string name="error_session_hostname_short">到 URL 的<b>连接</b>不正确。</string>
+    <string name="error_session_hostname"><![CDATA[到 URL 的<b>连接</b>不正确或可能需要<b>激活 VPN</b>。<br/>检查数值和设置。]]></string>
     <string name="error_session_nodata_short">您的设备无数据连接。</string>
-    <string name="error_session_nodata"><![CDATA[<p><b>您的设备没有数据连接。</b><br/></p>请检查您的设备设置并启用数据连接。]]></string>
-    <string name="error_session_unauthorized"><![CDATA[不允许您访问此服务器。<br/>请检查您的 Alfresco 帐户设置<b>（用户名/密码）</b>。]]></string>
-    <string name="error_session_service_url"><![CDATA[您的<b>服务 url</b> 值不正确。<br/>请检查您的 Alfresco 帐户设置。]]></string>
-    <string name="error_session_service_unavailable"><![CDATA[由于维护停机或容量问题服务器暂时无法接收您的请求。<br/>请稍后重试。]]></string>
-    <string name="error_session_notfound"><![CDATA[无法连接您的服务器。<br/>请检查您的 Alfresco 帐户设置。]]></string>
-    <string name="error_session_port"><![CDATA[您的<b>端口</b>值不正确。<br/>请检查您的 Alfresco 帐户设置。]]></string>
+    <string name="error_session_nodata"><![CDATA[<p><b>您的设备没有数据连接。</b><br/></p>检查您的设备设置并启用数据连接。]]></string>
+    <string name="error_session_unauthorized"><![CDATA[不允许您访问此服务器。<br/>检查您的帐户设置<b>（用户名/密码）</b>。]]></string>
+    <string name="error_session_service_url"><![CDATA[您的<b>服务 url</b> 值不正确。<br/>检查您的帐户设置。]]></string>
+    <string name="error_session_service_unavailable"><![CDATA[服务器出现临时维护停机或容量问题。<br/>稍后重试。]]></string>
+    <string name="error_session_notfound"><![CDATA[无法连接您的服务器。<br/>检查您的帐户设置。]]></string>
+    <string name="error_session_port"><![CDATA[您的<b>端口</b>值不正确。<br/>检查您的帐户设置。]]></string>
     <string name="error_session_certificate">
 <![CDATA[<p><b>服务器的安全证书不受信任！</b><br/></p>
 		颁发您的目标服务器证书的第三方组织不是您的设备所认可的同一组织。<br/>
-		为了让 Alfresco Mobile 确认您正在与合适的服务器连接，其证书必须来自受信任的组织。<br/>
+		要确认您正在与合适的服务器连接，其证书必须来自受信任的组织。<br/>
 		如果您的服务器有一个自签发的证书，请将其添加到您的设备上以便成功进行连接。<br/> ]]>
     </string>
     <string name="error_session_certificate_expired">
 <![CDATA[<p><b>服务器的安全证书已过期或无效！</b><br/></p>
-		请检查您的设备设置的日期和时间。<br/>如果问题仍然存在，请联系您的管理员。]]>
+		检查您的设备设置的日期和时间。<br/>如果问题仍然存在，请联系您的 IT 团队。 ]]>
     </string>
     <string name="error_session_ssl">
 <![CDATA[<p><b>SSL 协议出错。</b><br/></p>
-        请检查您的 Alfresco 帐户设置并重试。<br/>如果问题仍然存在，请联系您的管理员。]]>
+        检查您的帐户设置并重试。<br/>如果问题仍然存在，请联系您的 IT 团队。]]>
     </string>
     <string name="error_session_cloud_unavailable">
-<![CDATA[<p><b>Alfresco in the Cloud 现在非常繁忙！</b><br/></p>
+<![CDATA[<p><b>Content Services in the Cloud现在非常繁忙！</b><br/></p>
         请过几分钟再试。<br/>]]>
     </string>
-    <string name="error_session_expired">您的会话已过期。请重新登录。</string>
+    <string name="error_session_expired">您的会话已过期。登录以继续。</string>
     <string name="error_session_refresh">正在刷新会话。</string>
-    <string name="error_chunk_transfert"><![CDATA[服务器不支持分块传输。<br/>请重新加载您的帐户</b>。]]></string>
+    <string name="error_chunk_transfert"><![CDATA[服务器不支持分块传输。<br/>重新加载您的帐户</b>。]]></string>
 
-    <string name="error_account_url">URL 不正确。请检查您的 Alfresco 帐户设置。</string>
-    <string name="error_unknown_filepath">未找到资源。</string>
+    <string name="error_account_url">URL 不正确。检查您的帐户设置。</string>
+    <string name="error_unknown_filepath">无法找到资源。</string>
     <string name="error_name_already_exist">无法重命名文件。可能存在另一同名文件。</string>
     <string name="error_unknown_exception">出现错误：%s</string>
     <string name="error_unknown">出现错误：%s</string>
@@ -294,17 +294,17 @@
     <!-- Share -->
     <string name="share_url">共享链接</string>
     <string name="share_content">共享内容</string>
-    <string name="share_url_long">从 Alfresco Android Mobile 共享链接</string>
+    <string name="share_url_long">从 Alfresco Content Services 共享链接</string>
     <string name="validate">验证</string>
 
     <!-- SSL -->
-    <string name="security_ssl_disable">SSL 证书验证已禁用。</string>
+    <string name="security_ssl_disable">SSL 证书验证已关闭。</string>
 
     <!-- ACCOUNT -->
     <string name="account_verify">正在验证帐户信息&#8230;</string>
     <string name="account_wizard_alldone_description">您的帐户已可使用。</string>
-    <string name="account_default_onpremise">Alfresco 服务器</string>
-    <string name="account_default_cloud">Alfresco in the Cloud</string>
+    <string name="account_default_onpremise">Content Services</string>
+    <string name="account_default_cloud">Content Services in the Cloud</string>
 
     <!-- WAITING SESSION -->
     <string name="wait_title">请稍候</string>
@@ -327,7 +327,7 @@
     <string name="delete_complete">删除完成</string>
 
     <!-- Quick Action Folder -->
-    <string name="like_in_progress">正在处理"点赞"</string>
+    <string name="like_in_progress">正在处理\"点赞\"</string>
     <string name="like_completed">已完成点赞</string>
     <string name="like_complete">点赞完成</string>
 
@@ -341,12 +341,12 @@
 
     <!-- Accessibility -->
     <string name="mime_folder">文件夹</string>
-    <string name="mime_document">文档</string>
+    <string name="mime_document">文件</string>
     <string name="more_options_folder">文件夹 %s 的更多选项</string>
     <string name="more_options_favorite">%s 的更多选项</string>
     <string name="mime_site">站点</string>
     <string name="more_options_site">站点 %s 的更多选项</string>
-    <string name="navigation_drawer_description">Alfresco：打开主页面板</string>
+    <string name="navigation_drawer_description">Content Services：打开主页面板</string>
     <string name="metadata_modified">已修改 </string>
     <string name="metadata_created_by">由 %s 创建</string>
     <string name="metadata_size">大小 </string>
@@ -359,7 +359,7 @@
     <string name="empty_joinsiterequest">无待决请求</string>
 
     <!-- Update Properties -->
-    <string name="filename_error_character">此名称无效。</string>
+    <string name="filename_error_character">名称无效，使用其他字符。</string>
 
     <!-- NETWORKS -->
     <string name="cloud_networks_empty">无可用网络</string>
@@ -388,8 +388,8 @@
     <string name="error_retrieve_favorite">无法检索此内容的收藏夹信息。</string>
     <string name="favorites_activate">\"%s\" 的同步内容</string>
     <string name="favorites_activate_description">您是否想让您的收藏夹内容自动与此设备同步？</string>
-    <string name="favorites_deactivate">停用同步</string>
-    <string name="favorites_deactivate_description"><![CDATA[<p>您是否想要停用同步？</p> 所有已同步内容将从您的设备删除。]]></string>
+    <string name="favorites_deactivate">关闭同步</string>
+    <string name="favorites_deactivate_description"><![CDATA[<p>您是否想要关闭同步？</p> 所有已同步内容将从您的设备删除。]]></string>
     <string name="sync_error_title">同步错误</string>
     <string name="sync_error_node_unfavorited"><![CDATA[从您开始编辑时<p>您就已取消收藏<b>%s</b>。<br/> <b>将</b>您编辑的版本同步到服务器或<b>保存</b>到您的 \"Downloads\" 文件夹。</p>]]></string>
     <string name="sync_error_node_deleted"><![CDATA[<p><b>%s</b> 已从服务器中删除，但是在您的 \"Downloads\" 文件夹中保留了一个副本。</p>]]></string>
@@ -443,10 +443,10 @@
 
     <string name="sync_warning">同步警告</string>
     <string name="sync_error">同步错误</string>
-    <string name="sync_warning_mobile_data"><![CDATA[<p> 您即将通过移动运营商的连接来同步（可能会产生付费流量）<b>%s</b>。</p>是否继续？]]></string>
-    <string name="sync_error_storage"><![CDATA[<p> 您正在尝试同步 <b>%1$s</b>，仅 %2$s 可用。</p> 您需要释放您的设备上的一些空间或取消收藏一些内容。]]></string>
-    <string name="sync_warning_storage"><![CDATA[<p> 您即将同步 <b>%1$s</b>，您的设备上仅剩 %2$s。</p> 是否继续？]]></string>
-    <string name="sync_document_not_available">此文档在您的设备上不可用。</string>
+    <string name="sync_warning_mobile_data"><![CDATA[<p>您即将通过移动运营商的连接来同步（可能会产生付费流量）<b>%s</b>。</p>是否继续？]]></string>
+    <string name="sync_error_storage"><![CDATA[<p>您正在尝试同步 <b>%1$s</b>，仅 %2$s 可用。</p>您需要释放您的设备上的一些空间或取消收藏一些内容。]]></string>
+    <string name="sync_warning_storage"><![CDATA[<p>您即将同步 <b>%1$s</b>，您的设备上仅剩 %2$s。</p> 是否继续？]]></string>
+    <string name="sync_document_not_available">此文件在您的设备上不可用。</string>
 
     <!-- NOTIFICATION -->
     <string name="upload">上传 </string>
