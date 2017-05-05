@@ -19,8 +19,8 @@
     <!-- SCANSNAP EXTENSIONS -->
 
     <!-- ERRORS -->
-    <string name="err_msg_launch_failed">ScanSnap Connect アプリケーションの起動に失敗しました。</string>
-    <string name="err_msg_url_parse">URL の解析に失敗しました。 指定した URL パラメータが正しいことを確認してから、操作をやり直してください。</string>
+    <string name="err_msg_launch_failed">ScanSnap Connect アプリケーションを起動できませんでした。</string>
+    <string name="err_msg_url_parse">URL を解析できませんでした。指定した URL パラメータが正しいことを確認してから、操作をやり直してください。</string>
 
     <!-- PRESETS -->
     <string name="scan_preset">スキャンのプリセット</string>

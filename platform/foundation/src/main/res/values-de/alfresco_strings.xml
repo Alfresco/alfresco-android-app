@@ -110,8 +110,8 @@
     <string name="org_alfresco_subscriptions_followed">{1} folgt jetzt {5}</string>
     <string name="org_alfresco_subscriptions_subscribed">{1} hat {2} abonniert</string>
     <string name="org_alfresco_profile_status_changed">{1}: {6}</string>
-    <string name="org_alfresco_documentlibrary_file_previewed">{1} hat eine Vorschau auf Dokument {0} angezeigt</string>
-    <string name="org_alfresco_documentlibrary_file_downloaded">{1} hat Dokument {0} heruntergeladen</string>
+    <string name="org_alfresco_documentlibrary_file_previewed">{1} hat eine Vorschau auf Datei {0} angezeigt</string>
+    <string name="org_alfresco_documentlibrary_file_downloaded">{1} hat Datei {0} heruntergeladen</string>
     <string name="activity_role_None">Keine Berechtigungen</string>
     <string name="activity_role_SiteConsumer">Verbraucher</string>
     <string name="activity_role_SiteManager">Manager</string>
@@ -123,7 +123,7 @@
     <string name="metadata_prop_name">Name</string>
     <string name="metadata_prop_path">Pfad</string>
     <string name="metadata_prop_type">Typ</string>
-    <string name="metadata_prop_content_mimetype">Mimetyp</string>
+    <string name="metadata_prop_content_mimetype">Dateityp</string>
     <string name="metadata_prop_content_size">Größe</string>
     <!-- Metadata Titled -->
     <string name="metadata_aspect_titled">Betitelt</string>
@@ -194,7 +194,7 @@
     <!-- Create Folder -->
     <string name="folder_create">Neuen Ordner anlegen</string>
     <string name="folder_name">Name</string>
-    <string name="folder_name_hint">Ordnernamen hier eingeben &#8230;</string>
+    <string name="folder_name_hint">Ordnernamen hier eingeben&#8230;</string>
     <!-- Update Properties -->
     <string name="edit">Bearbeiten</string>
     <string name="update">Aktualisieren</string>
@@ -203,7 +203,7 @@
     <string name="download">Herunterladen</string>
     <string name="download_complete">Download abgeschlossen</string>
     <string name="download_error">Beim Herunterladen ist ein Fehler aufgetreten.</string>
-    <string name="download_progress">Download wird durchgeführt &#8230;</string>
+    <string name="download_progress">Download wird durchgeführt&#8230;</string>
     <!-- Empty -->
     <string name="empty_users">Keine Benutzer gefunden</string>
     <string name="empty_child">Keine Dateien gefunden</string>
@@ -225,7 +225,7 @@
     <string name="search_hint">Suchbegriff eingeben</string>
     <!-- Comments -->
     <string name="comments">Kommentare</string>
-    <string name="comment_add_hint">Kommentar hier eingeben &#8230;</string>
+    <string name="comment_add_hint">Kommentar hier eingeben&#8230;</string>
     <!-- Actions -->
     <string name="create">Erstellen</string>
     <string name="add">Hinzufügen</string>
@@ -242,51 +242,51 @@
     <string name="save_back">Zurückspeichern</string>
 
     <!-- MESSAGE ERROR -->
-    <string name="error_general">Es ist ein Fehler aufgetreten. Versuchen Sie es erneut.</string>
-    <string name="error_general_title">Es ist ein Fehler aufgetreten.</string>
-    <string name="error_unable_open_file">Diese Datei konnte nicht geöffnet werden.</string>
-    <string name="error_unable_share_link">Link konnte nicht freigegeben werden.</string>
-    <string name="error_unable_share_content">Inhalt konnte nicht freigegeben werden.</string>
-    <string name="error_unable_open_map">Karte konnte nicht geöffnet werden.</string>
+    <string name="error_general">Es ist ein Problem aufgetreten. Versuchen Sie es noch einmal.</string>
+    <string name="error_general_title">Es ist ein Problem aufgetreten.</string>
+    <string name="error_unable_open_file">Diese Datei konnte nicht geöffnet werden</string>
+    <string name="error_unable_share_link">Link konnte nicht freigegeben werden</string>
+    <string name="error_unable_share_content">Inhalt konnte nicht freigegeben werden</string>
+    <string name="error_unable_open_map">Karte konnte nicht geöffnet werden</string>
 
     <!-- SESSION ERROR -->
     <string name="retry_account_loading">Wiederholen</string>
     <string name="error_session_creation_title">Account speichern</string>
     <string name="error_session_creation_message">Verbindungsfehler</string>
-    <string name="error_session_creation">Fehler bei der Authentifizierung. Überprüfen Sie die Alfresco Account-Einstellungen.</string>
-    <string name="error_session_hostname_short">Der Wert Ihres <b>Hostnamens</b> ist anscheinend falsch.</string>
-    <string name="error_session_hostname"><![CDATA[Der Wert Ihres <b>Hostnamens</b> ist anscheinend falsch oder Sie müssen <b>Ihr VPN aktivieren</b>.<br/> Überprüfen Sie die Werte und Einstellungen.]]></string>
+    <string name="error_session_creation">Fehler bei der Authentifizierung. Überprüfen Sie die Account-Einstellungen.</string>
+    <string name="error_session_hostname_short">Die URL unter <b>Verbinden mit</b> ist falsch.</string>
+    <string name="error_session_hostname"><![CDATA[Die URL unter <b>Verbinden mit</b> ist anscheinend falsch oder Sie müssen <b>Ihr VPN aktivieren</b>.<br/> Überprüfen Sie die Werte und Einstellungen.]]></string>
     <string name="error_session_nodata_short">Ihr Gerät hat keine Datenverbindung.</string>
     <string name="error_session_nodata"><![CDATA[<p><b>Ihr Gerät hat keine Datenverbindung.</b><br/></p> Überprüfen Sie Ihre Geräteeinstellungen und stellen Sie eine Datenverbindung her.]]></string>
-    <string name="error_session_unauthorized"><![CDATA[Sie dürfen nicht auf diesen Server zugreifen.<br/> Überprüfen Sie Ihre Alfresco Account-Einstellungen <b>(Benutzername/Passwort)</b>.]]></string>
-    <string name="error_session_service_url"><![CDATA[Der Wert Ihrer <b>Dienst-URL</b> ist falsch.<br/> Überprüfen Sie Ihre Alfresco Account-Einstellungen.]]></string>
-    <string name="error_session_service_unavailable"><![CDATA[Der Server kann Ihrer Anfrage aufgrund eines wartungsbedingten Ausfalls oder aufgrund von Kapazitätsproblemen derzeit nicht nachkommen.<br/> Bitte versuchen Sie es später erneut.]]></string>
-    <string name="error_session_notfound"><![CDATA[Ihr Server konnte nicht erreicht werden.<br/> Überprüfen Sie Ihre Alfresco Account-Einstellungen.]]></string>
-    <string name="error_session_port"><![CDATA[Der Wert Ihres <b>Ports</b> ist falsch.<br/> Überprüfen Sie Ihre Alfresco Account-Einstellungen.]]></string>
+    <string name="error_session_unauthorized"><![CDATA[Sie dürfen nicht auf diesen Server zugreifen.<br/> Überprüfen Sie Ihre Account-Einstellungen <b>(Benutzername/Passwort)</b>.]]></string>
+    <string name="error_session_service_url"><![CDATA[Der Wert Ihrer <b>Dienst-URL</b> ist falsch.<br/> Überprüfen Sie Ihre Account-Einstellungen.]]></string>
+    <string name="error_session_service_unavailable"><![CDATA[Der Server kann Ihrer Anfrage aufgrund eines wartungsbedingten Ausfalls oder aufgrund von Kapazitätsproblemen derzeit nicht nachkommen.<br/> Versuchen Sie es später noch einmal.]]></string>
+    <string name="error_session_notfound"><![CDATA[Ihr Server konnte nicht erreicht werden.<br/> Überprüfen Sie Ihre Account-Einstellungen.]]></string>
+    <string name="error_session_port"><![CDATA[Der Wert Ihres <b>Ports</b> ist falsch.<br/> Überprüfen Sie Ihre Account-Einstellungen.]]></string>
     <string name="error_session_certificate">
-<![CDATA[<p><b>Das Sicherheitszertifikat des Servers ist nicht vertrauenswürdig!</b><br/></p>
+<![CDATA[<p><b>Das Sicherheitszertifikat des Servers ist nicht vertrauenswürdig.</b><br/></p>
 		Der Drittanbieter, der das Server-Zielzertifikat ausgestellt hat, wird von Ihrem Gerät nicht erkannt.<br/>
-		Damit Alfresco Mobile verifizieren kann, dass Sie eine Verbindung zum entsprechenden Server herstellen, muss sein Zertifikat von einem vertrauenswürdigen Unternehmen stammen.<br/>
+		Um zu verifizieren, dass Sie eine Verbindung zum richtigen Server herstellen, muss sein Zertifikat von einem vertrauenswürdigen Anbieter stammen.<br/>
 		Falls Ihr Server ein selbstsigniertes Zertifikat besitzt, fügen Sie dieses Ihrem Gerät hinzu, um eine Verbindung herstellen zu können.<br/> ]]>
     </string>
     <string name="error_session_certificate_expired">
-<![CDATA[<p><b>Das Sicherheitszertifikat des Servers ist abgelaufen oder noch nicht gültig!</b><br/></p>
-		Überprüfen Sie das Datum und die Uhrzeit, die für Ihr Gerät eingestellt sind.<br/> Kontaktieren Sie Ihren Administrator, falls das Problem weiterhin besteht. ]]>
+<![CDATA[<p><b>Das Sicherheitszertifikat des Servers ist abgelaufen oder noch nicht gültig.</b><br/></p>
+		Überprüfen Sie das Datum und die Uhrzeit, die für Ihr Gerät eingestellt sind.<br/> Wenden Sie sich an Ihr IT-Team, falls das Problem weiterhin besteht. ]]>
     </string>
     <string name="error_session_ssl">
 <![CDATA[<p><b>Beim SSL-Protokoll ist ein Fehler aufgetreten.</b><br/></p>
-        Überprüfen Sie Ihre Alfresco Account-Einstellungen und versuchen Sie es erneut.<br/> Kontaktieren Sie Ihren Administrator, falls das Problem weiterhin besteht.]]>
+        Überprüfen Sie Ihre Account-Einstellungen und versuchen Sie es noch einmal.<br/> Wenden Sie sich an Ihr IT-Team, falls das Problem weiterhin besteht.]]>
     </string>
     <string name="error_session_cloud_unavailable">
-<![CDATA[<p><b>Alfresco in the Cloud ist derzeit überlastet!</b><br/></p>
-        Bitte versuchen Sie es in einigen Minuten erneut.<br/>]]>
+<![CDATA[<p><b>Content Services in the Cloud ist gerade überlastet.</b><br/></p>
+        Versuchen Sie es in ein paar Minuten noch einmal.<br/>]]>
     </string>
-    <string name="error_session_expired">Ihre Sitzung ist abgelaufen. Melden Sie sich erneut an.</string>
+    <string name="error_session_expired">Ihre Sitzung ist abgelaufen. Melden Sie sich an, um fortzufahren.</string>
     <string name="error_session_refresh">Sitzung wird aktualisiert.</string>
     <string name="error_chunk_transfert"><![CDATA[Der Server unterstützt keine Blockübertragungen.<br/> Laden Sie Ihren Account erneut</b>.]]></string>
 
-    <string name="error_account_url">Die URL ist nicht korrekt. Überprüfen Sie die Alfresco Account-Einstellungen.</string>
-    <string name="error_unknown_filepath">Die Ressource wurde nicht gefunden.</string>
+    <string name="error_account_url">Die URL ist nicht korrekt. Überprüfen Sie die Account-Einstellungen.</string>
+    <string name="error_unknown_filepath">Ressource nicht gefunden.</string>
     <string name="error_name_already_exist">Datei konnte nicht umbenannt werden. Es existiert möglicherweise eine andere Datei mit demselben Namen.</string>
     <string name="error_unknown_exception">Es ist ein Fehler aufgetreten: %s</string>
     <string name="error_unknown">Es ist ein Fehler aufgetreten: %s</string>
@@ -294,7 +294,7 @@
     <!-- Share -->
     <string name="share_url">Link freigeben</string>
     <string name="share_content">Inhalt freigeben</string>
-    <string name="share_url_long">Link von Alfresco Android Mobile wird freigegeben</string>
+    <string name="share_url_long">Link von Alfresco Content Services wird freigegeben</string>
     <string name="validate">Validieren</string>
 
     <!-- SSL -->
@@ -303,8 +303,8 @@
     <!-- ACCOUNT -->
     <string name="account_verify">Account-Informationen werden verifiziert&#8230;</string>
     <string name="account_wizard_alldone_description">Sie können Ihren Account jetzt verwenden.</string>
-    <string name="account_default_onpremise">Alfresco Server</string>
-    <string name="account_default_cloud">Alfresco in the Cloud</string>
+    <string name="account_default_onpremise">Content Services</string>
+    <string name="account_default_cloud">Content Services in the Cloud</string>
 
     <!-- WAITING SESSION -->
     <string name="wait_title">Bitte warten</string>
@@ -327,9 +327,9 @@
     <string name="delete_complete">Löschvorgang abgeschlossen</string>
 
     <!-- Quick Action Folder -->
-    <string name="like_in_progress">"Gefällt mir"-Vorgang wird durchgeführt</string>
-    <string name="like_completed">"Gefällt mir"-Vorgang abgeschlossen</string>
-    <string name="like_complete">"Gefällt mir"-Vorgang abgeschlossen</string>
+    <string name="like_in_progress">\"Gefällt mir\"-Vorgang wird durchgeführt</string>
+    <string name="like_completed">\"Gefällt mir\"-Vorgang abgeschlossen</string>
+    <string name="like_complete">\"Gefällt mir\"-Vorgang abgeschlossen</string>
 
     <!-- MEMBERS -->
     <string name="members">Mitgliederliste</string>
@@ -341,12 +341,12 @@
 
     <!-- Accessibility -->
     <string name="mime_folder">Ordner</string>
-    <string name="mime_document">Dokument</string>
+    <string name="mime_document">Datei</string>
     <string name="more_options_folder">Weitere Optionen für Ordner %s</string>
     <string name="more_options_favorite">Weitere Optionen für %s</string>
     <string name="mime_site">Site</string>
     <string name="more_options_site">Weitere Optionen für Site %s</string>
-    <string name="navigation_drawer_description">Alfresco: Startseite öffnen</string>
+    <string name="navigation_drawer_description">Content Services: Startseite öffnen</string>
     <string name="metadata_modified">Geändert </string>
     <string name="metadata_created_by">Erstellt von %s</string>
     <string name="metadata_size">Größe </string>
@@ -359,7 +359,7 @@
     <string name="empty_joinsiterequest">Keine ausstehenden Anfragen</string>
 
     <!-- Update Properties -->
-    <string name="filename_error_character">Dieser Name ist ungültig.</string>
+    <string name="filename_error_character">Name nicht zulässig. Verwenden Sie andere Zeichen.</string>
 
     <!-- NETWORKS -->
     <string name="cloud_networks_empty">Keine Netzwerke verfügbar</string>
@@ -388,8 +388,8 @@
     <string name="error_retrieve_favorite">Favoriten-Info für diesen Inhalt konnte nicht geladen werden.</string>
     <string name="favorites_activate">Inhalt für \"%s\" synchronisieren</string>
     <string name="favorites_activate_description">Möchten Sie Ihren bevorzugten Inhalt automatisch mit diesem Gerät synchronisieren?</string>
-    <string name="favorites_deactivate">Synchronisierung deaktivieren</string>
-    <string name="favorites_deactivate_description"><![CDATA[<p>Möchten Sie die Synchronisierung deaktivieren?</p> Alle synchronisierten Inhalte werden von Ihrem Gerät gelöscht.]]></string>
+    <string name="favorites_deactivate">Synchronisierung abschalten</string>
+    <string name="favorites_deactivate_description"><![CDATA[<p>Möchten Sie die Synchronisierung abschalten?</p> Alle synchronisierten Inhalte werden dann von Ihrem Gerät gelöscht.]]></string>
     <string name="sync_error_title">Synchronisierungsfehler</string>
     <string name="sync_error_node_unfavorited"><![CDATA[<p>Sie haben <b>%s</b> aus Ihren Favoriten entfernt, seit Sie begonnen haben, dieses Element zu bearbeiten. <br/> <b>Synchronisieren</b> Sie Ihre bearbeitete Version auf dem Server oder <b>speichern</b> Sie sie im Ordner \"Downloads\". </p>]]></string>
     <string name="sync_error_node_deleted"><![CDATA[<p> <b>%s</b> wurde auf dem Server gelöscht, jedoch wurde eine Kopie im Ordner \"Downloads\" gespeichert.</p>]]></string>
@@ -426,7 +426,7 @@
         <item quantity="other">%1$s Dateien aktualisiert.</item>
     </plurals>
     <plurals name="batch_failed">
-        <item quantity="zero">Keine Übertragungen fehlgeschlagen.</item>
+        <item quantity="zero">keine Übertragungen fehlgeschlagen.</item>
         <item quantity="one">1 Übertragung fehlgeschlagen.</item>
         <item quantity="other">%1$s Übertragungen fehlgeschlagen.</item>
     </plurals>
@@ -446,7 +446,7 @@
     <string name="sync_warning_mobile_data"><![CDATA[<p> Sie sind im Begriff, <b>%s</b> über eine Carrier-Verbindung zu synchronisieren.</p> Möchten Sie fortfahren?]]></string>
     <string name="sync_error_storage"><![CDATA[<p> Sie versuchen, <b>%1$s</b> zu synchronisieren, es sind jedoch nur %2$s verfügbar.</p> Sie müssen Speicherplatz auf Ihrem Gerät freigeben oder Inhalte aus Ihren Favoriten entfernen.]]></string>
     <string name="sync_warning_storage"><![CDATA[<p> Sie sind im Begriff, <b>%1$s</b> zu synchronisieren; nur noch %2$s auf Ihrem Gerät.</p> Möchten Sie fortfahren?]]></string>
-    <string name="sync_document_not_available">Das Dokument ist auf Ihrem Gerät nicht verfügbar.</string>
+    <string name="sync_document_not_available">Die Datei ist auf Ihrem Gerät nicht verfügbar.</string>
 
     <!-- NOTIFICATION -->
     <string name="upload">Hochladen </string>

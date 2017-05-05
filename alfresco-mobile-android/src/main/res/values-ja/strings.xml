@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?><!--
-  Copyright (C) 2005-2016 Alfresco Software Limited.
+  Copyright (C) 2005-2013 Alfresco Software Limited.
 
   This file is part of Alfresco Mobile for Android.
 
@@ -17,12 +17,12 @@
 -->
 <resources>
 
-    <string name="app_name">Alfresco</string>
-    <string name="empty_accounts">使用できる Alfresco アカウントがありません</string>
+    <string name="app_name">コンテンツ</string>
+    <string name="empty_accounts">使用できるアカウントがありません</string>
 
     <!-- SIGN IN & CREATE ACCOUNT SCREEN -->
-    <string name="general_login_server_title">Alfresco サーバーのホスト名を入力してください</string>
-    <string name="general_login_server_hostname">ホスト名</string>
+    <string name="general_login_server_title">接続先のアドレスを入力してください</string>
+    <string name="general_login_server_hostname">www.example.com</string>
     <string name="general_login_server_next">続行</string>
     <string name="general_login_server_done">完了</string>
     <string name="general_login_credentials_title">あなたの資格情報を入力してください</string>
@@ -32,7 +32,7 @@
     <string name="general_login_credentials_sign_in">activiti.alfresco.com</string>
     <string name="general_login_credentials_or">または</string>
     <string name="general_login_credentials_connect">オンプレミスの Activiti</string>
-    <string name="general_login_signed_in_title">サインインしました。</string>
+    <string name="general_login_signed_in_title">サインインしました</string>
     <string name="general_login_account_added">アカウントが追加されました</string>
     <string name="general_login_account_name">このアカウントに名前を付けます (任意)</string>
     <string name="general_login_account_name_title">最後に&#8230;</string>
@@ -41,18 +41,18 @@
 
     <string name="settings_userinfo">アカウント</string>
     <string name="settings_userinfo_account">詳細</string>
-    <string name="settings_userinfo_account_summary">ユーザーとサーバーの情報を編集できます</string>
+    <string name="settings_userinfo_account_summary">ユーザーと接続情報を編集できます</string>
     <string name="settings_userinfo_account_name">名前</string>
     <string name="settings_userinfo_account_name_summary">アカウント名を編集できます</string>
     <string name="settings_account">アカウントの設定</string>
 
     <string name="home_signin">サインイン</string>
     <string name="home_account">アカウントをお持ちの方</string>
-    <string name="home_helper">Alfresco Mobile の詳細については、[ヘルプ] にある <a href="alfresco://view_help_guide/">説明を</a> ご覧ください</string>
+    <string name="home_helper">詳細については、[ヘルプ] にある<a href="alfresco://view_help_guide/">ガイド</a>をご覧ください</string>
 
-    <string name="account_wizard_alfresco_server">Alfresco サーバー</string>
+    <string name="account_wizard_alfresco_server">Content Services</string>
     <string name="account_wizard_or">または</string>
-    <string name="account_wizard_alfresco_cloud">Alfresco in the Cloud</string>
+    <string name="account_wizard_alfresco_cloud">Content Services in the Cloud</string>
 
     <string name="account">アカウント</string>
     <string name="action_add_account">アカウントを追加してください</string>
@@ -60,25 +60,25 @@
     <string name="account_username_required_hint">ユーザー名 (必須)</string>
     <string name="account_password">パスワード</string>
     <string name="account_password_required_hint">パスワード (必須)</string>
-    <string name="account_hostname">ホスト名</string>
-    <string name="account_hostname_required_hint">ホスト名は、www.example.com のような形式で入力してください (必須です)。</string>
+    <string name="account_hostname">接続先</string>
+    <string name="account_hostname_required_hint">接続先は、www.example.com のような形式で入力してください (必須です)</string>
     <string name="account_hostname_hint">www.example.com (必須)</string>
     <string name="account_description">説明</string>
-    <string name="account_description_optional_hint">説明を入力します (任意です)。 デフォルトは Alfresco サーバーです</string>
-    <string name="account_description_hint">Alfresco サーバー (任意)</string>
+    <string name="account_description_optional_hint">説明を入力します (任意です)。デフォルトは Content Services です</string>
+    <string name="account_description_hint">Content Services (任意)</string>
     <string name="account_advanced">詳細設定</string>
     <string name="account_authentication">アカウントの認証方法</string>
     <string name="account_https">HTTPS</string>
     <string name="account_https_on_hint">HTTPS オン</string>
     <string name="account_https_off_hint">HTTPS オフ</string>
-    <string name="account_verify">Alfresco アカウント情報を確認しています&#8230;</string>
+    <string name="account_verify">アカウント情報を確認しています&#8230;</string>
 
     <!-- ACCOUNTS -->
-    <string name="account_default_cloud">Alfresco in the Cloud</string>
-    <string name="account_default_onpremise">Alfresco サーバー</string>
+    <string name="account_default_cloud">Content Services in the Cloud</string>
+    <string name="account_default_onpremise">Content Services</string>
 
     <!-- WAITING SESSION -->
-    <string name="wait_title">お待ちください</string>
+    <string name="wait_title">処理中</string>
     <string name="wait_message">サーバーに接続しています&#8230;</string>
 
     <!-- DETAILS -->
@@ -154,11 +154,11 @@
     <string name="update_complete">更新が完了しました。</string>
     <string name="update_in_progress">更新しています&#8230;</string>
     <string name="error_unable_open_file_title">ファイルを開けませんでした。</string>
-    <string name="error_unable_open_file">このファイル形式は使用できません。 このファイルを読み取ることができるアプリをインストールしてください。</string>
+    <string name="error_unable_open_file">このファイル形式は使用できません。このファイルを読み取ることができるアプリをインストールしてください。</string>
 
     <!-- OTHER -->
     <string name="unlike">[いいね!] の削除</string>
-    <string name="error_retrieve_likes">このコンテンツの[いいね!]/[[いいね!] の削除] タグを取得できませんでした。</string>
+    <string name="error_retrieve_likes">このコンテンツの [いいね!] または [[いいね!] の削除] タグを取得できませんでした。</string>
     <string name="next">次へ</string>
     <string name="save">保存</string>
     <string name="share_content">コンテンツの共有&#8230;</string>
@@ -172,11 +172,11 @@
     <string name="sdknumber_version">SDK: </string>
     <string name="about_description">
 <![CDATA[
-<p>Alfrescoは、業務に重要なコンテンツを管理したり、共同作業を行えるオープンプラットフォームです。</p>
+<p>Alfresco Content Services は、重要なビジネスコンテンツの管理と共同作業が行えるオープンプラットフォームです。</p>
 
-<p>Alfresco MobileはAlfresco Software, Inc.によって開発されたソフトウェアで、Alfresco Content Services Cloud、Alfresco Content Services、およびAlfresco Communityエディション（バージョン3.4.8以降）に接続することで、社内のコンテンツに外出先から安全にアクセスできるようにします。</p>
+<p>Alfresco Content Services モバイルアプリ は Alfresco Software, Inc. によって設計、開発されたプログラムで、Alfresco Content Services in the Cloud と、Alfresco Content Services、Alfresco Community Edition (3.4.8 以降) に接続することにより、外出先からでも社内のファイルに安全にアクセスすることができます。</p>
 
-<p>このモバイルアプリケーションでは、Alfrescoのログイン資格情報を使ってAlfrescoのリポジトリに（HTTPまたはHTTPS経由で）接続し、ユーザーの権限に基づいてアクセスを制御します。</p>
+<p>このモバイルアプリでは、Alfresco Content Services のログイン資格情報を使って (HTTP または HTTPS 経由で) 社内のリポジトリに接続し、ユーザーの権限に基づいてアクセスを管理します。</p>
 ]]>
     </string>
 
@@ -185,7 +185,7 @@
     <string name="link_or_attach">これを添付ファイル、またはクリック可能なリンクとして共有しますか?</string>
     <string name="full_attachment">添付ファイル</string>
     <string name="link_to_repo">クリック可能なリンク</string>
-    <string name="email_content"><![CDATA[<!DOCTYPE html><html><body><a href="http://play.google.com/store/apps/details?id=org.alfresco.mobile.android.application">Alfresco Mobile </a>で送信</body></html>]]></string>
+    <string name="email_content"><![CDATA[<!DOCTYPE html><html><body><a href="http://play.google.com/store/apps/details?id=org.alfresco.mobile.android.application">Alfresco Content Services</a> で送信</body></html>]]></string>
 
     <!-- Delete -->
     <plurals name="delete_items">
@@ -193,16 +193,16 @@
         <item quantity="other">\"%s\" 個のアイテムを削除しますか？</item>
     </plurals>
 
-    <string name="delete_description_data_protection">データ保護が有効です。\n\n このアカウントを削除すると、コンテンツは保護されていない状態に戻ります。\n\n\"%s\"を削除しますか?</string>
+    <string name="delete_description_data_protection">データ保護がオンになっています。\n\nこのアカウントを削除すると、コンテンツは保護されていない状態に戻ります。\n\n\"%s\"を削除しますか?</string>
     <string name="delete_in_progress">削除しています&#8230;</string>
     <string name="delete_complete">削除が完了しました</string>
     <string name="delete_sucess">\"%s\" は正常に削除されました。</string>
 
     <!-- Save Back -->
-    <string name="save_back_description">\"%s\" は変更されています。 この新しいバージョンをアップロードしますか?</string>
+    <string name="save_back_description">\"%s\" は変更されています。この新しいバージョンをアップロードしますか?</string>
     <string name="update_sucess">\"%s\" の更新が完了しました。</string>
     <string name="no_voice_recorder">このデバイスにはボイスレコーダーはありません</string>
-    <string name="cannot_capture">この情報を取得できません</string>
+    <string name="cannot_capture">この情報をキャプチャできません</string>
 
     <!-- Upload -->
 
@@ -217,19 +217,19 @@
     <string name="create_document_editor_not_available_description">この種類のファイルを作成するアプリがありません。</string>
     <string name="preview_unavailable">プレビューは使用できません。</string>
     <string name="sdinaccessible">この操作を行うには、SD カードがアクセス可能な状態でなければなりません。</string>
-    <string name="loginfirst">まず Alfresco アカウントにログインしてください</string>
+    <string name="loginfirst">まず Alfresco Content Services アカウントにログインしてください</string>
 
     <!-- Comment -->
     <string name="comment_add_hint">ここにコメントを追加してください&#8230;</string>
 
     <!-- DATA PROTECTION -->
     <string name="data_protection">データ保護</string>
-    <string name="data_protection_blurb"><![CDATA[<p><b>データ保護は使用可能です。</b><br/> 有効にしますか? <p>  有効にすると、各アカウントでダウンロードしたすべての Alfresco コンテンツが暗号化され、Alfresco 以外のアプリでは読み取ることができなくなります。 ]]></string>
+    <string name="data_protection_blurb"><![CDATA[<p><b>データ保護は使用可能です。</b><br/>この機能をオンにしますか? <p> オンにすると、Alfresco Content Services アカウントでダウンロードしたコンテンツがすべて暗号化され、Alfresco Content Services アプリでのみ表示できるようになります。 ]]></string>
     <string name="decryption_failed">暗号の解除が失敗しました</string>
-    <string name="protect_question"><![CDATA[<p><b>ダウンロードしたすべての Alfresco コンテンツを今すぐ保護しますか?</b><p>  保護することを選択すると、各アカウントでダウンロードしたすべての Alfresco コンテンツが暗号化され、Alfresco 以外のアプリでは読み取ることができなくなります。]]></string>
-    <string name="unprotect_question"><![CDATA[<p><b>ダウンロードしたすべての Alfresco コンテンツの保護を今すぐ解除しますか?</b><p>  解除することを選択すると、各 Alfresco アカウントからダウンロードしたすべてのコンテンツの保護が解除されます。]]></string>
-    <string name="decryption_title">データ保護を無効にしています&#8230;</string>
-    <string name="encryption_title">データ保護を有効にしています&#8230;</string>
+    <string name="protect_question"><![CDATA[<p><b>ダウンロードしたコンテンツを保護しますか?</b><p> 保護することを選択すると、Alfresco Content Services アカウントでダウンロードしたコンテンツがすべて暗号化され、Alfresco Content Services アプリでのみ表示できるようになります。]]></string>
+    <string name="unprotect_question"><![CDATA[<p><b>ダウンロードしたコンテンツの保護を解除しますか?</b><p> 解除することを選択すると、Alfresco Content Services からダウンロードしたすべてのコンテンツの保護が解除されます。]]></string>
+    <string name="decryption_title">データ保護をオフにしています&#8230;</string>
+    <string name="encryption_title">データ保護をオンにしています&#8230;</string>
     <string name="encrypt_action">暗号化</string>
     <string name="decrypt_action">暗号解除</string>
 
@@ -251,7 +251,7 @@
     <string name="action_leave_site_validation">\"%s\" を退会しました。</string>
     <string name="action_favorite_site_validation">\"%s\" がお気に入りに登録されました。</string>
     <string name="action_unfavorite_site_validation">\"%s\"はお気に入りから解除されました。</string>
-    <string name="action_join_request_site_validation">\"%s\" への参加をリクエストしました。</string>
+    <string name="action_join_request_site_validation">\"%s\" への参加をリクエストしました</string>
     <string name="joinsiterequest_list_title">保留中リクエストのリスト</string>
     <string name="joinsiterequest_cancel_description">サイト %sへの参加リクエストをキャンセルします。</string>
     <string name="action_cancel_join_site_request">\"%s\" への参加リクエストはキャンセルされています。</string>
@@ -261,33 +261,33 @@
     <string name="action_unfavorite_site_error">問題が発生したため、サイト \"%s\" をお気に入りから解除できませんでした</string>
 
     <!-- IMPORT -->
-    <string name="import_document_title">Alfresco Mobile でアップロード</string>
+    <string name="import_document_title">Alfresco Content Services でアップロード</string>
     <string name="import_document_name">ファイル名</string>
     <string name="import_documents">ファイル</string>
     <string name="import_account">アカウント</string>
     <string name="import_folder">フォルダのアップロード</string>
-    <string name="import_unsupported_intent">Alfresco Mobile: 情報を取得できません。</string>
+    <string name="import_unsupported_intent">アクションを完了できませんでした。</string>
     <string name="action_upload">アップロード</string>
     <string name="action_import">インポート</string>
 
     <!-- SSL -->
-    <string name="security_ssl_disable">SSL 証明書の検証が無効になっています。</string>
+    <string name="security_ssl_disable">SSL 証明書の検証がオフになっています。</string>
     <string name="data_protection_unavailable">データ保護は使用できません (有料アカウント所持者のみ)</string>
-    <string name="data_protection_off">データ保護は現在オフになっています"</string>
-    <string name="data_protection_on">データ保護は現在オンになっています"</string>
+    <string name="data_protection_off">データ保護は現在オフになっています</string>
+    <string name="data_protection_on">データ保護は現在オンになっています</string>
 
     <!-- PIN Code -->
     <string name="passcode_title">パスコードの入力</string>
-    <string name="passcode_admin_title">Alfresco 管理者が、Alfresco Mobile をパスコードで保護するように要求しています。</string>
-    <string name="passcode_enable_title">パスコードの有効化</string>
+    <string name="passcode_admin_title">IT チームによってパスコード保護の使用が義務付けられています。</string>
+    <string name="passcode_enable_title">パスコードをオンにする</string>
     <string name="passcode_preference">パスコード保護</string>
-    <string name="passcode_enable">有効</string>
-    <string name="passcode_disable">無効</string>
+    <string name="passcode_enable">オン</string>
+    <string name="passcode_disable">オフ</string>
     <string name="passcode_change">パスコードの変更</string>
     <string name="passcode_timeout">期限</string>
     <string name="passcode_timeout_summary">{0,choice,0# 0 分後|1#1 分後|1&lt;{0} 分後}</string>
     <string name="passcode_erase_data">データの消去</string>
-    <string name="passcode_erase_data_summary">パスコードの入力を 10 回間違えると、このデバイスから Alfresco Mobile のデータがすべて消去されます。</string>
+    <string name="passcode_erase_data_summary">パスコードの入力を 10 回間違えると、このデバイスから Alfresco Content Services のデータがすべて消去されます</string>
     <string name="passcode_edit">新しいパスコードを入力してください</string>
     <string name="passcode_confirmation">パスコードを再入力してください</string>
     <string name="passcode_error_confirmation">パスコードが一致しません。</string>
@@ -321,32 +321,32 @@
     <!-- Settings -->
     <string name="settings">設定</string>
     <string name="settings_enterprise">エンタープライズサブスクリプションの設定</string>
-    <string name="settings_privatefolder_summary">データ保護を設定すると、ダウンロードしたすべてのコンテンツが Alfresco アプリでしか読み取ることができなくなります。 (エンタープライズサブスクリプションのお客様のみ)</string>
+    <string name="settings_privatefolder_summary">データ保護をオンにすると、このアプリからダウンロードしたコンテンツが Alfresco Content Services アプリでのみ読み取れるようになります。(エンタープライズサブスクリプションのお客様のみ)</string>
     <string name="settings_privatefolder_title">データ保護</string>
     <string name="settings_links">リンク</string>
     <string name="settings_links_website">Alfresco</string>
     <string name="settings_links_website_summary">Alfresco の公式 Web サイトにアクセス</string>
     <string name="settings_links_website_url">http://www.alfresco.com/products/mobile</string>
     <string name="settings_rating">レビューを書く</string>
-    <string name="settings_rating_summary">Google Play で Alfresco Mobile の評価を書きます</string>
+    <string name="settings_rating_summary">Google Play でこのアプリの評価を書きます</string>
     <string name="settings_rating_packagename">org.alfresco.mobile.android.application</string>
     <string name="settings_rating_url">market://details?id=org.alfresco.mobile.android.application</string>
-    <string name="settings_links_facebook">Facebook で Alfresco に「いいね!」をつける</string>
+    <string name="settings_links_facebook">Facebook で「いいね!」をつけます</string>
     <string name="settings_links_facebook_summary">Facebook で「いいね!」をつけます</string>
     <string name="settings_links_facebook_url">http://www.facebook.com/alfrescosoftware</string>
     <string name="settings_favorite">お気に入り</string>
     <string name="settings_synced_content">同期されているコンテンツ</string>
-    <string name="settings_favorite_sync">同期の有効化</string>
-    <string name="settings_favorite_sync_summary">\"%s\" の同期を有効にします</string>
-    <string name="settings_favorite_sync_data">データ使用量</string>
-    <string name="settings_favorite_sync_data_all">同期に携帯電話のデータを使用します。</string>
+    <string name="settings_favorite_sync">同期をオンにする</string>
+    <string name="settings_favorite_sync_summary">\"%s\" の同期をオンにします</string>
+    <string name="settings_favorite_sync_data">モバイルデータの使用</string>
+    <string name="settings_favorite_sync_data_all">同期にモバイルデータ通信を使用します。</string>
     <string name="settings_custom_menu">カスタマイズ</string>
     <string name="settings_custom_menu_summary">メニューに表示するタブを選択してください。</string>
     <string name="settings_custom_menu_manage">メニュー</string>
-    <string name="settings_custom_menu_disable">Alfresco 管理者がこの機能を無効に設定しています。</string>
+    <string name="settings_custom_menu_disable">この機能は IT チームによってオフに設定されています。</string>
     <string name="settings.feedback">フィードバック</string>
     <string name="settings.feedback.diagnostic">診断データの送信</string>
-    <string name="settings.feedback.diagnostic.summary">弊社は、Alfresco Mobile の改善に役立てるために技術的な診断データを匿名で収集しています。データの提供を希望されない場合は、チェックマークを外してください。</string>
+    <string name="settings.feedback.diagnostic.summary">弊社は、このアプリの改善に役立てるために技術的な診断データを匿名で収集しています。データの提供を希望されない場合は、チェックマークを外してください。</string>
     <string name="settings.feedback.email">フィードバックの送信</string>
 
     <!-- Multi Selection -->
@@ -376,12 +376,12 @@
     <string name="error_retrieve_favorite">このコンテンツのお気に入り情報を取得できませんでした。</string>
     <string name="favorites_activate">\"%s\" のコンテンツを同期します</string>
     <string name="favorites_activate_description">お気に入りのコンテンツを自動的にこのデバイスと同期させますか?</string>
-    <string name="favorites_deactivate">同期の無効化</string>
-    <string name="favorites_deactivate_description"><![CDATA[<p>同期を無効にしますか?</p> 無効にすると、同期されているすべてのコンテンツがデバイスから削除されます。]]></string>
+    <string name="favorites_deactivate">同期をオフにする</string>
+    <string name="favorites_deactivate_description"><![CDATA[<p>同期をオフにしますか?</p>オフにすると、同期されているすべてのコンテンツがデバイスから削除されます。]]></string>
     <string name="sync_error_title">同期エラー</string>
-    <string name="sync_error_node_unfavorited"><![CDATA[<p>編集を開始したため、<b>%s</b> の同期が解除されました。 <br/> 編集済みのバージョンをサーバーと<b>同期</b>させるか、\"ダウンロード\" フォルダに<b>保存</b>してください。 </p>]]></string>
+    <string name="sync_error_node_unfavorited"><![CDATA[<p>編集を開始したため、<b>%s</b> の同期が解除されました。<br/> 編集済みのバージョンをサーバーと<b>同期</b>させるか、\"ダウンロード\" フォルダに<b>保存</b>してください。</p>]]></string>
     <string name="sync_error_node_deleted"><![CDATA[<p> <b>%s</b> はサーバーから削除されましたが、\"ダウンロード\" フォルダにコピーが保存されています。</p>]]></string>
-    <string name="sync_error_no_permission"><![CDATA[<p> <b>%s</b> の編集済みバージョンをアップロードするのに必要な権限がありません。 \"ダウンロード\" フォルダに<b>保存</b>するか、サーバーにあるバージョンで<b>上書き</b>して編集済みバージョンを破棄することもできます。]]></string>
+    <string name="sync_error_no_permission"><![CDATA[<p> <b>%s</b> の編集済みバージョンをアップロードするのに必要な権限がありません。\"ダウンロード\" フォルダに<b>保存</b>するか、サーバーにあるバージョンで<b>上書き</b>して編集済みバージョンを破棄することもできます。]]></string>
     <string name="sync_error_node_local_modification">同期エラー</string>
     <string name="sync_action">同期</string>
     <string name="sync_override_action">上書き</string>
@@ -401,15 +401,15 @@
     <string name="sync_empty_description">同期しているファイルをオフラインのときに表示して編集できます。</string>
 
     <string name="sync_info_one_title">同期機能が新しくなりました!</string>
-    <string name="sync_info_one_first_text">これからは異なる複数のデバイス上のファイルを同期できます。 操作は簡単! ファイルを選んで同期するだけです。</string>
-    <string name="sync_info_one_second_text">同期しているファイルをオフラインのときに表示して編集しておくと、 オンラインに戻ったときに、自動的に Alfresco と同期されます。</string>
+    <string name="sync_info_one_first_text">これからは異なる複数のデバイス上のファイルを同期できます。操作は簡単! ファイルを選んで同期するだけです。</string>
+    <string name="sync_info_one_second_text">同期しているファイルをオフラインのときに表示して編集しておくと、オンラインに戻ったときに自動的に同期されます。</string>
     <string name="sync_info_two_title">すでにお気に入りに登録済みのファイルはどうなりますか?</string>
     <string name="sync_info_two_first_text">ご心配いりません。それらのファイルの同期もすべて維持されます。</string>
     <string name="sync_info_two_second_text">今後お気に入りに登録するファイルは [お気に入り] タブに表示されますが、オフラインでこれらのファイルにアクセスする場合は、ファイルを同期する必要があります。</string>
     <string name="sync_info_third_title">同期されているファイルはどこで見れますか?</string>
     <string name="sync_info_third_first_text">同期されているファイルはすべて新しい [同期されているコンテンツ] ビューに表示されます。</string>
     <string name="sync_info_third_second_text">同期されているコンテンツ</string>
-    <string name="sync_info_validation">了解</string>
+    <string name="sync_info_validation">了解。</string>
     <string name="sync_info_more_information">さらに詳しく</string>
     <string name="sync_info_skip">スキップ</string>
     <string name="sync_info_next">次へ</string>
@@ -437,8 +437,8 @@
     </plurals>
     <plurals name="batch_failed">
         <item quantity="zero">失敗した転送はありません。</item>
-        <item quantity="one">1 個の転送に失敗しました。</item>
-        <item quantity="other">%1$s 個の転送に失敗しました。</item>
+        <item quantity="one">1 個の転送が失敗しました。</item>
+        <item quantity="other">%1$s 個の転送が失敗しました。</item>
     </plurals>
     <plurals name="batch_in_progress">
         <item quantity="zero">進行中の転送はありません。</item>
@@ -453,10 +453,10 @@
 
     <string name="sync_warning">同期の警告</string>
     <string name="sync_error">同期エラー</string>
-    <string name="sync_warning_mobile_data"><![CDATA[<p>通信事業者の接続を経由して <b>%s</b> を同期しようとしています。</p> 続行しますか?]]></string>
-    <string name="sync_error_storage"><![CDATA[<p> <b>%1$s</b> を同期しようとしていますが、容量が %2$s しかありません。</p> デバイスの空き容量を増やすか、一部のコンテンツのお気に入りを解除してください。]]></string>
-    <string name="sync_warning_storage"><![CDATA[<p>通信事業者の接続を経由して <b>%s</b> を同期しようとしています。</p> 続行しますか?]]></string>
-    <string name="sync_document_not_available">この文書はデバイスにありません。</string>
+    <string name="sync_warning_mobile_data"><![CDATA[<p>通信事業者の接続を経由して <b>%s</b> を同期しようとしています。</p>操作を続けますか?]]></string>
+    <string name="sync_error_storage"><![CDATA[<p> <b>%1$s</b> を同期しようとしていますが、空き容量が %2$s しかありません。</p>デバイスの空き容量を増やすか、コンテンツの同期を解除してください。]]></string>
+    <string name="sync_warning_storage"><![CDATA[<p> <b>%1$s</b> を同期しようとしていますが、空き容量が %2$s しかありません。</p>操作を続けますか?]]></string>
+    <string name="sync_document_not_available">この文書はデバイス上にありません。</string>
 
     <!-- Handling duplicate name -->
     <string name="error_duplicate_title">名前が重複しています</string>
@@ -501,7 +501,7 @@
 
     <!-- Creation Folder -->
     <string name="create_folder_in_progress">フォルダを作成しています</string>
-    <string name="textfile_populate_failed">内蔵エディタにテキストを読み込めませんでした</string>
+    <string name="textfile_populate_failed">エディタにテキストを読み込めませんでした</string>
 
     <!-- FILE EXPLORER Menu -->
     <string name="shortcut_alfresco_downloads">ダウンロード</string>
@@ -514,18 +514,18 @@
     <string name="shortcut_local_downloads">デバイス上のダウンロードコンテンツ</string>
     <string name="shortcut_local_sdcard">SD カード</string>
     <string name="shortcut_thirdparty_app">アプリケーション</string>
-    <string name="shortcut_thirdparty_applications">他社製アプリケーション</string>
+    <string name="shortcut_thirdparty_applications">他のアプリケーション</string>
 
     <!-- FILE Editor Menu -->
-    <string name="file_editor_name">Alfresco Text Editor</string>
-    <string name="file_editor_error_open">このファイルを開けません。</string>
-    <string name="file_editor_error_too_large">このファイルは、Alfresco Text Editor で開けるサイズを超えています。</string>
+    <string name="file_editor_name">テキストエディタ</string>
+    <string name="file_editor_error_open">このファイルを開けませんでした。</string>
+    <string name="file_editor_error_too_large">このファイルは、テキストエディタで開けるサイズを超えています。</string>
     <string name="file_editor_error_speech">このデバイスではテキストの読み上げ機能は使用できません。</string>
     <string name="file_editor_save_request">このファイルは変更されています。</string>
     <string name="file_editor_save_description"><![CDATA[保存せずに終了しますか? <br/> このまま終了すると、保存されていない変更は失われます。]]></string>
     <string name="file_editor_save">保存</string>
     <string name="file_editor_discard">破棄</string>
-    <string name="file_editor_save_confirmation">ファイルは保存されています。</string>
+    <string name="file_editor_save_confirmation">ファイルが保存されました。</string>
     <string name="file_editor_encoding">符号化</string>
     <string name="file_editor_text_size">テキストサイズ</string>
     <string name="file_editor_speech_to_text">音声入力</string>
@@ -613,7 +613,7 @@
     <string name="workflow_priority_high">優先度: 高</string>
     <string name="task_user_approved"><![CDATA[%s <b>がコンテンツを承認しました</b>]]></string>
     <string name="task_user_rejected"><![CDATA[%s <b>がコンテンツを却下しました</b>]]></string>
-    <string name="task_user_commented">コメントが追加されています: </string>
+    <string name="task_user_commented">コメントが追加されています:</string>
     <string name="task_user_completed"><![CDATA[%s <b>がこのタスクを完了しました</b>]]></string>
     <string name="task_user_not_completed"><![CDATA[%s <b>はまだこのタスクを完了していません</b>]]></string>
     <string name="task_approve">承認</string>
@@ -737,9 +737,9 @@
     <!-- Storage Access Framework -->
     <string name="menu_browse_sync_content_folder">同期されているコンテンツ</string>
     <string name="menu_browse_favorites_folder">[お気に入り] フォルダ</string>
-    <string name="account_alfresco">Alfresco</string>
-    <string name="account_alfresco_cloud">Alfresco in the Cloud</string>
-    <string name="account_alfresco_onpremise">Alfresco サーバー</string>
+    <string name="account_alfresco">Content Services</string>
+    <string name="account_alfresco_cloud">Content Services in the Cloud</string>
+    <string name="account_alfresco_onpremise">Content Services</string>
 
 
     <!-- Accessibility -->
@@ -750,7 +750,7 @@
     <string name="more_options_favorite">%s のその他のオプション</string>
     <string name="mime_site">サイト</string>
     <string name="more_options_site">サイト %s のその他のオプション</string>
-    <string name="navigation_drawer_description">Alfresco: Navigation Drawer を開きます</string>
+    <string name="navigation_drawer_description">Alfresco Content Services: Navigation Drawer を開きます</string>
     <string name="metadata_modified">変更日 </string>
     <string name="metadata_created_by">作成者: %s</string>
     <string name="metadata_size">サイズ </string>
@@ -769,8 +769,8 @@
 
     <!-- SHORTCUT & ACTIONS -->
     <string name="select_folder">選択</string>
-    <string name="shortcut_actions_title">Alfresco - 作成</string>
-    <string name="shortcut_title">Alfresco - ショートカット</string>
+    <string name="shortcut_actions_title">Content Services - 作成</string>
+    <string name="shortcut_title">Content Services - ショートカット</string>
     <string name="shortcut_create">ショートカットの作成...</string>
     <string name="shortcut_action_create">アクションの定義...</string>
     <string name="action_associated">関連付けられているアクション</string>
@@ -778,33 +778,32 @@
     <string name="action_text">テキストの入力</string>
     <string name="action_speech2text">音声入力</string>
 
-    <string name="mdm_managed">管理者によって管理されています</string>
+    <string name="mdm_managed">IT チームによって管理されています</string>
     <string name="mdm_loading_configuration">設定を読み込んでいます...</string>
     <string name="sign_in">サインイン</string>
-    <string name="error_mdm_loading_configuration"><![CDATA[<p><b>アプリケーションの設定が間違っているようです。</b><br/>問題が解決しない場合は、管理者に問い合わせてください。</p> <br/> エラー : %s]]></string>
+    <string name="error_mdm_loading_configuration"><![CDATA[<p><b>アプリケーションの設定に問題があるようです。</b><br/>問題が解決しない場合は、IT チームに問い合わせてください。</p> <br/> エラー: %s]]></string>
     <string name="discardbutton">破棄</string>
     <string name="filename_error_character">ファイル名が無効です</string>
     <string name="my_tasks">あなたのタスク</string>
     <string name="waiting_operations">お待ちください</string>
-    <string name="shortcut_alfresco">Alfresco</string>
-    <string name="error_offline"><![CDATA[<p><b>オフラインのため Alfresco Mobile のヘルプにアクセスできません。</b><br/></p>オンラインに戻ってから、操作をやり直してください。]]></string>
-    <string name="feature_disable">この機能は使用できないか、お使いのデバイスで無効に設定されています。</string>
+    <string name="shortcut_alfresco">コンテンツ</string>
+    <string name="error_offline"><![CDATA[<p><b>オフラインのためヘルプにアクセスできません。</b><br/></p>オンラインに戻ってから、操作をやり直してください。]]></string>
+    <string name="feature_disable">この機能は使用できないか、お使いのデバイスでオフに設定されています。</string>
 
     <!-- ANDROID FOR WORK -->
     <!-- AlfrescoUserName restriction -->
     <string name="title_alfresco_username">ユーザー名</string>
-    <string name="description_alfresco_username">Alfresco サーバーに接続するときに使用するユーザー名</string>
+    <string name="description_alfresco_username">Content Services に接続するときに使用するユーザー名</string>
     <!-- AlfrescoRepositoryURL restriction -->
-    <string name="title_alfresco_repository_url">Alfresco リポジトリの URL</string>
-    <string name="description_alfresco_repository_url">Alfresco サーバーの接続先</string>
+    <string name="title_alfresco_repository_url">リポジトリの URL</string>
+    <string name="description_alfresco_repository_url">接続するリポジトリ</string>
     <!-- AlfrescoShareURL restriction -->
     <string name="title_alfresco_share_url">Alfresco Share の URL</string>
-    <string name="description_alfresco_share_url">Alfresco Share サーバーの接続先</string>
+    <string name="description_alfresco_share_url">接続する Alfresco Share サーバー</string>
     <!-- AlfrescoDisplayName restriction -->
     <string name="title_alfresco_display_name">アカウントの表示名</string>
     <string name="description_alfresco_display_name">リポジトリに接続しているサーバーの名前。</string>
-    <string name="default_alfresco_display_name">Alfresco サーバー</string>
-
+    <string name="default_alfresco_display_name">Content Services</string>
 
     <!-- Empty -->
     <string name="nodebrowser_empty_ro_title">このフォルダは空です</string>
@@ -821,7 +820,7 @@
     <string name="tasks_list_empty_title">あなたのタスクは現在ありません</string>
     <string name="tasks_list_empty_description">自分用のタスクを作成するか、タスクを誰かに割り当ててください。</string>
     <string name="activities_list_empty_title">表示するアクティビティがありません。</string>
-    <string name="activities_list_empty_description">Alfresco のサイトに参加すると、同僚のアクティビティが表示されます。</string>
+    <string name="activities_list_empty_description">サイトに参加すると、同僚のアクティビティが表示されます。</string>
     <string name="node_search_empty_title">条件に一致するものが見つかりません</string>
     <string name="node_search_empty_description">別のキーワードで検索してみてください。</string>
     <string name="people_search_empty_title">ユーザーが見つかりません</string>
@@ -839,10 +838,10 @@
     <string name="node.details.file.not.found">ファイルが見つかりません</string>
     <string name="node.browser.folder.not.found">フォルダが見つかりません</string>
     <string name="user.details.user.not.found">ユーザーが見つかりません</string>
-    <string name="public.url.wrong.format">このリンクは認識されませんでした。Alfresco 管理者に連絡してください</string>
-    <string name="public.url.tasks.missing.filter">フィルタ情報が見つかりません。Alfresco 管理者に連絡してください</string>
-    <string name="public.url.file.missing.id">ID 情報が見つかりません。Alfresco 管理者に連絡してください</string>
-    <string name="public.url.noderef.format">NodeRef 情報が間違っている可能性があります。Alfresco 管理者に連絡してください</string>
+    <string name="public.url.wrong.format">リンクが認識されません。IT チームに問い合わせてください</string>
+    <string name="public.url.tasks.missing.filter">フィルタ情報が見つかりません。IT チームに問い合わせてください</string>
+    <string name="public.url.file.missing.id">ID 情報が見つかりません。IT チームに問い合わせてください</string>
+    <string name="public.url.noderef.format">NodeRef 情報に問題があります。IT チームに問い合わせてください</string>
 
 
     <!-- ACCOUNTS SELECTION -->
@@ -852,58 +851,58 @@
 
     <!-- DATA PROTECTION -->
     <string name="general_login_data_protection_title">データ保護が使用可能です</string>
-    <string name="general_login_data_protection_description">この機能を有効にすると、各アカウントでダウンロードしたすべての Alfresco コンテンツが暗号化され、Alfresco 以外のアプリでは読み取ることができなくなります。</string>
+    <string name="general_login_data_protection_description">オンにすると、Alfresco Content Services アカウントでダウンロードしたコンテンツがすべて暗号化され、Alfresco Content Services アプリでのみ表示できるようになります。</string>
 
     <!-- ERRORS -->
     <string name="error_invalid_email">この E メールアドレスは無効です</string>
     <string name="error_invalid_password">このパスワードは短かすぎます</string>
     <string name="error_incorrect_password">このパスワードは正しくありません</string>
     <string name="error_field_required">このフィールドには必ず入力する必要があります</string>
-    <string name="error_invalid_url">このホスト名は無効です</string>
+    <string name="error_invalid_url">この接続は無効です</string>
 
 
     <!-- CONFIG VALUES -->
-    <string name="config_view_config_editor">Displays Menu Configuration Editor.</string>
-    <string name="config_view_activities">Displays user\'s activities.</string>
-    <string name="config_view_people">Displays a list of users.</string>
-    <string name="config_view_person_profile">Displays person profile details.</string>
-    <string name="config_view_local">Displays a list of most important local folder available inside the device.</string>
-    <string name="config_view_local_files">Displays files local to the client.</string>
-    <string name="config_view_search">Displays a search view.</string>
-    <string name="config_view_search_advanced">Displays an advanced search view.</string>
-    <string name="config_view_site_browser">Displays a sites view.</string>
-    <string name="config_view_sites">Displays a list of sites.</string>
-    <string name="config_view_document_details">Displays the details of a repository document.</string>
-    <string name="config_view_folder_details">Displays the details of a repository folder or document.</string>
-    <string name="config_view_repository">Displays a folder from the repository.</string>
-    <string name="config_view_repository_search">Displays a list of nodes based on a query.</string>
-    <string name="config_view_tasks">Displays a list of tasks.</string>
-    <string name="config_view_favorites">Displays list of favorite files and folders.</string>
-    <string name="config_view_sync">Displays list of synced content.</string>
+    <string name="config_view_config_editor">メニュー設定エディタを表示します。</string>
+    <string name="config_view_activities">ユーザーのアクティビティを表示します。</string>
+    <string name="config_view_people">ユーザーの一覧を表示します。</string>
+    <string name="config_view_person_profile">ユーザーのプロフィール情報を表示します。</string>
+    <string name="config_view_local">デバイス内にある最も重要なローカルフォルダの一覧を表示します。</string>
+    <string name="config_view_local_files">クライアントのローカルのファイルを表示します。</string>
+    <string name="config_view_search">検索画面を表示します。</string>
+    <string name="config_view_search_advanced">詳細検索画面を表示します。</string>
+    <string name="config_view_site_browser">サイト画面を表示します。</string>
+    <string name="config_view_sites">サイトの一覧を表示します。</string>
+    <string name="config_view_document_details">ファイルの詳細を表示します。</string>
+    <string name="config_view_folder_details">フォルダまたはファイルの詳細を表示します。</string>
+    <string name="config_view_repository">リポジトリにあるフォルダを表示します。</string>
+    <string name="config_view_repository_search">クエリの条件に一致するノードの一覧を表示します。</string>
+    <string name="config_view_tasks">タスクの一覧を表示します。</string>
+    <string name="config_view_favorites">お気に入りのファイルとフォルダの一覧を表示します。</string>
+    <string name="config_view_sync">同期されているコンテンツの一覧を表示します。</string>
 
-    <string name="config_view_activities_username">Displays activities stream for a specific user.</string>
-    <string name="config_view_activities_siteshortname">Displays activities stream for a specific site.</string>
-    <string name="config_view_people_keywords">Displays a search view for users with the matching keywords.</string>
-    <string name="config_view_people_siteshortname">Displays list of members for a specific site.</string>
-    <string name="config_view_people_path">Absolute path to the specified folder.</string>
+    <string name="config_view_activities_username">特定のユーザーのアクティビティストリームを表示します。</string>
+    <string name="config_view_activities_siteshortname">特定のサイトのアクティビティストリームを表示します。</string>
+    <string name="config_view_people_keywords">キーワードに一致するユーザーが表示されている検索画面を表示します。</string>
+    <string name="config_view_people_siteshortname">特定のサイトのメンバーの一覧を表示します。</string>
+    <string name="config_view_people_path">特定のフォルダの絶対パス。</string>
     <string name="config_view_people_shortcut">Display Up path selector.</string>
-    <string name="config_view_person_profile_username">Displays the profile for the specified username.</string>
-    <string name="config_view_advanced_search_type">Values: person|document|folder.</string>
-    <string name="config_view_sites_show">Values: favorites|my|all|finder.</string>
-    <string name="config_view_sites_keywords">keywords to search</string>
-    <string name="config_view_doc_details_path">Absolute path to the specified document</string>
-    <string name="config_view_doc_details_noderef">NodeRef associated to a document</string>
-    <string name="config_view_folder_details_path">Absolute path to the specified folder</string>
-    <string name="config_view_folder_details_noderef">NodeRef associated to a folder</string>
-    <string name="config_view_repository_path">Displays a folder defined by its absolute path</string>
-    <string name="config_view_repository_noderef">Displays a folder retrieved by its nodeRef</string>
-    <string name="config_view_repository_siteShortName">Displays the document library folder associated to the specified site</string>
-    <string name="config_view_repository_folderTypeId">Displays the system folder shared|userhome</string>
-    <string name="config_view_repository_search_keywords">keywords to search</string>
-    <string name="config_view_repository_search_isExact">Requires : keywords</string>
-    <string name="config_view_repository_search_fullText">Requires : keywords</string>
-    <string name="config_view_repository_search_searchFolderOnly">Requires : keywords</string>
-    <string name="config_view_repository_search_statement">CMIS query</string>
+    <string name="config_view_person_profile_username">指定したユーザーのプロフィールを表示します。</string>
+    <string name="config_view_advanced_search_type">値: person|file|folder。</string>
+    <string name="config_view_sites_show">値: favorites|my|all|finder。</string>
+    <string name="config_view_sites_keywords">検索するキーワード</string>
+    <string name="config_view_doc_details_path">指定したファイルの絶対パス</string>
+    <string name="config_view_doc_details_noderef">ファイルに関連付けられている NodeRef</string>
+    <string name="config_view_folder_details_path">特定のフォルダの絶対パス</string>
+    <string name="config_view_folder_details_noderef">フォルダに関連付けられている NodeRef</string>
+    <string name="config_view_repository_path">絶対パスにあるフォルダを表示します</string>
+    <string name="config_view_repository_noderef">NodeRef で取得されたフォルダを表示します</string>
+    <string name="config_view_repository_siteShortName">指定したサイトに関連付けられている文書ライブラリフォルダを表示します</string>
+    <string name="config_view_repository_folderTypeId">システムフォルダ shared|userhome を表示します</string>
+    <string name="config_view_repository_search_keywords">検索するキーワード</string>
+    <string name="config_view_repository_search_isExact">必須: キーワード</string>
+    <string name="config_view_repository_search_fullText">必須: キーワード</string>
+    <string name="config_view_repository_search_searchFolderOnly">必須: キーワード</string>
+    <string name="config_view_repository_search_statement">CMIS クエリ</string>
 
     <!-- FORM -->
     <!-- ################################################################################## -->
@@ -921,7 +920,11 @@
     <string name="form_message_link_error"><![CDATA[<p>このコンテンツは、リンクできないソースに属しています。</p> 別のコンテンツを選択してください。]]></string>
 
 
-    <string name="open_in_alfresco_editor">Alfresco Text Editor で開く</string>
+    <string name="open_in_alfresco_editor">テキストエディタで開く</string>
+
+    <!-- PERMISSION -->
+    <!-- ################################################################################## -->
+    <string name="permission.not.enough">ファイルにアクセスするための権限がありません。</string>
 
 
 </resources>

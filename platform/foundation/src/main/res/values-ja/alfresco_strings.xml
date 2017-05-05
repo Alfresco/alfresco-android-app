@@ -98,7 +98,7 @@
     <string name="org_alfresco_site_group_added">{1} グループが役割 {2} でサイト {4} に追加されました</string>
     <string name="org_alfresco_site_group_removed">{1} グループがサイト {4} から削除されました</string>
     <string name="org_alfresco_site_group_role_changed">{1} グループの役割が {2} に変更されました</string>
-    <string name="org_alfresco_site_user_joined">{1} が役割 {2} でサイト {4} に参加しました</string>
+    <string name="org_alfresco_site_user_joined">{1} が役割 {2} でサイト \"{4}\" に参加しました</string>
     <string name="org_alfresco_site_user_left">{1} がサイト {4} を退会しました</string>
     <string name="org_alfresco_site_user_role_changed">{1} の役割が {2} に変更されました</string>
     <string name="org_alfresco_links_link_created">{0} リンクが {1} によって作成されました</string>
@@ -107,11 +107,11 @@
     <string name="org_alfresco_datalists_list_created">{0} データリストが {1} によって作成されました</string>
     <string name="org_alfresco_datalists_list_updated">{0} データリストの詳細が {1} によって更新されました</string>
     <string name="org_alfresco_datalists_list_deleted">{0} データリストが {1} によって削除されました</string>
-    <string name="org_alfresco_subscriptions_followed">{1} は現在 {5} をフォローしています</string>
+    <string name="org_alfresco_subscriptions_followed">{1} は現在{5} をフォローしています</string>
     <string name="org_alfresco_subscriptions_subscribed">{1} は {2} を購読しています</string>
     <string name="org_alfresco_profile_status_changed">{1}: {6}</string>
-    <string name="org_alfresco_documentlibrary_file_previewed">{1} が文書 {0} をプレビューしました</string>
-    <string name="org_alfresco_documentlibrary_file_downloaded">{1} が文書 {0} をダウンロードしました</string>
+    <string name="org_alfresco_documentlibrary_file_previewed">{1} がファイル {0} をプレビューしました</string>
+    <string name="org_alfresco_documentlibrary_file_downloaded">{1} がファイル {0} をダウンロードしました</string>
     <string name="activity_role_None">権限なし</string>
     <string name="activity_role_SiteConsumer">利用者</string>
     <string name="activity_role_SiteManager">マネージャ</string>
@@ -123,7 +123,7 @@
     <string name="metadata_prop_name">名前</string>
     <string name="metadata_prop_path">パス</string>
     <string name="metadata_prop_type">タイプ</string>
-    <string name="metadata_prop_content_mimetype">MIME タイプ</string>
+    <string name="metadata_prop_content_mimetype">ファイルの種類</string>
     <string name="metadata_prop_content_size">サイズ</string>
     <!-- Metadata Titled -->
     <string name="metadata_aspect_titled">アスペクト名</string>
@@ -192,7 +192,7 @@
     <string name="content_tags_hint">タグの値をコンマ区切りで入力してください (任意)</string>
     <string name="content_title">タイトル</string>
     <!-- Create Folder -->
-    <string name="folder_create">新しいフォルダの作成</string>
+    <string name="folder_create">新しいフォルダを作成してください</string>
     <string name="folder_name">名前</string>
     <string name="folder_name_hint">ここにフォルダ名を入力してください&#8230;</string>
     <!-- Update Properties -->
@@ -242,69 +242,69 @@
     <string name="save_back">保存して戻る</string>
 
     <!-- MESSAGE ERROR -->
-    <string name="error_general">エラーが発生しました。 もう一度操作をやり直してください。</string>
-    <string name="error_general_title">エラーが発生しました。</string>
-    <string name="error_unable_open_file">このファイルを開けません</string>
-    <string name="error_unable_share_link">リンクを共有できません</string>
-    <string name="error_unable_share_content">コンテンツを共有できません</string>
-    <string name="error_unable_open_map">マップを開けません</string>
+    <string name="error_general">問題が発生しました。もう一度操作をやり直してください。</string>
+    <string name="error_general_title">問題が発生しました。</string>
+    <string name="error_unable_open_file">このファイルを開けませんでした</string>
+    <string name="error_unable_share_link">リンクを共有できませんでした</string>
+    <string name="error_unable_share_content">コンテンツを共有できませんでした</string>
+    <string name="error_unable_open_map">マップを開けませんでした</string>
 
     <!-- SESSION ERROR -->
     <string name="retry_account_loading">再試行</string>
     <string name="error_session_creation_title">アカウントの保存</string>
     <string name="error_session_creation_message">接続エラー</string>
-    <string name="error_session_creation">認証できません。 Alfresco アカウントの設定を確認してください。</string>
-    <string name="error_session_hostname_short">あなたの <b>ホスト名</b> の値が間違っている可能性があります。</string>
-    <string name="error_session_hostname"><![CDATA[<b>ホスト名</b>の値に誤りがあるか<br/>、 <b>VPN を有効にする</b>必要があります。<br/>値と設定を確認してください。]]></string>
+    <string name="error_session_creation">認証できません。アカウントの設定を確認してください。</string>
+    <string name="error_session_hostname_short"><b>接続先</b>の URL に間違いがあります。</string>
+    <string name="error_session_hostname"><![CDATA[<b>接続先</b>の URL に間違いがあるか、<b>VPN を有効にする</b>必要があります。<br/> 値と設定を確認してください。]]></string>
     <string name="error_session_nodata_short">デバイスにデータ接続がありません。</string>
-    <string name="error_session_nodata"><![CDATA[<p><b>デバイスにデータ接続がありません。</b><br/></p> デバイスの設定を確認して、データ接続を有効にしてください。]]></string>
-    <string name="error_session_unauthorized"><![CDATA[このサーバーへのアクセス権がありません。<br/> Alfresco アカウントの設定 <b>(ユーザー名/パスワード)</b> を確認してください。]]></string>
-    <string name="error_session_service_url"><![CDATA[<b>サービス URL</b> の値に誤りがあります。<br/> Alfresco アカウントの設定を確認してください。]]></string>
-    <string name="error_session_service_unavailable"><![CDATA[メンテナンス中によりサーバーがダウンしているか、容量に問題があるため、一時的に要求を処理できません。<br/> しばらくしてから、操作をやり直してください。]]></string>
-    <string name="error_session_notfound"><![CDATA[サーバーに接続できませんでした。<br/> Alfresco アカウントの設定を確認してください。]]></string>
-    <string name="error_session_port"><![CDATA[<b>ポート</b>の値に誤りがあります。<br/> Alfresco アカウントの設定を確認してください。]]></string>
+    <string name="error_session_nodata"><![CDATA[<p><b>デバイスにデータ接続がありません。</b><br/></p>デバイスの設定を確認して、データ接続を有効にしてください。]]></string>
+    <string name="error_session_unauthorized"><![CDATA[このサーバーへのアクセス権がありません。<br/>アカウントの設定 <b>(ユーザー名/パスワード)</b> を確認してください 。]]></string>
+    <string name="error_session_service_url"><![CDATA[<b>サービスの URL</b> に間違いがあります。<br/>アカウントの設定を確認してください。]]></string>
+    <string name="error_session_service_unavailable"><![CDATA[メンテナンスのためサーバーが一時的にダウンしているか、容量に問題があります。<br/>しばらくしてから、操作をやり直してください。]]></string>
+    <string name="error_session_notfound"><![CDATA[サーバーに接続できませんでした。<br/>アカウントの設定を確認してください。]]></string>
+    <string name="error_session_port"><![CDATA[<b>ポート</b>の値に間違いがあります。<br/>アカウントの設定を確認してください。]]></string>
     <string name="error_session_certificate">
 <![CDATA[<p><b>サーバーのセキュリティ証明書が信頼されていません。</b><br/></p>
 		サーバーの接続先の証明書を発行した第三者機関が、デバイスで認識された機関と一致しません。<br/>
-		正しいサーバーに接続していることを Alfresco Mobile で確認できるようにするには、信頼できる機関からの証明書が必要です。<br/>
+		正しいサーバーに接続していることを検証するには、信頼できる機関からの証明書が必要です。<br/>
 		サーバーの証明書が自己署名された証明書の場合は、それをデバイスに追加する必要があります。<br/> ]]>
     </string>
     <string name="error_session_certificate_expired">
 <![CDATA[<p><b>サーバーのセキュリティ証明書の期限が切れているか、まだ有効化されていません。</b><br/></p>
-		デバイスで証明書が設定された日時を確認してください。<br/> 問題が解決しない場合は、管理者に問い合わせてください。 ]]>
+		デバイスで証明書が設定された日時を確認してください。<br/>問題が解決しない場合は、IT チームに問い合わせてください。 ]]>
     </string>
     <string name="error_session_ssl">
-<![CDATA[<p><b>SSL プロトコルにエラーが発生しました。</b><br/></p>
-        Alfresco アカウントの設定を確認してから、もう一度やり直してください。<br/>問題が解決しない場合は、管理者に問い合わせてください。]]>
+<![CDATA[<p><b>SSL プロトコルに問題があります。</b><br/></p>
+        アカウントの設定を確認してから、もう一度操作をやり直してください。<br/>問題が解決しない場合は、IT チームに問い合わせてください。]]>
     </string>
     <string name="error_session_cloud_unavailable">
-<![CDATA[<p><b>Alfresco in the Cloud は現在大量の処理を行っています。</b><br/></p>
+<![CDATA[<p><b>Content Services in the Cloud は現在大量の処理を行っています。</b><br/></p>
         しばらくしてから、操作をやり直してください。<br/>]]>
     </string>
-    <string name="error_session_expired">セッションの期限が切れています。 もう一度サインインしてください。</string>
+    <string name="error_session_expired">セッションの期限が切れています。サインインしてください。</string>
     <string name="error_session_refresh">セッションを再読み込みしています。</string>
     <string name="error_chunk_transfert"><![CDATA[サーバーはチャンク転送に対応していません。<br/>アカウントを再読み込みしてください</b>。]]></string>
 
-    <string name="error_account_url">URL が正しくありません。 Alfresco アカウントの設定を確認してください。</string>
+    <string name="error_account_url">URL が正しくありません。アカウントの設定を確認してください。</string>
     <string name="error_unknown_filepath">リソースが見つかりませんでした。</string>
-    <string name="error_name_already_exist">ファイルの名前を変更できませんでした。 同じ名前のファイルが既に存在する可能性があります。</string>
+    <string name="error_name_already_exist">ファイルの名前を変更できませんでした。同じ名前のファイルが既に存在する可能性があります。</string>
     <string name="error_unknown_exception">エラーが発生しました : %s</string>
     <string name="error_unknown">エラーが発生しました : %s</string>
 
     <!-- Share -->
     <string name="share_url">リンクの共有</string>
     <string name="share_content">コンテンツの共有</string>
-    <string name="share_url_long">Alfresco Android Mobile からリンクを共有</string>
+    <string name="share_url_long">Alfresco Content Services からリンクを共有</string>
     <string name="validate">有効</string>
 
     <!-- SSL -->
-    <string name="security_ssl_disable">SSL 証明書の検証が無効になっています。</string>
+    <string name="security_ssl_disable">SSL 証明書の検証がオフになっています。</string>
 
     <!-- ACCOUNT -->
     <string name="account_verify">アカウント情報を確認しています&#8230;</string>
     <string name="account_wizard_alldone_description">アカウントを使用する準備ができました。</string>
-    <string name="account_default_onpremise">Alfresco サーバー</string>
-    <string name="account_default_cloud">Alfresco in the Cloud</string>
+    <string name="account_default_onpremise">Content Services</string>
+    <string name="account_default_cloud">Content Services in the Cloud</string>
 
     <!-- WAITING SESSION -->
     <string name="wait_title">お待ちください</string>
@@ -341,12 +341,12 @@
 
     <!-- Accessibility -->
     <string name="mime_folder">フォルダ</string>
-    <string name="mime_document">文書</string>
+    <string name="mime_document">ファイル</string>
     <string name="more_options_folder">フォルダ %s のその他のオプション</string>
     <string name="more_options_favorite">%s のその他のオプション</string>
     <string name="mime_site">サイト</string>
     <string name="more_options_site">サイト %s のその他のオプション</string>
-    <string name="navigation_drawer_description">Alfresco: ホームパネルを開きます</string>
+    <string name="navigation_drawer_description">Content Services: ホームパネルを開きます</string>
     <string name="metadata_modified">変更日 </string>
     <string name="metadata_created_by">作成者: %s</string>
     <string name="metadata_size">サイズ </string>
@@ -359,7 +359,7 @@
     <string name="empty_joinsiterequest">保留中のリクエストはありません</string>
 
     <!-- Update Properties -->
-    <string name="filename_error_character">この名前は無効です。</string>
+    <string name="filename_error_character">名前が無効です。別の文字を使用してください。</string>
 
     <!-- NETWORKS -->
     <string name="cloud_networks_empty">使用可能なネットワークはありません</string>
@@ -369,7 +369,7 @@
     <!-- PROFILES -->
     <string name="profiles_empty">使用可能なプロファイルはありません</string>
     <string name="manage_profiles">プロファイルの管理&#8230;</string>
-    <string name="profiles_switch">プロファイルの切り替え&#8230;</string>
+    <string name="profiles_switch">プロファイルの切り換え&#8230;</string>
 
     <!-- WORKFLOW -->
     <string name="empty_process_definition">プロセスはありません</string>
@@ -388,12 +388,12 @@
     <string name="error_retrieve_favorite">このコンテンツのお気に入り情報を取得できませんでした。</string>
     <string name="favorites_activate">\"%s\" のコンテンツを同期します</string>
     <string name="favorites_activate_description">お気に入りのコンテンツを自動的にこのデバイスと同期させますか?</string>
-    <string name="favorites_deactivate">同期の無効化</string>
-    <string name="favorites_deactivate_description"><![CDATA[<p>同期を無効にしますか?</p> 無効にすると、同期されているすべてのコンテンツがデバイスから削除されます。]]></string>
+    <string name="favorites_deactivate">同期をオフにする</string>
+    <string name="favorites_deactivate_description"><![CDATA[<p>同期をオフにしますか?</p>オフにすると、同期されているすべてのコンテンツがデバイスから削除されます。]]></string>
     <string name="sync_error_title">同期エラー</string>
-    <string name="sync_error_node_unfavorited"><![CDATA[<p>編集を開始したため、<b>%s</b> のお気に入りが解除されました。 <br/> 編集済みのバージョンをサーバーと<b>同期</b>させるか、\"ダウンロード\" フォルダに<b>保存</b>してください。 </p>]]></string>
+    <string name="sync_error_node_unfavorited"><![CDATA[<p>編集を開始したため、<b>%s</b> のお気に入りが解除されました。<br/> 編集済みのバージョンをサーバーと<b>同期</b>させるか、\"ダウンロード\" フォルダに<b>保存</b>してください。</p>]]></string>
     <string name="sync_error_node_deleted"><![CDATA[<p> <b>%s</b> はサーバーから削除されましたが、\"ダウンロード\" フォルダにコピーが保存されています。</p>]]></string>
-    <string name="sync_error_no_permission"><![CDATA[<p> <b>%s</b> の編集済みバージョンをアップロードするのに必要な権限がありません。 \"ダウンロード\" フォルダに<b>保存</b>するか、サーバーにあるバージョンで<b>上書き</b>して編集済みバージョンを破棄することもできます。]]></string>
+    <string name="sync_error_no_permission"><![CDATA[<p> <b>%s</b> の編集済みバージョンをアップロードするのに必要な権限がありません。\"ダウンロード\" フォルダに<b>保存</b>するか、サーバーにあるバージョンで<b>上書き</b>して編集済みバージョンを破棄することもできます。]]></string>
     <string name="sync_error_node_local_modification">同期エラー</string>
     <string name="sync_action">同期</string>
     <string name="sync_override_action">上書き</string>
@@ -427,8 +427,8 @@
     </plurals>
     <plurals name="batch_failed">
         <item quantity="zero">失敗した転送はありません。</item>
-        <item quantity="one">1 個の転送に失敗しました。</item>
-        <item quantity="other">%1$s 個の転送に失敗しました。</item>
+        <item quantity="one">1 個の転送が失敗しました。</item>
+        <item quantity="other">%1$s 個の転送が失敗しました。</item>
     </plurals>
     <plurals name="batch_in_progress">
         <item quantity="zero">進行中の転送はありません。</item>
@@ -443,10 +443,10 @@
 
     <string name="sync_warning">同期の警告</string>
     <string name="sync_error">同期エラー</string>
-    <string name="sync_warning_mobile_data"><![CDATA[<p>通信事業者の接続を経由して <b>%s</b> を同期しようとしています。</p> 続行しますか?]]></string>
-    <string name="sync_error_storage"><![CDATA[<p> <b>%1$s</b> を同期しようとしていますが、容量が %2$s しかありません。</p> デバイスの空き容量を増やすか、一部のコンテンツのお気に入りを解除してください。]]></string>
-    <string name="sync_warning_storage"><![CDATA[<p>通信事業者の接続を経由して <b>%s</b> を同期しようとしています。</p> 続行しますか?]]></string>
-    <string name="sync_document_not_available">この文書はデバイスにありません。</string>
+    <string name="sync_warning_mobile_data"><![CDATA[<p> 通信事業者の接続を経由して <b>%s</b> を同期しようとしています。</p>操作を続けますか?]]></string>
+    <string name="sync_error_storage"><![CDATA[<p> <b>%1$s</b> を同期しようとしていますが、空き容量が %2$s しかありません。</p>デバイスの空き容量を増やすか、一部のコンテンツのお気に入りを解除してください。]]></string>
+    <string name="sync_warning_storage"><![CDATA[<p> <b>%1$s</b> を同期しようとしていますが、空き容量が %2$s しかありません。</p>操作を続けますか?]]></string>
+    <string name="sync_document_not_available">このファイルはデバイス上にありません。</string>
 
     <!-- NOTIFICATION -->
     <string name="upload">アップロード </string>

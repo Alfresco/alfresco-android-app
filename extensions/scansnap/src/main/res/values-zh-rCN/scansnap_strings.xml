@@ -20,7 +20,7 @@
 
     <!-- ERRORS -->
     <string name="err_msg_launch_failed">无法启动 ScanSnap Connect Application。</string>
-    <string name="err_msg_url_parse">无法解析 URL。 检查指定的 URL 参数是否正确，然后重试。</string>
+    <string name="err_msg_url_parse">无法解析 URL。检查指定的 URL 参数是否正确，然后重试。</string>
 
     <!-- PRESETS -->
     <string name="scan_preset">扫描预设</string>
