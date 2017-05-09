@@ -769,8 +769,8 @@
 
     <!-- SHORTCUT & ACTIONS -->
     <string name="select_folder">Seleccionar</string>
-    <string name="shortcut_actions_title">Content Services - Crear</string>
-    <string name="shortcut_title">Content Services - Acceso directo</string>
+    <string name="shortcut_actions_title">Crear</string>
+    <string name="shortcut_title">Acceso directo</string>
     <string name="shortcut_create">Crear acceso directo a...</string>
     <string name="shortcut_action_create">Defina su acción...</string>
     <string name="action_associated">Acciones asociadas</string>

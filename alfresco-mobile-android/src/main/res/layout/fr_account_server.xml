@@ -20,12 +20,10 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
-    android:orientation="vertical"
-    tools:context="org.activiti.bpmn.android.app.activity.LoginActivity">
+    android:orientation="vertical">
 
     <ScrollView
         android:id="@+id/login_form"
@@ -44,6 +42,7 @@
                 style="@style/AlfrescoMaterialTheme.Text.Title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:maxLines="3"
                 android:gravity="center"
                 android:paddingTop="@dimen/d_16"
                 android:paddingBottom="@dimen/d_8"

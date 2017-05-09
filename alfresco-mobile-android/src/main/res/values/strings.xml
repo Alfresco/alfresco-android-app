@@ -41,7 +41,7 @@
 
     <string name="settings_userinfo">Account</string>
     <string name="settings_userinfo_account">Details</string>
-    <string name="settings_userinfo_account_summary">Edit user and connection information</string>
+    <string name="settings.userinfo.account.summary">Edit details</string>
     <string name="settings_userinfo_account_name">Name</string>
     <string name="settings_userinfo_account_name_summary">Edit account name</string>
     <string name="settings_account">Account Settings</string>
@@ -261,7 +261,7 @@
     <string name="action_unfavorite_site_error">A problem prevented you from unfavoriting the site \"%s\".</string>
 
     <!-- IMPORT -->
-    <string name="import_document_title">Upload with Alfresco Content Services</string>
+    <string name="import_document_title">Choose location</string>
     <string name="import_document_name">File Name</string>
     <string name="import_documents">File</string>
     <string name="import_account">Account</string>
@@ -769,8 +769,8 @@
 
     <!-- SHORTCUT & ACTIONS -->
     <string name="select_folder">Select</string>
-    <string name="shortcut_actions_title">Content Services - Create</string>
-    <string name="shortcut_title">Content Services - Shortcut</string>
+    <string name="shortcut_actions_title">Create</string>
+    <string name="shortcut_title">Shortcut</string>
     <string name="shortcut_create">Create shortcut to...</string>
     <string name="shortcut_action_create">Define your action...</string>
     <string name="action_associated">Actions associated</string>
@@ -926,6 +926,5 @@
     <!-- PERMISSION -->
     <!-- ################################################################################## -->
     <string name="permission.not.enough">Not enough permission to access the file.</string>
-
 
 </resources>

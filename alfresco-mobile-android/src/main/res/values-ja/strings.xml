@@ -769,8 +769,8 @@
 
     <!-- SHORTCUT & ACTIONS -->
     <string name="select_folder">選択</string>
-    <string name="shortcut_actions_title">Content Services - 作成</string>
-    <string name="shortcut_title">Content Services - ショートカット</string>
+    <string name="shortcut_actions_title">作成</string>
+    <string name="shortcut_title">" ショートカット"</string>
     <string name="shortcut_create">ショートカットの作成...</string>
     <string name="shortcut_action_create">アクションの定義...</string>
     <string name="action_associated">関連付けられているアクション</string>
