@@ -769,8 +769,8 @@
 
     <!-- SHORTCUT & ACTIONS -->
     <string name="select_folder">选择</string>
-    <string name="shortcut_actions_title">Content Services - 创建</string>
-    <string name="shortcut_title">Content Services - 快捷方式</string>
+    <string name="shortcut_actions_title">创建</string>
+    <string name="shortcut_title">" 快捷方式"</string>
     <string name="shortcut_create">创建快捷方式...</string>
     <string name="shortcut_action_create">定义您的操作...</string>
     <string name="action_associated">关联的操作</string>

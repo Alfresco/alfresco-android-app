@@ -38,6 +38,8 @@ import org.alfresco.mobile.android.ui.holder.SingleLineViewHolder;
 import org.alfresco.mobile.android.ui.holder.TwoLinesCheckboxViewHolder;
 import org.alfresco.mobile.android.ui.holder.TwoLinesViewHolder;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -47,8 +49,6 @@ import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.afollestad.materialdialogs.MaterialDialog;
 
 /**
  * Manage global application preferences.
@@ -212,7 +212,7 @@ public class PasscodePreferences extends AlfrescoFragment
         passcodeDataVH = HolderUtils.configure(viewById(R.id.passcode_erase_data),
                 getString(R.string.passcode_erase_data), getString(R.string.passcode_erase_data_summary),
                 maxAttemptActivated);
-        HolderUtils.makeMultiLine(passcodeDataVH.bottomText, 3);
+        HolderUtils.makeMultiLine(passcodeDataVH.bottomText, 5);
         if (passcodeEnable)
         {
             viewById(R.id.passcode_erase_data_container).setOnClickListener(new View.OnClickListener()

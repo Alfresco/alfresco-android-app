@@ -769,8 +769,8 @@
 
     <!-- SHORTCUT & ACTIONS -->
     <string name="select_folder">Seleziona</string>
-    <string name="shortcut_actions_title">Content Services: Crea</string>
-    <string name="shortcut_title">Content Services: Scorciatoia</string>
+    <string name="shortcut_actions_title">Crea</string>
+    <string name="shortcut_title">Scorciatoia</string>
     <string name="shortcut_create">Crea scorciatoia per...</string>
     <string name="shortcut_action_create">Definisci l\'azione...</string>
     <string name="action_associated">Azioni associate</string>

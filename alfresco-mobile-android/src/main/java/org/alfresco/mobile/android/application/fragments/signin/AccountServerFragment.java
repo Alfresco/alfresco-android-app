@@ -98,6 +98,7 @@ public class AccountServerFragment extends AlfrescoFragment
         super.onActivityCreated(savedInstanceState);
 
         final LinearLayout backField = (LinearLayout) viewById(R.id.account_action_server_container);
+
         final Button actionContinue = (Button) viewById(R.id.account_action_server);
         actionContinue.setOnClickListener(new View.OnClickListener()
         {
