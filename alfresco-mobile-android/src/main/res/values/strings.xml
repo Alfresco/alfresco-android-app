@@ -41,7 +41,7 @@
 
     <string name="settings_userinfo">Account</string>
     <string name="settings_userinfo_account">Details</string>
-    <string name="settings.userinfo.account.summary">Edit details</string>
+    <string name="settings_userinfo_account_summary">Edit details</string>
     <string name="settings_userinfo_account_name">Name</string>
     <string name="settings_userinfo_account_name_summary">Edit account name</string>
     <string name="settings_account">Account Settings</string>
