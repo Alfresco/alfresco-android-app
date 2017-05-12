@@ -41,7 +41,7 @@
 
     <string name="settings_userinfo">Account</string>
     <string name="settings_userinfo_account">Details</string>
-    <string name="settings_userinfo_account_summary">Benutzer- und Verbindungsangaben bearbeiten</string>
+    <string name="settings_userinfo_account_summary">Details bearbeiten</string>
     <string name="settings_userinfo_account_name">Name</string>
     <string name="settings_userinfo_account_name_summary">Account-Namen bearbeiten</string>
     <string name="settings_account">Account-Einstellungen</string>
@@ -261,7 +261,7 @@
     <string name="action_unfavorite_site_error">Aufgrund eines Problems konnte die Site \"%s\" nicht aus Ihren Favoriten entfernt werden.</string>
 
     <!-- IMPORT -->
-    <string name="import_document_title">Mit Alfresco Content Services hochladen</string>
+    <string name="import_document_title">Speicherort auswählen</string>
     <string name="import_document_name">Dateiname</string>
     <string name="import_documents">Datei</string>
     <string name="import_account">Account</string>
