@@ -41,7 +41,7 @@
 
     <string name="settings_userinfo">Cuenta</string>
     <string name="settings_userinfo_account">Detalles</string>
-    <string name="settings_userinfo_account_summary">Editar informaciones de usuario y conexión</string>
+    <string name="settings_userinfo_account_summary">Editar detalles</string>
     <string name="settings_userinfo_account_name">Nombre</string>
     <string name="settings_userinfo_account_name_summary">Editar nombre de cuenta</string>
     <string name="settings_account">Configuración de cuenta</string>
@@ -261,7 +261,7 @@
     <string name="action_unfavorite_site_error">Un problema ha impedido que quite el sitio \"%s\" de favoritos.</string>
 
     <!-- IMPORT -->
-    <string name="import_document_title">Cargar con Alfresco Content Services</string>
+    <string name="import_document_title">Elija la ubicación</string>
     <string name="import_document_name">Nombre de fichero</string>
     <string name="import_documents">Fichero</string>
     <string name="import_account">Cuenta</string>

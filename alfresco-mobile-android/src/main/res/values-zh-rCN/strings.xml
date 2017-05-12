@@ -41,7 +41,7 @@
 
     <string name="settings_userinfo">帐户</string>
     <string name="settings_userinfo_account">详细信息</string>
-    <string name="settings_userinfo_account_summary">编辑用户和连接信息</string>
+    <string name="settings_userinfo_account_summary">编辑详细信息</string>
     <string name="settings_userinfo_account_name">名称</string>
     <string name="settings_userinfo_account_name_summary">编辑帐户名称</string>
     <string name="settings_account">帐户设置</string>
@@ -261,7 +261,7 @@
     <string name="action_unfavorite_site_error">出了问题，使您无法取消收藏站点 \"%s\"。</string>
 
     <!-- IMPORT -->
-    <string name="import_document_title">使用 Alfresco Content Services 上传</string>
+    <string name="import_document_title">选择位置</string>
     <string name="import_document_name">文件名</string>
     <string name="import_documents">文件</string>
     <string name="import_account">帐户</string>

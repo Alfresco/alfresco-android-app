@@ -41,7 +41,7 @@
 
     <string name="settings_userinfo">アカウント</string>
     <string name="settings_userinfo_account">詳細</string>
-    <string name="settings_userinfo_account_summary">ユーザーと接続情報を編集できます</string>
+    <string name="settings_userinfo_account_summary">詳細の編集</string>
     <string name="settings_userinfo_account_name">名前</string>
     <string name="settings_userinfo_account_name_summary">アカウント名を編集できます</string>
     <string name="settings_account">アカウントの設定</string>
@@ -261,7 +261,7 @@
     <string name="action_unfavorite_site_error">問題が発生したため、サイト \"%s\" をお気に入りから解除できませんでした</string>
 
     <!-- IMPORT -->
-    <string name="import_document_title">Alfresco Content Services でアップロード</string>
+    <string name="import_document_title">保存場所の選択</string>
     <string name="import_document_name">ファイル名</string>
     <string name="import_documents">ファイル</string>
     <string name="import_account">アカウント</string>
