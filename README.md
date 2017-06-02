@@ -53,4 +53,4 @@ Before your code can be accepted into the project you must also sign the Individ
 
 
 Portions of this product distribution require certain copyright or other notices to be included with the product distribution. These notices may also appear in individual source files. 
-Follow [3rd Party Librairies](https://github.com/Alfresco/alfresco-android-app/wiki/3rd-Party-Librairies) to have the list of librairies licenses used.
+Follow [3rd Party Libraries](https://github.com/Alfresco/alfresco-android-app/wiki/3rd-Party-Libraries) to have the list of libraries licenses used.
