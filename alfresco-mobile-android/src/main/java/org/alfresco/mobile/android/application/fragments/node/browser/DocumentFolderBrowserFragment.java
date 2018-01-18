@@ -57,6 +57,7 @@ import org.alfresco.mobile.android.application.fragments.node.details.NodeDetail
 import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsFragment;
 import org.alfresco.mobile.android.application.fragments.node.rendition.CarouselPreviewFragment;
 import org.alfresco.mobile.android.application.fragments.search.SearchFragment;
+import org.alfresco.mobile.android.application.fragments.sync.ErrorSyncDialogFragment;
 import org.alfresco.mobile.android.application.intent.RequestCode;
 import org.alfresco.mobile.android.application.managers.ActionUtils;
 import org.alfresco.mobile.android.application.ui.form.picker.DocumentPickerFragment.onPickDocumentFragment;
@@ -81,6 +82,7 @@ import org.alfresco.mobile.android.async.node.update.UpdateContentEvent;
 import org.alfresco.mobile.android.async.node.update.UpdateNodeEvent;
 import org.alfresco.mobile.android.async.utils.ContentFileProgressImpl;
 import org.alfresco.mobile.android.async.utils.NodePlaceHolder;
+import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.exception.AlfrescoAppException;
 import org.alfresco.mobile.android.platform.extensions.AnalyticsHelper;
 import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
@@ -92,6 +94,7 @@ import org.alfresco.mobile.android.platform.utils.BundleUtils;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.sync.SyncContentManager;
 import org.alfresco.mobile.android.sync.SyncContentScanEvent;
+import org.alfresco.mobile.android.sync.SyncScanInfo;
 import org.alfresco.mobile.android.ui.SelectableFragment;
 import org.alfresco.mobile.android.ui.activity.AlfrescoActivity;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
@@ -1447,6 +1450,14 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment implement
         {
             ((ProgressNodeAdapter) adapter).refreshOperations();
             refreshListView();
+        }
+
+        AlfrescoAccount acc = SessionUtils.getAccount(getActivity());
+        SyncScanInfo info = SyncScanInfo.getLastSyncScanData(getActivity(), acc);
+
+        if (info != null && info.hasWarning()) {
+            ErrorSyncDialogFragment.newInstance().show(getActivity().getSupportFragmentManager(),
+                    ErrorSyncDialogFragment.TAG);
         }
     }
 
