@@ -59,6 +59,7 @@ public final class SyncContentManagerImpl extends SyncContentManager
         {
             totalSize = cursorTotal.getLong(0);
         }
+        cursorTotal.close();
         return totalSize;
     }
 
