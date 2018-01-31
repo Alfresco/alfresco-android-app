@@ -17,7 +17,17 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.sync;
 
+import org.alfresco.mobile.android.api.model.Node;
+
 public class SyncContentScanEvent
 {
+    private Node node;
 
+    public SyncContentScanEvent(Node node) {
+        this.node = node;
+    }
+
+    public Node getNode() {
+        return node;
+    }
 }
