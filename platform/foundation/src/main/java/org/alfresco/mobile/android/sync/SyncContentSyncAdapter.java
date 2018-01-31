@@ -246,7 +246,7 @@ public class SyncContentSyncAdapter extends AbstractThreadedSyncAdapter
             currentSyncScan.save(getContext(), acc);
             syncManager.saveSyncPrepareTimestamp();
 
-            EventBusManager.getInstance().post(new SyncContentScanEvent());
+            EventBusManager.getInstance().post(new SyncContentScanEvent(node));
 
             if (node == null && nodeIdentifier == null)
             {

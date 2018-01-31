@@ -134,7 +134,7 @@ import android.widget.TextView;
 /**
  * Display a dialogFragment to retrieve information about the content of a
  * specific folder.
- * 
+ *
  * @author Jean Marie Pascal
  */
 public class DocumentFolderBrowserFragment extends NodeBrowserFragment implements SelectableFragment
@@ -1452,12 +1452,13 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment implement
             refreshListView();
         }
 
-        AlfrescoAccount acc = SessionUtils.getAccount(getActivity());
-        SyncScanInfo info = SyncScanInfo.getLastSyncScanData(getActivity(), acc);
-
+        SyncScanInfo info = SyncScanInfo.getLastSyncScanData(getActivity(), getAccount());
+        
         if (info != null && info.hasWarning()) {
-            ErrorSyncDialogFragment.newInstance().show(getActivity().getSupportFragmentManager(),
-                    ErrorSyncDialogFragment.TAG);
+            Node node = event.getNode();
+            if (node != null && SyncContentManager.getInstance(getActivity()).isSynced(getAccount(), event.getNode().getIdentifier())) {
+                ErrorSyncDialogFragment.newInstance().show(getActivity().getSupportFragmentManager(), ErrorSyncDialogFragment.TAG);
+            }
         }
     }
 
