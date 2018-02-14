@@ -17,7 +17,7 @@
 -->
 <resources>
 
-    <string name="app_name">Inhalt</string>
+    <string name="app_name">Content</string>
     <string name="empty_accounts">Kein Account verfügbar.</string>
 
     <!-- SIGN IN & CREATE ACCOUNT SCREEN -->
@@ -769,8 +769,8 @@
 
     <!-- SHORTCUT & ACTIONS -->
     <string name="select_folder">Auswählen</string>
-    <string name="shortcut_actions_title">Erstellen</string>
-    <string name="shortcut_title">Abkürzung</string>
+    <string name="shortcut_actions_title">Content Services - Erstellen</string>
+    <string name="shortcut_title">Content Services - Abkürzung</string>
     <string name="shortcut_create">Verknüpfung erstellen zu...</string>
     <string name="shortcut_action_create">Aktion definieren...</string>
     <string name="action_associated">Verbundene Aktionen</string>
