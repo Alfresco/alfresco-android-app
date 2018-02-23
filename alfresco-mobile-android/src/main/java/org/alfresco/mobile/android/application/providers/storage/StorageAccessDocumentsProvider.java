@@ -195,6 +195,10 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
     @Override
     public Cursor queryRoots(String[] projection) throws FileNotFoundException
     {
+        if (accountsIndex.size() == 0) {
+            initAccounts();
+        }
+
         final DocumentFolderCursor rootCursor = new DocumentFolderCursor(resolveRootProjection(projection));
         final Uri uri = DocumentsContract.buildRootsUri(mAuthority);
         try

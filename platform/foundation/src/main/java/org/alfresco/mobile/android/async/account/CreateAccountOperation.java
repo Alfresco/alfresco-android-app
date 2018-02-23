@@ -31,6 +31,7 @@ import org.alfresco.mobile.android.async.OperationsDispatcher;
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.impl.BaseOperation;
 import org.alfresco.mobile.android.async.session.LoadSessionHelper;
+import org.alfresco.mobile.android.foundation.BuildConfig;
 import org.alfresco.mobile.android.foundation.R;
 import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.SessionManager;
@@ -45,6 +46,8 @@ import org.alfresco.mobile.android.sync.SyncContentManager;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisConnectionException;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisUnauthorizedException;
 
+import android.os.Build;
+import android.provider.DocumentsContract;
 import android.util.Log;
 
 public class CreateAccountOperation extends BaseOperation<AlfrescoAccount>
@@ -319,6 +322,10 @@ public class CreateAccountOperation extends BaseOperation<AlfrescoAccount>
         {
             SessionManager.getInstance(context).saveSession(result.getData(), session);
             SessionManager.getInstance(context).saveAccount(result.getData());
+        }
+        if (Build.VERSION.SDK_INT >= 19) {
+            context.getContentResolver().notifyChange(DocumentsContract.buildRootsUri
+                    (BuildConfig.PROVIDER_AUTHORITY + ".documents"), null, false);
         }
         EventBusManager.getInstance().post(new CreateAccountEvent(getRequestId(), result, session));
     }
