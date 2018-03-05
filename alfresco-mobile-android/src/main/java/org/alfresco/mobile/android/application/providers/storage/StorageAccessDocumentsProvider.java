@@ -809,7 +809,7 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
             }
             else if (pathIndex.containsKey(cUri.id))
             {
-                parentFolder = nodesIndex.get(cUri.id);
+                parentFolder = pathIndex.get(cUri.id);
             }
 
             if (parentFolder == null)
@@ -984,6 +984,7 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
                 row.add(Root.COLUMN_TITLE, getContext().getString(R.string.account_alfresco_cloud));
                 break;
             case AlfrescoAccount.TYPE_ALFRESCO_CMIS:
+            case AlfrescoAccount.TYPE_ALFRESCO_CMIS_SAML:
                 row.add(Root.COLUMN_TITLE, getContext().getString(R.string.account_alfresco));
                 break;
             default:
@@ -1048,6 +1049,9 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
                             case AlfrescoAccount.TYPE_ALFRESCO_CMIS:
                                 session = RepositorySession.connect(selectedUrl, selectedAccount.getUsername(),
                                         selectedAccount.getPassword());
+                                break;
+                            case AlfrescoAccount.TYPE_ALFRESCO_CMIS_SAML:
+                                session = sessionManager.getSession(selectedAccountId);
                                 break;
                             default:
                                 break;
@@ -1600,6 +1604,9 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
                     case AlfrescoAccount.TYPE_ALFRESCO_CMIS:
                         session = RepositorySession.connect(selectedUrl, selectedAccount.getUsername(),
                                 selectedAccount.getPassword());
+                        break;
+                    case AlfrescoAccount.TYPE_ALFRESCO_CMIS_SAML:
+                        session = sessionManager.getSession(selectedAccountId);
                         break;
                     default:
                         break;
