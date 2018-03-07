@@ -1051,12 +1051,12 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
                                         selectedAccount.getPassword());
                                 break;
                             case AlfrescoAccount.TYPE_ALFRESCO_CMIS_SAML:
-                                session = sessionManager.getSession(selectedAccountId);
+                                session = sessionManager.getSession(selectedAccount.getId());
                                 break;
                             default:
                                 break;
                         }
-                        sessionIndex.put(selectedAccountId, session);
+                        sessionIndex.put(selectedAccount.getId(), session);
                     }
                     catch (AlfrescoException e)
                     {
@@ -1606,12 +1606,12 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
                                 selectedAccount.getPassword());
                         break;
                     case AlfrescoAccount.TYPE_ALFRESCO_CMIS_SAML:
-                        session = sessionManager.getSession(selectedAccountId);
+                        session = sessionManager.getSession(selectedAccount.getId());
                         break;
                     default:
                         break;
                 }
-                sessionIndex.put(selectedAccountId, session);
+                sessionIndex.put(selectedAccount.getId(), session);
             }
             catch (AlfrescoException e)
             {
