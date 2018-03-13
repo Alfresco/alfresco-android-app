@@ -35,6 +35,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.alfresco.mobile.android.api.exceptions.AlfrescoException;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
+import org.alfresco.mobile.android.api.exceptions.AlfrescoSessionException;
 import org.alfresco.mobile.android.api.model.ContentStream;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.KeywordSearchOptions;
@@ -195,9 +196,7 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
     @Override
     public Cursor queryRoots(String[] projection) throws FileNotFoundException
     {
-        if (accountsIndex.size() == 0) {
-            initAccounts();
-        }
+        initAccounts();
 
         final DocumentFolderCursor rootCursor = new DocumentFolderCursor(resolveRootProjection(projection));
         final Uri uri = DocumentsContract.buildRootsUri(mAuthority);
@@ -945,22 +944,17 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
     // //////////////////////////////////////////////////////////////////////
     private void initAccounts()
     {
-        // Refresh in case of crash
-        if (accountsIndex == null || accountsIndex.size() == 0)
-        {
-            List<AlfrescoAccount> accounts = AlfrescoAccountManager.retrieveAccounts(getContext());
-            accountsIndex = new LongSparseArray<AlfrescoAccount>(accounts.size());
+        List<AlfrescoAccount> accounts = AlfrescoAccountManager.retrieveAccounts(getContext());
+        accountsIndex = new LongSparseArray<>(accounts.size());
 
-            sessionIndex = new HashMap<Long, AlfrescoSession>(accounts.size());
-            sessionManager = SessionManager.getInstance(getContext());
-            for (AlfrescoAccount account : accounts)
+        sessionIndex = new HashMap<>(accounts.size());
+        sessionManager = SessionManager.getInstance(getContext());
+        for (AlfrescoAccount account : accounts)
+        {
+            accountsIndex.put(account.getId(), account);
+            if (sessionManager != null && sessionManager.getSession(account.getId()) != null)
             {
-                accountsIndex.put(account.getId(), account);
-                if (sessionManager != null && sessionManager.getSession(account.getId()) != null)
-                {
-                    sessionIndex.put(account.getId(),
-                            SessionManager.getInstance(getContext()).getSession(account.getId()));
-                }
+                sessionIndex.put(account.getId(), sessionManager.getSession(account.getId()));
             }
         }
     }
@@ -1071,6 +1065,12 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
 
     private void fillRootMenuCursor(Uri uri, Boolean active, DocumentFolderCursor rootMenuCursor)
     {
+        if (ConnectivityUtils.hasInternetAvailable(getContext())) {
+            if (session == null) {
+                Log.d(TAG, "Session has expired");
+                exception = new AlfrescoSessionException(AlfrescoServiceException.SESSION_ACCESS_TOKEN_EXPIRED, getContext().getResources().getString(R.string.error_session_expired_document_provider));
+            }
+        }
         if (hasError(uri, active, rootMenuCursor)) { return; }
 
         int id = -1;
@@ -1510,6 +1510,7 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
     {
         if (exception != null)
         {
+            Log.w(TAG, Log.getStackTraceString(exception));
             cursor.setErrorInformation("Error : " + exception.getMessage());
             removeUri(uri, active);
             exception = null;
@@ -1607,6 +1608,7 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
                         break;
                     case AlfrescoAccount.TYPE_ALFRESCO_CMIS_SAML:
                         session = sessionManager.getSession(selectedAccount.getId());
+                        if (session == null) throw new AlfrescoSessionException(AlfrescoServiceException.SESSION_ACCESS_TOKEN_EXPIRED, getContext().getResources().getString(R.string.error_session_expired_document_provider));
                         break;
                     default:
                         break;
