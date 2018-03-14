@@ -1024,6 +1024,9 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
 
         if (isLoading == null)
         {
+            if (accountType == AlfrescoAccount.TYPE_ALFRESCO_CMIS_SAML && hasError(uri, isLoading, rootMenuCursor)) {
+                return;
+            }
             new StorageProviderAsyncTask(uri, rootMenuCursor)
             {
                 @Override
@@ -1046,6 +1049,7 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
                                 break;
                             case AlfrescoAccount.TYPE_ALFRESCO_CMIS_SAML:
                                 session = sessionManager.getSession(selectedAccount.getId());
+                                if (session == null) throw new AlfrescoSessionException(AlfrescoServiceException.SESSION_ACCESS_TOKEN_EXPIRED, getContext().getResources().getString(R.string.error_session_expired_document_provider));
                                 break;
                             default:
                                 break;
