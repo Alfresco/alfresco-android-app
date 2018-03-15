@@ -1024,9 +1024,6 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
 
         if (isLoading == null)
         {
-            if (accountType == AlfrescoAccount.TYPE_ALFRESCO_CMIS_SAML && hasError(uri, isLoading, rootMenuCursor)) {
-                return;
-            }
             new StorageProviderAsyncTask(uri, rootMenuCursor)
             {
                 @Override
@@ -1049,7 +1046,9 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
                                 break;
                             case AlfrescoAccount.TYPE_ALFRESCO_CMIS_SAML:
                                 session = sessionManager.getSession(selectedAccount.getId());
-                                if (session == null) throw new AlfrescoSessionException(AlfrescoServiceException.SESSION_ACCESS_TOKEN_EXPIRED, getContext().getResources().getString(R.string.error_session_expired_document_provider));
+                                if (session == null) {
+                                    session = sessionManager.loadSession(selectedAccount);
+                                }
                                 break;
                             default:
                                 break;
@@ -1072,7 +1071,10 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
         if (ConnectivityUtils.hasInternetAvailable(getContext())) {
             if (session == null) {
                 Log.d(TAG, "Session has expired");
-                exception = new AlfrescoSessionException(AlfrescoServiceException.SESSION_ACCESS_TOKEN_EXPIRED, getContext().getResources().getString(R.string.error_session_expired_document_provider));
+                session = sessionManager.loadSession(selectedAccount);
+                if (session == null) {
+                    exception = new AlfrescoSessionException(AlfrescoServiceException.SESSION_ACCESS_TOKEN_EXPIRED, getContext().getResources().getString(R.string.error_session_expired_document_provider));
+                }
             }
         }
         if (hasError(uri, active, rootMenuCursor)) { return; }
@@ -1592,37 +1594,40 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
                 sessionIndex.put(row.accountId, session);
             }
 
-            // If no session available, try to create a new one
-            selectedAccount = accountsIndex.get(row.accountId);
-            accountType = selectedAccount.getTypeId();
-            selectedUrl = selectedAccount.getUrl();
-            try
-            {
-                switch (accountType)
-                {
-                    case AlfrescoAccount.TYPE_ALFRESCO_CLOUD:
-                        oauthdata = new OAuth2DataImpl(getContext().getString(R.string.oauth_api_key),
-                                getContext().getString(R.string.oauth_api_secret), selectedAccount.getAccessToken(),
-                                selectedAccount.getRefreshToken());
-                        session = CloudSession.connect(oauthdata);
-                        break;
-                    case AlfrescoAccount.TYPE_ALFRESCO_CMIS:
-                        session = RepositorySession.connect(selectedUrl, selectedAccount.getUsername(),
-                                selectedAccount.getPassword());
-                        break;
-                    case AlfrescoAccount.TYPE_ALFRESCO_CMIS_SAML:
-                        session = sessionManager.getSession(selectedAccount.getId());
-                        if (session == null) throw new AlfrescoSessionException(AlfrescoServiceException.SESSION_ACCESS_TOKEN_EXPIRED, getContext().getResources().getString(R.string.error_session_expired_document_provider));
-                        break;
-                    default:
-                        break;
+            if (session == null) {
+                // If no session available, try to create a new one
+                selectedAccount = accountsIndex.get(row.accountId);
+                accountType = selectedAccount.getTypeId();
+                selectedUrl = selectedAccount.getUrl();
+                try {
+                    switch (accountType) {
+                        case AlfrescoAccount.TYPE_ALFRESCO_CLOUD:
+                            oauthdata = new OAuth2DataImpl(getContext().getString(R.string.oauth_api_key),
+                                    getContext().getString(R.string.oauth_api_secret), selectedAccount.getAccessToken(),
+                                    selectedAccount.getRefreshToken());
+                            session = CloudSession.connect(oauthdata);
+                            break;
+                        case AlfrescoAccount.TYPE_ALFRESCO_CMIS:
+                            session = RepositorySession.connect(selectedUrl, selectedAccount.getUsername(),
+                                    selectedAccount.getPassword());
+                            break;
+                        case AlfrescoAccount.TYPE_ALFRESCO_CMIS_SAML:
+                            session = sessionManager.getSession(selectedAccount.getId());
+                            if (session == null) {
+                                session = sessionManager.loadSession(selectedAccount);
+                                if (session == null) {
+                                    throw new AlfrescoSessionException(AlfrescoServiceException.SESSION_ACCESS_TOKEN_EXPIRED, getContext().getResources().getString(R.string.error_session_expired_document_provider));
+                                }
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                    sessionIndex.put(selectedAccount.getId(), session);
+                } catch (AlfrescoException e) {
+                    Log.e(TAG, Log.getStackTraceString(e));
+                    exception = e;
                 }
-                sessionIndex.put(selectedAccount.getId(), session);
-            }
-            catch (AlfrescoException e)
-            {
-                Log.e(TAG, Log.getStackTraceString(e));
-                exception = e;
             }
         }
     }
