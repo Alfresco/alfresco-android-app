@@ -87,6 +87,8 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.CancellationSignal;
 import android.os.FileObserver;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.ParcelFileDescriptor;
 import android.provider.DocumentsContract;
 import android.provider.DocumentsContract.Document;
@@ -171,6 +173,16 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
 
     private SessionManager sessionManager;
 
+    private Handler sessionHandler;
+
+    private int sessionCheck;
+
+    private static final int MAX_SESSION_CHECK = 5;
+
+    private static final int INTERVAL_SESSION_CHECK_MS = 5000;
+
+    private boolean requestingSession;
+
     // //////////////////////////////////////////////////////////////////////
     // INIT
     // //////////////////////////////////////////////////////////////////////
@@ -185,6 +197,7 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
     public boolean onCreate()
     {
         initAccounts();
+        requestingSession = false;
         return true;
     }
 
@@ -693,7 +706,7 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
         Uri uri = DocumentsContract.buildSearchDocumentsUri(mAuthority, rootId, query);
         final EncodedQueryUri cUri = new EncodedQueryUri(rootId);
 
-        Boolean active = mLoadingUris.get(uri);
+        final Boolean active = mLoadingUris.get(uri);
 
         if (active != null)
         {
@@ -716,7 +729,9 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
                 protected Void doInBackground(Void... params)
                 {
                     checkSession(cUri);
-
+                    if (hasError(uri, active, documentFolderCursor)) {
+                        return null;
+                    }
                     List<Node> nodes = session.getServiceRegistry().getSearchService().keywordSearch(query,
                             new KeywordSearchOptions());
 
@@ -735,14 +750,14 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
     @Override
     public Cursor queryRecentDocuments(String rootId, String[] projection) throws FileNotFoundException
     {
-        // Log.v(TAG, "queryRecentDocuments" + rootId);
+        Log.v(TAG, "queryRecentDocuments" + rootId);
 
         final DocumentFolderCursor recentDocumentsCursor = new DocumentFolderCursor(
                 resolveDocumentProjection(projection));
         Uri uri = DocumentsContract.buildRecentDocumentsUri(mAuthority, rootId);
         final EncodedQueryUri cUri = new EncodedQueryUri(rootId);
 
-        Boolean active = mLoadingUris.get(uri);
+        final Boolean active = mLoadingUris.get(uri);
 
         if (active != null)
         {
@@ -767,6 +782,9 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
                     try
                     {
                         checkSession(cUri);
+                        if (hasError(uri, active, recentDocumentsCursor)) {
+                            return null;
+                        }
                         GregorianCalendar calendar = new GregorianCalendar();
                         calendar.add(Calendar.DAY_OF_YEAR, -7);
                         String formatedDate = DateUtils.format(calendar);
@@ -785,6 +803,12 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
                         Log.w(TAG, Log.getStackTraceString(e));
                     }
                     return null;
+                }
+
+                @Override
+                protected void onPostExecute(Void noResult) {
+                    super.onPostExecute(noResult);
+                    mLoadingUris.remove(uri);
                 }
             }.execute();
         }
@@ -990,7 +1014,7 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
     // //////////////////////////////////////////////////////////////////////
     // ROOT MENU
     // //////////////////////////////////////////////////////////////////////
-    private void retrieveRootMenuChildren(Uri uri, final EncodedQueryUri row, DocumentFolderCursor rootMenuCursor)
+    private void retrieveRootMenuChildren(final Uri uri, final EncodedQueryUri row, final DocumentFolderCursor rootMenuCursor)
     {
         // Retrieve and init accounts
         selectedAccount = accountsIndex.get(row.accountId);
@@ -1007,10 +1031,12 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
         if (isLoading != null && !isLoading && !available)
         {
             session = sessionIndex.get(selectedAccountId);
-            isLoading = null;
+            if (!hasError(uri, isLoading, rootMenuCursor)) {
+                isLoading = null;
+            }
         }
 
-        if (isLoading != null || available)
+        if ((isLoading != null && !isLoading) || available)
         {
             fillRootMenuCursor(uri, isLoading, rootMenuCursor);
             return;
@@ -1024,45 +1050,77 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
 
         if (isLoading == null)
         {
-            new StorageProviderAsyncTask(uri, rootMenuCursor)
-            {
-                @Override
-                protected Void doInBackground(Void... params)
-                {
-                    if (!ConnectivityUtils.hasInternetAvailable(getContext())) { return null; }
-                    try
-                    {
-                        switch (accountType)
-                        {
-                            case AlfrescoAccount.TYPE_ALFRESCO_CLOUD:
-                                oauthdata = new OAuth2DataImpl(getContext().getString(R.string.oauth_api_key),
-                                        getContext().getString(R.string.oauth_api_secret),
-                                        selectedAccount.getAccessToken(), selectedAccount.getRefreshToken());
-                                session = CloudSession.connect(oauthdata);
-                                break;
-                            case AlfrescoAccount.TYPE_ALFRESCO_CMIS:
-                                session = RepositorySession.connect(selectedUrl, selectedAccount.getUsername(),
-                                        selectedAccount.getPassword());
-                                break;
-                            case AlfrescoAccount.TYPE_ALFRESCO_CMIS_SAML:
-                                session = sessionManager.getSession(selectedAccount.getId());
-                                if (session == null) {
-                                    session = sessionManager.loadSession(selectedAccount);
-                                }
-                                break;
-                            default:
-                                break;
-                        }
-                        sessionIndex.put(selectedAccount.getId(), session);
-                    }
-                    catch (AlfrescoException e)
-                    {
-                        exception = e;
-                        Log.w(TAG, Log.getStackTraceString(e));
-                    }
-                    return null;
+            if (!requestingSession) {
+                requestingSession = true;
+                if (sessionHandler == null) {
+                    sessionHandler = new Handler(Looper.getMainLooper());
                 }
-            }.execute();
+                sessionHandler.postDelayed(new Runnable() {
+                    @Override                                          
+                    public void run() {
+                        if (sessionCheck == MAX_SESSION_CHECK) {
+                            sessionCheck = 0;
+                            if (session == null) {
+                                exception = new AlfrescoSessionException(AlfrescoServiceException.SESSION_ACCESS_TOKEN_EXPIRED, getContext().getResources().getString(R.string.error_session_expired_document_provider));
+                            }
+                            requestingSession = false;
+                            stopLoadingUri(uri);
+                        } else if (sessionCheck < MAX_SESSION_CHECK) {
+                            if (session != null) {
+                                requestingSession = false;
+                                stopLoadingUri(uri);
+                            } else {
+                                sessionCheck++;
+                                sessionHandler.postDelayed(this, INTERVAL_SESSION_CHECK_MS);
+                            }
+                        }
+                    }
+                }, INTERVAL_SESSION_CHECK_MS);
+                
+                new StorageProviderAsyncTask(uri, rootMenuCursor)
+                {
+                    @Override
+                    protected Void doInBackground(Void... params)
+                    {
+                        if (!ConnectivityUtils.hasInternetAvailable(getContext())) { return null; }
+                        try
+                        {
+                            switch (accountType)
+                            {
+                                case AlfrescoAccount.TYPE_ALFRESCO_CLOUD:
+                                    oauthdata = new OAuth2DataImpl(getContext().getString(R.string.oauth_api_key),
+                                            getContext().getString(R.string.oauth_api_secret),
+                                            selectedAccount.getAccessToken(), selectedAccount.getRefreshToken());
+                                    session = CloudSession.connect(oauthdata);
+                                    break;
+                                case AlfrescoAccount.TYPE_ALFRESCO_CMIS:
+                                    session = RepositorySession.connect(selectedUrl, selectedAccount.getUsername(),
+                                            selectedAccount.getPassword());
+                                    break;
+                                case AlfrescoAccount.TYPE_ALFRESCO_CMIS_SAML:
+                                    session = sessionManager.getSession(selectedAccount.getId());
+                                    if (session == null) {
+                                        session = sessionManager.loadSession(selectedAccount);
+                                    }
+                                    break;
+                                default:
+                                    break;
+                            }
+                            sessionIndex.put(selectedAccount.getId(), session);
+                        }
+                        catch (AlfrescoException e)
+                        {
+                            exception = e;
+                            Log.w(TAG, Log.getStackTraceString(e));
+                        }
+                        return null;
+                    }
+
+                    @Override
+                    protected void onPostExecute(Void noResult) {
+                    }
+                }.execute();
+            }
         }
     }
 
@@ -1071,10 +1129,7 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
         if (ConnectivityUtils.hasInternetAvailable(getContext())) {
             if (session == null) {
                 Log.d(TAG, "Session has expired");
-                session = sessionManager.loadSession(selectedAccount);
-                if (session == null) {
-                    exception = new AlfrescoSessionException(AlfrescoServiceException.SESSION_ACCESS_TOKEN_EXPIRED, getContext().getResources().getString(R.string.error_session_expired_document_provider));
-                }
+                exception = new AlfrescoSessionException(AlfrescoServiceException.SESSION_ACCESS_TOKEN_EXPIRED, getContext().getResources().getString(R.string.error_session_expired_document_provider));
             }
         }
         if (hasError(uri, active, rootMenuCursor)) { return; }
@@ -1118,7 +1173,7 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
     // //////////////////////////////////////////////////////////////////////
     // SITES
     // //////////////////////////////////////////////////////////////////////
-    private void retrieveSitesChildren(Uri uri, final EncodedQueryUri row, DocumentFolderCursor sitesCursor)
+    private void retrieveSitesChildren(Uri uri, final EncodedQueryUri row, final DocumentFolderCursor sitesCursor)
     {
         new StorageProviderAsyncTask(uri, sitesCursor)
         {
@@ -1126,6 +1181,9 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
             protected Void doInBackground(Void... params)
             {
                 checkSession(row);
+                if (hasError(uri, false, sitesCursor)) {
+                    return null;
+                }
                 List<Site> sites = session.getServiceRegistry().getSiteService().getSites();
                 for (Site site : sites)
                 {
@@ -1162,6 +1220,9 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
             DocumentFolderCursor sitesCursor)
     {
         checkSession(row);
+        if (hasError(uri, false, sitesCursor)) {
+            return;
+        }
         Site currentSite = null;
         if (siteIndex != null && siteIndex.containsKey(row.id))
         {
@@ -1182,7 +1243,7 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
     // FAVORITES FOLDER
     // //////////////////////////////////////////////////////////////////////
     private void retrieveFavoriteFoldersChildren(Uri uri, final EncodedQueryUri row,
-            DocumentFolderCursor documentFolderCursor)
+                                                 final DocumentFolderCursor documentFolderCursor)
     {
         new StorageProviderAsyncTask(uri, documentFolderCursor, true)
         {
@@ -1190,6 +1251,9 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
             protected Void doInBackground(Void... params)
             {
                 checkSession(row);
+                if (hasError(uri, false, documentFolderCursor)) {
+                    return null;
+                }
                 List<Folder> folders = session.getServiceRegistry().getDocumentFolderService().getFavoriteFolders();
                 for (Node node : folders)
                 {
@@ -1341,7 +1405,7 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
     // DOCUMENTS & FOLDERS
     // //////////////////////////////////////////////////////////////////////
     private void retrieveFolderChildren(final Uri uri, final EncodedQueryUri row,
-            DocumentFolderCursor documentFolderCursor)
+                                        final DocumentFolderCursor documentFolderCursor)
     {
         new StorageProviderAsyncTask(uri, documentFolderCursor, true)
         {
@@ -1351,7 +1415,9 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
                 try
                 {
                     checkSession(row);
-
+                    if (hasError(uri, false, documentFolderCursor)) {
+                        return null;
+                    }
                     List<Node> nodes = new ArrayList<Node>();
                     if (row.id == null)
                     {
@@ -1681,19 +1747,19 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
             uri = null;
             docsCursor = null;
         }
+    }
 
-        public void startLoadingUri(Uri uri, DocumentFolderCursor documentFolderCursor)
-        {
-            documentFolderCursor.setIsLoading(true);
-            documentFolderCursor.setNotificationUri(getContext().getContentResolver(), uri);
-            mLoadingUris.put(uri, Boolean.TRUE);
-        }
+    public void startLoadingUri(Uri uri, DocumentFolderCursor documentFolderCursor)
+    {
+        documentFolderCursor.setIsLoading(true);
+        documentFolderCursor.setNotificationUri(getContext().getContentResolver(), uri);
+        mLoadingUris.put(uri, Boolean.TRUE);
+    }
 
-        public void stopLoadingUri(Uri uri)
-        {
-            mLoadingUris.put(uri, Boolean.FALSE);
-            getContext().getContentResolver().notifyChange(uri, null);
-        }
+    public void stopLoadingUri(Uri uri)
+    {
+        mLoadingUris.put(uri, Boolean.FALSE);
+        getContext().getContentResolver().notifyChange(uri, null);
     }
 
     private String getIdentifier(String cUri)
