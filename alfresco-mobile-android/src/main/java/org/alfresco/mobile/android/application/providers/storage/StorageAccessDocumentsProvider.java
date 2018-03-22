@@ -480,6 +480,10 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
             }
 
             checkSession(cUri);
+            if (session == null) {
+                Log.e(TAG, getContext().getResources().getString(R.string.error_session_expired_document_provider));
+                return null;
+            }
 
             Node currentNode = retrieveNode(cUri.id);
             try
@@ -639,6 +643,9 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
             EncodedQueryUri cUri = new EncodedQueryUri(documentId);
             if (cUri.type != PREFIX_DOC) { return null; }
             checkSession(cUri);
+            if (session == null) {
+                throw new AlfrescoSessionException(AlfrescoServiceException.SESSION_ACCESS_TOKEN_EXPIRED, getContext().getResources().getString(R.string.error_session_expired_document_provider));
+            }
 
             currentNode = retrieveNode(cUri.id);
 
@@ -823,27 +830,31 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
 
         EncodedQueryUri cUri = new EncodedQueryUri(parentDocumentId);
 
-        Node parentFolder = null;
-        if (cUri.type != PREFIX_SYNC)
-        {
-            if (nodesIndex.containsKey(cUri.id))
-            {
-                parentFolder = nodesIndex.get(cUri.id);
-            }
-            else if (pathIndex.containsKey(cUri.id))
-            {
-                parentFolder = pathIndex.get(cUri.id);
-            }
-
-            if (parentFolder == null)
-            {
-                parentFolder = session.getServiceRegistry().getDocumentFolderService()
-                        .getNodeByIdentifier(getIdentifier(cUri.id));
-            }
-        }
-
         try
         {
+            checkSession(cUri);
+            if (session == null) {
+                throw new AlfrescoSessionException(AlfrescoServiceException.SESSION_ACCESS_TOKEN_EXPIRED, getContext().getResources().getString(R.string.error_session_expired_document_provider));
+            }
+            Node parentFolder = null;
+            if (cUri.type != PREFIX_SYNC)
+            {
+                if (nodesIndex.containsKey(cUri.id))
+                {
+                    parentFolder = nodesIndex.get(cUri.id);
+                }
+                else if (pathIndex.containsKey(cUri.id))
+                {
+                    parentFolder = pathIndex.get(cUri.id);
+                }
+
+                if (parentFolder == null)
+                {
+                    parentFolder = session.getServiceRegistry().getDocumentFolderService()
+                            .getNodeByIdentifier(getIdentifier(cUri.id));
+                }
+            }
+
             // Analytics
             AnalyticsHelper.reportOperationEvent(getContext(), AnalyticsManager.CATEGORY_DOC_PROVIDER,
                     AnalyticsManager.ACTION_CREATE, mimeType, 1, false);
@@ -921,18 +932,26 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
                 @Override
                 protected Void doInBackground(Void... params)
                 {
-                    checkSession(cUri);
-                    Node currentNode = retrieveNode(cUri.id);
-                    session.getServiceRegistry().getDocumentFolderService().deleteNode(currentNode);
+                    try {
+                        checkSession(cUri);
+                        if (session == null) {
+                            throw new AlfrescoSessionException(AlfrescoServiceException.SESSION_ACCESS_TOKEN_EXPIRED, getContext().getResources().getString(R.string.error_session_expired_document_provider));
+                        }
+                        Node currentNode = retrieveNode(cUri.id);
+                        session.getServiceRegistry().getDocumentFolderService().deleteNode(currentNode);
 
-                    // Analytics
-                    AnalyticsHelper.reportOperationEvent(getContext(), AnalyticsManager.CATEGORY_DOC_PROVIDER,
-                            AnalyticsManager.ACTION_DELETE,
-                            currentNode.isDocument() ? ((org.alfresco.mobile.android.api.model.Document) currentNode)
-                                    .getContentStreamMimeType() : AnalyticsManager.TYPE_FOLDER,
-                            1, false);
+                        // Analytics
+                        AnalyticsHelper.reportOperationEvent(getContext(), AnalyticsManager.CATEGORY_DOC_PROVIDER,
+                                AnalyticsManager.ACTION_DELETE,
+                                currentNode.isDocument() ? ((org.alfresco.mobile.android.api.model.Document) currentNode)
+                                        .getContentStreamMimeType() : AnalyticsManager.TYPE_FOLDER,
+                                1, false);
 
-                    return null;
+                        return null;
+                    } catch (AlfrescoSessionException e) {
+                        Log.e(TAG, e.getMessage());
+                        return null;
+                    }
                 }
 
                 protected void onPostExecute(Void noResult)
