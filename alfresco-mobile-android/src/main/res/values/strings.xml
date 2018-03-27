@@ -174,7 +174,7 @@
 <![CDATA[
     <p>Alfresco Content Services provides open, flexible, highly scalable Enterprise Content Management (ECM) - which makes it easy to access and collaborate on content wherever you are.</p>
 
-    <p>The Alfresco Content Services mobile app gives you fast, secure access your Alfresco content and associated workflow processes. It works with Alfresco Content Services, Alfresco Community Edition (4.2 and above) and Alfresco in the Cloud.</p>
+    <p>The Alfresco Content Services mobile app gives you fast, secure access to your Alfresco content and associated workflow processes. It works with Alfresco Content Services, Alfresco Community Edition (4.2 and above) and Alfresco in the Cloud.</p>
 
     <p>This mobile application connects using your Alfresco Content Services login credentials (over HTTP or HTTPS), and manages access based on your permissions.</p>
 ]]>
