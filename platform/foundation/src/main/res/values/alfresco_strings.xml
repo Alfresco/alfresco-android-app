@@ -283,7 +283,7 @@
         Try again in a few minutes.<br/>]]>
     </string>
     <string name="error_session_expired">Your session has expired. Sign in to continue.</string>
-    <string name="error_session_expired_document_provider">"Alfresco Session expired: login back in to open a file."</string>
+    <string name="error_session_expired_document_provider">"Alfresco Session expired: log back in to open a file."</string>
     <string name="error_session_refresh">Refreshing session.</string>
     <string name="error_chunk_transfert"><![CDATA[The server doesn\'t support chunk transfers.<br/> Reload your account</b>.]]></string>
 
