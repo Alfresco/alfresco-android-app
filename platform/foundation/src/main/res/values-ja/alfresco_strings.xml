@@ -283,6 +283,7 @@
         しばらくしてから、操作をやり直してください。<br/>]]>
     </string>
     <string name="error_session_expired">セッションの期限が切れています。サインインしてください。</string>
+    <string name="error_session_expired_document_provider">"Alfresco セッションが期限切れになりました。ファイルを開くには、再度ログインしてください。"</string>
     <string name="error_session_refresh">セッションを再読み込みしています。</string>
     <string name="error_chunk_transfert"><![CDATA[サーバーはチャンク転送に対応していません。<br/>アカウントを再読み込みしてください</b>。]]></string>
 

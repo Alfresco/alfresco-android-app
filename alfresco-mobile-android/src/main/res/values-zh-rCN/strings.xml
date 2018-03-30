@@ -172,9 +172,9 @@
     <string name="sdknumber_version">SDK： </string>
     <string name="about_description">
 <![CDATA[
-<p>Alfresco 是适用于业务关键型内容管理和合作的开放平台。</p>
+<p>Alfresco Content Services 提供开放式、灵活、高度可扩展的企业内容管理 (ECM)，无论您身在何处，都可以轻松地进行内容访问和合作。</p>
 
-<p>Alfresco Content Services 移动应用程序由 Alfresco Software, Inc. 设计和开发，连接至 Alfresco Content Services in the Cloud、Alfresco Content Services 和 Alfresco Community Edition（3.4.8 及以上版本），以便随时安全访问当前您的业务内容。</p>
+<p>Alfresco Content Services 移动应用程序使您可以快速、安全地访问您的 Alfresco 内容和关联的工作流程。它适用于 Alfresco Content Services、Alfresco Community Edition（4.2 及以上版本）和 Alfresco Content Services in the Cloud。</p>
 
 <p>该移动应用程序使用 Alfresco Content Services 登录凭证（通过 HTTP 或 HTTPS）连接，并根据用户的权限管理用户访问。</p>
 ]]>

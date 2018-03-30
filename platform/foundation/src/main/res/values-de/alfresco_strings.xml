@@ -283,6 +283,7 @@
         Versuchen Sie es in ein paar Minuten noch einmal.<br/>]]>
     </string>
     <string name="error_session_expired">Ihre Sitzung ist abgelaufen. Melden Sie sich an, um fortzufahren.</string>
+    <string name="error_session_expired_document_provider">"Alfresco-Sitzung abgelaufen: Um eine Datei zu öffnen, müssen Sie sich erneut anmelden."</string>
     <string name="error_session_refresh">Sitzung wird aktualisiert.</string>
     <string name="error_chunk_transfert"><![CDATA[Der Server unterstützt keine Blockübertragungen.<br/> Laden Sie Ihren Account erneut</b>.]]></string>
 

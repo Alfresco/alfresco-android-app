@@ -283,6 +283,7 @@
         Riprovare tra alcuni minuti.<br/>]]>
     </string>
     <string name="error_session_expired">La sessione è scaduta. Accedere per continuare.</string>
+    <string name="error_session_expired_document_provider">"Sessione Alfresco scaduta: per aprire un file è necessario accedere nuovamente."</string>
     <string name="error_session_refresh">Aggiornamento sessione.</string>
     <string name="error_chunk_transfert"><![CDATA[Il server non supporta trasferimenti in blocco.<br/> Ricaricare l\'account</b>.]]></string>
 

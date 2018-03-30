@@ -283,6 +283,7 @@
         请过几分钟再试。<br/>]]>
     </string>
     <string name="error_session_expired">您的会话已过期。登录以继续。</string>
+    <string name="error_session_expired_document_provider">"Alfresco 会话已过期：重新登录以打开文件。"</string>
     <string name="error_session_refresh">正在刷新会话。</string>
     <string name="error_chunk_transfert"><![CDATA[服务器不支持分块传输。<br/>重新加载您的帐户</b>。]]></string>
 
