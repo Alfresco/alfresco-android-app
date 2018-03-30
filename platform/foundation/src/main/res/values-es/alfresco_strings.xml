@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
   ~  Copyright (C) 2005-2015 Alfresco Software Limited.
   ~
   ~  This file is part of Alfresco Mobile for Android.
@@ -282,6 +283,7 @@
         Vuelva a intentarlo pasados unos minutos.<br/>]]>
     </string>
     <string name="error_session_expired">Su sesión ha caducado. Inicie sesión para continuar.</string>
+    <string name="error_session_expired_document_provider">"La sesión de Alfresco ha finalizado: vuelva a iniciar sesión para abrir un fichero."</string>
     <string name="error_session_refresh">Actualizando sesión.</string>
     <string name="error_chunk_transfert"><![CDATA[El servidor no es compatible con transferencias en bloques.<br/> Vuelva a cargar su cuenta</b>.]]></string>
 

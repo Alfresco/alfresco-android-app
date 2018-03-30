@@ -172,9 +172,9 @@
     <string name="sdknumber_version">SDK: </string>
     <string name="about_description">
 <![CDATA[
-<p>Alfresco Content Services は、重要なビジネスコンテンツの管理と共同作業が行えるオープンプラットフォームです。</p>
+<p>Alfresco Content Services はオープンで柔軟性、拡張性の高いエンタープライズコンテンツ管理 (ECM) プログラムです。どこからでもコンテンツにアクセスして、簡単に共同作業を行えます。</p>
 
-<p>Alfresco Content Services モバイルアプリ は Alfresco Software, Inc. によって設計、開発されたプログラムで、Alfresco Content Services in the Cloud と、Alfresco Content Services、Alfresco Community Edition (3.4.8 以降) に接続することにより、外出先からでも社内のファイルに安全にアクセスすることができます。</p>
+<p>Alfresco Content Services モバイルアプリを使うと、Alfresco システム内に保存されているコンテンツとそれに関連付けられているワークフロープロセスに迅速かつ安全にアクセスできます。Alfresco Content Services は、Alfresco Content Services、Alfresco Community Edition (4.2 以降) 、および Alfresco in the Cloud と連携します。</p>
 
 <p>このモバイルアプリでは、Alfresco Content Services のログイン資格情報を使って (HTTP または HTTPS 経由で) 社内のリポジトリに接続し、ユーザーの権限に基づいてアクセスを管理します。</p>
 ]]>

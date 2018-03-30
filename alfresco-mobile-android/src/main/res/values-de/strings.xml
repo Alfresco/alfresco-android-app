@@ -172,9 +172,9 @@
     <string name="sdknumber_version">SDK: </string>
     <string name="about_description">
 <![CDATA[
-<p>Alfresco ist die offene Plattform für unternehmenskritisches Content-Management und Zusammenarbeit.</p>
+<p>Alfresco Content Services bietet offenes, flexibles und äußerst skalierbares Enterprise Content Management (ECM), mit dem Sie von überall mühelos auf Ihren Content zugreifen und gemeinsam mit anderen daran arbeiten können.</p>
 
-<p>Die Alfresco Content Services-App wurde von Alfresco Software, Inc. entwickelt und ermöglicht die Verbindung mit Alfresco Content Services in the Cloud, Alfresco Content Services und Alfresco Community Edition (ab Version 3.4.8), um von unterwegs sicher auf Unternehmensdateien zugreifen zu können.</p>
+<p>Die Mobilgeräte-App von Alfresco Content Services ermöglicht schnell und sicher Zugriff auf Ihre Alfresco-Inhalte und damit zusammenhängende Workflow-Prozesse. Sie ist kompatibel mit Alfresco Content Services, Alfresco Community Edition (ab Version 4.2) und Alfresco Content Services in the Cloud.</p>
 
 <p>Diese mobile Anwendung verwendet zum Verbindungsaufbau Ihre Anmeldedaten für Alfresco Content Services (über HTTP oder HTTPS). Für den Zugriff sind Ihre Zugriffsrechte entscheidend.</p>
 ]]>
