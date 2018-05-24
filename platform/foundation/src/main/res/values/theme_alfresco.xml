@@ -393,7 +393,7 @@
         <item name="android:layout_gravity">center</item>
         <item name="android:layout_margin">20dip</item>
         <item name="android:scaleType">fitCenter</item>
-        <item name="android:src">@drawable/alfresco_logo_large</item>
+        <item name="android:src">@drawable/alfresco_banner_grey</item>
     </style>
 
     <style name="about_description_panel">

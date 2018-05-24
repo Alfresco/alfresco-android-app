@@ -32,7 +32,7 @@
             android:layout_height="150dip"
             android:contentDescription="@null"
             android:scaleType="fitCenter"
-            android:src="@drawable/alfresco_logo_large" />
+            android:src="@drawable/alfresco_banner_grey" />
 
         <Button
             android:id="@+id/homescreen_login"
