@@ -27,7 +27,7 @@ android {
 
         minSdkVersion 19
         targetSdkVersion 23
-        versionCode 81
+        versionCode 82
 
         versionName VERSION_NAME
 

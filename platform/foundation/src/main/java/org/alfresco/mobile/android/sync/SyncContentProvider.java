@@ -132,6 +132,7 @@ public abstract class SyncContentProvider extends ContentProvider implements Alf
         // Check if the caller has requested a column which does not exists
         checkColumns(projection);
 
+        queryBuilder.setStrict(true);
         queryBuilder.setTables(SyncContentSchema.TABLENAME);
 
         int uriType = URI_MATCHER.match(uri);
