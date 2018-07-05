@@ -549,7 +549,7 @@ public class RenditionManagerImpl extends RenditionManager
         {
             super(client);
             if (alfSession == null
-                    && ((AbstractAlfrescoSessionImpl) alfSession).getAuthenticationProvider() == null) { return; }
+                    || ((AbstractAlfrescoSessionImpl) alfSession).getAuthenticationProvider() == null) { return; }
             Map<String, List<String>> httpHeaders = ((AbstractAlfrescoSessionImpl) alfSession)
                     .getAuthenticationProvider().getHTTPHeaders();
             Map<String, String> headers = new HashMap<>(httpHeaders != null ? httpHeaders.size() : 0);
