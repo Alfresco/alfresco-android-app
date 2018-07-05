@@ -19,14 +19,14 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    compileSdkVersion 26
+    buildToolsVersion "23.0.3"
 
     defaultConfig {
         applicationId APPLICATION_ID
 
         minSdkVersion 19
-        targetSdkVersion 23
+        targetSdkVersion 26
         versionCode 82
 
         versionName VERSION_NAME
