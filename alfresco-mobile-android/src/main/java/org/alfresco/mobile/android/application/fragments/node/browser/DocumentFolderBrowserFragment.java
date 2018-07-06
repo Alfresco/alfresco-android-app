@@ -538,6 +538,9 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment implement
 
     private List<String> getPath(String pathValue, boolean fromSite)
     {
+        if (pathValue == null) {
+            pathValue = "";
+        }
         String[] path = pathValue.split("/");
         if (path.length == 0)
         {
