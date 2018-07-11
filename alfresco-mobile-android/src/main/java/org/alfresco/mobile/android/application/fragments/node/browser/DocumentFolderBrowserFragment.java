@@ -1471,8 +1471,9 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment implement
         if (event.hasException) { return; }
         if (SyncContentManager.getInstance(getActivity()).canSync(SessionUtils.getAccount(getActivity())))
         {
-            SyncContentManager.getInstance(getActivity()).sync(SessionUtils.getAccount(getActivity()),
-                    event.node.getIdentifier());
+            if (event.node != null) {
+                SyncContentManager.getInstance(getActivity()).sync(SessionUtils.getAccount(getActivity()), event.node.getIdentifier());
+            }
             ((ProgressNodeAdapter) adapter).refreshOperations();
         }
         refreshListView();
