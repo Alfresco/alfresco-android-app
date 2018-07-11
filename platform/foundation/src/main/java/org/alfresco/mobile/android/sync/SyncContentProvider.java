@@ -18,7 +18,9 @@
 package org.alfresco.mobile.android.sync;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.database.DatabaseManager;
@@ -134,6 +136,7 @@ public abstract class SyncContentProvider extends ContentProvider implements Alf
 
         queryBuilder.setStrict(true);
         queryBuilder.setTables(SyncContentSchema.TABLENAME);
+        queryBuilder.setProjectionMap(createProjectionMap(projection));
 
         int uriType = URI_MATCHER.match(uri);
         switch (uriType)
@@ -197,6 +200,14 @@ public abstract class SyncContentProvider extends ContentProvider implements Alf
             if (!availableColumns.containsAll(requestedColumns)) { throw new IllegalArgumentException(
                     "Unknown columns in projection"); }
         }
+    }
+
+    private Map<String, String> createProjectionMap(String[] projection) {
+        Map<String, String> projectionMap = new HashMap<>();
+        for (String column : projection) {
+            projectionMap.put(column, column);
+        }
+        return projectionMap;
     }
 
     public static String getAccountFilter(AlfrescoAccount acc)
