@@ -335,7 +335,7 @@ public class SyncNodeOperation extends NodeOperation<Boolean>
         super.onPostExecute(result);
         EventBusManager.getInstance().post(new SyncNodeEvent(getRequestId(), result, node));
 
-        if (markSync != null)
+        if (markSync != null && node != null)
         {
             // Analytics
             AnalyticsHelper.reportOperationEvent(context, AnalyticsManager.CATEGORY_DOCUMENT_MANAGEMENT,
