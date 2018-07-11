@@ -234,7 +234,7 @@ public final class AlfrescoExceptionHelper
             if (context instanceof FragmentActivity)
             {
                 AlfrescoNotificationManager.getInstance(context).showAlertCrouton((FragmentActivity) context,
-                        String.format(context.getString(R.string.error_unknown_exception), e.getCause()));
+                        context.getString(R.string.error_unknown_exception, e.getCause()));
                 messageId = R.string.error_unknown;
             }
             else
@@ -253,7 +253,13 @@ public final class AlfrescoExceptionHelper
             int messageId = getMessageId(activity, event.exception);
             if (messageId != -1)
             {
-                AlfrescoNotificationManager.getInstance(activity).showAlertCrouton(activity, messageId);
+                String message;
+                if (messageId == R.string.error_unknown) {
+                    message = activity.getString(messageId, event.exception);
+                } else {
+                    message = activity.getString(messageId);
+                }
+                AlfrescoNotificationManager.getInstance(activity).showAlertCrouton(activity, message);
             }
             Log.w("[ERROR]", Log.getStackTraceString(event.exception));
             return true;
