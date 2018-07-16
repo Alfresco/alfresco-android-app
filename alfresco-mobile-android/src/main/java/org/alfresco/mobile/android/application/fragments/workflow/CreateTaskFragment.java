@@ -630,7 +630,7 @@ public class CreateTaskFragment extends AlfrescoFragment
         items.clear();
         for (Entry<String, Node> entry : p.entrySet())
         {
-            items.put(entry.getKey(), (Document) entry.getValue());
+            items.put(entry.getKey(), entry.getValue());
         }
 
         // Update documents
