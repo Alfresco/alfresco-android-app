@@ -630,6 +630,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment implement
         if (nActions != null && nActions.hasMultiSelectionEnabled())
         {
             nActions.selectNode(item);
+            adapter.notifyDataSetChanged();
             if (selectedItems.size() == 0)
             {
                 hideDetails = true;
@@ -1456,7 +1457,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment implement
         }
 
         SyncScanInfo info = SyncScanInfo.getLastSyncScanData(getActivity(), getAccount());
-        
+
         if (info != null && info.hasWarning()) {
             Node node = event.getNode();
             if (node != null && SyncContentManager.getInstance(getActivity()).isSynced(getAccount(), event.getNode().getIdentifier())) {
