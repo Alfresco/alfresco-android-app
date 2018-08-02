@@ -47,6 +47,7 @@ import android.speech.RecognizerIntent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.ShareCompat;
+import android.support.v4.content.FileProvider;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -88,7 +89,15 @@ public class ActionUtils extends BaseActionUtils
     {
         Intent intent = new Intent(fr.getActivity(), TextEditorActivity.class);
         intent.setAction(Intent.ACTION_VIEW);
-        Uri data = Uri.fromFile(myFile);
+
+        Uri data;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            data = FileProvider.getUriForFile(fr.getContext(), fr.getContext().getApplicationContext().getPackageName() + ".provider", myFile);
+        } else {
+            data = Uri.fromFile(myFile);
+        }
+
         intent.setDataAndType(data, mimeType.toLowerCase());
 
         try
@@ -116,7 +125,14 @@ public class ActionUtils extends BaseActionUtils
             ActionManagerListener listener)
     {
         Intent intent = new Intent(Intent.ACTION_VIEW);
-        Uri data = Uri.fromFile(myFile);
+
+        Uri data;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            data = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".provider", myFile);
+        } else {
+            data = Uri.fromFile(myFile);
+        }
+
         intent.setDataAndType(data, mimeType.toLowerCase());
 
         try
@@ -182,7 +198,13 @@ public class ActionUtils extends BaseActionUtils
     public static Intent createViewIntent(FragmentActivity activity, File contentFile)
     {
         Intent intent = new Intent(Intent.ACTION_VIEW);
-        Uri data = Uri.fromFile(contentFile);
+
+        Uri data;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            data = FileProvider.getUriForFile(activity, activity.getApplicationContext().getPackageName() + ".provider", contentFile);
+        } else {
+            data = Uri.fromFile(contentFile);
+        }
         intent.setDataAndType(data,
                 MimeTypeManager.getInstance(activity).getMIMEType(contentFile.getName()).toLowerCase());
         return intent;
