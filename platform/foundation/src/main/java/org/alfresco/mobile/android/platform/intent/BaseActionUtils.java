@@ -39,6 +39,7 @@ import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.FileProvider;
 
 public class BaseActionUtils
 {
@@ -52,7 +53,15 @@ public class BaseActionUtils
     public static void openIn(Fragment fr, File myFile, String mimeType, int requestCode)
     {
         Intent intent = new Intent(Intent.ACTION_VIEW);
-        Uri data = Uri.fromFile(myFile);
+
+        Uri data;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            data = FileProvider.getUriForFile(fr.getContext(), fr.getContext().getApplicationContext().getPackageName() + ".provider", myFile);
+        } else {
+            data = Uri.fromFile(myFile);
+        }
+
         intent.setDataAndType(data, mimeType.toLowerCase());
 
         try
@@ -76,7 +85,14 @@ public class BaseActionUtils
     public static void openIn(Fragment fr, File myFile, String mimeType)
     {
         Intent intent = new Intent(Intent.ACTION_VIEW);
-        Uri data = Uri.fromFile(myFile);
+
+        Uri data;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            data = FileProvider.getUriForFile(fr.getContext(), fr.getContext().getApplicationContext().getPackageName() + ".provider", myFile);
+        } else {
+            data = Uri.fromFile(myFile);
+        }
         intent.setDataAndType(data, mimeType.toLowerCase());
 
         try

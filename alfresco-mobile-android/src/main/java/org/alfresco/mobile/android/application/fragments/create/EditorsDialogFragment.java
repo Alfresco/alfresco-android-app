@@ -40,9 +40,11 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.FileProvider;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ListView;
@@ -103,7 +105,17 @@ public class EditorsDialogFragment extends DialogFragment
         // 'eventually' edit a document.
         // ACTION_EDIT doesn't work
         Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setDataAndType(Uri.fromFile(new File("/sdcard/test" + documentType.extension)), documentType.mimetype);
+
+        File myFile = new File("/sdcard/test" + documentType.extension);
+        Uri data;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            data = FileProvider.getUriForFile(getContext(), getContext().getApplicationContext().getPackageName() + ".provider", myFile);
+        } else {
+            data = Uri.fromFile(myFile);
+        }
+
+        intent.setDataAndType(data, documentType.mimetype);
         final PackageManager mgr = getActivity().getPackageManager();
         list = mgr.queryIntentActivities(intent, 0);
         Collections.sort(list, new EditorComparator(getActivity(), true));
