@@ -160,7 +160,7 @@ public class TextEditorActivity extends BaseActivity
             {
                 String filePath = ActionUtils.getPath(this, getIntent().getData());
                 file = new File(filePath);
-                if (file.exists() && file.length() < getResources().getInteger(R.integer.text_editor_max_file_size))
+                if (file.exists())
                 {
 
                     if (savedInstanceState != null)
@@ -174,13 +174,6 @@ public class TextEditorActivity extends BaseActivity
                         setTextShown(false);
                     }
                     retrieveTitle();
-                }
-                else if (file.exists()
-                        && file.length() > getResources().getInteger(R.integer.text_editor_max_file_size))
-                {
-                    AlfrescoNotificationManager.getInstance(this).showLongToast(
-                            getString(R.string.file_editor_error_too_large));
-                    finish();
                 }
                 else
                 {
