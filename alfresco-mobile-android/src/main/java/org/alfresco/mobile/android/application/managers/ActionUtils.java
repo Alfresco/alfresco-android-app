@@ -90,13 +90,7 @@ public class ActionUtils extends BaseActionUtils
         Intent intent = new Intent(fr.getActivity(), TextEditorActivity.class);
         intent.setAction(Intent.ACTION_VIEW);
 
-        Uri data;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            data = FileProvider.getUriForFile(fr.getContext(), fr.getContext().getApplicationContext().getPackageName() + ".provider", myFile);
-        } else {
-            data = Uri.fromFile(myFile);
-        }
+        Uri data = Uri.fromFile(myFile);
 
         intent.setDataAndType(data, mimeType.toLowerCase());
 
