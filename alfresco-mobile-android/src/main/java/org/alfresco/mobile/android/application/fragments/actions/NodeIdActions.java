@@ -75,13 +75,16 @@ public class NodeIdActions extends AbstractActions<String>
         // SYNC
         if (SyncContentManager.getInstance(getActivity()).hasActivateSync(getAccount()))
         {
-            createMenu = menu.addSubMenu(Menu.NONE, R.id.menu_action_sync_group, Menu.FIRST, R.string.sync);
-            createMenu.setIcon(R.drawable.ic_sync_light);
-            createMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-            hideActionIfNecessary(menu, createMenu.getItem().getItemId(), ConfigurableActionHelper.ACTION_NODE_SYNC);
-
-            createMenu.add(Menu.NONE, R.id.menu_action_sync_group_sync, Menu.FIRST + 1, R.string.sync);
-            createMenu.add(Menu.NONE, R.id.menu_action_sync_group_unsync, Menu.FIRST + 2, R.string.unsync);
+            MenuItem menuItem;
+            if (hasUnsyncedFiles(selectedItems)) {
+                menuItem = menu.add(Menu.NONE, R.id.menu_action_sync_group_sync, Menu.FIRST, R.string.sync)
+                        .setIcon(R.drawable.ic_sync_light);
+            } else {
+                menuItem = menu.add(Menu.NONE, R.id.menu_action_sync_group_unsync, Menu.FIRST, R.string.unsync)
+                        .setIcon(R.drawable.ic_synced_dark);
+            }
+            menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+            hideActionIfNecessary(menu, menuItem.getItemId(), ConfigurableActionHelper.ACTION_NODE_SYNC);
         }
 
         // FAVORITES
@@ -148,6 +151,15 @@ public class NodeIdActions extends AbstractActions<String>
             mode.finish();
         }
         return b;
+    }
+
+    private boolean hasUnsyncedFiles(List<String> selectedNodes) {
+        for (String node : selectedNodes) {
+            if (!SyncContentManager.getInstance(getActivity()).isSynced(getAccount(), node) && !SyncContentManager.getInstance(getActivity()).isRootSynced(getAccount(), node)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     // ///////////////////////////////////////////////////////////////////////////
