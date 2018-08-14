@@ -45,6 +45,7 @@ import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
 import org.alfresco.mobile.android.application.fragments.builder.LeafFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.node.download.DownloadDialogFragment;
+import org.alfresco.mobile.android.application.fragments.node.download.DownloadDocumentHolder;
 import org.alfresco.mobile.android.application.fragments.node.rendition.PreviewFragment;
 import org.alfresco.mobile.android.application.fragments.sync.SyncFragment;
 import org.alfresco.mobile.android.application.fragments.utils.OpenAsDialogFragment;
@@ -885,7 +886,8 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
             // Only sharing as attachment is allowed when we're not on a cloud
             // account
             Bundle b = new Bundle();
-            b.putParcelable(DownloadDialogFragment.ARGUMENT_DOCUMENT, node);
+            DownloadDocumentHolder.getInstance().setDocument(node);
+            b.putBoolean(DownloadDialogFragment.ARGUMENT_DOCUMENT, true);
             b.putInt(DownloadDialogFragment.ARGUMENT_ACTION, DownloadDialogFragment.ACTION_EMAIL);
             DialogFragment frag = new DownloadDialogFragment();
             frag.setArguments(b);
@@ -907,7 +909,8 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
                         public void onPositive(MaterialDialog dialog)
                         {
                             Bundle b = new Bundle();
-                            b.putParcelable(DownloadDialogFragment.ARGUMENT_DOCUMENT, node);
+                            DownloadDocumentHolder.getInstance().setDocument(node);
+                            b.putBoolean(DownloadDialogFragment.ARGUMENT_DOCUMENT, true);
                             b.putInt(DownloadDialogFragment.ARGUMENT_ACTION, DownloadDialogFragment.ACTION_EMAIL);
                             DialogFragment frag = new DownloadDialogFragment();
                             frag.setArguments(b);
@@ -1047,7 +1050,8 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         else
         {
             // Other case
-            b.putParcelable(DownloadDialogFragment.ARGUMENT_DOCUMENT, node);
+            DownloadDocumentHolder.getInstance().setDocument(node);
+            b.putBoolean(DownloadDialogFragment.ARGUMENT_DOCUMENT, true);
             b.putInt(DownloadDialogFragment.ARGUMENT_ACTION, withAlfresco
                     ? DownloadDialogFragment.ACTION_OPEN_WITH_ALFRESCO : DownloadDialogFragment.ACTION_OPEN);
             DialogFragment frag = new DownloadDialogFragment();

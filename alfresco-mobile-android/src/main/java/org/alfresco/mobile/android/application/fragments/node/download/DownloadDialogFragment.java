@@ -87,7 +87,7 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
 
         if (getArguments().containsKey(ARGUMENT_DOCUMENT))
         {
-            doc = getArguments().getParcelable(ARGUMENT_DOCUMENT);
+            doc = (Document) DownloadDocumentHolder.getInstance().getNode();
         }
         else
         {

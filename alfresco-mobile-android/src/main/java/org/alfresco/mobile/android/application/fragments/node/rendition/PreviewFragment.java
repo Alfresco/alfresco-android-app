@@ -30,6 +30,7 @@ import org.alfresco.mobile.android.application.fragments.builder.LeafFragmentBui
 import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsFragment;
 import org.alfresco.mobile.android.application.fragments.node.details.PagerNodeDetailsFragment;
 import org.alfresco.mobile.android.application.fragments.node.download.DownloadDialogFragment;
+import org.alfresco.mobile.android.application.fragments.node.download.DownloadDocumentHolder;
 import org.alfresco.mobile.android.application.fragments.utils.OpenAsDialogFragment;
 import org.alfresco.mobile.android.application.intent.RequestCode;
 import org.alfresco.mobile.android.application.managers.ActionUtils;
@@ -214,7 +215,8 @@ public class PreviewFragment extends AlfrescoFragment
         else
         {
             // Other case
-            b.putParcelable(DownloadDialogFragment.ARGUMENT_DOCUMENT, node);
+            DownloadDocumentHolder.getInstance().setDocument(node);
+            b.putBoolean(DownloadDialogFragment.ARGUMENT_DOCUMENT, true);
             b.putInt(DownloadDialogFragment.ARGUMENT_ACTION, DownloadDialogFragment.ACTION_OPEN);
             DialogFragment frag = new DownloadDialogFragment();
             frag.setArguments(b);
