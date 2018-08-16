@@ -26,8 +26,10 @@ import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.FileProvider;
 import android.util.Log;
 
 public class VideoCapture extends DeviceCapture
@@ -74,7 +76,14 @@ public class VideoCapture extends DeviceCapture
 
                     payload = new File(folder.getPath(), createFilename("VID", "mp4"));
 
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(payload));
+                    Uri data;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        data = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".provider", payload);
+                    } else {
+                        data = Uri.fromFile(payload);
+                    }
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, data);
                     intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
                     // Represents a limit of 300Mb
                     intent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, 314572800L);

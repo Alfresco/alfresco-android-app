@@ -26,8 +26,10 @@ import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.FileProvider;
 import android.util.Log;
 
 public class PhotoCapture extends DeviceCapture
@@ -72,7 +74,15 @@ public class PhotoCapture extends DeviceCapture
                 {
                     payload = new File(folder.getPath(), createFilename("IMG_", "jpg"));
 
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(payload));
+                    Uri data;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        data = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".provider", payload);
+                    } else {
+                        data = Uri.fromFile(payload);
+                    }
+
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, data);
 
                     parentActivity.startActivityForResult(intent, getRequestCode());
                 }
