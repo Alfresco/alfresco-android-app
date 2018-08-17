@@ -353,11 +353,15 @@ public class TextEditorActivity extends BaseActivity
         }
     }
 
-    private void displayText(String text)
+    private void displayText(final String text)
     {
         tview = (TextView) findViewById(R.id.texteditor);
         setTextSize(textSize);
-        tview.setText(text);
+        tview.post(new Runnable() {
+            public void run() {
+                tview.setText(text);
+            }
+        });
         tview.addTextChangedListener(new TextWatcher()
         {
             public void afterTextChanged(Editable s)
