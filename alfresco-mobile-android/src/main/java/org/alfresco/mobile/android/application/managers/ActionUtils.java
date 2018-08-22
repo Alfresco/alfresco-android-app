@@ -90,8 +90,19 @@ public class ActionUtils extends BaseActionUtils
         Intent intent = new Intent(fr.getActivity(), TextEditorActivity.class);
         intent.setAction(Intent.ACTION_VIEW);
 
-        Uri data = Uri.fromFile(myFile);
-
+        Uri data;
+        
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            if (isLocalFile(myFile)) {
+                data = Uri.fromFile(myFile);
+            } else {
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                data = FileProvider.getUriForFile(fr.getActivity(), fr.getActivity().getApplicationContext().getPackageName() + ".provider", myFile);
+            }
+        } else {
+            data = Uri.fromFile(myFile);
+        }
+        
         intent.setDataAndType(data, mimeType.toLowerCase());
 
         try
@@ -110,6 +121,10 @@ public class ActionUtils extends BaseActionUtils
             AlfrescoNotificationManager.getInstance(fr.getActivity()).showAlertCrouton(fr.getActivity(),
                     org.alfresco.mobile.android.foundation.R.string.error_unable_open_file);
         }
+    }
+
+    private static boolean isLocalFile(File file) {
+        return file.getPath().startsWith("/storage/emulated");
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -152,7 +167,7 @@ public class ActionUtils extends BaseActionUtils
     /**
      * Open a local file with a 3rd party application. Manage automatically with
      * Data Protection.
-     * 
+     *
      * @param fr
      * @param myFile
      * @param listener
@@ -210,7 +225,7 @@ public class ActionUtils extends BaseActionUtils
     /**
      * Open Play Store application or its web version if no play store
      * available.
-     * 
+     *
      * @param c : Android Context
      */
     public static void actionDisplayPlayStore(Context c)
@@ -491,7 +506,7 @@ public class ActionUtils extends BaseActionUtils
     // ///////////////////////////////////////////////////////////////////////////
     /**
      * Allow to pick file with other apps.
-     * 
+     *
      * @return Activity for Result.
      */
     public static void actionPickFile(Fragment fr, int requestCode)
