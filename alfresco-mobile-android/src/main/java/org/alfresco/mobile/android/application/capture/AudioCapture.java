@@ -33,6 +33,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -110,11 +111,15 @@ public class AudioCapture extends DeviceCapture
                 String fileType = getAudioFileTypeFromUri(savedUri);
                 String newFilePath = folder.getPath() + "/"
                         + createFilename("AUDIO", filePath.substring(filePath.lastIndexOf(".") + 1));
+                
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    copyFile(savedUri, newFilePath);
+                } else {
+                    copyFile(filePath, newFilePath);
+                    parentActivity.getContentResolver().delete(savedUri, null, null);
+                }
 
-                copyFile(filePath, newFilePath);
-
-                parentActivity.getContentResolver().delete(savedUri, null, null);
-                (new File(filePath)).delete();
+                new File(filePath).delete();
 
                 payload = new File(newFilePath);
 
@@ -171,31 +176,31 @@ public class AudioCapture extends DeviceCapture
         }
     }
 
+    private void copyFile(Uri fileName, String newFileName) throws IOException
+    {
+        copyFile(parentActivity.getContentResolver().openInputStream(fileName), new FileOutputStream(newFileName));
+    }
+
     private void copyFile(String fileName, String newFileName) throws IOException
     {
-        InputStream in = null;
-        OutputStream out = null;
-        try
-        {
-            in = new FileInputStream(fileName);
-            out = new FileOutputStream(newFileName);
+        copyFile(new FileInputStream(fileName), new FileOutputStream(newFileName));
+    }
 
+    private void copyFile(InputStream sourceStream, OutputStream destinationStream) throws IOException
+    {
+        try {
             // Transfer bytes from in to out
             byte[] buf = new byte[1024];
             int len;
-            while ((len = in.read(buf)) > 0)
+            while ((len = sourceStream.read(buf)) > 0)
             {
-                out.write(buf, 0, len);
+                destinationStream.write(buf, 0, len);
             }
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             throw new IOException("Error during copy file", e);
-        }
-        finally
-        {
-            IOUtils.closeStream(in);
-            IOUtils.closeStream(out);
+        } finally {
+            IOUtils.closeStream(sourceStream);
+            IOUtils.closeStream(destinationStream);
         }
     }
 
