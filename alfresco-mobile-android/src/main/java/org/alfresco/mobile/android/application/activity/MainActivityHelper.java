@@ -28,6 +28,8 @@ import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 
 import android.os.Bundle;
 
+import com.google.gson.Gson;
+
 public class MainActivityHelper
 {
 
@@ -66,18 +68,19 @@ public class MainActivityHelper
     {
         Bundle savedInstanceBundle = new Bundle();
 
-        savedInstanceBundle.putSerializable(ARGUMENT_ACCOUNT, currentAccount);
+        Gson gson = new Gson();
+        savedInstanceBundle.putString(ARGUMENT_ACCOUNT, gson.toJson(currentAccount));
 
         if (capture != null)
         {
-            savedInstanceBundle.putSerializable(ARGUMENT_CAPTURE, capture);
+            savedInstanceBundle.putString(ARGUMENT_CAPTURE, gson.toJson(capture));
         }
 
         outState.putInt(ARGUMENT_FRAGMENT_QUEUE, fragmentQueue);
 
         if (importParent != null)
         {
-            savedInstanceBundle.putParcelable(ARGUMENT_IMPORT_PARENT, importParent);
+            savedInstanceBundle.putString(ARGUMENT_IMPORT_PARENT, gson.toJson(importParent));
         }
 
         outState.putInt(ARGUMENT_SESSION_STATE, sessionState);
@@ -91,45 +94,44 @@ public class MainActivityHelper
     // ///////////////////////////////////////////////////////////////////////////
     public AlfrescoAccount getCurrentAccount()
     {
-        return (savedInstanceBundle.containsKey(ARGUMENT_ACCOUNT)) ? (AlfrescoAccount) savedInstanceBundle
-                .getSerializable(ARGUMENT_ACCOUNT) : null;
+        return (savedInstanceBundle.containsKey(ARGUMENT_ACCOUNT)) ? new Gson().fromJson(savedInstanceBundle
+                .getString(ARGUMENT_ACCOUNT),AlfrescoAccount.class) : null;
     }
 
     public Site getSite()
     {
-        return (savedInstanceBundle.containsKey(ARGUMENT_DISPLAY_FROM_SITE)) ? (Site) savedInstanceBundle
-                .getSerializable(ARGUMENT_DISPLAY_FROM_SITE) : null;
+        return (savedInstanceBundle.containsKey(ARGUMENT_DISPLAY_FROM_SITE)) ? new Gson().fromJson(savedInstanceBundle
+                .getString(ARGUMENT_DISPLAY_FROM_SITE), Site.class) : null;
     }
 
     public Folder getFolder()
     {
-        if (savedInstanceBundle.containsKey(ARGUMENT_IMPORT_PARENT)) { return (Folder) savedInstanceBundle
-                .getSerializable(ARGUMENT_IMPORT_PARENT); }
-        return null;
+        return (savedInstanceBundle.containsKey(ARGUMENT_IMPORT_PARENT)) ? new Gson().fromJson(savedInstanceBundle
+                .getString(ARGUMENT_IMPORT_PARENT), Folder.class) : null;
     }
 
     public Integer getFragmentQueue()
     {
-        return (savedInstanceBundle.containsKey(ARGUMENT_FRAGMENT_QUEUE)) ? (Integer) savedInstanceBundle
-                .getSerializable(ARGUMENT_FRAGMENT_QUEUE) : -1;
+        return (savedInstanceBundle.containsKey(ARGUMENT_FRAGMENT_QUEUE)) ? savedInstanceBundle
+                .getInt(ARGUMENT_FRAGMENT_QUEUE) : -1;
     }
 
     public Integer getSessionState()
     {
         return (savedInstanceBundle.containsKey(ARGUMENT_SESSION_STATE))
-                ? (Integer) savedInstanceBundle.getSerializable(ARGUMENT_SESSION_STATE) : -1;
+                ? savedInstanceBundle.getInt(ARGUMENT_SESSION_STATE) : -1;
     }
 
     public Integer getSessionErrorMessageId()
     {
         return (savedInstanceBundle.containsKey(ARGUMENT_SESSION_STATE_ERROR_ID))
-                ? (Integer) savedInstanceBundle.getSerializable(ARGUMENT_SESSION_STATE_ERROR_ID) : -1;
+                ? savedInstanceBundle.getInt(ARGUMENT_SESSION_STATE_ERROR_ID) : -1;
     }
 
     public DeviceCapture getDeviceCapture()
     {
-        return (savedInstanceBundle.containsKey(ARGUMENT_CAPTURE)) ? (DeviceCapture) savedInstanceBundle
-                .getSerializable(ARGUMENT_CAPTURE) : null;
+        return (savedInstanceBundle.containsKey(ARGUMENT_CAPTURE)) ? new Gson().fromJson(savedInstanceBundle
+                .getString(ARGUMENT_CAPTURE), DeviceCapture.class) : null;
     }
 
     public Stack<String> getStackCentral()

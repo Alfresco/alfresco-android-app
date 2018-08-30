@@ -438,6 +438,7 @@ public class MainActivity extends BaseActivity
     protected void onSaveInstanceState(Bundle outState)
     {
         super.onSaveInstanceState(outState);
+        outState.clear();
         outState.putBundle(MainActivityHelper.TAG, MainActivityHelper.createBundle(outState, getCurrentAccount(),
                 capture, fragmentQueue, importParent, sessionState, sessionStateErrorMessageId));
     }
