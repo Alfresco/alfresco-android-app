@@ -137,5 +137,6 @@ android {
 
 dependencies {
     //COMMON TO ALL VARIANTS
+    compile 'com.google.code.gson:gson:2.8.5'
     compile project(':platform:foundation')
 }

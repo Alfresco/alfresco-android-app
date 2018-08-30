@@ -187,8 +187,7 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
                         }
                         else
                         {
-                            ActionUtils.openIn(detailsFragment, contentFile.getFile(), doc.getContentStreamMimeType(),
-                                    RequestCode.SAVE_BACK);
+                            ActionUtils.openIn(detailsFragment, contentFile.getFile(), doc.getContentStreamMimeType());
                         }
                     }
                     break;
