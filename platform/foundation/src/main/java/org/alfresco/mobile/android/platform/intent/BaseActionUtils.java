@@ -97,7 +97,14 @@ public class BaseActionUtils
 
         try
         {
-            fr.startActivity(intent);
+            if (fr.getParentFragment() != null)
+            {
+                fr.getParentFragment().startActivity(intent);
+            }
+            else
+            {
+                fr.startActivity(intent);
+            }
         }
         catch (ActivityNotFoundException e)
         {
