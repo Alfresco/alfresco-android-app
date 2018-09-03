@@ -208,8 +208,7 @@ public class PreviewFragment extends AlfrescoFragment
             {
                 // If sync file + sync activate
                 ActionUtils.openIn(detailsFragment, syncFile,
-                        MimeTypeManager.getInstance(getActivity()).getMIMEType(syncFile.getName()),
-                        RequestCode.SAVE_BACK);
+                        MimeTypeManager.getInstance(getActivity()).getMIMEType(syncFile.getName()));
             }
         }
         else

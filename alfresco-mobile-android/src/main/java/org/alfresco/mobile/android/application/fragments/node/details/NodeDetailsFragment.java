@@ -1042,8 +1042,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
                 else
                 {
                     ActionUtils.openIn(this, syncFile,
-                            MimeTypeManager.getInstance(getActivity()).getMIMEType(syncFile.getName()),
-                            RequestCode.SAVE_BACK);
+                            MimeTypeManager.getInstance(getActivity()).getMIMEType(syncFile.getName()));
                 }
             }
         }
