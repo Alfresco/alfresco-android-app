@@ -101,7 +101,7 @@ public class SyncContentDownload extends SyncContent
             doc = session.getServiceRegistry().getVersionService().getLatestVersion(doc);
 
             // Retrieve parent
-            parentFolder = session.getServiceRegistry().getDocumentFolderService().getParentFolder(doc);
+            parentFolder = getParentFolder(doc);
 
             File destFile = SyncContentManager.getInstance(context).getSynchroFile(acc, doc);
 
@@ -167,6 +167,15 @@ public class SyncContentDownload extends SyncContent
             CursorUtils.closeCursor(cursor);
         }
 
+    }
+
+    private Folder getParentFolder(Document document) {
+        try {
+            return session.getServiceRegistry().getDocumentFolderService().getParentFolder(document);
+        } catch (Exception e) {
+            Log.e(TAG, Log.getStackTraceString(e));
+            return null;
+        }
     }
 
     protected void onPostExecute()
