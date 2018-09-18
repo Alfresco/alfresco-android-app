@@ -173,6 +173,7 @@ public class ConfigMenuEditorFragment extends AlfrescoFragment implements DevMen
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
+                selectedPosition = position;
                 CreateConfigMenuItemFragment.with(getActivity())
                         .viewConfig((ViewConfigImpl) parent.getItemAtPosition(position)).display();
             }
