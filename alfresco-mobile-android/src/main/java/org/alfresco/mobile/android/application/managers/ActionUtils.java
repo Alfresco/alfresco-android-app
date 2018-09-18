@@ -137,8 +137,12 @@ public class ActionUtils extends BaseActionUtils
 
         Uri data;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            data = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".provider", myFile);
+            if (isLocalFile(myFile)) {
+                data = Uri.fromFile(myFile);
+            } else {
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                data = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".provider", myFile);
+            }
         } else {
             data = Uri.fromFile(myFile);
         }
