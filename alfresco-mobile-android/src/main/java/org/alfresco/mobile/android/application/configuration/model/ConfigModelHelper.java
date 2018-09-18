@@ -14,6 +14,7 @@ import org.alfresco.mobile.android.application.configuration.model.view.Favorite
 import org.alfresco.mobile.android.application.configuration.model.view.FolderDetailsConfigModel;
 import org.alfresco.mobile.android.application.configuration.model.view.LocalConfigModel;
 import org.alfresco.mobile.android.application.configuration.model.view.LocalFilesConfigModel;
+import org.alfresco.mobile.android.application.configuration.model.view.MenuEditorConfigModel;
 import org.alfresco.mobile.android.application.configuration.model.view.PeopleConfigModel;
 import org.alfresco.mobile.android.application.configuration.model.view.RepositoryConfigModel;
 import org.alfresco.mobile.android.application.configuration.model.view.RepositorySearchConfigModel;
@@ -189,6 +190,7 @@ public class ConfigModelHelper implements ConfigIconIds
             put(AdvancedSearchConfigModel.TYPE_ID, new AdvancedSearchConfigModel());
             put(TasksConfigModel.TYPE_ID, new TasksConfigModel());
             put(SyncConfigModel.TYPE_ID, new SyncConfigModel());
+            put(MenuEditorConfigModel.TYPE_ID, new MenuEditorConfigModel());
         }
     };
 
