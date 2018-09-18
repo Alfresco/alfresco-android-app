@@ -45,9 +45,11 @@ import android.content.pm.ResolveInfo;
 import android.content.res.AssetManager;
 import android.content.res.Configuration;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.FileProvider;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -205,7 +207,13 @@ public class DocumentPropertiesDialogFragment extends DialogFragment
                         // previously.
                         Intent intent = new Intent(Intent.ACTION_VIEW);
 
-                        Uri data = Uri.fromFile(newFile);
+                        Uri data;
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                            data = FileProvider.getUriForFile(getActivity(), getActivity().getApplicationContext().getPackageName() + ".provider", newFile);
+                        } else {
+                            data = Uri.fromFile(newFile);
+                        }
 
                         intent.setDataAndType(data, documentType.mimetype);
                         intent.setComponent(new ComponentName(editor.activityInfo.applicationInfo.packageName,
