@@ -21,6 +21,7 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.async.Operation;
 import org.alfresco.mobile.android.async.OperationSchema;
 import org.alfresco.mobile.android.async.OperationsContentProvider;
+import org.alfresco.mobile.android.async.OperationsFactory;
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.node.create.CreateDocumentRequest;
 import org.alfresco.mobile.android.async.node.create.CreateFolderRequest;
@@ -146,7 +147,11 @@ public class OperationCursorAdapter extends BaseCursorLoader<TwoLinesProgressVie
                         case Operation.STATUS_FAILED:
                         case Operation.STATUS_CANCEL:
                             // Retry
-                            Operator.with(context).retry(uri);
+                            if (OperationsFactory.getRequest(context, uri) == null) {
+                                v.getContext().getContentResolver().delete(uri, null, null);
+                            } else {
+                                Operator.with(context).retry(uri);
+                            }
                             break;
                         case Operation.STATUS_SUCCESSFUL:
                             // Remove operation
