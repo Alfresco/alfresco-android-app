@@ -488,7 +488,11 @@ public class TextEditorActivity extends BaseActivity
     public void reload(String charset)
     {
         defaultCharset = charset;
-        Operator.with(this).load(new OpenFileRequest.Builder(file, defaultCharset));
+        if (file == null || !file.exists()) {
+            Operator.with(this).load(new OpenFileRequest.Builder(uri, defaultCharset));
+        } else {
+            Operator.with(this).load(new OpenFileRequest.Builder(file, defaultCharset));
+        }
         setTextShown(false);
     }
 
