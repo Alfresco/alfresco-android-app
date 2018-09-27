@@ -25,21 +25,31 @@ import org.alfresco.mobile.android.async.impl.BaseOperationRequest;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 
 public class FileOperationRequest extends BaseOperationRequest
 {
     private static final long serialVersionUID = 1L;
 
     public final File file;
+    public Uri uri;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
     protected FileOperationRequest(Context context, long accountId, String networkId, int notificationVisibility,
-            String title, String mimeType, int requestTypeId, File file)
+                                   String title, String mimeType, int requestTypeId, File file)
     {
         super(context, accountId, networkId, notificationVisibility, title, mimeType, requestTypeId);
         this.file = file;
+    }
+
+    protected FileOperationRequest(Context context, long accountId, String networkId, int notificationVisibility,
+            String title, String mimeType, int requestTypeId, File file, Uri uri)
+    {
+        super(context, accountId, networkId, notificationVisibility, title, mimeType, requestTypeId);
+        this.file = file;
+        this.uri = uri;
     }
 
     public FileOperationRequest(Cursor cursor)
@@ -85,6 +95,10 @@ public class FileOperationRequest extends BaseOperationRequest
         {
         }
 
+        protected Builder(Uri uri) {
+            this.uri = uri;
+        }
+
         protected Builder(File file)
         {
             this.file = file;
@@ -95,7 +109,7 @@ public class FileOperationRequest extends BaseOperationRequest
         public FileOperationRequest build(Context context)
         {
             return new FileOperationRequest(context, accountId, networkId, notificationVisibility, title, mimeType,
-                    requestTypeId, file);
+                    requestTypeId, file, uri);
         }
     }
 }

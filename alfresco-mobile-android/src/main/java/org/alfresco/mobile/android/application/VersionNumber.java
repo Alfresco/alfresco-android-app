@@ -82,5 +82,8 @@ public interface VersionNumber
     /** Release 27 July 2018 */
     int VERSION_1_8_3 = 83;
 
-    int LATEST_VERSION = VERSION_1_8_3;
+    /** TBD */
+    int VERSION_1_8_4 = 84;
+
+    int LATEST_VERSION = VERSION_1_8_4;
 }
