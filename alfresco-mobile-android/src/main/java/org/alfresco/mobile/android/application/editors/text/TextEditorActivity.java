@@ -44,6 +44,7 @@ import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.v7.widget.Toolbar;
@@ -73,6 +74,7 @@ public class TextEditorActivity extends BaseActivity
     private static final String ARGUMENT_TEXT_SIZE = "TextEditorActivityTextSize";
 
     private File file;
+    private Uri uri;
 
     private TextView tview;
 
@@ -158,28 +160,29 @@ public class TextEditorActivity extends BaseActivity
         {
             if (getIntent().getData() != null)
             {
-                String filePath = ActionUtils.getPath(this, getIntent().getData());
-                file = new File(filePath);
-                if (file.exists())
-                {
+                uri = getIntent().getData();
 
-                    if (savedInstanceState != null)
-                    {
-                        displayText(savedInstanceState.getString(ARGUMENT_TEXT));
-                        setSupportProgressBarIndeterminateVisibility(false);
+                try {
+                    String filePath = ActionUtils.getPath(this, getIntent().getData());
+                    file = new File(filePath);
+                    if (file.exists()) {
+
+                        if (savedInstanceState != null) {
+                            displayText(savedInstanceState.getString(ARGUMENT_TEXT));
+                            setSupportProgressBarIndeterminateVisibility(false);
+                        } else {
+                            Operator.with(this).load(new OpenFileRequest.Builder(file, defaultCharset));
+                            setTextShown(false);
+                        }
+                        retrieveTitle();
+                    } else {
+                        AlfrescoNotificationManager.getInstance(this).showLongToast(
+                                getString(R.string.file_editor_error_open));
+                        finish();
                     }
-                    else
-                    {
-                        Operator.with(this).load(new OpenFileRequest.Builder(file, defaultCharset));
-                        setTextShown(false);
-                    }
-                    retrieveTitle();
-                }
-                else
-                {
-                    AlfrescoNotificationManager.getInstance(this).showLongToast(
-                            getString(R.string.file_editor_error_open));
-                    finish();
+                } catch (IllegalArgumentException e) {
+                    Operator.with(this).load(new OpenFileRequest.Builder(uri, defaultCharset));
+                    setTextShown(false);
                 }
             }
             else
@@ -284,17 +287,12 @@ public class TextEditorActivity extends BaseActivity
                 speechToText();
                 return true;
             case android.R.id.home:
-                if (file != null)
-                {
-                    if (hasChanged())
-                    {
-                        // Request to save before quit
-                        requestSave();
-                    }
-                    else
-                    {
-                        finish();
-                    }
+                if (hasChanged()) {
+                    // Request to save before quit
+                    requestSave();
+                }
+                else {
+                    finish();
                 }
                 return true;
             default:
@@ -308,7 +306,7 @@ public class TextEditorActivity extends BaseActivity
     @Override
     public void onBackPressed()
     {
-        if (file != null)
+        if (file != null && file.exists())
         {
             if (hasChanged())
             {
@@ -325,6 +323,13 @@ public class TextEditorActivity extends BaseActivity
                 {
                     file.delete();
                 }
+                super.onBackPressed();
+            }
+        } else {
+            if (hasChanged()) {
+                // Request to save before quit
+                requestSave();
+            } else {
                 super.onBackPressed();
             }
         }
@@ -452,7 +457,12 @@ public class TextEditorActivity extends BaseActivity
         OutputStream sourceFile = null;
         try
         {
-            sourceFile = new FileOutputStream(file);
+            if (file == null || !file.exists()) {
+                sourceFile = (FileOutputStream) getContentResolver().openOutputStream(uri);
+            } else {
+                sourceFile = new FileOutputStream(file);
+            }
+
             sourceFile.write(view.getText().toString().getBytes("UTF-8"));
             sourceFile.close();
 

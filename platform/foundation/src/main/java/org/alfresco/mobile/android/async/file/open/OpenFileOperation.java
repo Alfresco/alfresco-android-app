@@ -33,6 +33,8 @@ import org.alfresco.mobile.android.async.file.FileOperationRequest;
 import org.alfresco.mobile.android.async.impl.ListingOperation;
 import org.alfresco.mobile.android.platform.EventBusManager;
 
+import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 
 public class OpenFileOperation extends ListingOperation<String>
@@ -40,6 +42,7 @@ public class OpenFileOperation extends ListingOperation<String>
     private static final String TAG = OpenFileOperation.class.getName();
 
     private File file;
+    private Uri uri;
 
     private Charset charset;
 
@@ -51,6 +54,7 @@ public class OpenFileOperation extends ListingOperation<String>
         super(operator, dispatcher, action);
         if (request instanceof OpenFileRequest)
         {
+            this.uri = ((OpenFileRequest) request).uri;
             this.file = ((FileOperationRequest) request).file;
             this.charset = ((OpenFileRequest) request).charset;
         }
@@ -68,7 +72,11 @@ public class OpenFileOperation extends ListingOperation<String>
 
             try
             {
-                s = readFile(file.getPath());
+                if (file != null) {
+                    s = readFile(file.getPath());
+                } else {
+                    s = readFile(context, uri);
+                }
             }
             catch (Exception e)
             {
@@ -99,6 +107,26 @@ public class OpenFileOperation extends ListingOperation<String>
     private String readFile(String path) throws IOException
     {
         FileInputStream stream = new FileInputStream(new File(path));
+        try
+        {
+            FileChannel fc = stream.getChannel();
+            MappedByteBuffer bb = fc.map(FileChannel.MapMode.READ_ONLY, 0, fc.size());
+            return charset.decode(bb).toString();
+        }
+        catch (Exception e)
+        {
+            // DO Nothing
+            return null;
+        }
+        finally
+        {
+            IOUtils.closeStream(stream);
+        }
+    }
+
+    private String readFile(Context context, Uri uri) throws IOException {
+        FileInputStream stream = (FileInputStream) context.getContentResolver().openInputStream(uri);
+
         try
         {
             FileChannel fc = stream.getChannel();

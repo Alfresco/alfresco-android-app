@@ -26,6 +26,7 @@ import org.alfresco.mobile.android.async.impl.BaseOperationRequest;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 
 public class OpenFileRequest extends FileOperationRequest
 {
@@ -41,9 +42,9 @@ public class OpenFileRequest extends FileOperationRequest
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
     protected OpenFileRequest(Context context, long accountId, String networkId, int notificationVisibility,
-            String title, String mimeType, int requestTypeId, File file, Charset charset)
+            String title, String mimeType, int requestTypeId, File file, Charset charset, Uri uri)
     {
-        super(context, accountId, networkId, notificationVisibility, title, mimeType, requestTypeId, file);
+        super(context, accountId, networkId, notificationVisibility, title, mimeType, requestTypeId, file, uri);
         this.charset = charset;
 
         // Save extra info
@@ -65,7 +66,10 @@ public class OpenFileRequest extends FileOperationRequest
     // ///////////////////////////////////////////////////////////////////////////
     public static class Builder extends BaseOperationRequest.Builder
     {
+
         private File file;
+
+        private Uri uri;
 
         private Charset charset;
 
@@ -81,10 +85,17 @@ public class OpenFileRequest extends FileOperationRequest
             this.charset = Charset.forName(charset);
         }
 
+        public Builder(Uri uri, String charset)
+        {
+            this();
+            this.uri = uri;
+            this.charset = Charset.forName(charset);
+        }
+
         public OpenFileRequest build(Context context)
         {
             return new OpenFileRequest(context, accountId, networkId, notificationVisibility, title, mimeType,
-                    requestTypeId, file, charset);
+                    requestTypeId, file, charset, uri);
         }
     }
 

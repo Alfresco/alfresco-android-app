@@ -91,14 +91,11 @@ public class ActionUtils extends BaseActionUtils
         intent.setAction(Intent.ACTION_VIEW);
 
         Uri data;
-        
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            if (isLocalFile(myFile)) {
-                data = Uri.fromFile(myFile);
-            } else {
+            intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 data = FileProvider.getUriForFile(fr.getActivity(), fr.getActivity().getApplicationContext().getPackageName() + ".provider", myFile);
-            }
         } else {
             data = Uri.fromFile(myFile);
         }
@@ -137,12 +134,8 @@ public class ActionUtils extends BaseActionUtils
 
         Uri data;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            if (isLocalFile(myFile)) {
-                data = Uri.fromFile(myFile);
-            } else {
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 data = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".provider", myFile);
-            }
         } else {
             data = Uri.fromFile(myFile);
         }
