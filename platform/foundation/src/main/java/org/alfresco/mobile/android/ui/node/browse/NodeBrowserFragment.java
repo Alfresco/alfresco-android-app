@@ -28,7 +28,9 @@ import org.alfresco.mobile.android.async.OperationRequest.OperationBuilder;
 import org.alfresco.mobile.android.async.node.browse.NodeChildrenEvent;
 import org.alfresco.mobile.android.async.node.browse.NodeChildrenRequest;
 import org.alfresco.mobile.android.foundation.R;
+import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.platform.utils.BundleUtils;
+import org.alfresco.mobile.android.sync.SyncContentManager;
 import org.alfresco.mobile.android.ui.RefreshFragment;
 import org.alfresco.mobile.android.ui.fragments.BaseGridFragment;
 
@@ -165,7 +167,7 @@ public class NodeBrowserFragment extends BaseGridFragment implements RefreshFrag
          * filter.addFilter(DocumentFolderService.FILTER_INCLUDE_LINKS, true);
          * listingContext.setFilter(filter);
          */
-
+        SyncContentManager.getInstance(getActivity()).sync(AnalyticsManager.LABEL_SYNC_REFRESH, getAccount());
         return request.setListingContext(listingContext);
     }
 
