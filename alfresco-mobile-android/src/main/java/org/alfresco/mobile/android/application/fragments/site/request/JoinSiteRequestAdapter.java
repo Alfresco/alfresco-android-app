@@ -26,7 +26,6 @@ import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.site.member.CancelPendingMembershipRequest;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
-import org.alfresco.mobile.android.ui.holder.ViewHolder;
 
 import android.support.v4.app.Fragment;
 import android.view.View;
@@ -81,25 +80,5 @@ public class JoinSiteRequestAdapter extends BaseListAdapter<Site, JoinSiteViewHo
     protected void updateBottomText(JoinSiteViewHolder vh, Site item)
     {
         vh.bottomText.setVisibility(View.GONE);
-    }
-}
-
-final class JoinSiteViewHolder extends ViewHolder
-{
-    public TextView topText;
-
-    public TextView bottomText;
-
-    public ImageView icon;
-
-    public Button cancel_request;
-
-    public JoinSiteViewHolder(View v)
-    {
-        super(v);
-        icon = (ImageView) v.findViewById(R.id.icon);
-        topText = (TextView) v.findViewById(R.id.toptext);
-        bottomText = (TextView) v.findViewById(R.id.bottomtext);
-        cancel_request = (Button) v.findViewById(R.id.cancel_request);
     }
 }
