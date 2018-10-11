@@ -26,7 +26,6 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.user.UserProfileFragment;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
-import org.alfresco.mobile.android.ui.holder.ViewHolder;
 import org.alfresco.mobile.android.ui.rendition.RenditionManager;
 
 import android.support.v4.app.FragmentActivity;
@@ -157,28 +156,5 @@ public class ProcessTasksAdapter extends BaseListAdapter<Task, ProcessViewHolder
         });
         RenditionManager.with(activityRef.get()).loadAvatar(item.getAssigneeIdentifier())
                 .placeHolder(R.drawable.ic_person_light).into(vh.icon);
-    }
-}
-
-final class ProcessViewHolder extends ViewHolder
-{
-    public TextView topText;
-
-    public TextView bottomText;
-
-    public ImageView icon;
-
-    public ImageView icon_statut;
-
-    public TextView content;
-
-    public ProcessViewHolder(View v)
-    {
-        super(v);
-        icon = (ImageView) v.findViewById(R.id.icon);
-        icon_statut = (ImageView) v.findViewById(R.id.icon_status);
-        topText = (TextView) v.findViewById(R.id.toptext);
-        bottomText = (TextView) v.findViewById(R.id.bottomtext);
-        content = (TextView) v.findViewById(R.id.contentweb);
     }
 }
