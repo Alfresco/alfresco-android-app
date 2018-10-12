@@ -251,6 +251,7 @@ public class TextEditorActivity extends BaseActivity
         getAppActionBar().setDisplayShowTitleEnabled(true);
         MenuItem mi = menu.add(Menu.NONE, R.id.menu_editor_save, Menu.FIRST, R.string.save);
         mi.setIcon(R.drawable.ic_save);
+        mi.setEnabled(changed);
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
 
         if (hasTextToSpeech)
@@ -373,6 +374,7 @@ public class TextEditorActivity extends BaseActivity
             {
                 if (!changed && s.length() != originalLength)
                 {
+                    invalidateOptionsMenu();
                     changed = true;
                     modified = true;
                 }
