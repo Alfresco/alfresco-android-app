@@ -437,6 +437,9 @@ public class MainMenuFragment extends AlfrescoFragment implements AdapterView.On
         {
             currentAccount = AccountsPreferences.getDefaultAccount(getActivity());
             if (currentAccount == null) { return; }
+        } else {
+            currentAccount = AlfrescoAccountManager.getInstance(getActivity()).retrieveAccount(currentAccount.getId());
+            if (currentAccount == null) { return; }
         }
 
         List<AlfrescoAccount> list = AlfrescoAccountManager.retrieveAccounts(getActivity());
