@@ -111,7 +111,7 @@ public class ResolveConflictSyncDialogFragment extends DialogFragment
                 onFavoriteChangeListener = overrideListener;
                 break;
             case SyncContentStatus.REASON_LOCAL_MODIFICATION:
-                messageId = R.string.sync_error_node_deleted;
+                messageId = R.string.sync_error_node_local_modification;
                 positiveId = android.R.string.ok;
                 onFavoriteChangeListener = overrideListener;
                 break;
