@@ -688,8 +688,8 @@ public abstract class PrepareBaseHelper
                 }
 
                 // Check modification Date and local modification
-                localServerTimeStamp = cursorId.getLong(SyncContentSchema.COLUMN_SERVER_MODIFICATION_TIMESTAMP_ID);
-                remoteServerTimeStamp = childrenNode.getModifiedAt().getTimeInMillis();
+                remoteServerTimeStamp = cursorId.getLong(SyncContentSchema.COLUMN_SERVER_MODIFICATION_TIMESTAMP_ID);
+                localServerTimeStamp = childrenNode.getModifiedAt().getTimeInMillis();
                 hasLocalModification = hasLocalModification(cursorId, localFile);
 
                 // Check if there's a modification in server side
@@ -739,6 +739,21 @@ public abstract class PrepareBaseHelper
                         // Local Change present
                         // User has read right
                         requestUserInteraction(localUri, SyncContentStatus.REASON_NO_PERMISSION);
+                    }
+                } else if (localServerTimeStamp > remoteServerTimeStamp) {
+
+                    // Check if local modification
+                    if (hasLocalModification) {
+                        // Local change available
+                        // Check permission
+                        if (permissions.canEdit()) {
+                            // Let's Update!
+                            prepareUpdate((Document) childrenNode, cursorId, localFile, localUri);
+                        } else {
+                            // Local Change present
+                            // User has read right
+                            requestUserInteraction(localUri, SyncContentStatus.REASON_NO_PERMISSION);
+                        }
                     }
                 }
             }
