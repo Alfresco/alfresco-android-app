@@ -141,6 +141,8 @@ public class MainActivity extends BaseActivity
     // back through creation).
     private static DeviceCapture capture = null;
 
+    private String deviceCaptureType = null;
+
     private int fragmentQueue = -1;
 
     private Boolean displaySync;
@@ -440,7 +442,7 @@ public class MainActivity extends BaseActivity
         super.onSaveInstanceState(outState);
         outState.clear();
         outState.putBundle(MainActivityHelper.TAG, MainActivityHelper.createBundle(outState, getCurrentAccount(),
-                capture, fragmentQueue, importParent, sessionState, sessionStateErrorMessageId));
+                capture, deviceCaptureType, fragmentQueue, importParent, sessionState, sessionStateErrorMessageId));
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -722,9 +724,10 @@ public class MainActivity extends BaseActivity
     // ///////////////////////////////////////////////////////////////////////////
     // UTILS
     // ///////////////////////////////////////////////////////////////////////////
-    public void setCapture(DeviceCapture deviceCapture)
+    public void setCapture(DeviceCapture deviceCapture, String type)
     {
         capture = deviceCapture;
+        deviceCaptureType = type;
     }
 
     public Node getCurrentNode()
