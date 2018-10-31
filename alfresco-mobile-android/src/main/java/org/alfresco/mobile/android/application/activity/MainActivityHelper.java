@@ -23,7 +23,10 @@ import java.util.Stack;
 
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Site;
+import org.alfresco.mobile.android.application.capture.AudioCapture;
 import org.alfresco.mobile.android.application.capture.DeviceCapture;
+import org.alfresco.mobile.android.application.capture.PhotoCapture;
+import org.alfresco.mobile.android.application.capture.VideoCapture;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 
 import android.os.Bundle;
@@ -37,8 +40,6 @@ public class MainActivityHelper
 
     private static final String ARGUMENT_ACCOUNT = "account";
 
-    private static final String ARGUMENT_DISPLAY_FROM_SITE = "displayFromSite";
-
     private static final String ARGUMENT_IMPORT_PARENT = "importParent";
 
     private static final String ARGUMENT_FRAGMENT_QUEUE = "fragmentQueue";
@@ -46,6 +47,8 @@ public class MainActivityHelper
     private static final String ARGUMENT_STACK_CENTRAL = "stackCentral";
 
     private static final String ARGUMENT_CAPTURE = "capture";
+
+    private static final String ARGUMENT_CAPTURE_TYPE = "captureType";
 
     private static final String ARGUMENT_SESSION_STATE = "sessionState";
 
@@ -63,7 +66,7 @@ public class MainActivityHelper
     }
 
     public static Bundle createBundle(Bundle outState, AlfrescoAccount currentAccount,
-            DeviceCapture capture, int fragmentQueue, Folder importParent, int sessionState,
+            DeviceCapture capture, String deviceCaptureType, int fragmentQueue, Folder importParent, int sessionState,
             int sessionStateErrorMessageId)
     {
         Bundle savedInstanceBundle = new Bundle();
@@ -74,6 +77,10 @@ public class MainActivityHelper
         if (capture != null)
         {
             savedInstanceBundle.putString(ARGUMENT_CAPTURE, gson.toJson(capture));
+        }
+
+        if (deviceCaptureType != null) {
+            savedInstanceBundle.putString(ARGUMENT_CAPTURE_TYPE, gson.toJson(capture));
         }
 
         outState.putInt(ARGUMENT_FRAGMENT_QUEUE, fragmentQueue);
@@ -96,12 +103,6 @@ public class MainActivityHelper
     {
         return (savedInstanceBundle.containsKey(ARGUMENT_ACCOUNT)) ? new Gson().fromJson(savedInstanceBundle
                 .getString(ARGUMENT_ACCOUNT),AlfrescoAccount.class) : null;
-    }
-
-    public Site getSite()
-    {
-        return (savedInstanceBundle.containsKey(ARGUMENT_DISPLAY_FROM_SITE)) ? new Gson().fromJson(savedInstanceBundle
-                .getString(ARGUMENT_DISPLAY_FROM_SITE), Site.class) : null;
     }
 
     public Folder getFolder()
@@ -130,8 +131,28 @@ public class MainActivityHelper
 
     public DeviceCapture getDeviceCapture()
     {
-        return (savedInstanceBundle.containsKey(ARGUMENT_CAPTURE)) ? new Gson().fromJson(savedInstanceBundle
-                .getString(ARGUMENT_CAPTURE), DeviceCapture.class) : null;
+        String captureType = getDeviceCaptureType();
+        if (captureType == null) {
+            return null;
+        }
+        
+        if (captureType.equals(PhotoCapture.class.getSimpleName())) {
+            return (savedInstanceBundle.containsKey(ARGUMENT_CAPTURE)) ? new Gson().fromJson(savedInstanceBundle
+                    .getString(ARGUMENT_CAPTURE), PhotoCapture.class) : null;
+        } else if (captureType.equals(AudioCapture.class.getSimpleName())) {
+            return (savedInstanceBundle.containsKey(ARGUMENT_CAPTURE)) ? new Gson().fromJson(savedInstanceBundle
+                    .getString(ARGUMENT_CAPTURE), AudioCapture.class) : null;
+        } else if (captureType.equals(VideoCapture.class.getSimpleName())) {
+            return (savedInstanceBundle.containsKey(ARGUMENT_CAPTURE)) ? new Gson().fromJson(savedInstanceBundle
+                    .getString(ARGUMENT_CAPTURE), VideoCapture.class) : null;
+        } else {
+            return null;
+        }
+    }
+
+    private String getDeviceCaptureType() {
+        return (savedInstanceBundle.containsKey(ARGUMENT_CAPTURE_TYPE))
+                ? savedInstanceBundle.getString(ARGUMENT_CAPTURE_TYPE) : null;
     }
 
     public Stack<String> getStackCentral()

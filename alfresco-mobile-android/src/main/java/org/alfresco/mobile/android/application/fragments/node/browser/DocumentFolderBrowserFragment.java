@@ -117,6 +117,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -1140,10 +1141,10 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment implement
             case R.id.menu_device_capture_camera_photo:
             case R.id.menu_device_capture_camera_video:
             case R.id.menu_device_capture_mic_audio:
-                DeviceCapture capture = DeviceCaptureHelper.createDeviceCapture((BaseActivity) getActivity(), itemId);
+                Pair<DeviceCapture, String> capture = DeviceCaptureHelper.createDeviceCapture((BaseActivity) getActivity(), itemId);
                 if (getActivity() instanceof MainActivity)
                 {
-                    ((MainActivity) getActivity()).setCapture(capture);
+                    ((MainActivity) getActivity()).setCapture(capture.first, capture.second);
                 }
                 return true;
             case R.id.menu_scan_document:

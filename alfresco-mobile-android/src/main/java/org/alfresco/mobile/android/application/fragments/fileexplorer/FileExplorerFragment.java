@@ -60,6 +60,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Pair;
 import android.view.View;
 import android.widget.GridView;
 
@@ -413,10 +414,10 @@ public class FileExplorerFragment extends FileExplorerFoundationFragment
             case R.id.menu_device_capture_camera_photo:
             case R.id.menu_device_capture_camera_video:
             case R.id.menu_device_capture_mic_audio:
-                DeviceCapture capture = DeviceCaptureHelper.createDeviceCapture((BaseActivity) getActivity(), id);
+                Pair<DeviceCapture, String> capture = DeviceCaptureHelper.createDeviceCapture((BaseActivity) getActivity(), id);
                 if (getActivity() instanceof MainActivity)
                 {
-                    ((MainActivity) getActivity()).setCapture(capture);
+                    ((MainActivity) getActivity()).setCapture(capture.first, capture.second);
                 }
                 return true;
             case R.id.menu_scan_document:
