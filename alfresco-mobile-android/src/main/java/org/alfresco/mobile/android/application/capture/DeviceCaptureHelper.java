@@ -36,7 +36,7 @@ public final class DeviceCaptureHelper
     {
     }
 
-    public static Pair<DeviceCapture, String> createDeviceCapture(BaseActivity c, int id)
+    public static Pair<DeviceCapture, String> createDeviceCapture(BaseActivity c, int id, boolean upload)
     {
         DeviceCapture capture = null;
         String typeOfCapture = null;
@@ -61,17 +61,17 @@ public final class DeviceCaptureHelper
         {
 
             case R.id.menu_device_capture_camera_photo:
-                capture = new PhotoCapture(c, parentRepositoryFolder, parentFolder);
+                capture = new PhotoCapture(c, parentRepositoryFolder, parentFolder, upload);
                 analyzeId = AnalyticsManager.ACTION_TAKE_PHOTO;
                 typeOfCapture = PhotoCapture.class.getSimpleName();
                 break;
             case R.id.menu_device_capture_camera_video:
-                capture = new VideoCapture(c, parentRepositoryFolder, parentFolder);
+                capture = new VideoCapture(c, parentRepositoryFolder, parentFolder, upload);
                 analyzeId = AnalyticsManager.ACTION_RECORD_VIDEO;
                 typeOfCapture = VideoCapture.class.getSimpleName();
                 break;
             case R.id.menu_device_capture_mic_audio:
-                capture = new AudioCapture(c, parentRepositoryFolder, parentFolder);
+                capture = new AudioCapture(c, parentRepositoryFolder, parentFolder, upload);
                 analyzeId = AnalyticsManager.ACTION_RECORD_AUDIO;
                 typeOfCapture = AudioCapture.class.getSimpleName();
                 break;

@@ -414,7 +414,7 @@ public class FileExplorerFragment extends FileExplorerFoundationFragment
             case R.id.menu_device_capture_camera_photo:
             case R.id.menu_device_capture_camera_video:
             case R.id.menu_device_capture_mic_audio:
-                Pair<DeviceCapture, String> capture = DeviceCaptureHelper.createDeviceCapture((BaseActivity) getActivity(), id);
+                Pair<DeviceCapture, String> capture = DeviceCaptureHelper.createDeviceCapture((BaseActivity) getActivity(), id, false);
                 if (getActivity() instanceof MainActivity)
                 {
                     ((MainActivity) getActivity()).setCapture(capture.first, capture.second);

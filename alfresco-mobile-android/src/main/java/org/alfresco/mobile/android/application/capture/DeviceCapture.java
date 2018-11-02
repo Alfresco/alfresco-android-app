@@ -53,6 +53,8 @@ public abstract class DeviceCapture implements Serializable
 
     protected File parentFolder;
 
+    protected boolean upload;
+
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
@@ -62,6 +64,11 @@ public abstract class DeviceCapture implements Serializable
     }
 
     protected DeviceCapture(FragmentActivity parentActivity, Folder repositoryFolder, File parentFolder)
+    {
+        this(parentActivity, repositoryFolder, parentFolder, false);
+    }
+
+    protected DeviceCapture(FragmentActivity parentActivity, Folder repositoryFolder, File parentFolder, boolean upload)
     {
         this.context = parentActivity;
         this.parentActivity = parentActivity;
@@ -75,6 +82,7 @@ public abstract class DeviceCapture implements Serializable
         {
             this.parentFolder = parentFolder;
         }
+        this.upload = upload;
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -93,7 +101,7 @@ public abstract class DeviceCapture implements Serializable
     {
         if (requestCode == getRequestCode() && resultCode == FragmentActivity.RESULT_OK)
         {
-            if (repositoryFolder != null  &&  payloadCaptured(requestCode, resultCode, data))
+            if (repositoryFolder != null  &&  payloadCaptured(requestCode, resultCode, data) && upload)
             {
                 upload();
             }
@@ -140,26 +148,6 @@ public abstract class DeviceCapture implements Serializable
         String timeStamp = new SimpleDateFormat(TIMESTAMP_PATTERN).format(new Date());
 
         return prefix + timeStamp + "." + extension;
-    }
-
-    // ///////////////////////////////////////////////////////////////////////////
-    // FINAL
-    // ///////////////////////////////////////////////////////////////////////////
-    protected void finalize()
-    {
-        try
-        {
-            if (payload != null)
-            {
-                payload.delete();
-                payload = null;
-            }
-            super.finalize();
-        }
-        catch (Throwable e)
-        {
-            Log.w(DeviceCapture.class.getName(), Log.getStackTraceString(e));
-        }
     }
 
     // ///////////////////////////////////////////////////////////////////////////

@@ -40,12 +40,12 @@ public class PhotoCapture extends DeviceCapture
 
     public PhotoCapture(FragmentActivity parent, Folder folder)
     {
-        this(parent, folder, null);
+        this(parent, folder, null, false);
     }
 
-    public PhotoCapture(FragmentActivity parent, Folder folder, File parentFolder)
+    public PhotoCapture(FragmentActivity parent, Folder folder, File parentFolder, boolean upload)
     {
-        super(parent, folder, parentFolder);
+        super(parent, folder, parentFolder, upload);
     }
 
     @Override

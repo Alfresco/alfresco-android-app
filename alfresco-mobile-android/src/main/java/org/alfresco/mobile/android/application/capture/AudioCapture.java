@@ -46,12 +46,12 @@ public class AudioCapture extends DeviceCapture
 
     public AudioCapture(FragmentActivity parent, Folder folder)
     {
-        this(parent, folder, null);
+        this(parent, folder, null, false);
     }
 
-    public AudioCapture(FragmentActivity parent, Folder folder, File parentFolder)
+    public AudioCapture(FragmentActivity parent, Folder folder, File parentFolder, boolean upload)
     {
-        super(parent, folder, parentFolder);
+        super(parent, folder, parentFolder, upload);
         // Default MIME type if it cannot be retrieved from Uri later.
         mimeType = "audio/3gpp";
     }
