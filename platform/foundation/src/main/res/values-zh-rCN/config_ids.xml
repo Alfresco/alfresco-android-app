@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Locale -->
-    <string name="asset_folder_prefix">zh</string>
+    <string name="asset_folder_prefix">zh_cn</string>
 </resources>
