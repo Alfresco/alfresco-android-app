@@ -90,6 +90,7 @@ import com.squareup.otto.Subscribe;
 
 import android.accounts.Account;
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -111,11 +112,13 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 /**
  * Main activity of the application.
@@ -789,6 +792,18 @@ public class MainActivity extends BaseActivity
                         DataProtectionUserDialogFragment.TAG);
                 prefs.edit().putBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, true).apply();
             }
+        }
+
+        //TODO remove in the future
+        if (event.session instanceof CloudSession) {
+            AlertDialog alertDialog = new AlertDialog.Builder(this)
+                    .setTitle(getResources().getString(R.string.alert_cloud_shutting_down_title))
+                    .setMessage(Html.fromHtml(getResources().getString(R.string.alert_cloud_shutting_down_content)))
+                    .setPositiveButton("OK", null)
+                    .create();
+
+            alertDialog.show();
+            ((TextView)alertDialog.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
         }
 
         setSessionState(SESSION_ACTIVE);
