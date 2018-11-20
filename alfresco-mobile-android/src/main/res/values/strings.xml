@@ -927,4 +927,9 @@
     <!-- ################################################################################## -->
     <string name="permission.not.enough">Not enough permission to access the file.</string>
 
+
+    <!--TO BE REMOVED LATER ON-->
+    <string name="alert_cloud_shutting_down_title">Shutting down</string>
+    <string name="alert_cloud_shutting_down_content"><![CDATA[<a href=\"https://www.alfresco.com/blogs/announcement-on-alfresco-in-the-cloud\">Alfresco in the Cloud will be turned off on the 28th February 2019</a>, you will not be able to access content from that date. Ensure that any files you need to keep are exported, contact your IT Administrator for more information.]]></string>
+
 </resources>
