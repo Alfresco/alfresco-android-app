@@ -303,6 +303,22 @@ public class MainActivity extends BaseActivity
         super.onResume();
         checkSession();
 
+        //TODO remove in the future
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        int alertStatus = prefs.getInt(GeneralPreferences.HAS_SHOWN_SHUTTING_DOWN_ALERT, -1);
+        // if the alert status is 1 (needs to be shown) or -1 (has never been set)
+        if ((alertStatus == -1 && getCurrentSession() instanceof CloudSession) || alertStatus == 1) {
+            prefs.edit().putInt(GeneralPreferences.HAS_SHOWN_SHUTTING_DOWN_ALERT, 0).apply();
+            AlertDialog alertDialog = new AlertDialog.Builder(this)
+                    .setTitle(getResources().getString(R.string.alert_cloud_shutting_down_title))
+                    .setMessage(Html.fromHtml(getResources().getString(R.string.alert_cloud_shutting_down_content)))
+                    .setPositiveButton("OK", null)
+                    .create();
+
+            alertDialog.show();
+            ((TextView)alertDialog.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
+        }
+
         if (getFragment(MainMenuFragment.TAG) != null && requestSwapAccount)
         {
             EventBusManager.getInstance()
@@ -792,18 +808,6 @@ public class MainActivity extends BaseActivity
                         DataProtectionUserDialogFragment.TAG);
                 prefs.edit().putBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, true).apply();
             }
-        }
-
-        //TODO remove in the future
-        if (event.session instanceof CloudSession) {
-            AlertDialog alertDialog = new AlertDialog.Builder(this)
-                    .setTitle(getResources().getString(R.string.alert_cloud_shutting_down_title))
-                    .setMessage(Html.fromHtml(getResources().getString(R.string.alert_cloud_shutting_down_content)))
-                    .setPositiveButton("OK", null)
-                    .create();
-
-            alertDialog.show();
-            ((TextView)alertDialog.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
         }
 
         setSessionState(SESSION_ACTIVE);

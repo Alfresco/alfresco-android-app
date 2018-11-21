@@ -75,6 +75,8 @@ public class GeneralPreferences extends AlfrescoFragment
 
     public static final String HAS_ACCESSED_PAID_SERVICES = "HasAccessedPaidServices";
 
+    public static final String HAS_SHOWN_SHUTTING_DOWN_ALERT = "show_cloud_shutting_down";
+
     private static final String PRIVATE_FOLDERS_BUTTON = "privatefoldersbutton";
 
     private AlfrescoAccount account;
