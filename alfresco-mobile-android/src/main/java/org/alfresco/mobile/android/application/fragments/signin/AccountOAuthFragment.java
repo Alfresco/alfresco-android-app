@@ -286,10 +286,14 @@ public class AccountOAuthFragment extends OAuthFragment implements AnalyticsMana
             return;
         }
 
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putInt(GeneralPreferences.HAS_SHOWN_SHUTTING_DOWN_ALERT, 1).apply();
+
         if (getActivity() instanceof WelcomeActivity)
         {
             AlfrescoAccount acc = event.data;
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
             if (acc.getIsPaidAccount() && !prefs.getBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, false))
             {
                 prefs.edit().putBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, true).apply();
