@@ -95,7 +95,7 @@ public interface ConfigConstants
 
     String VIEW_MODEL_PERSON_PROFILE = "org.alfresco.client.view.person-profile";
 
-    String VIEW_MODEL_LOCAL_FILES = "org.alfresco.client.view.local-files";
+    String VIEW_MODEL_LOCAL_FILES = "org.alfresco.client.view.local";
 
     String VIEW_MODEL_SEARCH = "org.alfresco.client.view.search";
 

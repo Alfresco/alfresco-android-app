@@ -35,6 +35,7 @@ import org.alfresco.mobile.android.async.OperationRequest;
 import org.alfresco.mobile.android.async.OperationSchema;
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.clean.CleanSyncFavoriteRequest;
+import org.alfresco.mobile.android.async.favorite.CleanFavoritesRequest;
 import org.alfresco.mobile.android.platform.Manager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
@@ -275,6 +276,11 @@ public class FavoritesManager extends Manager
     {
         if (account == null) { return; }
         Operator.with(appContext).load(new CleanSyncFavoriteRequest.Builder(account, false));
+    }
+
+    public void unfavorite(AlfrescoAccount account) {
+        if (account == null) { return; }
+        Operator.with(appContext).load(new CleanFavoritesRequest.Builder(account));
     }
 
     public boolean isSynced(AlfrescoAccount account, String nodeIdentifier)

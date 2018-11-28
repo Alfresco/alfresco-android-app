@@ -135,6 +135,16 @@
     <!-- CLEAN SYNC -->
     <!-- +++++++++++++++++++ -->
     <string name="operation_CleanSyncFavoriteRequest">org.alfresco.mobile.android.async.clean.CleanSyncFavoriteOperation</string>
+
+    <!-- +++++++++++++++++++ -->
+    <!-- CLEAN FAVORITES -->
+    <!-- +++++++++++++++++++ -->
+    <string name="operation_CleanFavoritesRequest">org.alfresco.mobile.android.async.favorite.CleanFavoritesOperation</string>
+
+    <!-- +++++++++++++++++++ -->
+    <!-- CLEAN LOCAL FILES -->
+    <!-- +++++++++++++++++++ -->
+    <string name="operation_CleanLocalFilesRequest">org.alfresco.mobile.android.async.local.CleanLocalFilesOperation</string>
     
     <!-- +++++++++++++++++++ -->
     <!-- SECURITY -->
