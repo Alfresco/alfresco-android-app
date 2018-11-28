@@ -26,6 +26,8 @@ import java.security.NoSuchAlgorithmException;
 
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
+import org.alfresco.mobile.android.async.Operator;
+import org.alfresco.mobile.android.async.local.CleanLocalFilesRequest;
 import org.alfresco.mobile.android.platform.Manager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.utils.AndroidVersion;
@@ -496,5 +498,10 @@ public class AlfrescoStorageManager extends Manager
             Log.e(TAG, Log.getStackTraceString(e));
         }
         return name + "-" + username;
+    }
+
+    public void cleanLocalFiles(AlfrescoAccount account) {
+        if (account == null) { return; }
+        Operator.with(appContext).load(new CleanLocalFilesRequest.Builder(account));
     }
 }

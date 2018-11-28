@@ -22,6 +22,7 @@ import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.Permissions;
 import org.alfresco.mobile.android.api.model.config.ActionConfig;
 import org.alfresco.mobile.android.api.model.config.ActionGroupConfig;
+import org.alfresco.mobile.android.api.model.config.impl.ActionConfigImpl;
 import org.alfresco.mobile.android.api.model.impl.DocumentImpl;
 import org.alfresco.mobile.android.api.services.ConfigService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
@@ -163,6 +164,13 @@ public final class ConfigurableActionHelper
                         .getChildById(actionNameId);
                 // Config disable the action
                 if (config != null && !config.isEnable()) { return false; }
+
+                ActionConfigImpl actionConfig = ((ActionConfigImpl)service.getActionConfig(actionNameId));
+
+                if (actionConfig != null && !actionConfig.isEnable()) {
+                    return false;
+                }
+                
                 // Config not present or is enable
                 allowedByConfig = (config == null) || config.isEnable();
             }

@@ -33,6 +33,7 @@ import org.alfresco.mobile.android.api.model.config.ViewGroupConfig;
 import org.alfresco.mobile.android.api.model.config.impl.ViewConfigImpl;
 import org.alfresco.mobile.android.api.services.ConfigService;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.configuration.ConfigurationConstant;
 import org.alfresco.mobile.android.application.configuration.model.ConfigModelHelper;
 import org.alfresco.mobile.android.application.configuration.model.view.ActivitiesConfigModel;
 import org.alfresco.mobile.android.application.configuration.model.view.FavoritesConfigModel;
@@ -49,6 +50,7 @@ import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.extensions.AnalyticsHelper;
 import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
+import org.alfresco.mobile.android.platform.favorite.FavoritesManager;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.utils.BundleUtils;
 import org.alfresco.mobile.android.sync.SyncContentManager;
@@ -236,7 +238,7 @@ public class MenuConfigFragment extends AlfrescoFragment implements DefaultMenuC
     private JSONObject saveConfiguration()
     {
         JSONObject configuration = new JSONObject();
-        boolean hasItems = false;
+
         try
         {
             // INFO
@@ -251,6 +253,7 @@ public class MenuConfigFragment extends AlfrescoFragment implements DefaultMenuC
             defaultProfile.put(ConfigConstants.DEFAULT_VALUE, true);
             defaultProfile.putOpt(ConfigConstants.LABEL_ID_VALUE, "Custom Default");
             defaultProfile.putOpt(ConfigConstants.ROOTVIEW_ID_VALUE, "views-menu-default");
+            defaultProfile.putOpt(ConfigConstants.ROOTACTION_ID_VALUE, "actions-default");
             profiles.put("default", defaultProfile);
             configuration.put(ConfigTypeIds.PROFILES.value(), profiles);
 
@@ -260,24 +263,62 @@ public class MenuConfigFragment extends AlfrescoFragment implements DefaultMenuC
             defaultMenu.putOpt(ConfigConstants.ID_VALUE, "views-menu-default");
             defaultMenu.putOpt(ConfigConstants.LABEL_ID_VALUE, getString(R.string.menu_view));
 
+            // ACTIONS
+            JSONArray actionGroupsArray = new JSONArray();
+            JSONObject defaultActions = new JSONObject();
+            JSONObject actionsObject = new JSONObject();
+            JSONArray actionItems = new JSONArray();
+
+            defaultActions.putOpt(ConfigConstants.ID_VALUE, "actions-default");
+
             // Items
             JSONArray items = new JSONArray();
-            JSONObject item = null;
-            MenuItemConfig itemConfig = null;
+            MenuItemConfig itemConfig;
             for (int i = 0; i < adapter.getCount(); i++)
             {
                 itemConfig = menuConfigItems.get(i);
                 if (itemConfig.isEnable())
                 {
                     items.put(((ViewConfigImpl) itemConfig.config).toJson());
-                    hasItems = true;
+                } else {
+                    switch (itemConfig.config.getType()) {
+                        case ConfigConstants.VIEW_MODEL_LOCAL_FILES: {
+                            AlfrescoStorageManager.getInstance(getActivity()).cleanLocalFiles(account);
+                            JSONObject groupAction = new JSONObject();
+                            groupAction.put(ConfigConstants.ITEM_TYPE_VALUE, ConfigConstants.ActionConfigType.ACTION_ID.value());
+                            groupAction.put(ConfigConstants.ViewConfigType.VIEW_ID.value(), "action-download-default");
+                            actionItems.put(groupAction);
+
+                            JSONObject object = new JSONObject();
+                            object.put(ConfigConstants.TYPE_VALUE, ConfigurationConstant.KEY_ACTION_NODE_DOWNLOAD);
+                            object.put(ConfigConstants.ENABLE_VALUE, false);
+                            actionsObject.put("action-download-default", object);
+                        }
+                        case ConfigConstants.VIEW_MODEL_FAVORITES: {
+                            FavoritesManager.getInstance(getActivity()).unfavorite(account);
+                            JSONObject groupAction = new JSONObject();
+                            groupAction.put(ConfigConstants.ITEM_TYPE_VALUE, ConfigConstants.ActionConfigType.ACTION_ID.value());
+                            groupAction.put(ConfigConstants.ViewConfigType.VIEW_ID.value(), "action-favorite-default");
+                            actionItems.put(groupAction);
+
+                            JSONObject object = new JSONObject();
+                            object.put(ConfigConstants.TYPE_VALUE, ConfigurationConstant.KEY_ACTION_NODE_FAVORITE);
+                            object.put(ConfigConstants.ENABLE_VALUE, false);
+                            actionsObject.put("action-favorite-default", object);
+                        }
+                    }
                 }
             }
+
+            defaultActions.putOpt(ConfigConstants.ITEMS_VALUE, actionItems);
+            actionGroupsArray.put(defaultActions);
 
             defaultMenu.putOpt(ConfigConstants.ITEMS_VALUE, items);
             viewGroupsArray.put(defaultMenu);
 
             configuration.put(ConfigTypeIds.VIEW_GROUPS.value(), viewGroupsArray);
+            configuration.put(ConfigTypeIds.ACTIONS.value(), actionsObject);
+            configuration.put(ConfigTypeIds.ACTION_GROUPS.value(), actionGroupsArray);
 
             // SAVE TO DEVICE
             OutputStream sourceFile = null;
