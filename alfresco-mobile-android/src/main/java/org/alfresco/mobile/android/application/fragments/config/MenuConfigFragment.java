@@ -294,18 +294,6 @@ public class MenuConfigFragment extends AlfrescoFragment implements DefaultMenuC
                             object.put(ConfigConstants.ENABLE_VALUE, false);
                             actionsObject.put("action-download-default", object);
                         }
-                        case ConfigConstants.VIEW_MODEL_FAVORITES: {
-                            FavoritesManager.getInstance(getActivity()).unfavorite(account);
-                            JSONObject groupAction = new JSONObject();
-                            groupAction.put(ConfigConstants.ITEM_TYPE_VALUE, ConfigConstants.ActionConfigType.ACTION_ID.value());
-                            groupAction.put(ConfigConstants.ViewConfigType.VIEW_ID.value(), "action-favorite-default");
-                            actionItems.put(groupAction);
-
-                            JSONObject object = new JSONObject();
-                            object.put(ConfigConstants.TYPE_VALUE, ConfigurationConstant.KEY_ACTION_NODE_FAVORITE);
-                            object.put(ConfigConstants.ENABLE_VALUE, false);
-                            actionsObject.put("action-favorite-default", object);
-                        }
                     }
                 }
             }
