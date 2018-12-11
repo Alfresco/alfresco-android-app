@@ -85,5 +85,7 @@ public interface VersionNumber
     /** TBD */
     int VERSION_1_8_4 = 84;
 
-    int LATEST_VERSION = VERSION_1_8_4;
+    int VERSION_1_8_5 = 85;
+
+    int LATEST_VERSION = VERSION_1_8_5;
 }
