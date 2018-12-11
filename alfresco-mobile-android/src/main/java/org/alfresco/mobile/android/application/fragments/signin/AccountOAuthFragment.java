@@ -288,7 +288,7 @@ public class AccountOAuthFragment extends OAuthFragment implements AnalyticsMana
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putInt(GeneralPreferences.HAS_SHOWN_SHUTTING_DOWN_ALERT, 1).apply();
+        editor.putInt(GeneralPreferences.HAS_SHOWN_SHUTTING_DOWN_ALERT, 0).apply();
 
         if (getActivity() instanceof WelcomeActivity)
         {

@@ -929,7 +929,7 @@
 
 
     <!--TO BE REMOVED LATER ON-->
-    <string name="alert_cloud_shutting_down_title">Shutting down</string>
-    <string name="alert_cloud_shutting_down_content"><![CDATA[<a href=\"https://www.alfresco.com/blogs/announcement-on-alfresco-in-the-cloud\">Alfresco in the Cloud will be turned off on the 28th March 2019</a> and you will not be able to access content from that date. Ensure that any files you need to keep are exported. Please contact your IT Administrator for more information.]]></string>
-
+    <string name="alert_cloud_shutting_down_title">my.alfresco.com</string>
+    <string name="alert_cloud_shutting_down_content">my.alfresco.com will be turned off on March 28, 2019. Please contact your Administrator for guidance on how to export your data from this service.</string>
+    
 </resources>
