@@ -140,7 +140,7 @@ public class CreateTaskFragment extends AlfrescoFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         // Retrieve parameters
-        if (getArguments() == null && !getArguments().containsKey(ARGUMENT_PROCESS_DEFINITION)) { return null; }
+        if (getArguments() == null || !getArguments().containsKey(ARGUMENT_PROCESS_DEFINITION)) { return null; }
         processDefinition = (ProcessDefinition) getArguments().getSerializable(ARGUMENT_PROCESS_DEFINITION);
 
         if (getArguments() != null && getArguments().containsKey(PrivateIntent.EXTRA_DOCUMENTS))
