@@ -930,6 +930,6 @@
 
     <!--TO BE REMOVED LATER ON-->
     <string name="alert_cloud_shutting_down_title">my.alfresco.com</string>
-    <string name="alert_cloud_shutting_down_content">my.alfresco.com will be turned off on March 28, 2019. Please contact your Administrator for guidance on how to export your data from this service.</string>
+    <string name="alert_cloud_shutting_down_content">my.alfresco.com will be turned off on June 28, 2019. Please contact your Administrator for guidance on how to export your data from this service.</string>
     
 </resources>

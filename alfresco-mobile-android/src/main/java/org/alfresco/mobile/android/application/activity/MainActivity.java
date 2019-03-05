@@ -304,18 +304,18 @@ public class MainActivity extends BaseActivity
         checkSession();
 
         //TODO remove in the future
-//        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-//        int alertStatus = prefs.getInt(GeneralPreferences.HAS_SHOWN_SHUTTING_DOWN_ALERT, -1);
-//        // if the alert status is 1 (needs to be shown) or -1 (has never been set)
-//        if ((alertStatus == -1 && getCurrentSession() instanceof CloudSession) || alertStatus == 0) {
-//            prefs.edit().putInt(GeneralPreferences.HAS_SHOWN_SHUTTING_DOWN_ALERT, 1).apply();
-//            new AlertDialog.Builder(this)
-//                    .setTitle(getResources().getString(R.string.alert_cloud_shutting_down_title))
-//                    .setMessage(getResources().getString(R.string.alert_cloud_shutting_down_content))
-//                    .setPositiveButton("OK", null)
-//                    .create()
-//                    .show();
-//        }
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        int alertStatus = prefs.getInt(GeneralPreferences.HAS_SHOWN_SHUTTING_DOWN_ALERT, -1);
+        // if the alert status is 1 (needs to be shown) or -1 (has never been set)
+        if ((alertStatus == -1 && getCurrentSession() instanceof CloudSession) || alertStatus == 0) {
+            prefs.edit().putInt(GeneralPreferences.HAS_SHOWN_SHUTTING_DOWN_ALERT, 1).apply();
+            new AlertDialog.Builder(this)
+                    .setTitle(getResources().getString(R.string.alert_cloud_shutting_down_title))
+                    .setMessage(getResources().getString(R.string.alert_cloud_shutting_down_content))
+                    .setPositiveButton("OK", null)
+                    .create()
+                    .show();
+        }
 
         if (getFragment(MainMenuFragment.TAG) != null && requestSwapAccount)
         {
