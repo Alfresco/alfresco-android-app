@@ -930,6 +930,6 @@
 
     <!--TO BE REMOVED LATER ON-->
     <string name="alert_cloud_shutting_down_title">my.alfresco.com</string>
-    <string name="alert_cloud_shutting_down_content">my.alfresco.com wird am 28. März 2019 abgeschaltet. Bitte kontaktieren Sie Ihren Administrator, um zu erfahren wie Sie Ihre Daten von diesem Service migrieren können.</string>
-    
+    <string name="alert_cloud_shutting_down_content">my.alfresco.com wird am 28. Juni 2019 abgeschaltet. Bitte kontaktieren Sie Ihren Administrator, um zu erfahren wie Sie Ihre Daten von diesem Service migrieren können.</string>
+
 </resources>

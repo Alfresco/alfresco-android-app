@@ -928,6 +928,6 @@
 
     <!--TO BE REMOVED LATER ON-->
     <string name="alert_cloud_shutting_down_title">my.alfresco.com</string>
-    <string name="alert_cloud_shutting_down_content">my.alfresco.com 将于 2019 年 3 月 28 日关闭。 请联系您的管理员，以获取有关如何从此服务导出数据的指导。</string>
-    
+    <string name="alert_cloud_shutting_down_content">my.alfresco.com 将于 2019 年 6 月 28 日关闭。 请联系您的管理员，以获取有关如何从此服务导出数据的指导。</string>
+
 </resources>

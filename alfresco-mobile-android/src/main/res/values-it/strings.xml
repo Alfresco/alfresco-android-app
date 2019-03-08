@@ -929,5 +929,5 @@
 
     <!--TO BE REMOVED LATER ON-->
     <string name="alert_cloud_shutting_down_title">my.alfresco.com</string>
-    <string name="alert_cloud_shutting_down_content">my.alfresco.com verrà disattivato permanentemente dal 28 marzo 2019. Contattare l\'amministratore di sistema per le istruzioni per esportare i dati dal servizio.</string>
+    <string name="alert_cloud_shutting_down_content">my.alfresco.com verrà disattivato permanentemente dal 28 giugno 2019. Contattare l\'amministratore di sistema per le istruzioni per esportare i dati dal servizio.</string>
 </resources>
