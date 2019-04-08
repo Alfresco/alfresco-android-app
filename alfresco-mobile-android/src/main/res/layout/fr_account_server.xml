@@ -18,12 +18,11 @@
   ~
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_horizontal"
-    android:orientation="vertical">
+    android:gravity="center_horizontal">
 
     <ScrollView
         android:id="@+id/login_form"
@@ -54,9 +53,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/general_login_server_hostname"
-                app:met_floatingLabelText=""
-                app:met_floatingLabel="highlight"
                 android:inputType="text"
+                app:met_floatingLabel="highlight"
+                app:met_floatingLabelText=""
                 app:met_primaryColor="@color/accent" />
 
             <CheckBox
@@ -97,7 +96,16 @@
         </LinearLayout>
     </ScrollView>
 
-</LinearLayout>
+    <ProgressBar
+        android:id="@+id/loading"
+        style="@android:style/Widget.ProgressBar.Large.Inverse"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_centerInParent="true"
+        android:indeterminate="true"
+        android:visibility="gone" />
+
+</RelativeLayout>
 
 
 

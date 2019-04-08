@@ -65,6 +65,10 @@ public class AccountServerFragment extends AlfrescoFragment
 
     private boolean hideHTTPS = true;
 
+    private Button actionContinue;
+
+    private LinearLayout backField;
+
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS & HELPERS
     // ///////////////////////////////////////////////////////////////////////////
@@ -97,9 +101,9 @@ public class AccountServerFragment extends AlfrescoFragment
     {
         super.onActivityCreated(savedInstanceState);
 
-        final LinearLayout backField = (LinearLayout) viewById(R.id.account_action_server_container);
+        backField = (LinearLayout) viewById(R.id.account_action_server_container);
 
-        final Button actionContinue = (Button) viewById(R.id.account_action_server);
+        actionContinue = (Button) viewById(R.id.account_action_server);
         actionContinue.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -113,6 +117,9 @@ public class AccountServerFragment extends AlfrescoFragment
                 }
                 else
                 {
+                    actionContinue.setEnabled(false);
+                    backField.setBackgroundColor(getResources().getColor(R.color.accent_disable));
+                    show(R.id.loading);
                     Operator.with(getActivity())
                             .load(new CheckServerRequest.Builder(https.isChecked(), hostname.getText().toString()));
                 }
@@ -270,31 +277,14 @@ public class AccountServerFragment extends AlfrescoFragment
     @Subscribe
     public void onServerCheck(final CheckServerEvent event)
     {
+        actionContinue.setEnabled(true);
+        backField.setBackgroundColor(getResources().getColor(R.color.accent));
+        hide(R.id.loading);
         if (event.hasException)
         {
-            int fieldMessageId = AlfrescoExceptionHelper.getMessageErrorId(getActivity(), event.exception, true);
-            int messageId = AlfrescoExceptionHelper.getMessageErrorId(getActivity(), event.exception, false);
-
-            hostname.setError(Html.fromHtml(fieldMessageId == R.string.error_unknown
-                    ? String.format(getString(fieldMessageId), event.exception.getCause())
-                    : getString(fieldMessageId)));
-            MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity())
-                    .title(R.string.general_login_check_server).neutralText("Ignore and Continue")
-                    .callback(new MaterialDialog.ButtonCallback()
-                    {
-                        @Override
-                        public void onNeutral(MaterialDialog dialog)
-                        {
-                            AccountCredentialsFragment.with(getActivity())
-                                    .hostname(createHostnameURL(hostname.getText().toString(), https.isChecked()))
-                                    .display();
-                        }
-                    })
-                    .content(Html.fromHtml(messageId == R.string.error_unknown
-                            ? String.format(getString(messageId), event.exception.getCause()) : getString(messageId)))
-                    .positiveText(R.string.ok);
-            builder.show();
-            return;
+            AccountCredentialsFragment.with(getActivity())
+                    .hostname(createHostnameURL(hostname.getText().toString(), https.isChecked()))
+                    .display();
         }
         else
         {

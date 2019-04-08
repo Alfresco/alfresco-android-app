@@ -256,7 +256,7 @@
     <string name="error_session_creation_message">Connection Error</string>
     <string name="error_session_creation">Unable to authenticate. Check your account settings.</string>
     <string name="error_session_hostname_short">Your <b>connect to</b> URL isn\'t right.</string>
-    <string name="error_session_hostname"><![CDATA[Your <b>connect to</b> URL seems isn\'t right or you may need to <b>activate your VPN</b>.<br/> Check your values and settings.]]></string>
+    <string name="error_session_hostname"><![CDATA[There was an issue with your URL or you may need to <b>activate your VPN</b>.]]></string>
     <string name="error_session_nodata_short">Your device has no data connection.</string>
     <string name="error_session_nodata"><![CDATA[<p><b>Your device has no data connection.</b><br/></p> Check your device settings and enable a data connection.]]></string>
     <string name="error_session_unauthorized"><![CDATA[You\'re not allowed to access this server.<br/> Check your account settings <b>(Username/Password)</b>.]]></string>
