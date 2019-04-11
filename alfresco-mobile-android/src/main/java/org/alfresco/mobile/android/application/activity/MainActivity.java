@@ -375,8 +375,14 @@ public class MainActivity extends BaseActivity
             else
             {
                 // Refresh Accounts
-                ((MainMenuFragment) getFragment(MainMenuFragment.TAG)).refreshAccount();
-                ((MainMenuFragment) getFragment(MainMenuFragment.SLIDING_TAG)).refreshAccount();
+                MainMenuFragment mainMenuFragment = ((MainMenuFragment) getFragment(MainMenuFragment.TAG));
+                MainMenuFragment slidingMainMenuFragment = ((MainMenuFragment) getFragment(MainMenuFragment.SLIDING_TAG));
+                if (mainMenuFragment != null) {
+                    mainMenuFragment.refreshAccount();
+                }
+                if (slidingMainMenuFragment != null) {
+                    slidingMainMenuFragment.refreshAccount();
+                }
 
                 if (getCurrentAccount() != null)
                 {
