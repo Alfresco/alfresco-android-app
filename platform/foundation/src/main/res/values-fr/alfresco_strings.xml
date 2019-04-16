@@ -256,7 +256,7 @@
     <string name="error_session_creation_message">Erreur de connexion</string>
     <string name="error_session_creation">Impossibilité de s\'authentifier. Vérifiez les paramètres de votre compte.</string>
     <string name="error_session_hostname_short">Votre <b>connexion à</b> l\'URL n\'est pas correcte.</string>
-    <string name="error_session_hostname"><![CDATA[Votre <b>connexion à</b> l\'URL n\'est pas correcte ou vous devez peut-être <b>activer votre VPN</b>.<br/> Vérifiez vos valeurs et paramètres.]]></string>
+    <string name="error_session_hostname"><![CDATA[Une erreur s\'est produite avec votre URL ou vous devez peut-être <b>activer votre VPN</b>.]]></string>
     <string name="error_session_nodata_short">Votre appareil n\'a aucune connexion aux données.</string>
     <string name="error_session_nodata"><![CDATA[<p><b>Votre appareil n\'a aucune connexion aux données.</b><br/></p> Vérifiez les paramètres de votre appareil et activez une connexion aux données.]]></string>
     <string name="error_session_unauthorized"><![CDATA[Vous n\'êtes pas autorisé à accéder à ce serveur.<br/> Vérifiez les paramètres de votre compte <b>(nom d\'utilisateur/mot de passe)</b>.]]></string>

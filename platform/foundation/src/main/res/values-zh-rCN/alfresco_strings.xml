@@ -256,7 +256,7 @@
     <string name="error_session_creation_message">连接错误</string>
     <string name="error_session_creation">无法进行身份验证。检查您的帐户设置。</string>
     <string name="error_session_hostname_short">到 URL 的<b>连接</b>不正确。</string>
-    <string name="error_session_hostname"><![CDATA[到 URL 的<b>连接</b>不正确或可能需要<b>激活 VPN</b>。<br/>检查数值和设置。]]></string>
+    <string name="error_session_hostname"><![CDATA[URL有点问题，<b>也许要用VPN</b>.]]></string>
     <string name="error_session_nodata_short">您的设备无数据连接。</string>
     <string name="error_session_nodata"><![CDATA[<p><b>您的设备没有数据连接。</b><br/></p>检查您的设备设置并启用数据连接。]]></string>
     <string name="error_session_unauthorized"><![CDATA[不允许您访问此服务器。<br/>检查您的帐户设置<b>（用户名/密码）</b>。]]></string>

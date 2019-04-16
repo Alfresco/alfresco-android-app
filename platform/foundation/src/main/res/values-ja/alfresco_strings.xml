@@ -256,7 +256,7 @@
     <string name="error_session_creation_message">接続エラー</string>
     <string name="error_session_creation">認証できません。アカウントの設定を確認してください。</string>
     <string name="error_session_hostname_short"><b>接続先</b>の URL に間違いがあります。</string>
-    <string name="error_session_hostname"><![CDATA[<b>接続先</b>の URL に間違いがあるか、<b>VPN を有効にする</b>必要があります。<br/> 値と設定を確認してください。]]></string>
+    <string name="error_session_hostname"><![CDATA[URL に間違いがあるか、 <b>VPN を有効にする必要があります。</b>.]]></string>
     <string name="error_session_nodata_short">デバイスにデータ接続がありません。</string>
     <string name="error_session_nodata"><![CDATA[<p><b>デバイスにデータ接続がありません。</b><br/></p>デバイスの設定を確認して、データ接続を有効にしてください。]]></string>
     <string name="error_session_unauthorized"><![CDATA[このサーバーへのアクセス権がありません。<br/>アカウントの設定 <b>(ユーザー名/パスワード)</b> を確認してください 。]]></string>

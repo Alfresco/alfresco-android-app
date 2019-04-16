@@ -256,7 +256,7 @@
     <string name="error_session_creation_message">Errore di connessione</string>
     <string name="error_session_creation">Impossibile eseguire l\'autenticazione. Verifica le impostazioni dell\'account.</string>
     <string name="error_session_hostname_short">L\'URL a cui <b>connettersi</b> non è corretto.</string>
-    <string name="error_session_hostname"><![CDATA[L\'URL a cui <b>connettersi</b> probabilmente non è corretto o è necessario <b>attivare la VPN</b>.<br/> Verificare i valori e le impostazioni.]]></string>
+    <string name="error_session_hostname"><![CDATA[Impossibile connettersi all\'URL o è necessario <b>attivare la VPN</b>.]]></string>
     <string name="error_session_nodata_short">La connessione dati del dispositivo è assente.</string>
     <string name="error_session_nodata"><![CDATA[<p><b>La connessione dati del dispositivo è assente.</b><br/></p> Controllare le impostazioni del dispositivo e abilitare una connessione dati.]]></string>
     <string name="error_session_unauthorized"><![CDATA[Non è consentito accedere a questo server.<br/> Verificare le impostazioni dell\'account <b>(Nome utente/Password)</b>.]]></string>

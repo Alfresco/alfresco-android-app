@@ -256,7 +256,7 @@
     <string name="error_session_creation_message">Error de conexión</string>
     <string name="error_session_creation">No se puede autenticar. Compruebe la configuración de su cuenta.</string>
     <string name="error_session_hostname_short">Su <b>conexión a la</b> URL no es correcta.</string>
-    <string name="error_session_hostname"><![CDATA[Su <b>conexión a la</b> URL parece que no es correcta o necesita <b>activar su VPN</b>.<br/> Compruebe los valores y configuración.]]></string>
+    <string name="error_session_hostname"><![CDATA[Error de conexión a la URL o necesita <b>activar su VPN</b>.]]></string>
     <string name="error_session_nodata_short">El dispositivo no tiene conexión de datos.</string>
     <string name="error_session_nodata"><![CDATA[<p><b>El dispositivo no tiene conexión de datos.</b><br/></p> Compruebe la configuración del dispositivo y active la conexión de datos.]]></string>
     <string name="error_session_unauthorized"><![CDATA[No tiene permiso para acceder a este servidor.<br/> Compruebe la configuración de su cuenta <b>(Nombre de usuario/Contraseña)</b>.]]></string>
