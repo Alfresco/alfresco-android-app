@@ -256,7 +256,7 @@
     <string name="error_session_creation_message">Verbindungsfehler</string>
     <string name="error_session_creation">Fehler bei der Authentifizierung. Überprüfen Sie die Account-Einstellungen.</string>
     <string name="error_session_hostname_short">Die URL unter <b>Verbinden mit</b> ist falsch.</string>
-    <string name="error_session_hostname"><![CDATA[Die URL unter <b>Verbinden mit</b> ist anscheinend falsch oder Sie müssen <b>Ihr VPN aktivieren</b>.<br/> Überprüfen Sie die Werte und Einstellungen.]]></string>
+    <string name="error_session_hostname"><![CDATA[Es gab ein Problem mit Ihrer URL oder Sie müssen <b>Ihr VPN aktivieren</b>.]]></string>
     <string name="error_session_nodata_short">Ihr Gerät hat keine Datenverbindung.</string>
     <string name="error_session_nodata"><![CDATA[<p><b>Ihr Gerät hat keine Datenverbindung.</b><br/></p> Überprüfen Sie Ihre Geräteeinstellungen und stellen Sie eine Datenverbindung her.]]></string>
     <string name="error_session_unauthorized"><![CDATA[Sie dürfen nicht auf diesen Server zugreifen.<br/> Überprüfen Sie Ihre Account-Einstellungen <b>(Benutzername/Passwort)</b>.]]></string>
