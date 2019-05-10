@@ -20,10 +20,10 @@ apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 26
-    buildToolsVersion "23.0.2"
+    buildToolsVersion "28.0.3"
 
     defaultConfig {
-        minSdkVersion 15
+        minSdkVersion 19
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
@@ -63,6 +63,6 @@ android {
 }*/
 
 dependencies {
-    compile 'org.alfresco.mobile.android.sdk:alfresco-mobile-android-client-api:1.5.1'
-    compile project(':platform:thirdparty')
+    implementation 'org.alfresco.mobile.android.sdk:alfresco-mobile-android-client-api:1.5.1'
+    implementation project(':platform:thirdparty')
 }
