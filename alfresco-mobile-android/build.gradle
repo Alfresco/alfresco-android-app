@@ -20,7 +20,9 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 26
-    buildToolsVersion "23.0.3"
+    buildToolsVersion "28.0.3"
+
+    flavorDimensions "default"
 
     defaultConfig {
         applicationId APPLICATION_ID
@@ -82,13 +84,38 @@ android {
         }
 
         release {
-
             signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             applicationVariants.all { variant ->
                 variant.outputs.each { output ->
-                    output.outputFile = new File(output.outputFile.parent, output.outputFile.name.replace(".apk", "-${variant.versionName}.apk"))
+                    def task = project.tasks.create("copy${variant.name.capitalize()}Apk", Copy)
+
+                    def sourceDir = "${project.buildDir}/outputs/apk/${variant.getFlavorName()}" + "/${variant.buildType.name}/"
+                    def destDir = "${project.buildDir}/outputs/apk/"
+                    def apkName = output.outputFileName.replace(".apk", "-${variant.versionName}.apk")
+
+                    println ">>>Pre-copy ${apkName}" +
+                            "\nsource dir: ${sourceDir}" +
+                            "\ndest dir: ${destDir}" +
+                            "\napk: ${apkName}"
+
+                    task.from file(sourceDir)
+                    task.into file(destDir)
+                    task.rename output.outputFileName, apkName
+                    task.doFirst {
+                        println ">>>Copying ${apkName}" +
+                                "\nsource dir: ${sourceDir}" +
+                                "\ndest dir: ${destDir}"
+                    }
+                    task.doLast{
+                        println ">>>Copied ${apkName} with success!" +
+                                "\nsource dir: ${sourceDir}" +
+                                "\ndest dir: ${destDir}"
+
+                        delete file("${project.buildDir}\\outputs\\apk\\" + variant.getFlavorName())
+                    }
+                    variant.getAssembleProvider().get().finalizedBy(task)
                 }
             }
         }
@@ -109,14 +136,14 @@ android {
         store {
             dependencies {
                 //DEBUG BUILD TYPE
-                debugCompile project(':extensions:hockeyapp')
-                debugCompile project(':extensions:analytics')
-                debugCompile project(':extensions:tools')
+                debugImplementation project(':extensions:hockeyapp')
+                debugImplementation project(':extensions:analytics')
+                debugImplementation project(':extensions:tools')
 
 
-                storeCompile project(':extensions:samsung')
-                storeCompile project(':extensions:scansnap')
-                storeCompile project(':extensions:analytics')
+                storeImplementation project(':extensions:samsung')
+                storeImplementation project(':extensions:scansnap')
+                storeImplementation project(':extensions:analytics')
             }
         }
 
@@ -137,6 +164,6 @@ android {
 
 dependencies {
     //COMMON TO ALL VARIANTS
-    compile 'com.google.code.gson:gson:2.8.5'
-    compile project(':platform:foundation')
+    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation project(':platform:foundation')
 }
