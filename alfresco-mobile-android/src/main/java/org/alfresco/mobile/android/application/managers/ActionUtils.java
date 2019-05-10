@@ -328,30 +328,36 @@ public class ActionUtils extends BaseActionUtils
         return i;
     }
 
-    public static boolean actionSendMailWithAttachment(Fragment fr, String subject, String content, Uri attachment,
-            int requestCode)
-    {
-        try
-        {
-            Intent i = new Intent(Intent.ACTION_SEND);
-            i.putExtra(Intent.EXTRA_SUBJECT, subject);
-            i.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(content));
-            i.putExtra(Intent.EXTRA_STREAM, attachment);
-            i.setType("text/plain");
+    public static boolean actionSendMailWithAttachment(Fragment fr, String subject, String content,
+            File file, int requestCode) {
 
-            if (i.resolveActivity(fr.getActivity().getPackageManager()) == null)
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        Uri data;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            data = FileProvider.getUriForFile(fr.getActivity(), fr.getActivity().getApplicationContext().getPackageName() + ".provider", file);
+        } else {
+            data = Uri.fromFile(file);
+        }
+
+        try {
+            intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+            intent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(content));
+            intent.putExtra(Intent.EXTRA_STREAM, data);
+            intent.setType("text/plain");
+
+            if (intent.resolveActivity(fr.getActivity().getPackageManager()) == null)
             {
                 AlfrescoNotificationManager.getInstance(fr.getActivity()).showAlertCrouton(fr.getActivity(),
                         fr.getString(R.string.feature_disable));
                 return false;
             }
 
-            fr.startActivityForResult(Intent.createChooser(i, fr.getString(R.string.send_email)), requestCode);
+            fr.startActivityForResult(Intent.createChooser(intent, fr.getString(R.string.send_email)), requestCode);
 
             return true;
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             AlfrescoNotificationManager.getInstance(fr.getActivity()).showAlertCrouton(fr.getActivity(),
                     R.string.decryption_failed);
             Log.d(TAG, Log.getStackTraceString(e));

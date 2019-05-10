@@ -194,7 +194,7 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
 
                 case ACTION_EMAIL:
                     ActionUtils.actionSendMailWithAttachment(this, contentFile.getFileName(),
-                            getString(R.string.email_content), Uri.fromFile(contentFile.getFile()),
+                            getString(R.string.email_content), contentFile.getFile(),
                             RequestCode.DECRYPTED);
                     break;
 
