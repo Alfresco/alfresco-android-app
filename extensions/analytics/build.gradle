@@ -37,6 +37,6 @@ android {
 }
 
 dependencies {
-    implementation 'com.google.android.gms:play-services-analytics:8.3.0'
+    api 'com.google.android.gms:play-services-analytics:8.3.0'
     api project(':platform:foundation')
 }
