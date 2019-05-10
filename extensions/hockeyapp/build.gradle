@@ -37,6 +37,6 @@ android {
 }
 
 dependencies {
-    implementation 'net.hockeyapp.android:HockeySDK:3.5.0'
+    api 'net.hockeyapp.android:HockeySDK:3.5.0'
     api project(':platform:foundation')
 }
