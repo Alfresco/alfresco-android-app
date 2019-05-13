@@ -22,6 +22,8 @@ import android.os.Looper;
 
 import com.squareup.otto.Bus;
 
+import java.util.ArrayList;
+
 public class EventBusManager extends Bus
 {
     private final Handler mainThread = new Handler(Looper.getMainLooper());
@@ -29,6 +31,8 @@ public class EventBusManager extends Bus
     protected static final Object LOCK = new Object();
 
     protected static EventBusManager mInstance;
+
+    private ArrayList<Object> registeredObjects = new ArrayList<>();
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTOR
@@ -57,15 +61,22 @@ public class EventBusManager extends Bus
     @Override
     public void unregister(Object object)
     {
-        try
-        {
-            super.unregister(object);
-        }
-        catch (Exception e)
-        {
+        if (registeredObjects.contains(object)) {
+            registeredObjects.remove(object);
+            try {
+                super.unregister(object);
+            } catch (Exception e) { }
         }
     }
-    
+
+    @Override
+    public void register(Object object) {
+        if (!registeredObjects.contains(object)) {
+            registeredObjects.add(object);
+            super.register(object);
+        }
+    }
+
     @Override
     public void post(final Object event)
     {
