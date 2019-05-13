@@ -19,12 +19,12 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    compileSdkVersion 26
+    buildToolsVersion "28.0.3"
 
     defaultConfig {
-        minSdkVersion 15
-        targetSdkVersion 23
+        minSdkVersion 19
+        targetSdkVersion 26
         versionCode 1
         versionName "1.0"
     }
@@ -42,7 +42,7 @@ android {
 }
 
 dependencies {
-    compile project(':platform:foundation')
-    compile 'com.samsung.android.sdk:pen:1.0.2'
-    compile 'com.samsung.android:sdk:1.0.0'
+    implementation project(':platform:foundation')
+    implementation 'com.samsung.android.sdk:pen:1.0.2'
+    implementation 'com.samsung.android:sdk:1.0.0'
 }
