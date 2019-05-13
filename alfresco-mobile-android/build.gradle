@@ -30,6 +30,7 @@ android {
         minSdkVersion 19
         targetSdkVersion 26
         versionCode 86
+        multiDexEnabled true
 
         versionName VERSION_NAME
 
@@ -165,5 +166,6 @@ android {
 dependencies {
     //COMMON TO ALL VARIANTS
     api 'com.google.code.gson:gson:2.8.5'
+    implementation 'com.android.support:multidex:1.0.3'
     api project(':platform:foundation')
 }
