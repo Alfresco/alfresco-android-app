@@ -19,6 +19,7 @@ package org.alfresco.mobile.android.application.activity;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
@@ -54,6 +55,8 @@ import org.alfresco.mobile.android.application.security.DataProtectionUserDialog
 import org.alfresco.mobile.android.application.security.PassCodeActivity;
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.account.CreateAccountEvent;
+import org.alfresco.mobile.android.async.account.DeleteAccountEvent;
+import org.alfresco.mobile.android.async.clean.CleanSyncFavoriteRequest;
 import org.alfresco.mobile.android.async.configuration.ConfigurationEvent;
 import org.alfresco.mobile.android.async.file.encryption.AccountProtectionEvent;
 import org.alfresco.mobile.android.async.person.AvatarRequest;
@@ -89,6 +92,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.squareup.otto.Subscribe;
 
 import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
@@ -185,6 +189,9 @@ public class MainActivity extends BaseActivity
 
         if (capture != null) capture.setActivity(this);
 
+        // delete every cloud account here
+        deleteCloudAccounts();
+
         if (savedInstanceState != null)
         {
             MainActivityHelper helper = new MainActivityHelper(savedInstanceState.getBundle(MainActivityHelper.TAG));
@@ -280,6 +287,59 @@ public class MainActivity extends BaseActivity
 
         getAppActionBar().setDisplayHomeAsUpEnabled(true);
         getAppActionBar().setHomeButtonEnabled(true);
+    }
+
+    private void deleteCloudAccounts()
+    {
+        // List all accounts.
+        List<AlfrescoAccount> accounts = AlfrescoAccountManager.retrieveAccounts(this);
+        Iterator itr = accounts.iterator();
+        AlfrescoAccount account;
+        while (itr.hasNext()) {
+            account = (AlfrescoAccount) itr.next();
+            if (account.getTypeId() == AlfrescoAccount.TYPE_ALFRESCO_CLOUD) {
+                deleteAccount(account);
+                itr.remove();
+            }
+        }
+
+        // If no AlfrescoAccount left, we remove all preferences
+        // Remove preferences
+        if (accounts.isEmpty()) {
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+            sharedPref.edit().clear().apply();
+
+            // Redirect to HomeScreenActivity
+            startActivity(new Intent(this, WelcomeActivity.class));
+            finish();
+        } else {
+            setCurrentAccount(accounts.get(0));
+        }
+    }
+
+    private void deleteAccount(AlfrescoAccount account) {
+        Operator.with(this).load(new CleanSyncFavoriteRequest.Builder(account, true));
+
+        // Delete Account from AccountManager
+        AccountManager.get(this).removeAccount(
+                AlfrescoAccountManager.getInstance(this).getAndroidAccount(account.getId()), null, null);
+
+        SessionManager.getInstance(this).removeAccount(account.getId());
+
+        // Send the event
+        EventBusManager.getInstance().post(new DeleteAccountEvent(account));
+
+        AlfrescoAccount newAccount = AlfrescoAccountManager.getInstance(this).getDefaultAccount();
+
+        if (newAccount != null && newAccount.getId() == account.getId()) {
+            SharedPreferences settings = getSharedPreferences(AccountsPreferences.ACCOUNT_PREFS, 0);
+            long id = settings.getLong(AccountsPreferences.ACCOUNT_DEFAULT, -1);
+            if (id == account.getId()) {
+                settings.edit().putLong(AccountsPreferences.ACCOUNT_DEFAULT, -1).apply();
+            }
+        }
+
+        AnalyticHelper.cleanOpt(this, account);
     }
 
     @Override
