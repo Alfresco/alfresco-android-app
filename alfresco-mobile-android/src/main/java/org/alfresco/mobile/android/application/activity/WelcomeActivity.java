@@ -25,7 +25,6 @@ import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.about.AboutFragment;
 import org.alfresco.mobile.android.application.fragments.signin.AccountOAuthFragment;
 import org.alfresco.mobile.android.application.fragments.signin.AccountServerFragment;
-import org.alfresco.mobile.android.application.fragments.signin.WelcomeFragment;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.utils.BundleUtils;
 import org.alfresco.mobile.android.platform.utils.ConnectivityUtils;
@@ -61,15 +60,7 @@ public class WelcomeActivity extends BaseActivity
             isCreation = BundleUtils.getBoolean(getIntent().getExtras(), EXTRA_ADD_ACCOUNT);
         }
 
-        if (getSupportFragmentManager().findFragmentByTag(WelcomeFragment.TAG) == null)
-        {
-            FragmentDisplayer.with(this)
-                    .load(WelcomeFragment.with(this).addExtra(getIntent().getExtras()).createFragment()).animate(null)
-                    .back(false).into(FragmentDisplayer.PANEL_LEFT);
-        }
-
-        findViewById(R.id.signin_more_information).setOnClickListener(new View.OnClickListener()
-        {
+        findViewById(R.id.signin_more_information).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v)
             {
@@ -101,6 +92,11 @@ public class WelcomeActivity extends BaseActivity
             }
         });
 
+        if (getSupportFragmentManager().findFragmentByTag(AccountServerFragment.TAG) == null) {
+            FragmentDisplayer.with(this)
+                    .load(AccountServerFragment.with(this).addExtra(getIntent().getExtras()).createFragment()).animate(null)
+                    .back(false).into(FragmentDisplayer.PANEL_LEFT);
+        }
     }
 
     public void signIn(View v)
