@@ -18,7 +18,9 @@
 package org.alfresco.mobile.android.application.providers.search;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 import org.alfresco.mobile.android.application.database.DatabaseManagerImpl;
 import org.alfresco.mobile.android.platform.database.DatabaseManager;
@@ -141,7 +143,9 @@ public class HistorySearchProvider extends ContentProvider implements AlfrescoCo
         // Check if the caller has requested a column which does not exists
         checkColumns(projection);
 
+        queryBuilder.setStrict(true);
         queryBuilder.setTables(HistorySearchSchema.TABLENAME);
+        queryBuilder.setProjectionMap(createProjectionMap(projection));
 
         int uriType = URI_MATCHER.match(uri);
         switch (uriType)
@@ -205,5 +209,13 @@ public class HistorySearchProvider extends ContentProvider implements AlfrescoCo
             if (!availableColumns.containsAll(requestedColumns)) { throw new IllegalArgumentException(
                     "Unknown columns in projection"); }
         }
+    }
+
+    private Map<String, String> createProjectionMap(String[] projection) {
+        Map<String, String> projectionMap = new HashMap<>();
+        for (String column : projection) {
+            projectionMap.put(column, column);
+        }
+        return projectionMap;
     }
 }
