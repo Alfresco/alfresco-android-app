@@ -771,7 +771,13 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         {
             MimeType mime = MimeTypeManager.getInstance(getActivity()).getMimetype(node.getName());
             iconId = MimeTypeManager.getInstance(getActivity()).getIcon(node.getName(), isLarge);
-            if (node instanceof Document && ((Document) node).isLatestVersion())
+            if (mime.getType().equals(MimeType.TYPE_IMAGE)) {
+                RenditionManager.with(getActivity())
+                        .loadNode(node)
+                        .placeHolder(iconId)
+                        .touchViewEnable(DisplayUtils.hasCentralPane(getActivity()))
+                        .into(iv);
+            } else if (node instanceof Document && ((Document) node).isLatestVersion())
             {
                 if (isLarge)
                 {
