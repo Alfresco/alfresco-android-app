@@ -19,7 +19,7 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 28
     buildToolsVersion "28.0.3"
 
     flavorDimensions "default"
@@ -28,8 +28,8 @@ android {
         applicationId APPLICATION_ID
 
         minSdkVersion 19
-        targetSdkVersion 26
-        versionCode 87
+        targetSdkVersion 28
+        versionCode 88
         multiDexEnabled true
 
         versionName VERSION_NAME
