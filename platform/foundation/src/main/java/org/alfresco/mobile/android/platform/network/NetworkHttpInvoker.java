@@ -18,6 +18,8 @@
 package org.alfresco.mobile.android.platform.network;
 
 import java.io.IOException;
+import java.net.CookieManager;
+import java.net.CookiePolicy;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -33,6 +35,12 @@ public class NetworkHttpInvoker extends org.alfresco.mobile.android.api.network.
     public NetworkHttpInvoker()
     {
         httpClient = NetworkSingleton.getInstance().getHttpClient();
+        if (httpClient.getCookieHandler() == null) {
+            // Create cookie handler to ensure sticky sessions work
+            CookieManager cookieManager = new CookieManager();
+            cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
+            httpClient.setCookieHandler(cookieManager);
+        }
         urlFactory = new OkUrlFactory(NetworkSingleton.getInstance().getHttpClient());
     }
 
