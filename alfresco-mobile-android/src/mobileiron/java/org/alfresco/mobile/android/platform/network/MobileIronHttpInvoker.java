@@ -24,14 +24,4 @@ import java.net.URL;
 public class MobileIronHttpInvoker extends org.alfresco.mobile.android.api.network.NetworkHttpInvoker
 {
 
-    public MobileIronHttpInvoker()
-    {
-    }
-
-    @Override
-    protected HttpURLConnection getHttpURLConnection(URL url) throws IOException
-    {
-        return super.getHttpURLConnection(url);
-    }
-
 }
