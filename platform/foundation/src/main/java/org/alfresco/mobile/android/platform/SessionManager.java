@@ -24,6 +24,7 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.alfresco.mobile.android.api.network.NetworkHttpInvoker;
 import org.alfresco.mobile.android.api.services.ConfigService;
 import org.alfresco.mobile.android.api.services.impl.cloud.CloudServiceRegistry;
 import org.alfresco.mobile.android.api.services.impl.onpremise.AlfrescoOnPremiseServiceRegistry;
@@ -46,7 +47,7 @@ import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoSessionSettings;
 import org.alfresco.mobile.android.platform.exception.AlfrescoExceptionHelper;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
-import org.alfresco.mobile.android.platform.network.NetworkHttpInvoker;
+import org.alfresco.mobile.android.platform.network.ConnectionProvider;
 import org.alfresco.mobile.android.platform.network.NetworkTrustManager;
 import org.alfresco.mobile.android.platform.utils.ConnectivityUtils;
 import org.apache.chemistry.opencmis.commons.SessionParameter;
@@ -85,6 +86,7 @@ public abstract class SessionManager extends Manager
         super(applicationContext);
         accountManager = AlfrescoAccountManager.getInstance(applicationContext);
         EventBusManager.getInstance().register(this);
+        NetworkHttpInvoker.setConnectionProvider(ConnectionProvider.getInstance());
     }
 
     public static SessionManager getInstance(Context context)

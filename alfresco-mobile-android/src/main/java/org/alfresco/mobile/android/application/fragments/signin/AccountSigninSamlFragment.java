@@ -45,6 +45,7 @@ import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.exception.AlfrescoExceptionHelper;
 import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
+import org.alfresco.mobile.android.platform.network.ConnectionProvider;
 import org.alfresco.mobile.android.platform.utils.AndroidVersion;
 import org.alfresco.mobile.android.platform.utils.BundleUtils;
 import org.alfresco.mobile.android.ui.activity.AlfrescoActivity;
@@ -64,6 +65,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.ConsoleMessage;
+import android.webkit.CookieManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
@@ -317,6 +319,10 @@ public class AccountSigninSamlFragment extends DialogFragment implements Analyti
             ActionUtils.actionDisplayError(this, null);
             return;
         }
+
+        // Inject WebKit cookies into the connection factory
+        String cookie = CookieManager.getInstance().getCookie(lastUrl);
+        ConnectionProvider.getInstance().putCookies(lastUrl, cookie);
 
         if (getArguments() != null && getArguments().containsKey(ARGUMENT_ACCOUNT))
         {
