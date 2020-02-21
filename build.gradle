@@ -28,6 +28,9 @@ buildscript {
     }
 }
 
+def nexus_username = System.getenv('NEXUS_USERNAME') ?: NEXUS_USERNAME
+def nexus_password = System.getenv('NEXUS_PASSWORD') ?: NEXUS_PASSWORD
+
 allprojects {
     repositories {
         mavenLocal()
@@ -36,6 +39,13 @@ allprojects {
         }
         maven {
             url "https://artifacts.alfresco.com/nexus/content/groups/public-snapshots"
+        }
+        maven {
+            url "https://artifacts.alfresco.com/nexus/content/groups/internal-snapshots"
+            credentials {
+                username nexus_username
+                password nexus_password
+            }
         }
         maven {
             url "https://jitpack.io"
