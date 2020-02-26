@@ -928,7 +928,10 @@ public class MainActivity extends BaseActivity
     {
         if (fromSessionRequested)
         {
-            ((MainMenuFragment) getFragment(MainMenuFragment.TAG)).refreshData();
+            Fragment fr = getFragment(MainMenuFragment.TAG);
+            if (fr != null) {
+                ((MainMenuFragment) fr).refreshData();
+            }
         }
         setSessionState(SESSION_LOADING);
         setSupportProgressBarIndeterminateVisibility(true);
