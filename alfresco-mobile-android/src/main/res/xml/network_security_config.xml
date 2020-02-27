@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- Enable HTTP requests -->
+    <base-config cleartextTrafficPermitted="true" />
+    <!-- Trust user added CAs while debuggable only -->
+    <debug-overrides>
+        <trust-anchors>
+            <certificates src="user" />
+        </trust-anchors>
+    </debug-overrides>
+</network-security-config>
