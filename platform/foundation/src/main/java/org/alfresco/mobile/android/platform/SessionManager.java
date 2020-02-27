@@ -86,7 +86,7 @@ public abstract class SessionManager extends Manager
         super(applicationContext);
         accountManager = AlfrescoAccountManager.getInstance(applicationContext);
         EventBusManager.getInstance().register(this);
-        NetworkHttpInvoker.setConnectionProvider(ConnectionProvider.getInstance());
+        NetworkHttpInvoker.setConnectionProvider(ConnectionProvider.getInstance(applicationContext));
     }
 
     public static SessionManager getInstance(Context context)

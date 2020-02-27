@@ -18,6 +18,8 @@
 
 package org.alfresco.mobile.android.platform.network;
 
+import android.content.Context;
+
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.OkUrlFactory;
 
@@ -44,26 +46,25 @@ public class ConnectionProvider implements NetworkHttpInvoker.ConnectionProvider
     private OkUrlFactory urlFactory;
     private CookieManager cookieManager;
 
-    public static ConnectionProvider getInstance()
+    public static ConnectionProvider getInstance(Context context)
     {
         synchronized (LOCK)
         {
             if (mInstance == null)
             {
-                mInstance = new ConnectionProvider();
+                mInstance = new ConnectionProvider(context);
             }
 
             return mInstance;
         }
     }
 
-    private ConnectionProvider()
+    private ConnectionProvider(Context context)
     {
         httpClient = NetworkSingleton.getInstance().getHttpClient();
 
         // Create cookie handler to ensure sticky sessions work
-        cookieManager = new CookieManager();
-        cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
+        cookieManager = new CookieManager(PersistentCookieStore.getInstance(context), CookiePolicy.ACCEPT_ALL);
         httpClient.setCookieHandler(cookieManager);
 
         urlFactory = new OkUrlFactory(httpClient);
@@ -79,13 +80,6 @@ public class ConnectionProvider implements NetworkHttpInvoker.ConnectionProvider
 
         HashMap<String, List<String>>  headers = new HashMap<>();
         headers.put("Set-Cookie", Arrays.asList(cookies.split("; ")));
-
-        CookieStore cookieStore = cookieManager.getCookieStore();
-        for (HttpCookie cookie : cookieStore.get(uri))
-        {
-            cookieStore.remove(uri, cookie);
-        }
-
 
         try
         {

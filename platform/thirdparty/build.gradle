@@ -57,6 +57,7 @@ dependencies {
     api 'com.squareup.okhttp:okhttp-urlconnection:2.7.5'
 
     //3rd Party Lib
+    api 'com.google.code.gson:gson:2.8.6'
     api 'com.cocosw:bottomsheet:1.1.1@aar'
     api('com.github.afollestad.material-dialogs:core:0.8.5.1@aar') {
         transitive = true

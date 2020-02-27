@@ -322,7 +322,7 @@ public class AccountSigninSamlFragment extends DialogFragment implements Analyti
 
         // Inject WebKit cookies into the connection factory
         String cookie = CookieManager.getInstance().getCookie(lastUrl);
-        ConnectionProvider.getInstance().putCookies(lastUrl, cookie);
+        ConnectionProvider.getInstance(getContext()).putCookies(lastUrl, cookie);
 
         if (getArguments() != null && getArguments().containsKey(ARGUMENT_ACCOUNT))
         {
