@@ -17,6 +17,8 @@
  */
 
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.crashlytics'
 
 android {
     compileSdkVersion 28
@@ -163,9 +165,24 @@ android {
     }
 }
 
+project.afterEvaluate {
+    if (file("$GOOGLE_SERVICES_FILE").exists()) {
+        println "Copying $GOOGLE_SERVICES_FILE into $projectDir/google-services.json"
+        copy {
+            from file("$GOOGLE_SERVICES_FILE")
+            into file("$projectDir")
+            rename '(.*)', 'google-services.json'
+        }
+    } else {
+        println "Using dummy $projectDir/google-services.json"
+    }
+}
+
 dependencies {
     //COMMON TO ALL VARIANTS
     api 'com.google.code.gson:gson:2.8.5'
     implementation 'androidx.multidex:multidex:2.0.1'
+    releaseImplementation 'com.google.firebase:firebase-analytics:17.2.3'
+    releaseImplementation 'com.google.firebase:firebase-crashlytics:17.0.0-beta01'
     api project(':platform:foundation')
 }
