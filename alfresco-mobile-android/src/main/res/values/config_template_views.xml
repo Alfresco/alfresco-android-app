@@ -40,7 +40,7 @@
 
     <!-- SITES -->
     <string name="config_org_alfresco_client_view_site_browser" translatable="false">org.alfresco.mobile.android.application.fragments.site.browser.BrowserSitesPagerFragment$Builder</string>
-    <string name="config_org_alfresco_client_view_sites" translatable="false">org.alfresco.mobile.android.application.fragments.site.browser.SitesFragment$Builder</string>
+    <string name="config_org_alfresco_client_view_sites" translatable="false">org.alfresco.mobile.android.application.fragments.site.browser.BrowserSitesPagerFragment$Builder</string>
 
     <!-- NODE DETAILS -->
     <string name="config_org_alfresco_client_view_document_details" translatable="false">org.alfresco.mobile.android.application.fragments.node.details.PagerNodeDetailsFragment$Builder</string>
