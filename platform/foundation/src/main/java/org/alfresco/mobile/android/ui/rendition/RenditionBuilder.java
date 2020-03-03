@@ -21,7 +21,7 @@ import java.lang.ref.WeakReference;
 
 import org.alfresco.mobile.android.api.model.Node;
 
-import android.support.v4.app.FragmentActivity;
+import androidx.fragment.app.FragmentActivity;
 import android.widget.ImageView;
 
 public class RenditionBuilder

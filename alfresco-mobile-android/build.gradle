@@ -166,6 +166,6 @@ android {
 dependencies {
     //COMMON TO ALL VARIANTS
     api 'com.google.code.gson:gson:2.8.5'
-    implementation 'com.android.support:multidex:1.0.3'
+    implementation 'androidx.multidex:multidex:2.0.1'
     api project(':platform:foundation')
 }

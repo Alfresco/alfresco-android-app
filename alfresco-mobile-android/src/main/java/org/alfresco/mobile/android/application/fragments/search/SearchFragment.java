@@ -54,10 +54,10 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.loader.content.CursorLoader;
+import androidx.loader.content.Loader;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -329,7 +329,7 @@ public class SearchFragment extends BaseCursorGridFragment
         // /QUICK PATH
         if (getActionBar() != null)
         {
-            getActionBar().setNavigationMode(android.support.v7.app.ActionBar.NAVIGATION_MODE_LIST);
+            getActionBar().setNavigationMode(androidx.appcompat.app.ActionBar.NAVIGATION_MODE_LIST);
             getActionBar().setDisplayUseLogoEnabled(false);
             getActionBar().setDisplayUseLogoEnabled(false);
             getActionBar().setDisplayShowTitleEnabled(false);
@@ -338,7 +338,7 @@ public class SearchFragment extends BaseCursorGridFragment
             optionAdapter = new SearchOptionAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item,
                     SearchOptionAdapter.getSearchOptions(getSession(), (tmpParentFolder != null)));
 
-            android.support.v7.app.ActionBar.OnNavigationListener mOnNavigationListener = new android.support.v7.app.ActionBar.OnNavigationListener()
+            androidx.appcompat.app.ActionBar.OnNavigationListener mOnNavigationListener = new androidx.appcompat.app.ActionBar.OnNavigationListener()
             {
 
                 @Override

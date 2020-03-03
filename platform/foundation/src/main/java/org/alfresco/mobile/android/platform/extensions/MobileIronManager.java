@@ -22,7 +22,7 @@ import org.alfresco.mobile.android.platform.mdm.MDMConstants;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
+import androidx.fragment.app.FragmentActivity;
 
 public abstract class MobileIronManager extends Manager implements MDMConstants
 {

@@ -22,7 +22,7 @@ import java.util.Map;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 
-import android.support.v4.app.FragmentActivity;
+import androidx.fragment.app.FragmentActivity;
 
 public abstract class LeafFragmentBuilder extends AlfrescoFragmentBuilder
 {

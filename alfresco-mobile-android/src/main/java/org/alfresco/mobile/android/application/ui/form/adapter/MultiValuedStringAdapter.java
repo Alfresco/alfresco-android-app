@@ -26,7 +26,7 @@ import org.alfresco.mobile.android.application.fragments.node.update.EditPropert
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 import org.alfresco.mobile.android.ui.holder.TwoLinesViewHolder;
 
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;

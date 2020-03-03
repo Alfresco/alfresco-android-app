@@ -25,7 +25,7 @@ import org.alfresco.mobile.android.application.widgets.BaseShortcutActivity;
 import org.alfresco.mobile.android.ui.GridFragment;
 
 import android.content.Context;
-import android.support.v4.app.FragmentActivity;
+import androidx.fragment.app.FragmentActivity;
 import android.widget.GridView;
 
 /**

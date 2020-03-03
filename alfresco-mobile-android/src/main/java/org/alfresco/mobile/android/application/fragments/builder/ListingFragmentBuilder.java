@@ -26,7 +26,7 @@ import org.alfresco.mobile.android.ui.template.ListingTemplate;
 import org.alfresco.mobile.android.ui.template.ViewTemplate;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
+import androidx.fragment.app.FragmentActivity;
 
 /**
  * Goal is to create a Fragment based on configuration provided.

@@ -44,7 +44,7 @@ import org.alfresco.mobile.android.sync.SyncContentManager;
 import com.squareup.otto.Subscribe;
 
 import android.content.Context;
-import android.support.v4.util.LongSparseArray;
+import androidx.collection.LongSparseArray;
 import android.text.TextUtils;
 
 public class ConfigManager extends Manager

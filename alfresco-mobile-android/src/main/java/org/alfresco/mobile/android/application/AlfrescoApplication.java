@@ -22,7 +22,7 @@ import org.alfresco.mobile.android.async.OperationsUtils;
 import org.alfresco.mobile.android.platform.SessionManager;
 import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 
-import android.support.multidex.MultiDexApplication;
+import androidx.multidex.MultiDexApplication;
 
 public class AlfrescoApplication extends MultiDexApplication
 {

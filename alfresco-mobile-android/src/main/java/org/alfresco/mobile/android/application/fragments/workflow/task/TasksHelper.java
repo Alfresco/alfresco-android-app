@@ -30,7 +30,7 @@ import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 import org.alfresco.mobile.android.ui.activity.AlfrescoActivity;
 
 import android.content.SharedPreferences;
-import android.support.v7.app.ActionBar;
+import androidx.appcompat.app.ActionBar;
 
 public final class TasksHelper
 {

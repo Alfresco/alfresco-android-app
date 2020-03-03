@@ -26,7 +26,7 @@ import org.alfresco.mobile.android.ui.holder.HolderUtils;
 import org.alfresco.mobile.android.ui.holder.TwoLinesViewHolder;
 
 import android.database.Cursor;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.view.View;
 
 public class HistorySearchInlineCursorAdapter extends BaseCursorLoader<TwoLinesViewHolder>

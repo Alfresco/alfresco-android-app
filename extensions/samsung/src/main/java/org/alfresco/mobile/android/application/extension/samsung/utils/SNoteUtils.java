@@ -27,7 +27,7 @@ import org.alfresco.mobile.android.application.extension.samsung.pen.SNoteSDKDia
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.support.v4.app.FragmentActivity;
+import androidx.fragment.app.FragmentActivity;
 import android.util.Log;
 
 import com.samsung.android.sdk.SsdkUnsupportedException;

@@ -21,7 +21,7 @@ package org.alfresco.mobile.android.application.configuration;
 import org.alfresco.mobile.android.api.model.config.RepositoryConfig;
 import org.alfresco.mobile.android.api.services.ConfigService;
 
-import android.support.v4.app.FragmentActivity;
+import androidx.fragment.app.FragmentActivity;
 import android.text.TextUtils;
 import android.view.ViewGroup;
 

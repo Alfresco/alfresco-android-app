@@ -31,8 +31,8 @@ import org.alfresco.mobile.android.platform.utils.BundleUtils;
 import org.alfresco.mobile.android.ui.node.update.UpdateNodeDialogFragment;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import android.widget.EditText;
 
 public class UpdateDialogFragment extends UpdateNodeDialogFragment

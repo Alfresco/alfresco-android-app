@@ -24,7 +24,7 @@ import net.hockeyapp.android.UpdateManager;
 import org.alfresco.mobile.android.platform.extensions.HockeyAppManager;
 
 import android.content.Context;
-import android.support.v4.app.FragmentActivity;
+import androidx.fragment.app.FragmentActivity;
 
 public class HockeyAppManagerImpl extends HockeyAppManager
 {

@@ -20,7 +20,7 @@ package org.alfresco.mobile.android.application.managers;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 
 import android.content.Context;
-import android.support.v4.app.FragmentActivity;
+import androidx.fragment.app.FragmentActivity;
 import android.text.Html;
 
 import de.keyboardsurfer.android.widget.crouton.Crouton;

@@ -23,7 +23,7 @@ import org.alfresco.mobile.android.api.model.config.ConfigScope;
 import org.alfresco.mobile.android.api.services.ConfigService;
 import org.alfresco.mobile.android.application.managers.ConfigManager;
 
-import android.support.v4.app.FragmentActivity;
+import androidx.fragment.app.FragmentActivity;
 import android.view.ViewGroup;
 
 public class BaseConfigManager implements ConfigurationConstant

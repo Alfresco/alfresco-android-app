@@ -22,7 +22,7 @@ import java.util.Map;
 
 import org.alfresco.mobile.android.platform.configuration.ConfigUtils;
 
-import android.support.v4.app.FragmentActivity;
+import androidx.fragment.app.FragmentActivity;
 import android.util.Log;
 
 public class FragmentBuilderFactory

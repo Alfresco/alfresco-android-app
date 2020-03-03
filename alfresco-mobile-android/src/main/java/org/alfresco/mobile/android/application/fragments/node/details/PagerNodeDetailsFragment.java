@@ -50,11 +50,11 @@ import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.ViewPager;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -366,7 +366,7 @@ class NodeDetailsPagerAdapter extends FragmentStatePagerAdapter
 
     private boolean isTabletLayout = false;
 
-    public NodeDetailsPagerAdapter(android.support.v4.app.FragmentManager fm, FragmentActivity activity, Node node,
+    public NodeDetailsPagerAdapter(FragmentManager fm, FragmentActivity activity, Node node,
             Folder parentFolder)
     {
         super(fm);

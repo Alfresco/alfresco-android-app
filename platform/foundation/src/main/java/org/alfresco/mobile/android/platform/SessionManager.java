@@ -58,7 +58,7 @@ import android.accounts.AccountManager;
 import android.accounts.NetworkErrorException;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.util.LongSparseArray;
+import androidx.collection.LongSparseArray;
 import android.text.TextUtils;
 
 /**

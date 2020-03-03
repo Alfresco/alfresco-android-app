@@ -20,12 +20,12 @@
     style="?MainTheme.Background.White"
     tools:context=".MainActivity">
 
-    <android.support.v4.view.ViewPager
+    <androidx.viewpager.widget.ViewPager
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.v4.view.PagerTabStrip
+        <androidx.viewpager.widget.PagerTabStrip
             android:id="@+id/pager_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -33,7 +33,7 @@
             android:paddingBottom="4dp"
             android:paddingTop="4dp"
             android:textAppearance="@style/AlfrescoHoloTheme.Text.Bold" />
-    </android.support.v4.view.ViewPager>
+    </androidx.viewpager.widget.ViewPager>
 
     <include
         android:layout_width="match_parent"

@@ -82,7 +82,6 @@ import org.alfresco.mobile.android.async.node.update.UpdateContentEvent;
 import org.alfresco.mobile.android.async.node.update.UpdateNodeEvent;
 import org.alfresco.mobile.android.async.utils.ContentFileProgressImpl;
 import org.alfresco.mobile.android.async.utils.NodePlaceHolder;
-import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.exception.AlfrescoAppException;
 import org.alfresco.mobile.android.platform.extensions.AnalyticsHelper;
 import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
@@ -113,9 +112,9 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.ActionBar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.appcompat.app.ActionBar;
 import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -489,7 +488,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment implement
             SpinnerAdapter adapter = new FolderPathAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item,
                     listFolder);
 
-            ActionBar.OnNavigationListener mOnNavigationListener = new android.support.v7.app.ActionBar.OnNavigationListener()
+            ActionBar.OnNavigationListener mOnNavigationListener = new androidx.appcompat.app.ActionBar.OnNavigationListener()
             {
 
                 @Override

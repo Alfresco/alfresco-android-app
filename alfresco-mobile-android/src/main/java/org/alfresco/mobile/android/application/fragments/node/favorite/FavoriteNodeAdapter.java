@@ -29,7 +29,7 @@ import org.alfresco.mobile.android.application.fragments.node.browser.ProgressNo
 import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsFragment;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.view.Menu;
 import android.view.MenuItem;
 

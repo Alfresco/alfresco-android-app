@@ -28,7 +28,7 @@ import org.alfresco.mobile.android.ui.holder.TwoLinesCaptionViewHolder;
 
 import android.annotation.TargetApi;
 import android.os.Build;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;

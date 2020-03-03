@@ -26,7 +26,7 @@ import org.alfresco.mobile.android.api.services.ConfigService;
 import org.alfresco.mobile.android.platform.data.DocumentTypeRecord;
 import org.alfresco.mobile.android.platform.mimetype.MimeTypeManager;
 
-import android.support.v4.app.FragmentActivity;
+import androidx.fragment.app.FragmentActivity;
 import android.text.TextUtils;
 import android.view.ViewGroup;
 

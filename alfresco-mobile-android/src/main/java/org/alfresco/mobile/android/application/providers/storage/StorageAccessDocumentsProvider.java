@@ -94,7 +94,7 @@ import android.provider.DocumentsContract;
 import android.provider.DocumentsContract.Document;
 import android.provider.DocumentsContract.Root;
 import android.provider.DocumentsProvider;
-import android.support.v4.util.LongSparseArray;
+import androidx.collection.LongSparseArray;
 import android.text.TextUtils;
 import android.util.Log;
 

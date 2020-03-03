@@ -31,7 +31,7 @@ import org.alfresco.mobile.android.platform.utils.ConnectivityUtils;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.PopupMenu;
+import androidx.appcompat.widget.PopupMenu;
 import android.text.Html;
 import android.view.MenuItem;
 import android.view.View;

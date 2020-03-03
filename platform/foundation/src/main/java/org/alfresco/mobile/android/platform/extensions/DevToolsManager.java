@@ -20,7 +20,7 @@ package org.alfresco.mobile.android.platform.extensions;
 import org.alfresco.mobile.android.platform.Manager;
 
 import android.content.Context;
-import android.support.v4.app.FragmentActivity;
+import androidx.fragment.app.FragmentActivity;
 import android.view.ViewGroup;
 
 public abstract class DevToolsManager extends Manager

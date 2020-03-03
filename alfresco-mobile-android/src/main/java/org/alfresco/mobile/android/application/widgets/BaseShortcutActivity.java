@@ -40,8 +40,8 @@ import org.apache.chemistry.opencmis.commons.PropertyIds;
 import com.squareup.otto.Subscribe;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.widget.Toolbar;
+import androidx.fragment.app.FragmentManager;
+import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;

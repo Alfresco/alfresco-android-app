@@ -27,8 +27,8 @@ import org.alfresco.mobile.android.platform.security.DataProtectionManager;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
 public class DataProtectionManagerImpl extends DataProtectionManager
 {

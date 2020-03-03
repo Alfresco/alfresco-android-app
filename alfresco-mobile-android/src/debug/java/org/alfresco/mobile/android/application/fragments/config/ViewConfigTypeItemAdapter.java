@@ -25,7 +25,7 @@ import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 import org.alfresco.mobile.android.ui.holder.HolderUtils;
 import org.alfresco.mobile.android.ui.holder.TwoLinesViewHolder;
 
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.widget.Filter;
 
 public class ViewConfigTypeItemAdapter extends BaseListAdapter<ViewConfigModel, TwoLinesViewHolder>

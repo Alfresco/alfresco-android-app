@@ -27,7 +27,7 @@ import org.alfresco.mobile.android.ui.holder.HolderUtils;
 import org.alfresco.mobile.android.ui.holder.TwoLinesProgressViewHolder;
 
 import android.content.res.Resources;
-import android.support.v4.app.FragmentActivity;
+import androidx.fragment.app.FragmentActivity;
 
 /**
  * Provides access to history version and displays them as a view based on

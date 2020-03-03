@@ -32,7 +32,7 @@ import org.alfresco.mobile.android.application.fragments.builder.FragmentBuilder
 import org.alfresco.mobile.android.ui.template.ViewTemplate;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
-import android.support.v4.app.FragmentActivity;
+import androidx.fragment.app.FragmentActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;

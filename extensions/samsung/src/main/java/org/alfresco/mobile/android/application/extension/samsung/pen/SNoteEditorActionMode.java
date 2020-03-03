@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.alfresco.mobile.android.application.extension.samsung.R;
 
-import android.support.v4.app.FragmentActivity;
+import androidx.fragment.app.FragmentActivity;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;

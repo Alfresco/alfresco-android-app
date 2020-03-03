@@ -22,7 +22,7 @@ import org.alfresco.mobile.android.application.activity.MainActivity;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.support.v4.app.FragmentActivity;
+import androidx.fragment.app.FragmentActivity;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Display;

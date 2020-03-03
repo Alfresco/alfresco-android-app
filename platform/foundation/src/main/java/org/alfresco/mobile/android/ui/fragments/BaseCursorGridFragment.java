@@ -22,8 +22,8 @@ import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
 
 import android.annotation.TargetApi;
 import android.database.Cursor;
-import android.support.v4.app.LoaderManager.LoaderCallbacks;
-import android.support.v4.content.Loader;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.Loader;
 import android.view.View;
 import android.widget.CursorAdapter;
 import android.widget.ImageView;
@@ -34,7 +34,7 @@ import android.widget.TextView;
  * @since 1.4
  * @author Jean Marie Pascal
  */
-public abstract class BaseCursorGridFragment extends CommonGridFragment implements LoaderCallbacks<Cursor>
+public abstract class BaseCursorGridFragment extends CommonGridFragment implements LoaderManager.LoaderCallbacks<Cursor>
 {
     public static final String TAG = BaseCursorGridFragment.class.getName();
 

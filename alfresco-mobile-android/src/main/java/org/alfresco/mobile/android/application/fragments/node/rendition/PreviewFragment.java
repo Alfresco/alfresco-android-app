@@ -32,7 +32,6 @@ import org.alfresco.mobile.android.application.fragments.node.details.PagerNodeD
 import org.alfresco.mobile.android.application.fragments.node.download.DownloadDialogFragment;
 import org.alfresco.mobile.android.application.fragments.node.download.DownloadDocumentHolder;
 import org.alfresco.mobile.android.application.fragments.utils.OpenAsDialogFragment;
-import org.alfresco.mobile.android.application.intent.RequestCode;
 import org.alfresco.mobile.android.application.managers.ActionUtils;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.intent.BaseActionUtils.ActionManagerListener;
@@ -48,9 +47,9 @@ import org.alfresco.mobile.android.ui.rendition.RenditionRequest;
 
 import android.content.ActivityNotFoundException;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
