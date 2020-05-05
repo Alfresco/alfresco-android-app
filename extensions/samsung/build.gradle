@@ -43,6 +43,6 @@ android {
 
 dependencies {
     implementation project(':platform:foundation')
-    implementation 'com.samsung.android.sdk:pen:1.0.2'
-    implementation 'com.samsung.android:sdk:1.0.0'
+    implementation files('libs/com/samsung/android/sdk/1.0.0/sdk-1.0.0.jar')
+    implementation files('libs/com/samsung/android/sdk/pen/1.0.2/pen-1.0.2.jar')
 }
