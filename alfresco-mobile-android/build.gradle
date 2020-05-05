@@ -116,7 +116,9 @@ android {
                                 "\nsource dir: ${sourceDir}" +
                                 "\ndest dir: ${destDir}"
 
-                        delete file("${project.buildDir}\\outputs\\apk\\" + variant.getFlavorName())
+                        if (!variant.name.toLowerCase().contains("debug")) {
+                            delete file("${project.buildDir}\\outputs\\apk\\" + variant.getFlavorName())
+                        }
                     }
                     variant.getAssembleProvider().get().finalizedBy(task)
                 }
