@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="all">
-
-    <!-- HockeyApp Manager Extension -->
-    <bool name="manager_isEnable_HockeyAppManager">true</bool>
-    <string name="manager_HockeyAppManager">org.alfresco.mobile.android.application.extension.hockeyapp.HockeyAppManagerImpl</string>
-
-</resources>

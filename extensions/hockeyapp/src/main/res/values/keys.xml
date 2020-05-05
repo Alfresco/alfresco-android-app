@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="all">
-
-    <!-- Hockey App Key -->
-    <string name="hockeyapp_key">TODO</string>
-
-</resources>

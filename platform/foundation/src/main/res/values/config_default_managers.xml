@@ -32,10 +32,6 @@
     <bool name="manager_isEnable_SamsungManager">false</bool>
     <string name="manager_SamsungManager">org.alfresco.mobile.android.application.extension.samsung.SamsungManagerImpl</string>
 
-    <!-- HockeyApp Manager -->
-    <bool name="manager_isEnable_HockeyAppManager">false</bool>
-    <string name="manager_HockeyAppManager">org.alfresco.mobile.android.application.extension.hockeyapp.HockeyAppManagerImpl</string>
-
     <!-- Analytics Manager -->
     <bool name="manager_isEnable_AnalyticsManager">false</bool>
     <string name="manager_AnalyticsManager">org.alfresco.mobile.android.application.extension.analytics.GAnalyticsManagerImpl</string>

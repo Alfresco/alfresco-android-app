@@ -82,7 +82,6 @@ android {
             resValue "string", "sync_adapter", SYNC_ADAPTER_DEBUG
             resValue "string", "favorites_adapter", FAVORITES_ADAPTER_DEBUG
 
-            resValue "string", "hockeyapp_key", HOCKEYAPP_KEY
             resValue "string", "ga_trackingId", TRACKER_ID_DEBUG
         }
 
@@ -141,7 +140,6 @@ android {
         store {
             dependencies {
                 //DEBUG BUILD TYPE
-                debugImplementation project(':extensions:hockeyapp')
                 debugImplementation project(':extensions:analytics')
                 debugImplementation project(':extensions:tools')
 
