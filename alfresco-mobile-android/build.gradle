@@ -20,6 +20,13 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
 
+def version_code      = System.getenv('VERSION_CODE')      ?: VERSION_CODE
+def keystore_file     = System.getenv('KEYSTORE_FILE')     ?: RELEASE_STORE_FILE
+def keystore_password = System.getenv('KEYSTORE_PASSWORD') ?: RELEASE_STORE_PASSWORD
+def key_alias         = System.getenv('KEY_ALIAS')         ?: RELEASE_KEY_ALIAS
+def key_password      = System.getenv('KEY_PASSWORD')      ?: RELEASE_KEY_PASSWORD
+def gservices_cfg     = System.getenv('GOOGLE_SERVICES_FILE') ?: GOOGLE_SERVICES_FILE
+
 android {
     compileSdkVersion 28
     buildToolsVersion "28.0.3"
@@ -31,7 +38,7 @@ android {
 
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode BUILDNUMBER as Integer
+        versionCode version_code as Integer
         multiDexEnabled true
 
         versionName VERSION_NAME
@@ -46,7 +53,6 @@ android {
         resValue "string", "oauth_api_secret", OAUTH_API_SECRET
         resValue "string", "oauth_callback", OAUTH_CALLBACK
         resValue "string", "oauth_scope", OAUTH_SCOPE
-        resValue "string", "bamboo_buildnumber", BUILDNUMBER
 
         resValue "string", "ga_trackingId", TRACKER_ID
     }
@@ -64,10 +70,10 @@ android {
 
 
         release {
-            storeFile file(RELEASE_STORE_FILE)
-            storePassword RELEASE_STORE_PASSWORD
-            keyAlias RELEASE_KEY_ALIAS
-            keyPassword RELEASE_KEY_PASSWORD
+            storeFile file(keystore_file)
+            storePassword keystore_password
+            keyAlias key_alias
+            keyPassword key_password
         }
     }
 
@@ -166,15 +172,15 @@ android {
 }
 
 project.afterEvaluate {
-    if (file("$GOOGLE_SERVICES_FILE").exists()) {
-        println "Copying $GOOGLE_SERVICES_FILE into $projectDir/google-services.json"
+    if (file("${gservices_cfg}").exists()) {
+        println "Copying ${gservices_cfg} into ${projectDir}/google-services.json"
         copy {
-            from file("$GOOGLE_SERVICES_FILE")
-            into file("$projectDir")
+            from file("${gservices_cfg}")
+            into file("${projectDir}")
             rename '(.*)', 'google-services.json'
         }
     } else {
-        println "Using dummy $projectDir/google-services.json"
+        println "Using dummy ${projectDir}/google-services.json"
     }
 }
 

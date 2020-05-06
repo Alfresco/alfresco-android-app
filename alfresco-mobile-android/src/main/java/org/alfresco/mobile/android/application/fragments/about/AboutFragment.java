@@ -27,8 +27,11 @@ import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
+
+import androidx.core.content.pm.PackageInfoCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import android.text.Html;
@@ -104,9 +107,12 @@ public class AboutFragment extends AlfrescoFragment
         String versionNumber;
         try
         {
-            StringBuilder sb = new StringBuilder(context.getString(R.string.buildnumber_version)).append(" ")
-                    .append(context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName)
-                    .append(".").append(context.getString(R.string.bamboo_buildnumber));
+            PackageInfo pkg = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            StringBuilder sb = new StringBuilder(context.getString(R.string.buildnumber_version))
+                    .append(" ")
+                    .append(pkg.versionName)
+                    .append("-")
+                    .append(PackageInfoCompat.getLongVersionCode(pkg));
             versionNumber = sb.toString();
         }
         catch (NameNotFoundException e)

@@ -1,0 +1,55 @@
+trigger:
+  - master
+
+pr: none
+
+pool:
+  vmImage: 'macos-latest'
+
+variables:
+  - group: nexus-credentials
+  - group: source-clear-credentials
+  - group: android-signing
+  - name: version_code
+    value: $[counter('versionCode', 399)]
+
+steps:
+  - task: DownloadSecureFile@1
+    name: keystore
+    inputs:
+      secureFile: alfresco-android-mobile-keystore
+  - task: DownloadSecureFile@1
+    name: google_services
+    inputs:
+      secureFile: google-services-acs.json
+  - task: Gradle@2
+    inputs:
+      workingDirectory: ''
+      gradleWrapperFile: 'gradlew'
+      gradleOptions: '-Xmx3072m'
+      publishJUnitResults: false
+      testResultsFiles: '**/TEST-*.xml'
+      tasks: 'assembleStoreRelease'
+    env:
+      NEXUS_USERNAME: $(nexus_username)
+      NEXUS_PASSWORD: $(nexus_password)
+      KEYSTORE_FILE: $(keystore.secureFilePath)
+      KEYSTORE_PASSWORD: $(keystore_password)
+      KEY_ALIAS: $(key_alias)
+      KEY_PASSWORD: $(key_password)
+      GOOGLE_SERVICES_FILE: $(google_services.secureFilePath)
+  - bash: |
+      curl -sSL https://download.sourceclear.com/ci.sh | sh
+    displayName: 'SourceClearCheck'
+    env:
+      SRCCLR_API_TOKEN: $(source_clear_token)
+  - task: CopyFiles@2
+    inputs:
+      contents: '**/*.apk'
+      targetFolder: '$(build.artifactStagingDirectory)'
+  - task: PublishBuildArtifacts@1
+  - task: GooglePlayRelease@3
+    inputs:
+      apkFile: '**/*.apk'
+      serviceEndpoint: 'Play Store Publisher'
+      track: 'internal'
