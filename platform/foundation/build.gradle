@@ -63,6 +63,6 @@ android {
 }*/
 
 dependencies {
-    api 'org.alfresco.mobile.android.sdk:alfresco-mobile-android-client-api:1.5.1-SNAPSHOT'
+    api 'org.alfresco.mobile.android.sdk:alfresco-mobile-android-client-api:1.5.2'
     api project(':platform:thirdparty')
 }
