@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".activity.BannerActivity">
+
+    <ImageView
+        android:id="@+id/ic_banner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:contentDescription="@string/like"
+        android:src="@drawable/ic_banner_logo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_action_required"
+        android:layout_width="342dp"
+        android:layout_height="22dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="50dp"
+        android:gravity="center_horizontal|top"
+        android:letterSpacing="0.01"
+        android:lineSpacingExtra="0sp"
+        android:text="@string/action_required"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ic_banner" />
+
+    <TextView
+        android:id="@+id/tv_download_app"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="@dimen/d_24"
+        android:layout_marginTop="@dimen/d_16"
+        android:layout_marginEnd="@dimen/d_24"
+        android:width="0dp"
+        android:letterSpacing="0.02"
+        android:gravity="center"
+        android:lineSpacingExtra="5sp"
+        android:text="@string/download_app_text"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_action_required" />
+
+    <LinearLayout
+        android:id="@+id/ll_redirect"
+        style="?android:attr/buttonBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_margin="@dimen/d_24"
+        android:background="@color/accent"
+        android:gravity="bottom"
+        android:measureWithLargestChild="true"
+        android:orientation="horizontal"
+        android:paddingLeft="2dip"
+        android:paddingTop="0dip"
+        android:paddingRight="2dip"
+        app:layout_constraintTop_toBottomOf="@id/tv_download_app">
+
+        <Button
+            android:id="@+id/btn_redirect"
+            style="@style/AlfrescoMaterialTheme.Text.Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/alfrescohololight_item_background_holo_light"
+            android:gravity="center"
+            android:text="@string/take_me_there"
+            android:textColor="@color/secondary_background" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/label_dismiss"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="@dimen/d_24"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="@dimen/d_24"
+        android:gravity="center"
+        android:letterSpacing="0.02"
+        android:lineSpacingExtra="5sp"
+        android:text="@string/label_dismiss"
+        android:textColor="#B3212328"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ll_redirect" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

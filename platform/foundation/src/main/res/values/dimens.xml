@@ -29,6 +29,7 @@
     <dimen name="rounded_icon_size">48dp</dimen>
 
     <dimen name="d_16">16dp</dimen>
+    <dimen name="d_24">24dp</dimen>
     <dimen name="d_8">8dp</dimen>
     <dimen name="d_4">4dp</dimen>
 

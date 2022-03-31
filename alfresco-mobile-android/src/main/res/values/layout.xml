@@ -18,6 +18,7 @@
 <resources>
 
     <item name="app_main" type="layout">@layout/activity_main_one_panel</item>
+    <item name="app_banner" type="layout">@layout/activity_banner</item>
     <item name="app_details" type="layout">@layout/app_pager_tab</item>
     <item name="fr_details_summary" type="bool">true</item>
     <item name="app_import" type="layout">@layout/app_import_spinner</item>
