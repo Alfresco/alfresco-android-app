@@ -469,9 +469,9 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment implement
                 if (sideFragment != null) { return; }
             }
 
-            ((ViewGroup) getActionBar().getCustomView()).setVisibility(View.GONE);
-            getActionBar().setDisplayUseLogoEnabled(false);
-            getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+//            ((ViewGroup) getActionBar().getCustomView()).setVisibility(View.GONE);
+//            getActionBar().setDisplayUseLogoEnabled(false);
+//            getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
             String pathValue = parentFolder.getName();
             if (parentFolder.getProperty(PropertyIds.PATH) != null)
             {

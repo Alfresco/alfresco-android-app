@@ -17,23 +17,25 @@
  */
 package org.alfresco.mobile.android.application;
 
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+
+import androidx.multidex.MultiDexApplication;
+
 import org.alfresco.mobile.android.application.managers.upgrade.UpgradeManager;
 import org.alfresco.mobile.android.async.OperationsUtils;
 import org.alfresco.mobile.android.platform.SessionManager;
 import org.alfresco.mobile.android.platform.extensions.AnalyticsManager;
 
-import androidx.multidex.MultiDexApplication;
-
-public class AlfrescoApplication extends MultiDexApplication
-{
+public class AlfrescoApplication extends MultiDexApplication {
     protected SessionManager sessionManager;
 
     private AnalyticsManager analyticsManager;
 
     @Override
-    public void onCreate()
-    {
+    public void onCreate() {
         super.onCreate();
+        saveFirstRun();
         sessionManager = SessionManager.getInstance(this);
 
         // Execute some upgrade if necessary
@@ -43,8 +45,15 @@ public class AlfrescoApplication extends MultiDexApplication
         OperationsUtils.clean(this);
     }
 
-    synchronized public AnalyticsManager getAnalyticsTracker()
-    {
+    private void saveFirstRun() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean("FIRST_TIME", true);
+        editor.commit();
+
+    }
+
+    synchronized public AnalyticsManager getAnalyticsTracker() {
         return AnalyticsManager.getInstance(this);
     }
 }

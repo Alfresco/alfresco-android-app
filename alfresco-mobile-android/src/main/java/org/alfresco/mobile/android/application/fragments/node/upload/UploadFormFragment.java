@@ -17,15 +17,29 @@
  */
 package org.alfresco.mobile.android.application.fragments.node.upload;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import android.Manifest;
+import android.annotation.TargetApi;
+import android.content.ClipData;
+import android.content.ClipData.Item;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ListView;
+import android.widget.Spinner;
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
@@ -51,36 +65,22 @@ import org.alfresco.mobile.android.ui.activity.AlfrescoActivity;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
-import android.Manifest;
-import android.annotation.TargetApi;
-import android.content.ClipData;
-import android.content.ClipData.Item;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.os.Build;
-import android.os.Bundle;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ListView;
-import android.widget.Spinner;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Display the form to choose AlfrescoAccount and import folder.
- * 
+ *
  * @author Jean Marie Pascal
  */
-public class UploadFormFragment extends AlfrescoFragment
-{
+public class UploadFormFragment extends AlfrescoFragment {
     public static final String TAG = "ImportFormFragment";
 
     private String fileName;
@@ -93,7 +93,9 @@ public class UploadFormFragment extends AlfrescoFragment
 
     private int importFolderIndex;
 
-    /** Principal ListView of the fragment */
+    /**
+     * Principal ListView of the fragment
+     */
     protected ListView lv;
 
     protected ArrayAdapter<?> adapter;
@@ -111,14 +113,12 @@ public class UploadFormFragment extends AlfrescoFragment
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTUCTORS
     // ///////////////////////////////////////////////////////////////////////////
-    public UploadFormFragment()
-    {
+    public UploadFormFragment() {
         requiredSession = false;
         checkSession = false;
     }
 
-    public static UploadFormFragment newInstance(Bundle b)
-    {
+    public static UploadFormFragment newInstance(Bundle b) {
         UploadFormFragment fr = new UploadFormFragment();
         fr.setArguments(b);
         return fr;
@@ -129,31 +129,24 @@ public class UploadFormFragment extends AlfrescoFragment
     // ///////////////////////////////////////////////////////////////////////////
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         UIUtils.displayTitle(getActivity(), R.string.import_document_title);
 
         setRootView(inflater.inflate(R.layout.app_import, container, false));
-        if (viewById(R.id.listView) != null)
-        {
+        if (viewById(R.id.listView) != null) {
             initDocumentList(getRootView());
-        }
-        else
-        {
+        } else {
             initiDocumentSpinner(getRootView());
         }
 
         spinnerAccount = (Spinner) viewById(R.id.accounts_spinner);
-        spinnerAccount.setOnItemSelectedListener(new OnItemSelectedListener()
-        {
+        spinnerAccount.setOnItemSelectedListener(new OnItemSelectedListener() {
 
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
-            {
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 selectedAccount = (AlfrescoAccount) parent.getItemAtPosition(pos);
                 folderImportId = null;
-                if (spinnerFolder != null)
-                {
+                if (spinnerFolder != null) {
                     spinnerFolder.setAdapter(null);
                     spinnerFolder.setSelection(0);
                 }
@@ -161,8 +154,7 @@ public class UploadFormFragment extends AlfrescoFragment
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> arg0)
-            {
+            public void onNothingSelected(AdapterView<?> arg0) {
                 // Do nothing
             }
         });
@@ -170,8 +162,7 @@ public class UploadFormFragment extends AlfrescoFragment
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState)
-    {
+    public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         List<AlfrescoAccount> list = AlfrescoAccountManager.retrieveAccounts(getActivity());
         spinnerAccount.setAdapter(new AccountsAdapter(getActivity(), list, R.layout.row_two_lines, null));
@@ -179,176 +170,136 @@ public class UploadFormFragment extends AlfrescoFragment
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
-    public void onStart()
-    {
+    public void onStart() {
         super.onStart();
 
         Intent intent = getActivity().getIntent();
         String action = intent.getAction();
         String type = intent.getType();
-        if (files != null)
-        {
+        if (files != null) {
             files.clear();
         }
 
-        try
-        {
-            if (Intent.ACTION_SEND_MULTIPLE.equals(action))
-            {
-                if (AndroidVersion.isJBOrAbove())
-                {
+        try {
+            if (Intent.ACTION_SEND_MULTIPLE.equals(action)) {
+                if (AndroidVersion.isJBOrAbove()) {
                     ClipData clipdata = intent.getClipData();
-                    if (clipdata != null && clipdata.getItemCount() > 0)
-                    {
+                    if (clipdata != null && clipdata.getItemCount() > 0) {
                         Item item = null;
-                        for (int i = 0; i < clipdata.getItemCount(); i++)
-                        {
+                        for (int i = 0; i < clipdata.getItemCount(); i++) {
                             item = clipdata.getItemAt(i);
                             Uri uri = item.getUri();
-                            if (uri != null)
-                            {
+                            if (uri != null) {
                                 retrieveIntentInfo(uri);
-                            }
-                            else
-                            {
+                            } else {
                                 String timeStamp = new SimpleDateFormat(DeviceCapture.TIMESTAMP_PATTERN)
                                         .format(new Date());
                                 File localParentFolder = AlfrescoStorageManager.getInstance(getActivity())
                                         .getCacheDir("AlfrescoMobile/import");
                                 File f = createFile(localParentFolder, timeStamp + ".txt", item.getText().toString());
-                                if (f.exists())
-                                {
+                                if (f.exists()) {
                                     retrieveIntentInfo(Uri.fromFile(f));
                                 }
                             }
-                            if (!files.contains(file))
-                            {
+                            if (!files.contains(file)) {
                                 files.add(file);
                             }
                         }
                     }
-                }
-                else
-                {
-                    if (intent.getExtras() != null && intent.getExtras().get(Intent.EXTRA_STREAM) instanceof ArrayList)
-                    {
+                } else {
+                    if (intent.getExtras() != null && intent.getExtras().get(Intent.EXTRA_STREAM) instanceof ArrayList) {
                         @SuppressWarnings("unchecked")
                         List<Object> attachments = (ArrayList<Object>) intent.getExtras().get(Intent.EXTRA_STREAM);
-                        for (Object object : attachments)
-                        {
-                            if (object instanceof Uri)
-                            {
+                        for (Object object : attachments) {
+                            if (object instanceof Uri) {
                                 Uri uri = (Uri) object;
-                                if (uri != null)
-                                {
+                                if (uri != null) {
                                     retrieveIntentInfo(uri);
                                 }
-                                if (!files.contains(file))
-                                {
+                                if (!files.contains(file)) {
                                     files.add(file);
                                 }
                             }
                         }
-                    }
-                    else if (file == null || fileName == null)
-                    {
+                    } else if (file == null || fileName == null) {
                         AlfrescoNotificationManager.getInstance(getActivity())
                                 .showLongToast(getString(R.string.import_unsupported_intent));
                         getActivity().finish();
                         return;
                     }
                 }
-            }
-            else
-            {
+            } else {
                 // Manage only one clip data. If multiple we ignore.
-                if (AndroidVersion.isJBOrAbove() && (!Intent.ACTION_SEND.equals(action) || type == null))
-                {
+                if (AndroidVersion.isJBOrAbove() && (!Intent.ACTION_SEND.equals(action) || type == null)) {
                     ClipData clipdata = intent.getClipData();
                     if (clipdata != null && clipdata.getItemCount() == 1 && clipdata.getItemAt(0) != null
-                            && (clipdata.getItemAt(0).getText() != null || clipdata.getItemAt(0).getUri() != null))
-                    {
+                            && (clipdata.getItemAt(0).getText() != null || clipdata.getItemAt(0).getUri() != null)) {
                         Item item = clipdata.getItemAt(0);
                         Uri uri = item.getUri();
-                        if (uri != null)
-                        {
+                        if (uri != null) {
                             retrieveIntentInfo(uri);
-                        }
-                        else
-                        {
+                        } else {
                             String timeStamp = new SimpleDateFormat(DeviceCapture.TIMESTAMP_PATTERN).format(new Date());
                             File localParentFolder = AlfrescoStorageManager.getInstance(getActivity())
                                     .getCacheDir("AlfrescoMobile/import");
                             File f = createFile(localParentFolder, timeStamp + ".txt", item.getText().toString());
-                            if (f.exists())
-                            {
+                            if (f.exists()) {
                                 retrieveIntentInfo(Uri.fromFile(f));
                             }
                         }
                     }
                 }
 
-                if (file == null && Intent.ACTION_SEND.equals(action) && type != null)
-                {
+                if (file == null && Intent.ACTION_SEND.equals(action) && type != null) {
                     Uri uri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
                     retrieveIntentInfo(uri);
-                }
-                else if (action == null && intent.getData() != null)
-                {
+                } else if (action == null && intent.getData() != null) {
                     retrieveIntentInfo(intent.getData());
-                }
-                else if (file == null || fileName == null)
-                {
+                } else if (file == null || fileName == null) {
                     AlfrescoNotificationManager.getInstance(getActivity())
                             .showLongToast(getString(R.string.import_unsupported_intent));
                     getActivity().finish();
                     return;
                 }
-                if (!files.contains(file))
-                {
+                if (!files.contains(file)) {
                     files.add(file);
                 }
             }
-        }
-        catch (AlfrescoAppException e)
-        {
+        } catch (AlfrescoAppException e) {
             ActionUtils.actionDisplayError(this, e);
             getActivity().finish();
             return;
         }
 
-        if (adapter == null && files != null)
-        {
+        if (adapter == null && files != null) {
             adapter = new FileExplorerAdapter(this, R.layout.row_two_lines_progress, files);
-            if (lv != null)
-            {
+            if (lv != null) {
                 lv.setAdapter(adapter);
-            }
-            else if (spinnerDoc != null)
-            {
+            } else if (spinnerDoc != null) {
                 spinnerDoc.setAdapter(adapter);
             }
         }
 
         Button b = UIUtils.initCancel(getRootView(), R.string.cancel);
-        b.setOnClickListener(new OnClickListener()
-        {
+        b.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 getActivity().finish();
             }
         });
 
         b = UIUtils.initValidation(getRootView(), R.string.next);
-        b.setOnClickListener(new OnClickListener()
-        {
+        b.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 next();
             }
         });
+
+
+        /*folderImportId = IMPORT_FOLDER_LIST.get(4);
+        importFolderIndex = 4;
+        next();*/
 
         refreshImportFolder();
     }
@@ -356,60 +307,53 @@ public class UploadFormFragment extends AlfrescoFragment
     // ///////////////////////////////////////////////////////////////////////////
     // INTERNALS
     // ///////////////////////////////////////////////////////////////////////////
-    private void initiDocumentSpinner(View v)
-    {
+    private void initiDocumentSpinner(View v) {
         spinnerDoc = (Spinner) v.findViewById(R.id.import_documents_spinner);
-        if (adapter != null)
-        {
+        if (adapter != null) {
             spinnerDoc.setAdapter(adapter);
         }
     }
 
-    private void initDocumentList(View v)
-    {
+    private void initDocumentList(View v) {
         lv = (ListView) v.findViewById(R.id.listView);
 
-        if (adapter != null)
-        {
+        if (adapter != null) {
             lv.setAdapter(adapter);
             lv.setSelection(selectedPosition);
         }
     }
 
-    private void retrieveIntentInfo(Uri uri)
-    {
-        if (uri == null) { throw new AlfrescoAppException(getString(R.string.import_unsupported_intent), true); }
+    private void retrieveIntentInfo(Uri uri) {
+        if (uri == null) {
+            throw new AlfrescoAppException(getString(R.string.import_unsupported_intent), true);
+        }
 
         String tmpPath = ActionUtils.getPath(getActivity(), uri);
-        if (tmpPath != null)
-        {
+        if (tmpPath != null) {
             file = new File(tmpPath);
 
-            if (!file.exists()) { throw new AlfrescoAppException(getString(R.string.error_unknown_filepath), true); }
+            if (!file.exists()) {
+                throw new AlfrescoAppException(getString(R.string.error_unknown_filepath), true);
+            }
 
             if (!file.getPath()
-                    .startsWith(AlfrescoStorageManager.getInstance(getContext()).getRootPrivateFolder().getPath()))
-            {
+                    .startsWith(AlfrescoStorageManager.getInstance(getContext()).getRootPrivateFolder().getPath())) {
                 int hasWriteExternalStoragePermission = ContextCompat.checkSelfPermission(getActivity(),
                         Manifest.permission.WRITE_EXTERNAL_STORAGE);
-                if (hasWriteExternalStoragePermission != PackageManager.PERMISSION_GRANTED)
-                {
+                if (hasWriteExternalStoragePermission != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(getActivity(),
-                            new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE },
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                             BaseActivity.REQUEST_PERMISSION_IMPORT_SD);
                 }
             }
 
             fileName = file.getName();
 
-            if (getActivity() instanceof PublicDispatcherActivity)
-            {
+            if (getActivity() instanceof PublicDispatcherActivity) {
                 files.add(file);
                 ((PublicDispatcherActivity) getActivity()).setUploadFile(files);
             }
-        }
-        else
-        {
+        } else {
             // Error case : Unable to find the file path associated
             // to user pick.
             // Sample : Picasa image case
@@ -417,11 +361,9 @@ public class UploadFormFragment extends AlfrescoFragment
         }
     }
 
-    private void refreshImportFolder()
-    {
+    private void refreshImportFolder() {
         List<Integer> importList = IMPORT_FOLDER_LIST;
-        if (selectedAccount == null || selectedAccount.getTypeId() == AlfrescoAccount.TYPE_ALFRESCO_CLOUD)
-        {
+        if (selectedAccount == null || selectedAccount.getTypeId() == AlfrescoAccount.TYPE_ALFRESCO_CLOUD) {
             importList = IMPORT_CLOUD_FOLDER_LIST;
         }
 
@@ -429,32 +371,28 @@ public class UploadFormFragment extends AlfrescoFragment
         UploadFolderAdapter upLoadadapter = new UploadFolderAdapter(getActivity(), R.layout.row_single_line,
                 importList);
         spinnerFolder.setAdapter(upLoadadapter);
-        spinnerFolder.setOnItemSelectedListener(new OnItemSelectedListener()
-        {
+        spinnerFolder.setOnItemSelectedListener(new OnItemSelectedListener() {
 
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
-            {
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 folderImportId = (Integer) parent.getItemAtPosition(pos);
                 importFolderIndex = pos;
+                System.out.println("id upload = " + folderImportId);
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> arg0)
-            {
+            public void onNothingSelected(AdapterView<?> arg0) {
                 // DO Nothing
             }
         });
-        if (folderImportId == null)
-        {
+        if (folderImportId == null) {
             importFolderIndex = 0;
         }
         spinnerFolder.setSelection(importFolderIndex);
     }
 
     @SuppressWarnings("serial")
-    private static final List<Integer> IMPORT_FOLDER_LIST = new ArrayList<Integer>(5)
-    {
+    private static final List<Integer> IMPORT_FOLDER_LIST = new ArrayList<Integer>(5) {
         {
             add(R.string.menu_downloads);
             add(R.string.menu_browse_sites);
@@ -465,8 +403,7 @@ public class UploadFormFragment extends AlfrescoFragment
     };
 
     @SuppressWarnings("serial")
-    private static final List<Integer> IMPORT_CLOUD_FOLDER_LIST = new ArrayList<Integer>(5)
-    {
+    private static final List<Integer> IMPORT_CLOUD_FOLDER_LIST = new ArrayList<Integer>(5) {
         {
             add(R.string.menu_downloads);
             add(R.string.menu_browse_sites);
@@ -475,41 +412,35 @@ public class UploadFormFragment extends AlfrescoFragment
         }
     };
 
-    private void next()
-    {
+    private void next() {
         AlfrescoAccount tmpAccount = selectedAccount;
-        if (tmpAccount == null) { return; }
-        switch (folderImportId)
-        {
-            case R.string.menu_browse_sites:
+        if (tmpAccount == null) {
+            return;
+        }
+        switch (folderImportId) {
+            /*case R.string.menu_browse_sites:
             case R.string.menu_browse_root:
-            case R.string.menu_favorites_folder:
+            case R.string.menu_favorites_folder:*/
             case R.string.menu_browse_userhome:
 
-                if (getActivity() instanceof PublicDispatcherActivity)
-                {
+                if (getActivity() instanceof PublicDispatcherActivity) {
                     ((PublicDispatcherActivity) getActivity()).setUploadFolder(folderImportId);
                 }
 
                 AlfrescoSession session = SessionManager.getInstance(getActivity()).getSession(tmpAccount.getId());
 
                 // Try to use Session used by the application
-                if (session != null && session.getServiceRegistry() != null)
-                {
-                    if (session instanceof CloudSession && AccountOAuthHelper.doesRequireRefreshToken(getActivity()))
-                    {
+                if (session != null && session.getServiceRegistry() != null) {
+                    if (session instanceof CloudSession && AccountOAuthHelper.doesRequireRefreshToken(getActivity())) {
                         // Enforce session creation if oauth token is obsolete
                         SessionManager.getInstance(getActivity()).removeAccount(tmpAccount.getId());
                         ((BaseActivity) getActivity()).setCurrentAccount(tmpAccount);
                         SessionManager.getInstance(getActivity()).loadSession(tmpAccount);
-                        if (getActivity() instanceof AlfrescoActivity)
-                        {
+                        if (getActivity() instanceof AlfrescoActivity) {
                             ((AlfrescoActivity) getActivity()).displayWaitingDialog();
                         }
                         return;
-                    }
-                    else
-                    {
+                    } else {
                         // elsewhere just use the current session
                         ((BaseActivity) getActivity()).setCurrentAccount(tmpAccount);
                         ((BaseActivity) getActivity()).setRenditionManager(null);
@@ -521,48 +452,39 @@ public class UploadFormFragment extends AlfrescoFragment
 
                 // Session is not used by the application so create one.
                 SessionManager.getInstance(getActivity()).loadSession(tmpAccount);
-                if (getActivity() instanceof AlfrescoActivity)
-                {
+                if (getActivity() instanceof AlfrescoActivity) {
                     ((AlfrescoActivity) getActivity()).displayWaitingDialog();
                 }
 
                 break;
-            case R.string.menu_downloads:
-                if (files.size() == 1)
-                {
+            /*case R.string.menu_downloads:
+                if (files.size() == 1) {
                     UploadLocalDialogFragment fr = UploadLocalDialogFragment.newInstance(tmpAccount, file);
                     fr.show(getActivity().getSupportFragmentManager(), UploadLocalDialogFragment.TAG);
-                }
-                else
-                {
+                } else {
                     File folderStorage = AlfrescoStorageManager.getInstance(getActivity())
                             .getDownloadFolder(tmpAccount);
                     DataProtectionManager.getInstance(getActivity()).copyAndEncrypt(tmpAccount, files, folderStorage);
                     getActivity().finish();
                 }
-                break;
+                break;*/
             default:
                 break;
         }
     }
 
-    private File createFile(File localParentFolder, String filename, String data)
-    {
+    private File createFile(File localParentFolder, String filename, String data) {
         File outputFile = null;
         Writer writer = null;
-        try
-        {
-            if (!localParentFolder.isDirectory())
-            {
+        try {
+            if (!localParentFolder.isDirectory()) {
                 localParentFolder.mkdir();
             }
             outputFile = new File(localParentFolder, filename);
             writer = new BufferedWriter(new FileWriter(outputFile));
             writer.write(data);
             writer.close();
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             Log.w(TAG, Log.getStackTraceString(e));
         }
         return outputFile;

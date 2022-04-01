@@ -17,9 +17,20 @@
  */
 package org.alfresco.mobile.android.application.widgets;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ListView;
+import android.widget.Spinner;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.application.R;
@@ -36,32 +47,20 @@ import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.ui.activity.AlfrescoActivity;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
-import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ListView;
-import android.widget.Spinner;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Display the form to choose AlfrescoAccount and import folder.
- * 
+ *
  * @author Jean Marie Pascal
  */
-public class DocumentFolderPickerFragment extends Fragment
-{
+public class DocumentFolderPickerFragment extends Fragment {
     public static final String TAG = "ImportFormFragment";
 
     @SuppressWarnings("serial")
-    private static final List<Integer> FOLDER_ACTIONS_LIST = new ArrayList<Integer>(3)
-    {
+    private static final List<Integer> FOLDER_ACTIONS_LIST = new ArrayList<Integer>(3) {
         {
             add(R.string.menu_browse_root);
             add(R.string.menu_browse_userhome);
@@ -71,8 +70,7 @@ public class DocumentFolderPickerFragment extends Fragment
         }
     };
 
-    private static final List<Integer> FOLDER_SHORTCUT_LIST = new ArrayList<Integer>(4)
-    {
+    private static final List<Integer> FOLDER_SHORTCUT_LIST = new ArrayList<Integer>(4) {
         {
             add(R.string.menu_browse_root);
             add(R.string.menu_browse_userhome);
@@ -83,8 +81,7 @@ public class DocumentFolderPickerFragment extends Fragment
     };
 
     @SuppressWarnings("serial")
-    private static final List<Integer> ACTIONS_LIST = new ArrayList<Integer>(3)
-    {
+    private static final List<Integer> ACTIONS_LIST = new ArrayList<Integer>(3) {
         {
             add(R.string.action_text);
             add(R.string.action_speech2text);
@@ -104,7 +101,9 @@ public class DocumentFolderPickerFragment extends Fragment
 
     private int actionIdIndex;
 
-    /** Principal ListView of the fragment */
+    /**
+     * Principal ListView of the fragment
+     */
     protected ListView lv;
 
     protected ArrayAdapter<?> adapter;
@@ -116,15 +115,13 @@ public class DocumentFolderPickerFragment extends Fragment
     // //////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // //////////////////////////////////////////////////////////////////////
-    public static DocumentFolderPickerFragment newInstance(Bundle b)
-    {
+    public static DocumentFolderPickerFragment newInstance(Bundle b) {
         DocumentFolderPickerFragment fr = new DocumentFolderPickerFragment();
         fr.setArguments(b);
         return fr;
     }
 
-    public static DocumentFolderPickerFragment newInstanceByTemplate(Bundle b)
-    {
+    public static DocumentFolderPickerFragment newInstanceByTemplate(Bundle b) {
         return new DocumentFolderPickerFragment();
     }
 
@@ -132,29 +129,24 @@ public class DocumentFolderPickerFragment extends Fragment
     // LIFECYCLE
     // ///////////////////////////////////////////////////////////////////////////
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         int titleId = R.string.shortcut_action_create;
-        if (getActivity() instanceof FolderShortcutActivity)
-        {
+        if (getActivity() instanceof FolderShortcutActivity) {
             titleId = R.string.shortcut_create;
         }
         UIUtils.displayTitle(getActivity(), titleId);
 
         rootView = inflater.inflate(R.layout.app_docfolder_picker, container, false);
         spinnerAccount = (Spinner) rootView.findViewById(R.id.accounts_spinner);
-        spinnerAccount.setOnItemSelectedListener(new OnItemSelectedListener()
-        {
+        spinnerAccount.setOnItemSelectedListener(new OnItemSelectedListener() {
 
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
-            {
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 selectedAccount = (AlfrescoAccount) parent.getItemAtPosition(pos);
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> arg0)
-            {
+            public void onNothingSelected(AdapterView<?> arg0) {
                 // Do nothing
             }
         });
@@ -162,33 +154,27 @@ public class DocumentFolderPickerFragment extends Fragment
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState)
-    {
+    public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         List<AlfrescoAccount> list = AlfrescoAccountManager.retrieveAccounts(getActivity());
         spinnerAccount.setAdapter(new AccountsAdapter(getActivity(), list, R.layout.row_two_lines, null));
     }
 
     @Override
-    public void onStart()
-    {
+    public void onStart() {
         super.onStart();
         Button b = UIUtils.initCancel(rootView, R.string.cancel);
-        b.setOnClickListener(new OnClickListener()
-        {
+        b.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 getActivity().finish();
             }
         });
 
         b = UIUtils.initValidation(rootView, R.string.next);
-        b.setOnClickListener(new OnClickListener()
-        {
+        b.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 next();
             }
         });
@@ -199,45 +185,37 @@ public class DocumentFolderPickerFragment extends Fragment
     // ///////////////////////////////////////////////////////////////////////////
     // INTERNALS
     // ///////////////////////////////////////////////////////////////////////////
-    private void refreshSpinners()
-    {
+    private void refreshSpinners() {
         // UPLOAD FOLDER
         Spinner spinner = (Spinner) rootView.findViewById(R.id.import_folder_spinner);
         UploadFolderAdapter upLoadadapter = null;
-        if (getActivity() instanceof FolderShortcutActivity)
-        {
+        if (getActivity() instanceof FolderShortcutActivity) {
             upLoadadapter = new UploadFolderAdapter(getActivity(), R.layout.row_single_line, FOLDER_SHORTCUT_LIST);
-        }
-        else
-        {
+        } else {
             upLoadadapter = new UploadFolderAdapter(getActivity(), R.layout.row_single_line, FOLDER_ACTIONS_LIST);
         }
         spinner.setAdapter(upLoadadapter);
-        spinner.setOnItemSelectedListener(new OnItemSelectedListener()
-        {
+        spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
-            {
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 rootFolderTypeId = (Integer) parent.getItemAtPosition(pos);
                 rootFolderTypeIndex = pos;
+                System.out.println("id == " + rootFolderTypeId);
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> arg0)
-            {
+            public void onNothingSelected(AdapterView<?> arg0) {
                 // DO Nothing
             }
         });
-        if (rootFolderTypeId == null)
-        {
+        if (rootFolderTypeId == null) {
             rootFolderTypeIndex = 0;
         }
         spinner.setSelection(rootFolderTypeIndex);
 
         // ACTIONS ASSOCIATED
-        if (getActivity() instanceof FolderShortcutActivity)
-        {
+        if (getActivity() instanceof FolderShortcutActivity) {
             rootView.findViewById(R.id.actions_spinner_title).setVisibility(View.GONE);
             rootView.findViewById(R.id.actions_spinner).setVisibility(View.GONE);
             return;
@@ -246,55 +224,46 @@ public class DocumentFolderPickerFragment extends Fragment
         ActionShortcutAdapter actionAdapter = new ActionShortcutAdapter(getActivity(), R.layout.row_single_line,
                 ACTIONS_LIST);
         spinner.setAdapter(actionAdapter);
-        spinner.setOnItemSelectedListener(new OnItemSelectedListener()
-        {
+        spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
-            {
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 actionId = (Integer) parent.getItemAtPosition(pos);
                 actionIdIndex = pos;
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> arg0)
-            {
+            public void onNothingSelected(AdapterView<?> arg0) {
                 // DO Nothing
             }
         });
-        if (actionId == null)
-        {
+        if (actionId == null) {
             actionIdIndex = 0;
         }
         spinner.setSelection(actionIdIndex);
 
     }
 
-    private void next()
-    {
+    private void next() {
         AlfrescoAccount tmpAccount = selectedAccount;
-        switch (rootFolderTypeId)
-        {
+        switch (rootFolderTypeId) {
             case R.string.menu_browse_sites:
             case R.string.menu_browse_root:
             case R.string.menu_favorites_folder:
             case R.string.menu_browse_userhome:
 
-                if (getActivity() instanceof BaseShortcutActivity)
-                {
+                if (getActivity() instanceof BaseShortcutActivity) {
                     ((BaseShortcutActivity) getActivity()).setUploadFolder(rootFolderTypeId);
                     ((BaseShortcutActivity) getActivity()).setUploadAccount(tmpAccount);
                 }
 
-                if (getActivity() instanceof ActionShortcutActivity)
-                {
+                if (getActivity() instanceof ActionShortcutActivity) {
                     ((ActionShortcutActivity) getActivity()).setActionId(actionId);
                 }
 
                 AlfrescoSession session = SessionManager.getInstance(getActivity()).getSession(tmpAccount.getId());
 
                 // Try to use Session used by the application
-                if (session != null)
-                {
+                if (session != null) {
                     ((BaseActivity) getActivity()).setCurrentAccount(tmpAccount);
                     ((BaseActivity) getActivity()).setRenditionManager(null);
                     EventBusManager.getInstance().post(
@@ -304,15 +273,13 @@ public class DocumentFolderPickerFragment extends Fragment
 
                 // Session is not used by the application so create one.
                 SessionManager.getInstance(getActivity()).loadSession(tmpAccount);
-                if (getActivity() instanceof AlfrescoActivity)
-                {
+                if (getActivity() instanceof AlfrescoActivity) {
                     ((AlfrescoActivity) getActivity()).displayWaitingDialog();
                 }
 
                 break;
             case R.string.menu_downloads:
-                if (getActivity() instanceof FolderShortcutActivity)
-                {
+                if (getActivity() instanceof FolderShortcutActivity) {
                     ((FolderShortcutActivity) getActivity()).createShortcut(tmpAccount, AlfrescoStorageManager
                             .getInstance(getActivity()).getDownloadFolder(tmpAccount));
                 }
@@ -326,24 +293,20 @@ public class DocumentFolderPickerFragment extends Fragment
     // ///////////////////////////////////////////////////////////////////////////
     // BUILDER
     // ///////////////////////////////////////////////////////////////////////////
-    public static Builder with(FragmentActivity appActivity)
-    {
+    public static Builder with(FragmentActivity appActivity) {
         return new Builder(appActivity);
     }
 
-    public static class Builder extends AlfrescoFragmentBuilder
-    {
+    public static class Builder extends AlfrescoFragmentBuilder {
         // ///////////////////////////////////////////////////////////////////////////
         // CONSTRUCTORS
         // ///////////////////////////////////////////////////////////////////////////
-        public Builder(FragmentActivity activity)
-        {
+        public Builder(FragmentActivity activity) {
             super(activity);
             this.extraConfiguration = new Bundle();
         }
 
-        public Builder(FragmentActivity appActivity, Map<String, Object> configuration)
-        {
+        public Builder(FragmentActivity appActivity, Map<String, Object> configuration) {
             super(appActivity, configuration);
             this.extraConfiguration = new Bundle();
 
@@ -358,8 +321,7 @@ public class DocumentFolderPickerFragment extends Fragment
         // ///////////////////////////////////////////////////////////////////////////
         // CLICK
         // ///////////////////////////////////////////////////////////////////////////
-        protected Fragment createFragment(Bundle b)
-        {
+        protected Fragment createFragment(Bundle b) {
             return newInstanceByTemplate(b);
         }
     }

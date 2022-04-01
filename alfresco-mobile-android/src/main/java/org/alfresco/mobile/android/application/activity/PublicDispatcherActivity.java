@@ -17,9 +17,19 @@
  */
 package org.alfresco.mobile.android.application.activity;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.List;
+import android.content.Intent;
+import android.os.Bundle;
+import android.text.Html;
+import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentManager;
+
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.squareup.otto.Subscribe;
 
 import org.alfresco.mobile.android.api.exceptions.AlfrescoSessionException;
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
@@ -51,33 +61,27 @@ import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.ui.ListingModeFragment;
 import org.alfresco.mobile.android.ui.node.browse.NodeBrowserTemplate;
 
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.squareup.otto.Subscribe;
-
-import android.content.Intent;
-import android.os.Bundle;
-import androidx.fragment.app.FragmentManager;
-import androidx.appcompat.widget.Toolbar;
-import android.text.Html;
-import android.text.TextUtils;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
+import java.io.File;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Activity responsible to manage public intent from 3rd party application. This
  * activity is "open" to public Intent.
- * 
+ *
  * @author Jean Marie Pascal
  */
-public class PublicDispatcherActivity extends BaseActivity
-{
+public class PublicDispatcherActivity extends BaseActivity {
     private static final String TAG = PublicDispatcherActivity.class.getName();
 
-    /** Define the type of importFolder. */
+    /**
+     * Define the type of importFolder.
+     */
     private int uploadFolder;
 
-    /** Define the local file to upload */
+    /**
+     * Define the local file to upload
+     */
     private List<File> uploadFiles;
 
     protected long requestedAccountId = -1;
@@ -85,17 +89,18 @@ public class PublicDispatcherActivity extends BaseActivity
     // ///////////////////////////////////////////////////////////////////////////
     // LIFECYCLE
     // ///////////////////////////////////////////////////////////////////////////
-    /** Called when the activity is first created. */
+
+    /**
+     * Called when the activity is first created.
+     */
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         displayAsDialogActivity();
         setContentView(R.layout.activitycompat_left_panel);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        if (toolbar != null)
-        {
+        if (toolbar != null) {
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeButtonEnabled(true);
@@ -103,31 +108,27 @@ public class PublicDispatcherActivity extends BaseActivity
 
         String action = getIntent().getAction();
         if ((Intent.ACTION_SEND.equals(action) || Intent.ACTION_SEND_MULTIPLE.equals(action))
-                && getFragment(UploadFormFragment.TAG) == null)
-        {
+                && getFragment(UploadFormFragment.TAG) == null) {
             FragmentDisplayer.with(this).load(new UploadFormFragment()).back(false).animate(null)
                     .into(FragmentDisplayer.PANEL_LEFT);
+//            displayDocumentFolder();
             return;
         }
 
         if (Intent.ACTION_VIEW.equals(action)
-                && AlfrescoIntentAPI.SCHEME.equals(getIntent().getData().getScheme().toLowerCase()))
-        {
+                && AlfrescoIntentAPI.SCHEME.equals(getIntent().getData().getScheme().toLowerCase())) {
             managePublicIntent(null);
             return;
         }
 
-        if (PrivateIntent.ACTION_SYNCHRO_DISPLAY.equals(action))
-        {
+        if (PrivateIntent.ACTION_SYNCHRO_DISPLAY.equals(action)) {
             SyncFragment.with(this).mode(SyncFragment.MODE_PROGRESS).display();
             return;
         }
 
-        if (PrivateIntent.ACTION_PICK_FILE.equals(action))
-        {
+        if (PrivateIntent.ACTION_PICK_FILE.equals(action)) {
             File f;
-            if (getIntent().hasExtra(PrivateIntent.EXTRA_FOLDER))
-            {
+            if (getIntent().hasExtra(PrivateIntent.EXTRA_FOLDER)) {
                 f = (File) getIntent().getExtras().getSerializable(PrivateIntent.EXTRA_FOLDER);
                 FragmentDisplayer.with(this)
                         .load(FileExplorerFragment.with(this).menuId(1).file(f).isShortCut(true)
@@ -138,8 +139,7 @@ public class PublicDispatcherActivity extends BaseActivity
     }
 
     @Override
-    protected void onStart()
-    {
+    protected void onStart() {
         getAppActionBar().setDisplayHomeAsUpEnabled(true);
         super.onStart();
         PassCodeActivity.requestUserPasscode(this);
@@ -147,38 +147,31 @@ public class PublicDispatcherActivity extends BaseActivity
     }
 
     @Override
-    protected void onPause()
-    {
+    protected void onPause() {
         super.onPause();
-        if (!activateCheckPasscode)
-        {
+        if (!activateCheckPasscode) {
             PasscodePreferences.updateLastActivityDisplay(this);
         }
     }
 
     @Override
-    protected void onStop()
-    {
-        if (receiver != null)
-        {
+    protected void onStop() {
+        if (receiver != null) {
             broadcastManager.unregisterReceiver(receiver);
             receiver = null;
         }
         super.onStop();
     }
 
-    private boolean validateIntentId()
-    {
+    private boolean validateIntentId() {
         List<String> pathSegments = getIntent().getData().getPathSegments();
-        if (pathSegments == null || pathSegments.isEmpty())
-        {
+        if (pathSegments == null || pathSegments.isEmpty()) {
             NotificationManager.getInstance(this).showLongToast(R.string.public_url_wrong_format);
             finish();
             return false;
         }
 
-        if (!AlfrescoIntentAPI.ID.equals(pathSegments.get(0)))
-        {
+        if (!AlfrescoIntentAPI.ID.equals(pathSegments.get(0))) {
             NotificationManager.getInstance(this).showLongToast(R.string.public_url_file_missing_id);
             finish();
             return false;
@@ -187,18 +180,15 @@ public class PublicDispatcherActivity extends BaseActivity
         return true;
     }
 
-    private boolean validateIntentFilter()
-    {
+    private boolean validateIntentFilter() {
         List<String> pathSegments = getIntent().getData().getPathSegments();
-        if (pathSegments == null || pathSegments.isEmpty())
-        {
+        if (pathSegments == null || pathSegments.isEmpty()) {
             NotificationManager.getInstance(this).showLongToast(R.string.public_url_wrong_format);
             finish();
             return false;
         }
 
-        if (!AlfrescoIntentAPI.FILTER.equals(pathSegments.get(0)))
-        {
+        if (!AlfrescoIntentAPI.FILTER.equals(pathSegments.get(0))) {
             NotificationManager.getInstance(this).showLongToast(R.string.public_url_tasks_missing_filter);
             finish();
             return false;
@@ -207,38 +197,28 @@ public class PublicDispatcherActivity extends BaseActivity
         return true;
     }
 
-    private String retrieveNodeRef()
-    {
+    private String retrieveNodeRef() {
         String nodeRefIntent = getIntent().getData().getLastPathSegment();
-        if (NodeRefUtils.isIdentifier(nodeRefIntent))
-        {
+        if (NodeRefUtils.isIdentifier(nodeRefIntent)) {
             return NodeRefUtils.createNodeRefByIdentifier(getIntent().getData().getLastPathSegment());
-        }
-        else if (NodeRefUtils.isNodeRef(nodeRefIntent))
-        {
+        } else if (NodeRefUtils.isNodeRef(nodeRefIntent)) {
             return nodeRefIntent;
-        }
-        else
-        {
+        } else {
             NotificationManager.getInstance(this).showLongToast(R.string.public_url_noderef_format);
             finish();
             return null;
         }
     }
 
-    public void managePublicIntent(AlfrescoAccount accountSelected)
-    {
+    public void managePublicIntent(AlfrescoAccount accountSelected) {
         if (Intent.ACTION_VIEW.equals(getIntent().getAction())
-                && AlfrescoIntentAPI.SCHEME.equals(getIntent().getData().getScheme().toLowerCase()))
-        {
+                && AlfrescoIntentAPI.SCHEME.equals(getIntent().getData().getScheme().toLowerCase())) {
             Intent i = null;
-            try
-            {
+            try {
                 // Check Hostname
                 // If no Hostname we just open the App
                 String hostname = getIntent().getData().getHost();
-                if (TextUtils.isEmpty(hostname))
-                {
+                if (TextUtils.isEmpty(hostname)) {
                     i = new Intent(this, MainActivity.class);
                     startActivity(i);
                     finish();
@@ -246,8 +226,7 @@ public class PublicDispatcherActivity extends BaseActivity
                 }
 
                 // If multiple account we have to request the user to select one
-                if (AlfrescoAccountManager.getInstance(this).hasMultipleAccount() && accountSelected == null)
-                {
+                if (AlfrescoAccountManager.getInstance(this).hasMultipleAccount() && accountSelected == null) {
 
                     FragmentDisplayer.with(this).animate(null).load(AccountsFragment.with(this).createFragment())
                             .back(false).into(FragmentDisplayer.PANEL_LEFT);
@@ -258,51 +237,51 @@ public class PublicDispatcherActivity extends BaseActivity
                 // We support only ids for the moment
                 // alfresco://document/id/<objectId>
                 AlfrescoAccount acc = accountSelected != null ? accountSelected : getCurrentAccount();
-                if (acc == null)
-                {
+                if (acc == null) {
                     acc = AlfrescoAccountManager.getInstance(this).getDefaultAccount();
                 }
 
-                if (AlfrescoIntentAPI.AUTHORITY_DOCUMENT.equals(hostname))
-                {
+                if (AlfrescoIntentAPI.AUTHORITY_DOCUMENT.equals(hostname)) {
                     // Check Id
-                    if (!validateIntentId()) { return; }
-                    if (retrieveNodeRef() == null) { return; }
+                    if (!validateIntentId()) {
+                        return;
+                    }
+                    if (retrieveNodeRef() == null) {
+                        return;
+                    }
 
                     i = PublicIntentAPIUtils.viewDocument(acc.getId(), retrieveNodeRef());
-                }
-                else if (AlfrescoIntentAPI.AUTHORITY_FOLDER.equals(hostname))
-                {
+                } else if (AlfrescoIntentAPI.AUTHORITY_FOLDER.equals(hostname)) {
                     // Check Id
-                    if (!validateIntentId()) { return; }
-                    if (retrieveNodeRef() == null) { return; }
+                    if (!validateIntentId()) {
+                        return;
+                    }
+                    if (retrieveNodeRef() == null) {
+                        return;
+                    }
 
                     i = PublicIntentAPIUtils.viewFolder(acc.getId(), retrieveNodeRef());
-                }
-                else if (AlfrescoIntentAPI.AUTHORITY_SITE.equals(hostname))
-                {
+                } else if (AlfrescoIntentAPI.AUTHORITY_SITE.equals(hostname)) {
                     // Check Id
-                    if (!validateIntentId()) { return; }
+                    if (!validateIntentId()) {
+                        return;
+                    }
                     i = PublicIntentAPIUtils.viewSite(acc.getId(), getIntent().getData().getLastPathSegment());
-                }
-                else if (AlfrescoIntentAPI.AUTHORITY_USER.equals(hostname))
-                {
+                } else if (AlfrescoIntentAPI.AUTHORITY_USER.equals(hostname)) {
                     // Check Id
-                    if (!validateIntentId()) { return; }
+                    if (!validateIntentId()) {
+                        return;
+                    }
                     i = PublicIntentAPIUtils.viewUser(acc.getId(), getIntent().getData().getLastPathSegment());
-                }
-                else if (AlfrescoIntentAPI.AUTHORITY_TASKS.equals(hostname))
-                {
-                    if (!validateIntentFilter()) { return; }
+                } else if (AlfrescoIntentAPI.AUTHORITY_TASKS.equals(hostname)) {
+                    if (!validateIntentFilter()) {
+                        return;
+                    }
                     i = PublicIntentAPIUtils.viewTasks(acc.getId(), getIntent().getData());
-                }
-                else
-                {
+                } else {
                     i = new Intent(this, MainActivity.class);
                 }
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 i = new Intent(this, MainActivity.class);
             }
 
@@ -315,13 +294,11 @@ public class PublicDispatcherActivity extends BaseActivity
     // ///////////////////////////////////////////////////////////////////////////
     // UI Public Method
     // ///////////////////////////////////////////////////////////////////////////
-    public void doCancel(View v)
-    {
+    public void doCancel(View v) {
         finish();
     }
 
-    public void validateAction(View v)
-    {
+    public void validateAction(View v) {
         ((DocumentFolderBrowserFragment) getFragment(DocumentFolderBrowserFragment.TAG)).createFiles(uploadFiles);
     }
 
@@ -329,12 +306,10 @@ public class PublicDispatcherActivity extends BaseActivity
     // MENU
     // ///////////////////////////////////////////////////////////////////////////
     @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
+    public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
 
-        if (isVisible(DocumentFolderBrowserFragment.TAG))
-        {
+        if (isVisible(DocumentFolderBrowserFragment.TAG)) {
             ((DocumentFolderBrowserFragment) getFragment(DocumentFolderBrowserFragment.TAG)).getMenu(menu);
             return true;
         }
@@ -343,17 +318,12 @@ public class PublicDispatcherActivity extends BaseActivity
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
             case android.R.id.home:
-                if (getIntent() != null && PrivateIntent.ACTION_PICK_FILE.equals(getIntent().getAction()))
-                {
+                if (getIntent() != null && PrivateIntent.ACTION_PICK_FILE.equals(getIntent().getAction())) {
                     finish();
-                }
-                else
-                {
+                } else {
                     Intent i = new Intent(this, MainActivity.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(i);
@@ -368,13 +338,11 @@ public class PublicDispatcherActivity extends BaseActivity
     // ///////////////////////////////////////////////////////////////////////////
     // UTILS
     // ///////////////////////////////////////////////////////////////////////////
-    public void setUploadFolder(int uploadFolderType)
-    {
+    public void setUploadFolder(int uploadFolderType) {
         this.uploadFolder = uploadFolderType;
     }
 
-    public void setUploadFile(List<File> localFile)
-    {
+    public void setUploadFile(List<File> localFile) {
         this.uploadFiles = localFile;
     }
 
@@ -382,25 +350,26 @@ public class PublicDispatcherActivity extends BaseActivity
     // EVENTS RECEIVER
     // ///////////////////////////////////////////////////////
     @Subscribe
-    public void onAccountLoaded(LoadAccountCompletedEvent event)
-    {
+    public void onAccountLoaded(LoadAccountCompletedEvent event) {
         // If the session is available, display the view associated
         // (repository, sites, downloads, favorites).
-        if (event == null || event.account == null) { return; }
-        if (requestedAccountId != -1 && requestedAccountId != event.account.getId()) { return; }
+        if (event == null || event.account == null) {
+            return;
+        }
+        if (requestedAccountId != -1 && requestedAccountId != event.account.getId()) {
+            return;
+        }
         requestedAccountId = -1;
 
         setSupportProgressBarIndeterminateVisibility(false);
 
         // Remove OAuthFragment if one
-        if (getFragment(AccountOAuthFragment.TAG) != null)
-        {
+        if (getFragment(AccountOAuthFragment.TAG) != null) {
             getSupportFragmentManager().popBackStack(AccountOAuthFragment.TAG,
                     FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
 
-        if (getFragment(AccountSigninSamlFragment.TAG) != null)
-        {
+        if (getFragment(AccountSigninSamlFragment.TAG) != null) {
             getSupportFragmentManager().popBackStack(AccountSigninSamlFragment.TAG,
                     FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
@@ -409,11 +378,12 @@ public class PublicDispatcherActivity extends BaseActivity
 
         // Upload process : Display the view where the user wants to upload
         // files.
-        if (getCurrentSession() == null) { return; }
+        if (getCurrentSession() == null) {
+            return;
+        }
         String type = null;
         HashMap<String, Object> props = new HashMap<String, Object>();
-        switch (uploadFolder)
-        {
+        switch (uploadFolder) {
             case R.string.menu_browse_sites:
                 type = ConfigurationConstant.KEY_SITE_BROWSER;
                 break;
@@ -431,34 +401,47 @@ public class PublicDispatcherActivity extends BaseActivity
                 break;
         }
 
-        if (type != null)
-        {
+        if (type != null) {
             AlfrescoFragmentBuilder viewConfig = FragmentBuilderFactory.createViewConfig(this, type, props);
-            if (viewConfig == null) { return; }
+            if (viewConfig == null) {
+                return;
+            }
             viewConfig.display();
         }
     }
 
+    private void displayDocumentFolder() {
+        String type = null;
+
+        HashMap<String, Object> props = new HashMap<String, Object>();
+        type = ConfigurationConstant.KEY_REPOSITORY;
+        props.put(NodeBrowserTemplate.ARGUMENT_FOLDER_TYPE_ID, NodeBrowserTemplate.FOLDER_TYPE_USERHOME);
+
+        if (type != null) {
+            AlfrescoFragmentBuilder viewConfig = FragmentBuilderFactory.createViewConfig(this, type, props);
+            if (viewConfig == null) {
+                return;
+            }
+            viewConfig.display();
+        }
+
+    }
+
     @Subscribe
-    public void onSessionRequested(RequestSessionEvent event)
-    {
+    public void onSessionRequested(RequestSessionEvent event) {
         requestedAccountId = event.accountToLoad.getId();
         setCurrentAccount(event.accountToLoad);
         displayWaitingDialog();
     }
 
     @Subscribe
-    public void onAccountErrorEvent(LoadSessionCallBack.LoadAccountErrorEvent event)
-    {
+    public void onAccountErrorEvent(LoadSessionCallBack.LoadAccountErrorEvent event) {
         // SAML Exception ?
         if (event.exception instanceof AlfrescoSessionException
-                && event.account.getTypeId() == AlfrescoAccount.TYPE_ALFRESCO_CMIS_SAML)
-        {
+                && event.account.getTypeId() == AlfrescoAccount.TYPE_ALFRESCO_CMIS_SAML) {
             AccountSigninSamlFragment.with(this).isCreation(false).account(event.account).display();
             removeWaitingDialog();
-        }
-        else
-        {
+        } else {
             // General Errors
             // Display error dialog message
             new MaterialDialog.Builder(this).iconRes(R.drawable.ic_application_logo)

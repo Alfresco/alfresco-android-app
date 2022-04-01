@@ -28,7 +28,7 @@ def key_password      = System.getenv('KEY_PASSWORD')      ?: RELEASE_KEY_PASSWO
 def gservices_cfg     = System.getenv('GOOGLE_SERVICES_FILE') ?: GOOGLE_SERVICES_FILE
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 31
     buildToolsVersion "28.0.3"
 
     flavorDimensions "default"
@@ -37,7 +37,7 @@ android {
         applicationId APPLICATION_ID
 
         minSdkVersion 19
-        targetSdkVersion 28
+        targetSdkVersion 31
         versionCode version_code as Integer
         multiDexEnabled true
 
@@ -55,6 +55,11 @@ android {
         resValue "string", "oauth_scope", OAUTH_SCOPE
 
         resValue "string", "ga_trackingId", TRACKER_ID
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     lintOptions {
@@ -186,9 +191,12 @@ project.afterEvaluate {
 
 dependencies {
     //COMMON TO ALL VARIANTS
-    api 'com.google.code.gson:gson:2.8.5'
+    api 'com.google.code.gson:gson:2.8.6'
     implementation 'androidx.multidex:multidex:2.0.1'
-    releaseImplementation 'com.google.firebase:firebase-analytics:17.2.3'
-    releaseImplementation 'com.google.firebase:firebase-crashlytics:17.0.0-beta01'
+    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'com.google.android.material:material:1.5.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
+    releaseImplementation 'com.google.firebase:firebase-analytics:20.1.1'
+    releaseImplementation 'com.google.firebase:firebase-crashlytics:18.2.9'
     api project(':platform:foundation')
 }
