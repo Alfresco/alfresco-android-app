@@ -932,4 +932,10 @@
     <string name="alert_cloud_shutting_down_title">my.alfresco.com</string>
     <string name="alert_cloud_shutting_down_content">my.alfresco.com wird am 28. Juni 2019 abgeschaltet. Bitte kontaktieren Sie Ihren Administrator, um zu erfahren wie Sie Ihre Daten von diesem Service migrieren können.</string>
 
+    <string name="action_required">Handlungsbedarf!</string>
+    <string name="download_app_text">Laden Sie die neue App vor dem 30. November 2022 herunter, um die Alfresco-Content-Services weiterhin auf Ihrem Handy zu nutzen. \n\nNach dem 30. November 2022 wird diese App im App Store nicht mehr unterstützt.</string>
+    <string name="download_app_text_expire">Diese App wird im App Store nicht mehr unterstützt. \n\nBitte laden Sie die neue Alfresco Mobile Workspace App herunter, um eine bessere Benutzeroberfläche zu erhalten.</string>
+    <string name="take_me_there">Dorthin navigieren</string>
+    <string name="label_dismiss">Schließen</string>
+
 </resources>

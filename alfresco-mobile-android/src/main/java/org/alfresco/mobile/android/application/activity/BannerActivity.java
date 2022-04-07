@@ -32,12 +32,11 @@ public class BannerActivity extends AppCompatActivity {
 
 
         btnRedirect.setOnClickListener(view -> {
-            final String appPackageNameDebug = "com.alfresco.content.app.debug"; // package name of the app
             final String appPackageName = "com.alfresco.content.app"; // package name of the app
             PackageManager pm = getPackageManager();
-            boolean isInstalled = isPackageInstalled(appPackageNameDebug, pm);
+            boolean isInstalled = isPackageInstalled(appPackageName, pm);
             if (isInstalled) {
-                startActivity(getPackageManager().getLaunchIntentForPackage(appPackageNameDebug));
+                startActivity(getPackageManager().getLaunchIntentForPackage(appPackageName));
             } else {
                 try {
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
