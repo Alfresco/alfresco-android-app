@@ -932,7 +932,7 @@
     <string name="alert_cloud_shutting_down_content">my.alfresco.com verrà disattivato permanentemente dal 28 giugno 2019. Contattare l\'amministratore di sistema per le istruzioni per esportare i dati dal servizio.</string>
 
     <string name="action_required">Intervento richiesto!</string>
-    <string name="download_app_text">Scarica la nuova app prima del 30 novembre 2022 per continuare a utilizzare i servizi di contenuto Alfresco sul tuo smartphone. \n\nDopo il 30 novembre 2022 questa app non sarà più supportata dall’app store.</string>
+    <string name="download_app_text">Scarica la nuova app prima del 30 novembre 2022 per continuare a utilizzare Alfresco Content Services sul tuo smartphone. \n\nDopo il 30 novembre 2022 questa app non sarà più supportata dall’app store.</string>
     <string name="download_app_text_expire">Questa app non è più supportata dall’app store. \n\nScarica la nuova app Alfresco Mobile Workspace per una migliore esperienza di utilizzo.</string>
     <string name="take_me_there">Vai</string>
     <string name="label_dismiss">Ignora</string>

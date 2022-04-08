@@ -931,8 +931,8 @@
     <string name="alert_cloud_shutting_down_content">my.alfresco.com は 2019年6 月 28日をもちまして、サービスを終了いたします。本サービスからデータをエクスポートする方法については、ご担当のシステム管理者にお問い合わせください。</string>
 
     <string name="action_required">対応してください！</string>
-    <string name="download_app_text">Alfresco コンテンツサービスを携帯電話で引き続きご利用いただくには、2022年11月30日までに新しいアプリのダウンロードが必要です。\n\n2022年12月1日以降、App store でのこのアプリのサポートが終了します</string>
-    <string name="download_app_text_expire">このアプリは、App storeでのサポートが終了しています。\n\n新しい Alfresco Mobile workspace App をダウンロードして、快適なユーザーエクスペリエンスをお楽しみください</string>
+    <string name="download_app_text">Alfresco Content Services を携帯電話で引き続きご利用いただくには、2022年11月30日までに新しいアプリのダウンロードが必要です。\n\n2022年12月1日以降、App store でのこのアプリのサポートが終了します</string>
+    <string name="download_app_text_expire">このアプリは、App storeでのサポートが終了しています。\n\n新しい Alfresco Mobile Workspace App をダウンロードして、快適なユーザーエクスペリエンスをお楽しみください</string>
     <string name="take_me_there">移動する</string>
     <string name="label_dismiss">閉じる</string>
 

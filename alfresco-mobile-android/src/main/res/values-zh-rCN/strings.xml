@@ -931,7 +931,7 @@
     <string name="alert_cloud_shutting_down_content">my.alfresco.com 将于 2019 年 6 月 28 日关闭。请联系您的管理员，以获取有关如何从此服务导出数据的指导。</string>
 
     <string name="action_required">需要采取的行动 ！</string>
-    <string name="download_app_text">在2022年11月30日之前下载新应用，以继续在手机上使用 Alfresco 内容服务。\n\n在2022年11月30日之后，应用商店将不再支持此应用。</string>
+    <string name="download_app_text">在2022年11月30日之前下载新应用，以继续在手机上使用 Alfresco Content Services。\n\n在2022年11月30日之后，应用商店将不再支持此应用。</string>
     <string name="download_app_text_expire">应用商店不再支持此应用。\n\n请下载新的 Alfresco Mobile Workspace 应用，以获得更好的用户体验。</string>
     <string name="take_me_there">带我去那儿</string>
     <string name="label_dismiss">摒弃</string>
