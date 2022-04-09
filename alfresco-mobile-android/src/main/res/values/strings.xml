@@ -933,8 +933,8 @@
     <string name="alert_cloud_shutting_down_content">my.alfresco.com will be turned off on June 28, 2019. Please contact your Administrator for guidance on how to export your data from this service.</string>
 
     <string name="action_required">Action required !</string>
-    <string name="download_app_text">Download the new App before the 30th of November 2022 to continue using Alfresco content services on your phone\n\nAfter the 30th of November 2022 this app will no longer be supported on the App store.</string>
-    <string name="download_app_text_expire">This App is no longer supported on the App store.\n\nPlease download the new Alfresco Mobile workspace App for a better user experience.</string>
+    <string name="download_app_text">Download the new App before the 30th of November 2022 to continue using Alfresco Content Services on your phone. \n\nAfter the 30th of November 2022 this app will no longer be supported on the App store.</string>
+    <string name="download_app_text_expire">This App is no longer supported on the App store. \n\nPlease download the new Alfresco Mobile Workspace App for a better user experience.</string>
     <string name="take_me_there">Take me there</string>
     <string name="label_dismiss">Dismiss</string>
 </resources>
