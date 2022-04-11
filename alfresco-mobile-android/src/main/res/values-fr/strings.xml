@@ -932,8 +932,8 @@
     <string name="alert_cloud_shutting_down_content">my.alfresco.com sera définitivement désactivé le 28 juin 2019. Veuillez contacter votre administrateur système qui vous indiquera comment exporter vos données depuis ce service.</string>
 
     <string name="action_required">Action requise!</string>
-    <string name="download_app_text">Téléchargez la nouvelle application avant le 30 Novembre 2022 pour continuer à utiliser les services de contenu Alfresco sur votre téléphone. \n\nAprès le 30 Novembre 2022, cette application ne sera plus prise en charge dans l'App store.</string>
-    <string name="download_app_text_expire">Cette application n\'est plus prise en charge dans l\'App store. \n\nVeuillez télécharger la nouvelle application Alfresco Mobile workspace pour une meilleure expérience utilisateur.</string>
+    <string name="download_app_text">Téléchargez la nouvelle application avant le 30 Novembre 2022 pour continuer à utiliser Alfresco Content Services sur votre téléphone. \n\nAprès le 30 Novembre 2022, cette application ne sera plus prise en charge dans l\'App store.</string>
+    <string name="download_app_text_expire">Cette application n\'est plus prise en charge dans l\'App store. \n\nVeuillez télécharger la nouvelle application Alfresco Mobile Workspace pour une meilleure expérience utilisateur.</string>
     <string name="take_me_there">Naviguer vers elle</string>
     <string name="label_dismiss">Rejeter</string>
 
