@@ -20,7 +20,7 @@
     <TextView
         android:id="@+id/tv_action_required"
         android:layout_width="342dp"
-        android:layout_height="22dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_marginTop="50dp"
